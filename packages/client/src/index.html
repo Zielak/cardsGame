@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CardsGame</title>
+    <link href="style.scss" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+    <section class="flex">
+      <div>
+        <button type="button" onclick="window.gameRoom.send({data: 'start'})">
+          Start game
+        </button>
+      </div>
+    </section>
+
+    <aside id="gamesList"></aside>
+
+    <pre><code id="stateView"></code></pre>
+
+    <script src="./app.tsx"></script>
+  </body>
+</html>

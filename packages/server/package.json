@@ -1,0 +1,33 @@
+{
+  "name": "@cardsgame/server",
+  "version": "0.1.1",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "start": "nodemon -x ts-node --files server/app.ts",
+    "build": "tsc -b src",
+    "test": "jest"
+  },
+  "dependencies": {
+    "bezier-js": "^2.3.2",
+    "colyseus": "^0.9.33",
+    "eventemitter3": "^3.1.0"
+  },
+  "devDependencies": {
+    "@cardsgame/types": "file:../types",
+    "@cardsgame/utils": "file:../utils",
+    "@types/bezier-js": "0.0.8",
+    "chalk": "^2.4.2",
+    "jest": "^24.1.0",
+    "nodemon": "^1.18.10",
+    "ts-jest": "^24.0.0",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.3333"
+  }
+}

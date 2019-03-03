@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "lib": ["es6", "es2016"],
+    "outDir": "../lib",
+    "types": ["@cardsgame/types", "bezier-js"]
+  }
+}

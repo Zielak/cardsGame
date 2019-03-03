@@ -1,0 +1,10 @@
+{
+  "name": "@cardsgame/types",
+  "version": "0.1.0",
+  "description": "",
+  "main": "",
+  "types": "index",
+  "scripts": {},
+  "author": "",
+  "license": "ISC"
+}

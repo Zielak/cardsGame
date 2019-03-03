@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["es6", "es2016"],
+    "types": ["jest", "node"]
+  }
+}

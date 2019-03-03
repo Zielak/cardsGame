@@ -1,0 +1,20 @@
+{
+  "name": "cardsgame-integration",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "echo 'http://localhost:1234' && npm run client | npm run server",
+    "server": "nodemon -x ts-node --files server/app.ts",
+    "client": "parcel client/index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cardsgame/server": "file:packages/server",
+    "@cardsgame/client": "file:packages/client"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.11.0"
+  }
+}
