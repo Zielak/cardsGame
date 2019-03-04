@@ -1,4 +1,5 @@
-import { Card, State } from "../../index"
+import { State } from "../../src/state"
+import { Card } from "../../src/entities/card"
 
 let card: Card
 let state: State

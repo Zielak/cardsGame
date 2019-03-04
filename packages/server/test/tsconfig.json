@@ -1,3 +1,8 @@
 {
-  "extends": "../../../tsconfig.test.json"
+  "extends": "../../../tsconfig.test.json",
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "types": ["@cardsgame/types", "bezier-js", "jest", "node"]
+  }
 }

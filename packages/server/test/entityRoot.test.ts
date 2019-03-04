@@ -1,4 +1,4 @@
-import { State, Entity } from "../"
+import { State } from "../src/state"
 
 let state: State
 

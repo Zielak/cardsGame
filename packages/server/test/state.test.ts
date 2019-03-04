@@ -1,4 +1,5 @@
-import { State, Entity } from "../index"
+import { State } from "../src/state"
+import { Entity } from "../src/entity"
 
 let state: State
 

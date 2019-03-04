@@ -2,15 +2,14 @@
 // https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
+  preset: "ts-jest",
   globals: {
     "ts-jest": {
-      tsConfig: "test/tsconfig.json"
+      tsConfig: "<rootDir>/test/tsconfig.json",
+      diagnostics: true
     }
-  },
-  moduleFileExtensions: ["ts", "js"],
-  // moduleDirectories: ["node_modules", "src"],
-  testEnvironment: "node",
-  transform: {
-    "^.+\\.(ts|tsx)$": "ts-jest"
   }
+  // transform: {
+  //   "^.+\\.(ts|tsx)$": "ts-jest"
+  // }
 }

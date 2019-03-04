@@ -5,6 +5,7 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "target": "es5"
+    // "experimentalDecorators": true
     // "typeRoots": ["packages/types", "node_modules/@types"]
   }
 }

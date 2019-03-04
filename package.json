@@ -1,10 +1,11 @@
 {
   "name": "cardsgame",
-  "description": "not for publishing",
+  "private": true,
   "main": "index.js",
   "author": "",
   "license": "ISC",
   "scripts": {
+    "test": "jest -c=packages/server/jest.config.js --verbose --debug",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
     "preversion": "npm ci && npm run test"
   },

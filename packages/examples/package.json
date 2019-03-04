@@ -2,14 +2,19 @@
   "name": "@cardsgame/examples",
   "version": "0.1.1",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "echo 'http://localhost:1234' && npm run client | npm run server",
-    "server": "nodemon -x ts-node --files server.ts",
-    "client": "parcel public/index.html"
-  },
   "author": "",
   "license": "ISC",
+  "main": "index.js",
+  "files": [
+    "dist",
+    "public",
+    "server"
+  ],
+  "scripts": {
+    "start": "echo 'http://localhost:1234' && npm run client | npm run server",
+    "server": "nodemon -x ts-node --files server/index.ts",
+    "client": "parcel public/index.html"
+  },
   "dependencies": {
     "@cardsgame/client": "file:../client",
     "@cardsgame/server": "file:../server",

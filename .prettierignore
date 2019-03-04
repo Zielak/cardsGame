@@ -1,4 +1,4 @@
-packages/*/lib
-packages/client/.cache
-packages/client/dist
+packages/**/lib
+packages/**/.cache
+packages/**/dist
 package-lock.json
