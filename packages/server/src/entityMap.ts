@@ -13,6 +13,7 @@ export class EntityMap<T> {
     return idx
     // notifyNewIdx(entity, idx)
   }
+
   remove(idx: number)
   remove(idx: string)
   @nosync
@@ -55,11 +56,7 @@ export class EntityMap<T> {
 
   @nosync
   toArray(): T[] {
-    const arr = []
-    for (let key in this) {
-      arr.push(this[key])
-    }
-    return arr
+    return Object.keys(this).map(key => this[key])
   }
 
   @nosync

@@ -283,9 +283,15 @@ export class Entity extends EventEmitter {
     this.childrenArray.forEach(
       (child: Entity, idx: number, array: Entity[]) => {
         const data = this.restyleChild(child, idx, array)
-        if (data.x) child._worldTransform.x = data.x
-        if (data.y) child._worldTransform.y = data.y
-        if (data.angle) child._worldTransform.angle = data.angle
+        if (data.x) {
+          child._worldTransform.x = data.x
+        }
+        if (data.y) {
+          child._worldTransform.y = data.y
+        }
+        if (data.angle) {
+          child._worldTransform.angle = data.angle
+        }
         child.updateTransform()
       },
       this
@@ -308,13 +314,13 @@ export class Entity extends EventEmitter {
   }
 
   updateTransform() {
-    ;["x", "y", "angle"].map(prop => {
+    return ["x", "y", "angle"].map(prop => {
       this[prop] = this._localTransform[prop] + this._worldTransform[prop]
     })
   }
 
   resetWorldTransform() {
-    ;["x", "y", "angle"].map(prop => {
+    return ["x", "y", "angle"].map(prop => {
       this._worldTransform[prop] = 0
     })
   }

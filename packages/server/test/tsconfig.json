@@ -3,6 +3,7 @@
   "compilerOptions": {
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "lib": ["es6", "es2016"],
     "types": ["@cardsgame/types", "bezier-js", "jest", "node"]
   }
 }
