@@ -1,6 +1,8 @@
-import { ChangeParent } from "./changeParent";
-import { logs } from "../logs";
-export class DealCards {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var changeParent_1 = require("./changeParent");
+var logs_1 = require("../logs");
+var DealCards = /** @class */ (function () {
     /**
      * Deals `count` cards from this container to other containers.
      * Eg. hands
@@ -9,33 +11,37 @@ export class DealCards {
      * @param target and put them in these entities
      * @param count how many cards should I deal for each target?
      */
-    constructor(source, targets, count = Infinity) {
+    function DealCards(source, targets, count) {
+        if (count === void 0) { count = Infinity; }
         this.source = source;
         this.count = count;
         this.targets = Array.isArray(targets) ? targets : [targets];
     }
-    execute(state) {
-        const _ = this.constructor.name;
-        logs.log(_, "executing");
-        let i = 0;
-        const maxDeals = this.count * this.targets.length;
-        const next = () => {
-            const card = this.source.top;
-            const currentTarget = this.targets[i % this.targets.length];
+    DealCards.prototype.execute = function (state) {
+        var _this = this;
+        var _ = this.constructor.name;
+        logs_1.logs.log(_, "executing");
+        var i = 0;
+        var maxDeals = this.count * this.targets.length;
+        var next = function () {
+            var card = _this.source.top;
+            var currentTarget = _this.targets[i % _this.targets.length];
             // This command thing moves the entity
-            new ChangeParent(card, this.source, currentTarget).execute(state);
+            new changeParent_1.ChangeParent(card, _this.source, currentTarget).execute(state);
             i++;
-            if (this.source.length > 0 && i < maxDeals) {
+            if (_this.source.length > 0 && i < maxDeals) {
                 // setTimeout(next, 500)
                 next();
             }
             else {
                 // resolve(`Deck: Done dealing cards.`)
-                logs.log(_, `Done dealing cards.`);
+                logs_1.logs.log(_, "Done dealing cards.");
             }
         };
         next();
         state.logTreeState();
-    }
-}
+    };
+    return DealCards;
+}());
+exports.DealCards = DealCards;
 //# sourceMappingURL=dealCards.js.map

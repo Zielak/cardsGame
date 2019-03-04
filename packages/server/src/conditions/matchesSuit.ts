@@ -1,12 +1,12 @@
 import { State } from "../state"
-import { ICondition } from "condition"
-import { PlayerEvent } from "player"
+import { ICondition } from "../condition"
+import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 import { ClassicCard } from "../entities"
 
 export const matchesSuit: ICondition = (
   state: State,
-  event: PlayerEvent
+  event: ServerPlayerEvent
 ): boolean => {
   const pileTop = state.entities.findByName("mainPile").top as ClassicCard
   const chosenCard = event.target as ClassicCard

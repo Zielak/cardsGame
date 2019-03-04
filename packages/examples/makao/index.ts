@@ -4,15 +4,13 @@ import {
   Room,
   Player,
   Hand,
-  State,
   Pile,
   Deck,
   ClassicCard,
-  standardDeck
-} from "cardsgame-proto2"
-import { DealCards, ChangeParent, FlipCard } from "../../commands"
-import { ShuffleChildren } from "../../commands/shuffleChildren"
-import { logs } from "../../logs"
+  standardDeck,
+  commands,
+  logs
+} from "@cardsgame/server"
 
 import { MakaoState } from "./state"
 import {
@@ -88,10 +86,12 @@ export class MakaoRoom extends Room<MakaoState> {
           })
       )
 
-    new ShuffleChildren(this.deck).execute(state)
-    new DealCards(this.deck, playersHands, 5).execute(state)
-    new ChangeParent(this.deck.top, this.deck, this.pile).execute(state)
-    new FlipCard(this.pile.top as Card).execute(state)
+    new commands.ShuffleChildren(this.deck).execute(state)
+    new commands.DealCards(this.deck, playersHands, 5).execute(state)
+    new commands.ChangeParent(this.deck.top, this.deck, this.pile).execute(
+      state
+    )
+    new commands.FlipCard(this.pile.top as Card).execute(state)
 
     logs.info("Final state")
     state.logTreeState()

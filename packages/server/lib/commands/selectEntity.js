@@ -1,27 +1,31 @@
-import { logs } from "../logs";
-export class SelectEntity {
-    constructor(player, entity, selected) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var logs_1 = require("../logs");
+var SelectEntity = /** @class */ (function () {
+    function SelectEntity(player, entity, selected) {
         this.player = player;
         this.entity = entity;
         this.selected = selected;
     }
-    execute(state) {
-        const _ = this.constructor.name;
-        logs.log(_, "executing");
+    SelectEntity.prototype.execute = function (state) {
+        var _ = this.constructor.name;
+        logs_1.logs.log(_, "executing");
         if (this.selected) {
             this.player.selectEntity(this.entity);
         }
         else {
             this.player.deselectEntity(this.entity);
         }
-    }
-    undo() {
+    };
+    SelectEntity.prototype.undo = function () {
         if (this.selected) {
             this.player.deselectEntity(this.entity);
         }
         else {
             this.player.selectEntity(this.entity);
         }
-    }
-}
+    };
+    return SelectEntity;
+}());
+exports.SelectEntity = SelectEntity;
 //# sourceMappingURL=selectEntity.js.map

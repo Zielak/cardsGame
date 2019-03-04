@@ -1,15 +1,19 @@
-import { logs } from "../logs";
-export class ShowCard {
-    constructor(_cards) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var logs_1 = require("../logs");
+var ShowCard = /** @class */ (function () {
+    function ShowCard(_cards) {
         this.cards = Array.isArray(_cards) ? _cards : [_cards];
     }
-    execute(state) {
-        logs.log(`${this.constructor.name}`, "executing");
-        this.cards.forEach(card => card.show());
+    ShowCard.prototype.execute = function (state) {
+        logs_1.logs.log("" + this.constructor.name, "executing");
+        this.cards.forEach(function (card) { return card.show(); });
         state.logTreeState();
-    }
-    undo(state) {
-        this.cards.forEach(card => card.hide());
-    }
-}
+    };
+    ShowCard.prototype.undo = function (state) {
+        this.cards.forEach(function (card) { return card.hide(); });
+    };
+    return ShowCard;
+}());
+exports.ShowCard = ShowCard;
 //# sourceMappingURL=showCard.js.map

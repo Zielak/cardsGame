@@ -1,1 +1,1 @@
-{"version":3,"file":"targetsNameIs.js","sourceRoot":"","sources":["../../src/conditions/targetsNameIs.ts"],"names":[],"mappings":"AAIA,MAAM,CAAC,MAAM,aAAa,GAAsB,CAAC,IAAY,EAAE,EAAE,CAAC,CAChE,KAAY,EACZ,KAAkB,EACT,EAAE;IACX,OAAO,KAAK,CAAC,MAAM,CAAC,IAAI,KAAK,IAAI,CAAA;AACnC,CAAC,CAAA"}
+{"version":3,"file":"targetsNameIs.js","sourceRoot":"","sources":["../../src/conditions/targetsNameIs.ts"],"names":[],"mappings":";;AAIa,QAAA,aAAa,GAAsB,UAAC,IAAY,IAAK,OAAA,UAChE,KAAY,EACZ,KAAwB;IAExB,OAAO,KAAK,CAAC,MAAM,CAAC,IAAI,KAAK,IAAI,CAAA;AACnC,CAAC,EALiE,CAKjE,CAAA"}

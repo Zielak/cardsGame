@@ -1,4 +1,4 @@
-import { ICommand } from "../../../command"
+import { ICommand } from "@cardsgame/server"
 import { ContainersTestState } from "../state"
 
 export class ChangeCardPickedState implements ICommand {

@@ -5,9 +5,9 @@ import { StartGame } from "./commands/startGame"
 import { State } from "./state"
 import { Entity } from "./entity"
 import { EntityEvents, StateEvents } from "@cardsgame/utils"
-import { Player, PlayerEvent } from "./player"
-import { ICondition } from "condition"
-import { ICommandFactory } from "command"
+import { Player, ServerPlayerEvent } from "./player"
+import { ICondition } from "./condition"
+import { ICommandFactory } from "./command"
 
 export class Room<S extends State> extends colyseus.Room<S> {
   name = "CardsGame test"
@@ -125,7 +125,7 @@ export class Room<S extends State> extends colyseus.Room<S> {
     }
   }
 
-  onMessage(client: colyseus.Client, event: PlayerEvent) {
+  onMessage(client: colyseus.Client, event: ServerPlayerEvent) {
     if (event.data === "start" && !this.state.isGameStarted) {
       this.onStartGame(this.state)
       new StartGame().execute(this.state)
@@ -172,7 +172,7 @@ export class Room<S extends State> extends colyseus.Room<S> {
   /**
    * Check conditions and perform given action
    */
-  performAction(client: colyseus.Client, event: PlayerEvent) {
+  performAction(client: colyseus.Client, event: ServerPlayerEvent) {
     const actions = this.getActionsByInteraction(event).filter(action => {
       return this.isLegal(action.conditions, event)
     })
@@ -224,7 +224,7 @@ export class Room<S extends State> extends colyseus.Room<S> {
    * Gets you a list of all possible game actions
    * that match with player's interaction
    */
-  getActionsByInteraction(event: PlayerEvent): ActionTemplate[] {
+  getActionsByInteraction(event: ServerPlayerEvent): ActionTemplate[] {
     const possibleEntityProps = ["name", "type", "value", "rank", "suit"]
 
     const actions = Array.from(this.possibleActions.values()).filter(
@@ -292,7 +292,7 @@ export class Room<S extends State> extends colyseus.Room<S> {
   /**
    * Checks all attatched conditions (if any) to see if this action is legal
    */
-  isLegal(conditions: ICondition[], event: PlayerEvent): boolean {
+  isLegal(conditions: ICondition[], event: ServerPlayerEvent): boolean {
     if (conditions === undefined || conditions.length === 0) {
       return true
     }

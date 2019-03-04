@@ -1,12 +1,12 @@
 import { State } from "../state"
-import { IConditionFactory } from "condition"
-import { PlayerEvent } from "player"
+import { IConditionFactory } from "../condition"
+import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 import { sentenceCase } from "@cardsgame/utils"
 
 export const matchesSelectedWith: IConditionFactory = (propName: string) => (
   state: State,
-  event: PlayerEvent
+  event: ServerPlayerEvent
 ) => {
   const target = event.target
   const selected = event.player.selectedEntities

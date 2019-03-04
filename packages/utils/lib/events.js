@@ -1,4 +1,6 @@
-export const EntityEvents = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EntityEvents = {
     childAdded: "childAdded",
     childRemoved: "childRemoved",
     ownerUpdate: "ownerUpdate",
@@ -10,7 +12,7 @@ export const EntityEvents = {
     sendPropToEveryone: "sendPropToEveryone",
     selectedByPlayer: "selectedByPlayer"
 };
-export const StateEvents = {
+exports.StateEvents = {
     privatePropsSyncRequest: "privatePropsSyncRequest"
 };
 //# sourceMappingURL=events.js.map

@@ -1,6 +1,6 @@
 import { State } from "../state"
-import { ICondition } from "condition"
-import { PlayerEvent } from "player"
+import { ICondition } from "../condition"
+import { ServerPlayerEvent } from "../player"
 
 export * from "./isPlayersTurn"
 export * from "./matchesRank"
@@ -13,19 +13,19 @@ export * from "./matchesSelectedWith"
 export { default as selectedEntities } from "./selectedEntities"
 
 export const OR = (...conditions: ICondition[]): ICondition => {
-  return (state: State, event: PlayerEvent) => {
+  return (state: State, event: ServerPlayerEvent) => {
     return conditions.some(cond => cond(state, event))
   }
 }
 
 export const AND = (...conditions: ICondition[]): ICondition => {
-  return (state: State, event: PlayerEvent) => {
+  return (state: State, event: ServerPlayerEvent) => {
     return conditions.every(cond => cond(state, event))
   }
 }
 
 export const NOT = (...conditions: ICondition[]): ICondition => {
-  return (state: State, event: PlayerEvent) => {
+  return (state: State, event: ServerPlayerEvent) => {
     return !conditions.every(cond => cond(state, event))
   }
 }

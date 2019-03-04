@@ -2,7 +2,7 @@ import { Player } from "../player"
 import { State } from "../state"
 import { logs } from "../logs"
 import { Entity } from "../entity"
-import { ICommand } from "command"
+import { ICommand } from "../command"
 
 export class ClearSelection implements ICommand {
   deselected: Entity[]

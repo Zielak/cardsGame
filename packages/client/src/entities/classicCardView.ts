@@ -1,7 +1,8 @@
 import { Graphics, Text, TextStyle } from "pixi.js"
-import { cm2px } from "../../shared/numbers"
+import { cm2px } from "@cardsgame/utils"
 import { EntityView } from "./entityView"
 import { logs } from "../logs"
+import { ClientEntityData } from "../types"
 
 export class ClassicCardView extends EntityView {
   paper: Graphics

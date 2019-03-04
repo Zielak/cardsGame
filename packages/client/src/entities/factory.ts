@@ -5,6 +5,7 @@ import { PileView } from "./pileView"
 import { PlayerView } from "./playerView"
 import { HandView } from "./handView"
 import { ContainerView } from "./containerView"
+import { ClientEntityData } from "../types"
 
 export const entityFactory = (data: ClientEntityData) => {
   const factories: {

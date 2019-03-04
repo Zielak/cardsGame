@@ -1,6 +1,7 @@
 import { Graphics, Text } from "pixi.js"
 import { ClassicCardView } from "./classicCardView"
 import { EntityView } from "./entityView"
+import { ClientEntityData, EntityData } from "../types"
 
 export class HandView extends EntityView {
   disablesTargetingChildren = false

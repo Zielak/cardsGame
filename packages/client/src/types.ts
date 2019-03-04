@@ -1,6 +1,4 @@
-declare const ClientTypesON: boolean
-
-type PlayerEvent = {
+export type ClientPlayerEvent = {
   // most likely 'click'
   type: string
   // Path to target object, by idx/idx/idx...
@@ -9,7 +7,7 @@ type PlayerEvent = {
   data?: any
 }
 
-interface EntityData {
+export interface EntityData {
   id: number
   idx: number
   children?: {
@@ -43,6 +41,6 @@ interface EntityData {
   visibleToPublic: boolean
 }
 
-interface ClientEntityData extends EntityData {
+export interface ClientEntityData extends EntityData {
   visibleToClient: boolean
 }

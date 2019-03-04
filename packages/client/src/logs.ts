@@ -1,4 +1,4 @@
-import { noop } from "../shared/utils"
+import { noop } from "@cardsgame/utils"
 
 export enum LogLevels {
   silent,

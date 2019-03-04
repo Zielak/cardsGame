@@ -1,4 +1,4 @@
-import { ICondition } from "condition";
+import { ICondition } from "../condition";
 export * from "./isPlayersTurn";
 export * from "./matchesRank";
 export * from "./matchesSuit";

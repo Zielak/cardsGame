@@ -22,7 +22,7 @@ export declare class Player extends Entity {
 export interface IPlayerOptions extends IEntityOptions {
     clientID: string;
 }
-export declare type PlayerEvent = {
+export declare type ServerPlayerEvent = {
     player?: Player;
     type: string;
     target?: Entity;

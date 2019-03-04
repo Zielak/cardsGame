@@ -1,0 +1,20 @@
+{
+  "folders": [
+	{
+		"path": "packages/client"
+	},
+	{
+		"path": "packages/examples"
+	},
+	{
+		"path": "packages/server"
+	},
+	{
+		"path": "packages/types"
+	},
+	{
+		"path": "packages/utils"
+	}
+],
+  "settings": {}
+}

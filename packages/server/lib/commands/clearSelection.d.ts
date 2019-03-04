@@ -1,7 +1,7 @@
 import { Player } from "../player";
 import { State } from "../state";
 import { Entity } from "../entity";
-import { ICommand } from "command";
+import { ICommand } from "../command";
 export declare class ClearSelection implements ICommand {
     private player;
     deselected: Entity[];

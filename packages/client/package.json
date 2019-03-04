@@ -5,23 +5,26 @@
   "author": "",
   "license": "ISC",
   "main": "lib/index.js",
-  "types": "index.d.ts",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "parcel build src/index.tsx -d lib --detailed-report",
+    "build:watch": "tsc -b src --watch",
     "test": "jest"
   },
   "dependencies": {
     "colyseus.js": "^0.9.16",
     "eventemitter3": "^3.1.0",
+    "pixi.js": "^4.8.6",
     "react": "^16.8.3",
     "react-dom": "^16.8.3"
   },
   "devDependencies": {
+    "@cardsgame/types": "file:../types",
     "@cardsgame/utils": "file:../utils",
-    "jest": "^24.1.0",
-    "pixi.js": "^4.8.6",
     "sass": "^1.17.2",
-    "ts-jest": "^24.0.0",
     "typescript": "^3.3.3333"
   }
 }

@@ -1,17 +1,17 @@
-import * as Cards from "./index"
 import { createServer } from "http"
+import { Server, logs } from "@cardsgame/server"
 
-import { MakaoRoom } from "./games/makao"
-import { ContainersTest } from "./games/containersTest"
+import { MakaoRoom } from "./makao"
+import { ContainersTest } from "./containersTest"
 
 const WS_PORT = 2657
 
-const gameServer = new Cards.Server({
+const gameServer = new Server({
   server: createServer()
 })
 
 gameServer.register("Makao", MakaoRoom)
 gameServer.register("ContainersTest", ContainersTest)
-Cards.logs.info("GAME", "registered all games")
+logs.info("GAME", "registered all games")
 
 gameServer.listen(parseInt("" + process.env.PORT) || WS_PORT)

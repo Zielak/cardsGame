@@ -1,13 +1,14 @@
 import * as colyseus from "colyseus.js"
 import * as pixi from "pixi.js"
+import * as ReactDOM from "react-dom"
+import * as React from "react"
+import { EntityEvents } from "@cardsgame/utils"
 import { GamesList } from "./components/gamesList"
 import { Room } from "./room"
 import { logs } from "./logs"
 import { entityFactory } from "./entities/factory"
 import { EntityView } from "./entities/entityView"
-import { EntityEvents } from "../shared/events"
-import * as ReactDOM from "react-dom"
-import * as React from "react"
+import { ClientEntityData, ClientPlayerEvent } from "./types"
 
 const VIEW_WIDTH = 600
 const VIEW_HEIGHT = 600
@@ -166,7 +167,7 @@ export class App {
       const targetEntity = event.target as EntityView
       logs.info("Table got clicked", targetEntity)
 
-      const playerEvent: PlayerEvent = {
+      const playerEvent: ClientPlayerEvent = {
         type: event.type,
         targetPath: targetEntity.idxPath
         // additional/optional data

@@ -1,4 +1,4 @@
-import { State } from "../.."
+import { State } from "@cardsgame/server"
 
 export class MakaoState extends State {
   atackPoints: number

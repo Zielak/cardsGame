@@ -1,7 +1,7 @@
 import { State } from "../state"
 import { Card } from "../entities/card"
 import { logs } from "../logs"
-import { ICommand } from "command"
+import { ICommand } from "../command"
 
 export class ShowCard implements ICommand {
   cards: Card[]

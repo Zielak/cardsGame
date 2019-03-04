@@ -1,32 +1,41 @@
-export class VisibilityData {
-    constructor() {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var VisibilityData = /** @class */ (function () {
+    function VisibilityData() {
         this.data = {};
     }
-    add(keys, toEveryone, toOwner) {
+    VisibilityData.prototype.add = function (keys, toEveryone, toOwner) {
+        var _this = this;
         if (!Array.isArray(keys)) {
             keys = [keys];
         }
-        keys.forEach(key => {
-            this.data[key] = {
-                toEveryone,
-                toOwner
+        keys.forEach(function (key) {
+            _this.data[key] = {
+                toEveryone: toEveryone,
+                toOwner: toOwner
             };
         });
-    }
-    shouldSendToEveryone(key) {
+    };
+    VisibilityData.prototype.shouldSendToEveryone = function (key) {
         if (!this.data[key] || !this.data[key].toEveryone) {
             return;
         }
         return this.data[key].toEveryone();
-    }
-    shouldSendToOwner(key) {
+    };
+    VisibilityData.prototype.shouldSendToOwner = function (key) {
         if (!this.data[key] || !this.data[key].toOwner) {
             return;
         }
         return this.data[key].toOwner();
-    }
-    get keys() {
-        return Object.keys(this.data);
-    }
-}
+    };
+    Object.defineProperty(VisibilityData.prototype, "keys", {
+        get: function () {
+            return Object.keys(this.data);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return VisibilityData;
+}());
+exports.VisibilityData = VisibilityData;
 //# sourceMappingURL=visibilityData.js.map

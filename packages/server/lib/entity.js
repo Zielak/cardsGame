@@ -1,210 +1,233 @@
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { nosync } from "colyseus";
-import { EventEmitter } from "eventemitter3";
-import { def, EntityEvents, StateEvents } from "@cardsgame/utils";
-import { EntityMap } from "./entityMap";
-import { State } from "./state";
-import { EntityTransform } from "./transform";
-import { logs } from "./logs";
-import { VisibilityData } from "./visibilityData";
-import { condvis } from "./decorators";
-export class Entity extends EventEmitter {
-    constructor(options) {
-        super();
-        this.children = new EntityMap();
-        this.hijacksInteractionTarget = false;
-        this.isContainer = false;
+Object.defineProperty(exports, "__esModule", { value: true });
+var colyseus_1 = require("colyseus");
+var eventemitter3_1 = require("eventemitter3");
+var utils_1 = require("@cardsgame/utils");
+var entityMap_1 = require("./entityMap");
+var state_1 = require("./state");
+var transform_1 = require("./transform");
+var logs_1 = require("./logs");
+var visibilityData_1 = require("./visibilityData");
+var decorators_1 = require("./decorators");
+var Entity = /** @class */ (function (_super) {
+    __extends(Entity, _super);
+    function Entity(options) {
+        var _this = _super.call(this) || this;
+        _this.children = new entityMap_1.EntityMap();
+        _this.hijacksInteractionTarget = false;
+        _this.isContainer = false;
         // state && id
-        this._state = options.state;
-        this.id = this._state.rememberEntity(this);
-        this._visibilityData = new VisibilityData();
-        this._visibilityData.add("selected", 
+        _this._state = options.state;
+        _this.id = _this._state.rememberEntity(_this);
+        _this._visibilityData = new visibilityData_1.VisibilityData();
+        _this._visibilityData.add("selected", 
         // it's always player's private bussiness
-        /* toEveryone */ () => false, 
-        /* toOwner */ () => true);
+        /* toEveryone */ function () { return false; }, 
+        /* toOwner */ function () { return true; });
         // transform
-        this._localTransform = new EntityTransform(options.x, options.y, options.angle);
-        this._localTransform.on("update", () => this.updateTransform());
-        this._worldTransform = new EntityTransform();
-        this._worldTransform.on("update", () => this.updateTransform());
-        this.updateTransform();
+        _this._localTransform = new transform_1.EntityTransform(options.x, options.y, options.angle);
+        _this._localTransform.on("update", function () { return _this.updateTransform(); });
+        _this._worldTransform = new transform_1.EntityTransform();
+        _this._worldTransform.on("update", function () { return _this.updateTransform(); });
+        _this.updateTransform();
         // element data stuff
-        this.type = def(options.type, Entity.DEFAULT_TYPE);
-        this.name = def(options.name, Entity.DEFAULT_NAME);
-        this.visibleToPublic = true;
+        _this.type = utils_1.def(options.type, Entity.DEFAULT_TYPE);
+        _this.name = utils_1.def(options.name, Entity.DEFAULT_NAME);
+        _this.visibleToPublic = true;
         // parent
-        if (this._state.entities) {
+        if (_this._state.entities) {
             if (!options.parent) {
                 // no parent = root as parent
                 // this.parent = State.ROOT_ID
-                this._state.entities.addChild(this);
+                _this._state.entities.addChild(_this);
             }
             else {
-                const newParent = typeof options.parent === "number"
-                    ? this._state.getEntity(options.parent)
+                var newParent = typeof options.parent === "number"
+                    ? _this._state.getEntity(options.parent)
                     : options.parent;
-                newParent.addChild(this);
+                newParent.addChild(_this);
             }
         }
         else {
             // It must be the root!
-            if (this.id !== State.ROOT_ID) {
+            if (_this.id !== state_1.State.ROOT_ID) {
                 // IT ISN'T!!!
-                throw new Error(`Shouldn't happen. Root doesn't have root's ID?`);
+                throw new Error("Shouldn't happen. Root doesn't have root's ID?");
             }
             else {
-                this.parent = null;
+                _this.parent = null;
             }
         }
-        this.setupListeners();
+        _this.setupListeners();
+        return _this;
     }
-    setupListeners() {
-        this.on(EntityEvents.childAdded, (child) => {
-            this.onChildAdded(child);
-            this.restyleChildren();
+    Entity.prototype.setupListeners = function () {
+        var _this = this;
+        this.on(utils_1.EntityEvents.childAdded, function (child) {
+            _this.onChildAdded(child);
+            _this.restyleChildren();
         });
-        this.on(EntityEvents.childRemoved, (childID) => {
-            this.onChildRemoved(childID);
-            this.restyleChildren();
+        this.on(utils_1.EntityEvents.childRemoved, function (childID) {
+            _this.onChildRemoved(childID);
+            _this.restyleChildren();
         });
         // Rare case, when entityMap's self check finds inconsistency.
-        this.on(EntityEvents.idxUpdate, (idx) => {
-            this.idx = idx;
+        this.on(utils_1.EntityEvents.idxUpdate, function (idx) {
+            _this.idx = idx;
         });
-        this.on(EntityEvents.ownerUpdate, (event) => {
-            this.sendAllPrivateAttributes();
+        this.on(utils_1.EntityEvents.ownerUpdate, function (event) {
+            _this.sendAllPrivateAttributes();
         });
-        this.on(EntityEvents.parentUpdate, (event) => {
+        this.on(utils_1.EntityEvents.parentUpdate, function (event) {
             // Need to update even if owner stayed the same.
             // Client will create entirely new container
             if (event.lastParent) {
-                event.lastParent.emit(StateEvents.privatePropsSyncRequest);
+                event.lastParent.emit(utils_1.StateEvents.privatePropsSyncRequest);
             }
-            this.parentEntity.emit(StateEvents.privatePropsSyncRequest);
+            _this.parentEntity.emit(utils_1.StateEvents.privatePropsSyncRequest);
         });
-        this.on(EntityEvents.sendPropToEveryone, (key) => {
-            this._sendPrivAttrUpdate(key, true);
+        this.on(utils_1.EntityEvents.sendPropToEveryone, function (key) {
+            _this._sendPrivAttrUpdate(key, true);
         });
-        this.on(EntityEvents.sendPropToOwner, (key) => {
-            this._sendPrivAttrUpdate(key, false);
+        this.on(utils_1.EntityEvents.sendPropToOwner, function (key) {
+            _this._sendPrivAttrUpdate(key, false);
         });
-        this.on(StateEvents.privatePropsSyncRequest, (client) => {
-            this.sendAllPrivateAttributes(client);
-            this.childrenArray.forEach(child => {
-                child.emit(StateEvents.privatePropsSyncRequest, client);
+        this.on(utils_1.StateEvents.privatePropsSyncRequest, function (client) {
+            _this.sendAllPrivateAttributes(client);
+            _this.childrenArray.forEach(function (child) {
+                child.emit(utils_1.StateEvents.privatePropsSyncRequest, client);
             });
         });
-    }
+    };
     /**
      * Send out all private attributes, depending on their "privacy state"
      *
      * @param {string} [client] - if defined, will send private stuff only to this client if he owns this element (prevents too much updates)
      */
-    sendAllPrivateAttributes(client) {
+    Entity.prototype.sendAllPrivateAttributes = function (client) {
+        var _this = this;
         // logs.info('sendAllPrivateAttributes', client)
-        this._visibilityData.keys.forEach(key => {
-            if (this._visibilityData.shouldSendToEveryone(key)) {
-                this._sendPrivAttrUpdate(key, true);
+        this._visibilityData.keys.forEach(function (key) {
+            if (_this._visibilityData.shouldSendToEveryone(key)) {
+                _this._sendPrivAttrUpdate(key, true);
             }
-            else if (this._visibilityData.shouldSendToOwner(key)) {
-                if (!client || (this.owner && this.owner.clientID === client)) {
-                    this._sendPrivAttrUpdate(key, false);
+            else if (_this._visibilityData.shouldSendToOwner(key)) {
+                if (!client || (_this.owner && _this.owner.clientID === client)) {
+                    _this._sendPrivAttrUpdate(key, false);
                 }
             }
         });
-    }
-    _sendPrivAttrUpdate(key, _public) {
+    };
+    Entity.prototype._sendPrivAttrUpdate = function (key, _public) {
         // logs.log('_sendPrivAttrUpdate', _public ? 'public' : 'owner', key)
-        const event = {
+        var event = {
             path: this.idxPath,
             owner: this.owner && this.owner.clientID,
             public: _public,
             attribute: key,
             value: this[key]
         };
-        this._state.emit(EntityEvents.privateAttributeChange, event);
-    }
-    addChild(child) {
+        this._state.emit(utils_1.EntityEvents.privateAttributeChange, event);
+    };
+    Entity.prototype.addChild = function (child) {
         if (child === this) {
-            throw new Error(`adding itself as a child makes no sense.`);
+            throw new Error("adding itself as a child makes no sense.");
         }
-        if (this.childrenArray.some(el => el === child)) {
-            logs.verbose(`Child is already here`, child.idxPath);
+        if (this.childrenArray.some(function (el) { return el === child; })) {
+            logs_1.logs.verbose("Child is already here", child.idxPath);
             return;
         }
-        const lastParent = child.parent === State.ROOT_ID || !child.parent
+        var lastParent = child.parent === state_1.State.ROOT_ID || !child.parent
             ? null
             : child.parentEntity;
-        const lastOwner = child.owner;
+        var lastOwner = child.owner;
         if (lastParent) {
             // Remember to remove myself from first parent
             lastParent.removeChild(child.id, true);
         }
-        const idx = this.children.add(child);
+        var idx = this.children.add(child);
         child.parent = this.id;
         child.idx = idx;
-        const event = {
+        var event = {
             entity: child,
-            lastParent
+            lastParent: lastParent
         };
         // Also emit owner update if that happened
         if (child.owner !== lastOwner &&
             child.owner !== null &&
             lastOwner !== null) {
-            logs.warn("child.owner", child.owner);
-            const event = {
+            logs_1.logs.warn("child.owner", child.owner);
+            var event_1 = {
                 entity: child,
                 previousOwner: lastOwner.clientID,
                 currentOwner: child.owner.clientID
             };
-            this.emit(EntityEvents.ownerUpdate, event);
+            this.emit(utils_1.EntityEvents.ownerUpdate, event_1);
         }
-        this.emit(EntityEvents.childAdded, child);
-        child.emit(EntityEvents.parentUpdate, event);
-    }
-    addChildren(children) {
-        children.forEach(newChild => {
-            this.addChild(newChild);
+        this.emit(utils_1.EntityEvents.childAdded, child);
+        child.emit(utils_1.EntityEvents.parentUpdate, event);
+    };
+    Entity.prototype.addChildren = function (children) {
+        var _this = this;
+        children.forEach(function (newChild) {
+            _this.addChild(newChild);
         });
-    }
+    };
     // TODO:
-    addChildAt(newChild, idx) { }
-    removeChild(id, _silent = false) {
-        const idx = this.childrenArray.findIndex(child => {
+    Entity.prototype.addChildAt = function (newChild, idx) { };
+    Entity.prototype.removeChild = function (id, _silent) {
+        if (_silent === void 0) { _silent = false; }
+        var idx = this.childrenArray.findIndex(function (child) {
             return child.id === id;
         });
         return this.removeChildAt(idx, _silent);
-    }
-    removeChildAt(idx, _silent = false) {
-        const child = this.children[idx];
-        const result = this.children.remove(idx);
+    };
+    Entity.prototype.removeChildAt = function (idx, _silent) {
+        if (_silent === void 0) { _silent = false; }
+        var child = this.children[idx];
+        var result = this.children.remove(idx);
         if (!result) {
             return false;
         }
-        const lastParent = child.parentEntity;
-        child.parent = State.ROOT_ID;
+        var lastParent = child.parentEntity;
+        child.parent = state_1.State.ROOT_ID;
         // Reset last parent's stylings
         child.resetWorldTransform();
         if (!_silent) {
-            const event = {
+            var event = {
                 entity: child,
-                lastParent
+                lastParent: lastParent
             };
-            child.emit(EntityEvents.parentUpdate, event);
+            child.emit(utils_1.EntityEvents.parentUpdate, event);
         }
-        this.emit(EntityEvents.childRemoved, child.id);
+        this.emit(utils_1.EntityEvents.childRemoved, child.id);
         return true;
-    }
-    onChildAdded(child) { }
-    onChildRemoved(childID) { }
-    restyleChildren() {
-        this.childrenArray.forEach((child, idx, array) => {
-            const data = this.restyleChild(child, idx, array);
+    };
+    Entity.prototype.onChildAdded = function (child) { };
+    Entity.prototype.onChildRemoved = function (childID) { };
+    Entity.prototype.restyleChildren = function () {
+        var _this = this;
+        this.childrenArray.forEach(function (child, idx, array) {
+            var data = _this.restyleChild(child, idx, array);
             if (data.x)
                 child._worldTransform.x = data.x;
             if (data.y)
@@ -213,135 +236,171 @@ export class Entity extends EventEmitter {
                 child._worldTransform.angle = data.angle;
             child.updateTransform();
         }, this);
-    }
+    };
     /**
      * Override in each container-like entity
      */
-    restyleChild(child, idx, children) {
+    Entity.prototype.restyleChild = function (child, idx, children) {
         return {
             x: 0,
             y: 0,
             angle: 0
         };
-    }
-    updateTransform() {
+    };
+    Entity.prototype.updateTransform = function () {
+        var _this = this;
         ;
-        ["x", "y", "angle"].map(prop => {
-            this[prop] = this._localTransform[prop] + this._worldTransform[prop];
+        ["x", "y", "angle"].map(function (prop) {
+            _this[prop] = _this._localTransform[prop] + _this._worldTransform[prop];
         });
-    }
-    resetWorldTransform() {
+    };
+    Entity.prototype.resetWorldTransform = function () {
+        var _this = this;
         ;
-        ["x", "y", "angle"].map(prop => {
-            this._worldTransform[prop] = 0;
+        ["x", "y", "angle"].map(function (prop) {
+            _this._worldTransform[prop] = 0;
         });
-    }
-    filterByName(name) {
-        return this.childrenArray.filter(EntityMap.byName(name));
-    }
-    findByName(name) {
-        return this.childrenArray.find(EntityMap.byName(name));
-    }
-    filterByType(type) {
-        return this.childrenArray.filter(EntityMap.byType(type));
-    }
-    findByType(type) {
-        return this.childrenArray.find(EntityMap.byType(type));
-    }
-    /**
-     * Get the element with highest 'idx' value
-     */
-    get top() {
-        return this.children[this.length - 1];
-    }
-    /**
-     * Get the element with the lowest 'idx' value
-     */
-    get bottom() {
-        return this.children[0];
-    }
-    /**
-     * Number of child elements
-     */
-    get length() {
-        return Object.keys(this.children).length;
-    }
-    /**
-     * Points out if this element can be
-     * target of any interaction
-     */
-    get interactive() {
-        const parent = this.parentEntity;
-        if (parent.hijacksInteractionTarget) {
-            return false;
-        }
-        return true;
-    }
-    /**
-     * Gets all children in array form, "sorted" by idx
-     */
-    get childrenArray() {
-        return this.children.toArray();
-    }
-    /**
-     * Gets a reference to this entity's parent.
-     * There must be any parent, so any null will fallback to state's `entities`
-     */
-    get parentEntity() {
-        const parent = this._state.getEntity(this.parent);
-        return parent || this._state.entities;
-    }
-    /**
-     * Get the real owner of this container, by traversing `this.parent` chain.
-     *
-     * @returns `Player` or `null` if this container doesn't belong to anyone
-     */
-    get owner() {
-        if (this.parent === State.ROOT_ID || this.parent === null) {
-            return null;
-        }
-        if (this.parentEntity.type === "player") {
-            return this.parentEntity;
-        }
-        return this.parentEntity.owner;
-    }
-    get idxPath() {
-        const path = [this.idx];
-        const getNext = (entity) => {
-            const parentsIdx = entity.parentEntity.idx;
-            if (entity.parentEntity instanceof Entity &&
-                typeof parentsIdx === "number") {
-                path.unshift(parentsIdx);
-                getNext(entity.parentEntity);
+    };
+    Entity.prototype.filterByName = function (name) {
+        return this.childrenArray.filter(entityMap_1.EntityMap.byName(name));
+    };
+    Entity.prototype.findByName = function (name) {
+        return this.childrenArray.find(entityMap_1.EntityMap.byName(name));
+    };
+    Entity.prototype.filterByType = function (type) {
+        return this.childrenArray.filter(entityMap_1.EntityMap.byType(type));
+    };
+    Entity.prototype.findByType = function (type) {
+        return this.childrenArray.find(entityMap_1.EntityMap.byType(type));
+    };
+    Object.defineProperty(Entity.prototype, "top", {
+        /**
+         * Get the element with highest 'idx' value
+         */
+        get: function () {
+            return this.children[this.length - 1];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Entity.prototype, "bottom", {
+        /**
+         * Get the element with the lowest 'idx' value
+         */
+        get: function () {
+            return this.children[0];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Entity.prototype, "length", {
+        /**
+         * Number of child elements
+         */
+        get: function () {
+            return Object.keys(this.children).length;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Entity.prototype, "interactive", {
+        /**
+         * Points out if this element can be
+         * target of any interaction
+         */
+        get: function () {
+            var parent = this.parentEntity;
+            if (parent.hijacksInteractionTarget) {
+                return false;
             }
-        };
-        getNext(this);
-        return path;
-    }
-}
-Entity.DEFAULT_NAME = "Unnamed";
-Entity.DEFAULT_TYPE = "Entity";
-__decorate([
-    nosync
-], Entity.prototype, "_visibilityData", void 0);
-__decorate([
-    nosync
-], Entity.prototype, "_state", void 0);
-__decorate([
-    nosync
-], Entity.prototype, "hijacksInteractionTarget", void 0);
-__decorate([
-    condvis
-], Entity.prototype, "selected", void 0);
-__decorate([
-    nosync
-], Entity.prototype, "_localTransform", void 0);
-__decorate([
-    nosync
-], Entity.prototype, "_worldTransform", void 0);
+            return true;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Entity.prototype, "childrenArray", {
+        /**
+         * Gets all children in array form, "sorted" by idx
+         */
+        get: function () {
+            return this.children.toArray();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Entity.prototype, "parentEntity", {
+        /**
+         * Gets a reference to this entity's parent.
+         * There must be any parent, so any null will fallback to state's `entities`
+         */
+        get: function () {
+            var parent = this._state.getEntity(this.parent);
+            return parent || this._state.entities;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Entity.prototype, "owner", {
+        /**
+         * Get the real owner of this container, by traversing `this.parent` chain.
+         *
+         * @returns `Player` or `null` if this container doesn't belong to anyone
+         */
+        get: function () {
+            if (this.parent === state_1.State.ROOT_ID || this.parent === null) {
+                return null;
+            }
+            if (this.parentEntity.type === "player") {
+                return this.parentEntity;
+            }
+            return this.parentEntity.owner;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Entity.prototype, "idxPath", {
+        get: function () {
+            var path = [this.idx];
+            var getNext = function (entity) {
+                var parentsIdx = entity.parentEntity.idx;
+                if (entity.parentEntity instanceof Entity &&
+                    typeof parentsIdx === "number") {
+                    path.unshift(parentsIdx);
+                    getNext(entity.parentEntity);
+                }
+            };
+            getNext(this);
+            return path;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Entity.DEFAULT_NAME = "Unnamed";
+    Entity.DEFAULT_TYPE = "Entity";
+    __decorate([
+        colyseus_1.nosync
+    ], Entity.prototype, "_visibilityData", void 0);
+    __decorate([
+        colyseus_1.nosync
+    ], Entity.prototype, "_state", void 0);
+    __decorate([
+        colyseus_1.nosync
+    ], Entity.prototype, "hijacksInteractionTarget", void 0);
+    __decorate([
+        decorators_1.condvis
+    ], Entity.prototype, "selected", void 0);
+    __decorate([
+        colyseus_1.nosync
+    ], Entity.prototype, "_localTransform", void 0);
+    __decorate([
+        colyseus_1.nosync
+    ], Entity.prototype, "_worldTransform", void 0);
+    return Entity;
+}(eventemitter3_1.EventEmitter));
+exports.Entity = Entity;
 // Get rid of EventEmitter stuff from the client
-nosync(Entity.prototype, "_events");
-nosync(Entity.prototype, "_eventsCount");
-nosync(Entity.prototype, "_maxListeners");
-nosync(Entity.prototype, "domain");
+colyseus_1.nosync(Entity.prototype, "_events");
+colyseus_1.nosync(Entity.prototype, "_eventsCount");
+colyseus_1.nosync(Entity.prototype, "_maxListeners");
+colyseus_1.nosync(Entity.prototype, "domain");
 //# sourceMappingURL=entity.js.map

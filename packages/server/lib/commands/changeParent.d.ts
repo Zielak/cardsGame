@@ -1,6 +1,6 @@
 import { Entity } from "../entity";
 import { State } from "../state";
-import { ICommand } from "command";
+import { ICommand } from "../command";
 export declare class ChangeParent implements ICommand {
     private entities;
     private source;

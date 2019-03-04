@@ -1,7 +1,7 @@
 import { Player } from "../player";
 import { State } from "../state";
 import { Entity } from "../entity";
-import { ICommand } from "command";
+import { ICommand } from "../command";
 export declare class SelectEntity implements ICommand {
     private player;
     private entity;

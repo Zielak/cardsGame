@@ -1,24 +1,28 @@
-import { logs } from "logs";
-import { CompositeCommand } from "commands/compositeCommand";
-export class CommandsManager {
-    constructor() {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var logs_1 = require("./logs");
+var compositeCommand_1 = require("./commands/compositeCommand");
+var CommandsManager = /** @class */ (function () {
+    function CommandsManager() {
         this.history = [];
     }
-    orderExecution(cmdFactory, state, event) {
-        let result = false;
+    CommandsManager.prototype.orderExecution = function (cmdFactory, state, event) {
+        var result = false;
         try {
-            let cmd = cmdFactory(state, event);
+            var cmd = cmdFactory(state, event);
             if (Array.isArray(cmd)) {
-                cmd = new CompositeCommand(cmd);
+                cmd = new compositeCommand_1.CompositeCommand(cmd);
             }
             cmd.execute(state);
             this.history.push(cmd);
             result = true;
         }
         catch (e) {
-            logs.error("orderExecution", `command FAILED to execute`, e);
+            logs_1.logs.error("orderExecution", "command FAILED to execute", e);
         }
         return result;
-    }
-}
+    };
+    return CommandsManager;
+}());
+exports.CommandsManager = CommandsManager;
 //# sourceMappingURL=commandsManager.js.map

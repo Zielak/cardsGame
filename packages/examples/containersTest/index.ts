@@ -2,16 +2,16 @@ import {
   Room,
   Hand,
   State,
+  Container,
   Pile,
   Deck,
   ClassicCard,
   standardDeck,
-  ActionTemplate
-} from "../../"
+  ActionTemplate,
+  logs
+} from "@cardsgame/server"
 
 import { MoveCards } from "./actions/moveCard"
-import { logs } from "../../logs"
-import { Container } from "../../entities/container"
 import { PickCard } from "./actions/pickCard"
 import { ContainersTestState } from "./state"
 

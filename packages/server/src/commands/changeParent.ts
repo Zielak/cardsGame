@@ -1,7 +1,7 @@
 import { Entity } from "../entity"
 import { State } from "../state"
 import { logs } from "../logs"
-import { ICommand } from "command"
+import { ICommand } from "../command"
 
 export class ChangeParent implements ICommand {
   private entities: Entity[]

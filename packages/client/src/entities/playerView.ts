@@ -1,6 +1,7 @@
 import { Sprite, Text } from "pixi.js"
 import { ClassicCardView } from "./classicCardView"
 import { EntityView } from "./entityView"
+import { ClientEntityData } from "../types"
 
 export class PlayerView extends EntityView {
   icon: Sprite

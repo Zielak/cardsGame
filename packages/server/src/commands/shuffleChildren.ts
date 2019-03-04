@@ -2,7 +2,7 @@ import { Entity } from "../entity"
 import { logs } from "../logs"
 import { State } from "../state"
 import { notifyNewIdx } from "../entityMap"
-import { ICommand } from "command"
+import { ICommand } from "../command"
 
 export class ShuffleChildren implements ICommand {
   constructor(private container: Entity) {}

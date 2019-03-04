@@ -1,4 +1,4 @@
-import { ICommand } from "command"
+import { ICommand } from "../command"
 
 export class Noop implements ICommand {
   execute() {}

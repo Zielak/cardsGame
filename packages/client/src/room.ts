@@ -1,7 +1,7 @@
 import * as colyseus from "colyseus.js"
 import { EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
-import { EntityEvents } from "../shared/events"
+import { EntityEvents } from "@cardsgame/utils"
 
 export class Room extends EventEmitter {
   childrenListeners = []

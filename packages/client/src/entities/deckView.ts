@@ -1,6 +1,7 @@
 import { Graphics, Text } from "pixi.js"
 import { ClassicCardView } from "./classicCardView"
 import { ContainerView } from "./containerView"
+import { ClientEntityData, EntityData } from "../types"
 
 export class DeckView extends ContainerView {
   bg: Graphics

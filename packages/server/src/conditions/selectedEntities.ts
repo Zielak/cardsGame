@@ -1,5 +1,5 @@
 import { Entity } from "../entity"
-import { PlayerEvent } from "player"
+import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 
 const propsMatch = (propName: string, values: any[]) => (entity: Entity) => {
@@ -17,7 +17,7 @@ const propsMatch = (propName: string, values: any[]) => (entity: Entity) => {
 export const matchRank = (_ranks: string | string[]) => {
   const ranks = Array.isArray(_ranks) ? _ranks : [_ranks]
 
-  return (_, event: PlayerEvent) => {
+  return (_, event: ServerPlayerEvent) => {
     const selected = event.player.selectedEntities
     return selected.every(propsMatch("rank", ranks))
   }

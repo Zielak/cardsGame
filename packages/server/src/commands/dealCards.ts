@@ -3,7 +3,7 @@ import { Entity } from "../entity"
 import { Card } from "../entities/card"
 import { ChangeParent } from "./changeParent"
 import { logs } from "../logs"
-import { ICommand } from "command"
+import { ICommand } from "../command"
 
 export class DealCards implements ICommand {
   targets: Entity[]

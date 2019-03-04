@@ -1,6 +1,6 @@
 import { State } from "../state";
 import { Card } from "../entities/card";
-import { ICommand } from "command";
+import { ICommand } from "../command";
 export declare class ShowCard implements ICommand {
     cards: Card[];
     constructor(card: Card);

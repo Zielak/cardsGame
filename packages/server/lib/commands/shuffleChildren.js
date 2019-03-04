@@ -1,24 +1,28 @@
-import { logs } from "../logs";
-import { notifyNewIdx } from "../entityMap";
-export class ShuffleChildren {
-    constructor(container) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var logs_1 = require("../logs");
+var entityMap_1 = require("../entityMap");
+var ShuffleChildren = /** @class */ (function () {
+    function ShuffleChildren(container) {
         this.container = container;
     }
-    execute(state) {
-        logs.log(`${this.constructor.name}`, "executing");
-        let fromIdx = this.container.children.length;
+    ShuffleChildren.prototype.execute = function (state) {
+        logs_1.logs.log("" + this.constructor.name, "executing");
+        var fromIdx = this.container.children.length;
         if (fromIdx === 0)
             return;
         while (--fromIdx) {
-            const toIdx = Math.floor(Math.random() * (fromIdx + 1));
-            const childi = this.container.children[fromIdx];
-            const childj = this.container.children[toIdx];
+            var toIdx = Math.floor(Math.random() * (fromIdx + 1));
+            var childi = this.container.children[fromIdx];
+            var childj = this.container.children[toIdx];
             this.container.children[fromIdx] = childj;
             this.container.children[toIdx] = childi;
-            notifyNewIdx(childi, toIdx);
-            notifyNewIdx(childj, fromIdx);
+            entityMap_1.notifyNewIdx(childi, toIdx);
+            entityMap_1.notifyNewIdx(childj, fromIdx);
         }
         state.logTreeState();
-    }
-}
+    };
+    return ShuffleChildren;
+}());
+exports.ShuffleChildren = ShuffleChildren;
 //# sourceMappingURL=shuffleChildren.js.map

@@ -1,5 +1,5 @@
+import { ICommand } from "@cardsgame/server"
 import { MakaoState } from "./state"
-import { ICommand } from "../../command"
 
 // export class MakaoNextPlayer extends
 

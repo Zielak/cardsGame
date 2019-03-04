@@ -1,6 +1,6 @@
 import { State } from "../state";
 import { Entity } from "../entity";
-import { ICommand } from "command";
+import { ICommand } from "../command";
 export declare class DealCards implements ICommand {
     private source;
     private count;

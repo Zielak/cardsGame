@@ -1,6 +1,4 @@
-import { trim } from "../../shared/strings"
 import React from "react"
-
 import "./gamesList.scss"
 
 export interface GamesListProps {

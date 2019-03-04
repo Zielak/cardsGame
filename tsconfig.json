@@ -4,7 +4,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "target": "esnext"
+    "target": "es5"
     // "typeRoots": ["packages/types", "node_modules/@types"]
   }
 }

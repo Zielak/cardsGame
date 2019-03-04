@@ -1,6 +1,7 @@
 import { Graphics, Text } from "pixi.js"
 import { ClassicCardView } from "./classicCardView"
 import { ContainerView } from "./containerView"
+import { EntityData, ClientEntityData } from "../types"
 
 export class PileView extends ContainerView {
   bg: Graphics

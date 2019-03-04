@@ -77,7 +77,7 @@ export interface IPlayerOptions extends IEntityOptions {
   clientID: string
 }
 
-export type PlayerEvent = {
+export type ServerPlayerEvent = {
   player?: Player
   // most likely 'click'
   type: string

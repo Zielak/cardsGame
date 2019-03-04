@@ -1,4 +1,4 @@
-import { ICondition } from "condition";
+import { ICondition } from "../condition";
 /**
  * Expects the current player to have at least `count` selected entities.
  * Function returns an actual `Condition`

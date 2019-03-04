@@ -2,9 +2,9 @@ import * as colyseus from "colyseus";
 import { CommandsManager } from "./commandsManager";
 import { State } from "./state";
 import { Entity } from "./entity";
-import { PlayerEvent } from "./player";
-import { ICondition } from "condition";
-import { ICommandFactory } from "command";
+import { ServerPlayerEvent } from "./player";
+import { ICondition } from "./condition";
+import { ICommandFactory } from "./command";
 export declare class Room<S extends State> extends colyseus.Room<S> {
     name: string;
     commandsManager: CommandsManager;
@@ -19,20 +19,20 @@ export declare class Room<S extends State> extends colyseus.Room<S> {
     requestJoin(options: any, isRoomNew?: boolean): boolean | number;
     onJoin(client: colyseus.Client): void;
     onLeave(client: colyseus.Client, consented: boolean): void;
-    onMessage(client: colyseus.Client, event: PlayerEvent): void;
+    onMessage(client: colyseus.Client, event: ServerPlayerEvent): void;
     /**
      * Check conditions and perform given action
      */
-    performAction(client: colyseus.Client, event: PlayerEvent): void;
+    performAction(client: colyseus.Client, event: ServerPlayerEvent): void;
     /**
      * Gets you a list of all possible game actions
      * that match with player's interaction
      */
-    getActionsByInteraction(event: PlayerEvent): ActionTemplate[];
+    getActionsByInteraction(event: ServerPlayerEvent): ActionTemplate[];
     /**
      * Checks all attatched conditions (if any) to see if this action is legal
      */
-    isLegal(conditions: ICondition[], event: PlayerEvent): boolean;
+    isLegal(conditions: ICondition[], event: ServerPlayerEvent): boolean;
     /**
      * Will be called right after the game room is created.
      * Prepare your play area now.

@@ -1,4 +1,10 @@
-export const def = (value, def) => typeof value !== "undefined" ? value : def;
-export const noop = () => { };
-export const times = (length, func) => Array.from({ length }, func);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.def = function (value, def) {
+    return typeof value !== "undefined" ? value : def;
+};
+exports.noop = function () { };
+exports.times = function (length, func) {
+    return Array.from({ length: length }, func);
+};
 //# sourceMappingURL=utils.js.map

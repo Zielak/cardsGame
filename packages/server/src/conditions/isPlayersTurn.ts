@@ -1,6 +1,6 @@
 import { State } from "../state"
-import { ICondition } from "condition"
-import { PlayerEvent } from "player"
+import { ICondition } from "../condition"
+import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 
 /**
@@ -10,7 +10,7 @@ import { logs } from "../logs"
  */
 export const isPlayersTurn: ICondition = (
   state: State,
-  event: PlayerEvent
+  event: ServerPlayerEvent
 ): boolean => {
   if (state.currentPlayer.clientID === event.player.clientID) {
     return true

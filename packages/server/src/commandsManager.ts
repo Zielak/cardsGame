@@ -1,8 +1,8 @@
-import { logs } from "logs"
-import { CompositeCommand } from "commands/compositeCommand"
-import { State } from "state"
-import { ICommand, ICommandFactory } from "command"
-import { PlayerEvent } from "player"
+import { logs } from "./logs"
+import { CompositeCommand } from "./commands/compositeCommand"
+import { State } from "./state"
+import { ICommand, ICommandFactory } from "./command"
+import { ServerPlayerEvent } from "./player"
 
 export class CommandsManager {
   history: ICommand[] = []
@@ -10,7 +10,7 @@ export class CommandsManager {
   orderExecution(
     cmdFactory: ICommandFactory,
     state: State,
-    event?: PlayerEvent
+    event?: ServerPlayerEvent
   ): boolean {
     let result = false
     try {

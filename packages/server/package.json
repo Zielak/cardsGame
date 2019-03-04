@@ -12,6 +12,7 @@
   "scripts": {
     "start": "nodemon -x ts-node --files server/app.ts",
     "build": "tsc -b src",
+    "build:watch": "tsc -b src --watch",
     "test": "jest"
   },
   "dependencies": {
@@ -21,13 +22,6 @@
   },
   "devDependencies": {
     "@cardsgame/types": "file:../types",
-    "@cardsgame/utils": "file:../utils",
-    "@types/bezier-js": "0.0.8",
-    "chalk": "^2.4.2",
-    "jest": "^24.1.0",
-    "nodemon": "^1.18.10",
-    "ts-jest": "^24.0.0",
-    "ts-node": "^8.0.2",
-    "typescript": "^3.3.3333"
+    "@cardsgame/utils": "file:../utils"
   }
 }

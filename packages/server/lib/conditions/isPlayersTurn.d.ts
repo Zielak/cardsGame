@@ -1,4 +1,4 @@
-import { ICondition } from "condition";
+import { ICondition } from "../condition";
 /**
  * Checks state to confirm that it's interacting player's turn now.
  * @param state

@@ -1,19 +1,23 @@
-import { ActionTemplate, PlayerEvent, State } from "../../.."
+import {
+  ActionTemplate,
+  ServerPlayerEvent,
+  State,
+  commands as cmd,
+  logs
+} from "@cardsgame/server"
 
-import { ChangeParent, CompositeCommand } from "../../../commands"
-import { logs } from "../../../logs"
 import { isCardPicked } from "../conditions/isCardPicked"
 import { ChangeCardPickedState } from "../commands/changeCardPickedState"
 
 export const MoveCards: ActionTemplate = {
   name: "MoveCard",
-  commandFactory: (state: State, event: PlayerEvent) => {
+  commandFactory: (state: State, event: ServerPlayerEvent) => {
     // Get container from targets
     const targetContainer = event.targets.find(el => el.isContainer)
     const entity = state.entities.findByName("middle").top
 
-    return new CompositeCommand([
-      new ChangeParent(entity, entity.parentEntity, targetContainer),
+    return new cmd.CompositeCommand([
+      new cmd.ChangeParent(entity, entity.parentEntity, targetContainer),
       new ChangeCardPickedState(false)
     ])
   },

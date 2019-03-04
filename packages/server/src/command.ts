@@ -1,5 +1,5 @@
 import { State } from "./state"
-import { PlayerEvent } from "./player"
+import { ServerPlayerEvent } from "./player"
 
 export interface ICommand {
   execute(state: State)
@@ -7,5 +7,5 @@ export interface ICommand {
 }
 export type ICommandFactory = (
   state: State,
-  event: PlayerEvent
+  event: ServerPlayerEvent
 ) => ICommand | ICommand[]

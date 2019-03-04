@@ -1,6 +1,6 @@
 import { State } from "../state"
-import { ICondition } from "condition"
-import { PlayerEvent } from "player"
+import { ICondition } from "../condition"
+import { ServerPlayerEvent } from "../player"
 
 /**
  * Expects the current player to have at least `count` selected entities.
@@ -9,5 +9,5 @@ import { PlayerEvent } from "player"
  */
 export const hasAtLeastXEntitiesSelected = (count: number): ICondition => (
   state: State,
-  event: PlayerEvent
+  event: ServerPlayerEvent
 ) => event.player.selectedEntitiesCount >= count

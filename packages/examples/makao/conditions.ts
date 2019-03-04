@@ -1,8 +1,10 @@
-import { ICondition } from "../../condition"
 import { MakaoState } from "./state"
-import { ClassicCard } from "../../entities"
-import { PlayerEvent } from "../../types"
-import { logs } from "../../logs"
+import {
+  ClassicCard,
+  ICondition,
+  logs,
+  ServerPlayerEvent
+} from "@cardsgame/server"
 
 export const isAtWar: ICondition = (state: MakaoState) => {
   return state.isAtWar
@@ -27,14 +29,17 @@ const isNonFunctional = (card: ClassicCard) => {
   return matchType && (nonFunCard || nonFunKing)
 }
 
-export const selectedAreNonFunctional: ICondition = (_, event: PlayerEvent) => {
+export const selectedAreNonFunctional: ICondition = (
+  _,
+  event: ServerPlayerEvent
+) => {
   const selected = event.player.selectedEntities as ClassicCard[]
   return selected.every(isNonFunctional)
 }
 
 export const selectedMatchRank: ICondition = (
   state: MakaoState,
-  event: PlayerEvent
+  event: ServerPlayerEvent
 ) => {
   const pileTop = state.entities.findByName("mainPile").top as ClassicCard
   const selectedRank = (event.player.selectedEntities[0] as ClassicCard).rank
@@ -51,7 +56,7 @@ export const selectedMatchRank: ICondition = (
 
 export const selectedMatchSuit: ICondition = (
   state: MakaoState,
-  event: PlayerEvent
+  event: ServerPlayerEvent
 ) => {
   const pileTop = state.entities.findByName("mainPile").top as ClassicCard
   const selectedSuit = (event.player.selectedEntities[0] as ClassicCard).suit

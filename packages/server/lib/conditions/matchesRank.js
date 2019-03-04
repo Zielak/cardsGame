@@ -1,11 +1,13 @@
-import { logs } from "../logs";
-export const matchesRank = (state, event) => {
-    const pileTop = state.entities.findByName("mainPile").top;
-    const chosenCard = event.target;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var logs_1 = require("../logs");
+exports.matchesRank = function (state, event) {
+    var pileTop = state.entities.findByName("mainPile").top;
+    var chosenCard = event.target;
     if (chosenCard.rank === pileTop.rank) {
         return true;
     }
-    logs.warn("matchesRank", `pile.top "${pileTop.rank}" !== cards rank "${chosenCard.rank}"`);
+    logs_1.logs.warn("matchesRank", "pile.top \"" + pileTop.rank + "\" !== cards rank \"" + chosenCard.rank + "\"");
     return false;
 };
 //# sourceMappingURL=matchesRank.js.map

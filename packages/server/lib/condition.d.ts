@@ -1,6 +1,6 @@
-import { State } from "state";
-import { PlayerEvent } from "player";
+import { State } from "./state";
+import { ServerPlayerEvent } from "./player";
 export interface ICondition {
-    (state: State, event: PlayerEvent): boolean;
+    (state: State, event: ServerPlayerEvent): boolean;
 }
 export declare type IConditionFactory = (...args: any) => ICondition;

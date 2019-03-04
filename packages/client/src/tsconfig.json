@@ -3,7 +3,7 @@
   "compilerOptions": {
     "jsx": "react",
     "lib": ["dom", "es6", "es2016"],
-    "outDir": "../lib",
-    "types": ["../../types"]
+    "outDir": "../lib/",
+    "types": ["@cardsgame/types"]
   }
 }
