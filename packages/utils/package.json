@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/utils",
-  "version": "0.1.2-alpha.0",
+  "version": "0.1.2",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
