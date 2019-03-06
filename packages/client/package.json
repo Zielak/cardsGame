@@ -7,25 +7,19 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
-    "lib",
-    "src"
+    "lib"
   ],
   "scripts": {
-    "build": "parcel build src/index.tsx -d lib --detailed-report",
-    "build:watch": "tsc -b src --watch",
+    "build": "webpack --env.production",
+    "build:dev": "webpack",
     "test": "jest"
   },
-  "dependencies": {
-    "colyseus.js": "^0.9.16",
-    "eventemitter3": "^3.1.0",
-    "pixi.js": "^4.8.6",
-    "react": "^16.8.3",
-    "react-dom": "^16.8.3"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@cardsgame/types": "file:../types",
     "@cardsgame/utils": "file:../utils",
-    "sass": "^1.17.2",
-    "typescript": "^3.3.3333"
+    "jest": "^24.1.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   }
 }

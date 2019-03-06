@@ -3,8 +3,9 @@
   "compilerOptions": {
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "lib": ["es6", "es2016"],
+    "module": "commonjs",
     "outDir": "../lib",
-    "types": ["@cardsgame/types", "bezier-js"]
+    "target": "esnext",
+    "types": ["@cardsgame/types", "bezier-js", "colyseus"]
   }
 }

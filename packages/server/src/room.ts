@@ -1,4 +1,4 @@
-import * as colyseus from "colyseus"
+import { Room as colRoom, Client } from "colyseus"
 import { logs } from "./logs"
 import { CommandsManager } from "./commandsManager"
 import { StartGame } from "./commands/startGame"
@@ -9,7 +9,7 @@ import { Player, ServerPlayerEvent } from "./player"
 import { ICondition } from "./condition"
 import { ICommandFactory } from "./command"
 
-export class Room<S extends State> extends colyseus.Room<S> {
+export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
 
   commandsManager: CommandsManager
@@ -106,7 +106,7 @@ export class Room<S extends State> extends colyseus.Room<S> {
     return true
   }
 
-  onJoin(client: colyseus.Client) {
+  onJoin(client: Client) {
     if (!this.state.isGameStarted) {
       this.addPlayer(client.id)
       this.state.emit(StateEvents.privatePropsSyncRequest, client.id)
@@ -116,7 +116,7 @@ export class Room<S extends State> extends colyseus.Room<S> {
     }
   }
 
-  onLeave(client: colyseus.Client, consented: boolean) {
+  onLeave(client: Client, consented: boolean) {
     if (consented) {
       this.removePlayer(client.id)
       logs.log("onLeave", `player "${client.id}" left permamently`)
@@ -125,7 +125,7 @@ export class Room<S extends State> extends colyseus.Room<S> {
     }
   }
 
-  onMessage(client: colyseus.Client, event: ServerPlayerEvent) {
+  onMessage(client: Client, event: ServerPlayerEvent) {
     if (event.data === "start" && !this.state.isGameStarted) {
       this.onStartGame(this.state)
       new StartGame().execute(this.state)
@@ -172,7 +172,7 @@ export class Room<S extends State> extends colyseus.Room<S> {
   /**
    * Check conditions and perform given action
    */
-  performAction(client: colyseus.Client, event: ServerPlayerEvent) {
+  performAction(client: Client, event: ServerPlayerEvent) {
     const actions = this.getActionsByInteraction(event).filter(action => {
       return this.isLegal(action.conditions, event)
     })

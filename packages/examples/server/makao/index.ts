@@ -72,8 +72,6 @@ export class MakaoRoom extends Room<MakaoState> {
   }
 
   onStartGame(state: MakaoState) {
-    // TODO: Deal cards maybe
-
     const playersHands = state.players
       .toArray()
       .map(data => data.entity)

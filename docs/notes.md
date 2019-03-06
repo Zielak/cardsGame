@@ -1,3 +1,10 @@
+# notes
+
+- ♥ kier - hearts
+- ♠ pik - spades
+- ♦ karo - diamonds
+- ♣ trefl - clubs
+
 # TODO
 
 [ ] - Merge ActionTemplate `interaction` and `conditions`...?

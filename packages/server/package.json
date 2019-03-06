@@ -10,18 +10,13 @@
     "lib"
   ],
   "scripts": {
-    "start": "nodemon -x ts-node --files server/app.ts",
     "build": "tsc -b src",
-    "build:watch": "tsc -b src --watch",
     "test": "jest"
-  },
-  "dependencies": {
-    "bezier-js": "^2.3.2",
-    "colyseus": "^0.9.33",
-    "eventemitter3": "^3.1.0"
   },
   "devDependencies": {
     "@cardsgame/types": "file:../types",
-    "@cardsgame/utils": "file:../utils"
+    "@cardsgame/utils": "file:../utils",
+    "jest": "^24.1.0",
+    "typescript": "^3.3.3333"
   }
 }

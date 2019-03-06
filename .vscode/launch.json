@@ -7,8 +7,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug project",
-      "args": ["${workspaceFolder}/server/app.ts"],
+      "name": "Debug example project",
+      "args": ["${workspaceFolder}/packages/examples/server/index.ts"],
       "runtimeArgs": ["-r", "${workspaceFolder}/scripts/ts-node.js"],
       "cwd": "${workspaceRoot}",
       "protocol": "inspector",

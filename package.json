@@ -20,23 +20,35 @@
       "git add"
     ]
   },
+  "dependencies": {
+    "colyseus": "^0.9.33"
+  },
   "devDependencies": {
     "@types/bezier-js": "0.0.8",
     "@types/jest": "^24.0.9",
     "@types/pixi.js": "^4.8.6",
-    "@types/react": "^16.8.5",
-    "@types/react-dom": "^16.8.2",
+    "bezier-js": "^2.3.2",
     "chalk": "^2.4.2",
+    "colyseus": "^0.9.33",
+    "colyseus.js": "^0.9.16",
+    "css-loader": "^2.1.0",
+    "eventemitter3": "^3.1.0",
     "husky": "^1.3.1",
     "jest": "^24.1.0",
     "lerna": "^3.13.1",
     "lint-staged": "^8.1.5",
-    "nodemon": "^1.18.10",
+    "node-sass": "^4.11.0",
     "parcel-bundler": "^1.11.0",
+    "pixi.js": "^4.8.6",
     "prettier": "^1.16.4",
     "sass": "^1.17.2",
+    "sass-loader": "^7.1.0",
+    "source-map-loader": "^0.2.4",
+    "style-loader": "^0.23.1",
     "ts-jest": "^24.0.0",
+    "ts-loader": "^5.3.3",
     "ts-node": "^8.0.2",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.3333",
+    "webpack-plugin-typescript-declaration-bundler": "^1.0.4"
   }
 }

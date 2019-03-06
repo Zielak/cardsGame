@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "esnext",
+    "types": [],
+    "outDir": "../dist/server"
+  }
+}
