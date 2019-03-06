@@ -1,5 +1,3 @@
-declare const SharedTypesON: boolean
-
 /**
  * Entity
  */
@@ -15,10 +13,5 @@ type PrivateAttributeChangeData = {
   owner?: string
   public: boolean
   attribute: string
-  value: any
-}
-
-type AttributeChangeData = {
-  name: string
   value: any
 }

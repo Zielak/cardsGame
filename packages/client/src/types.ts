@@ -44,3 +44,8 @@ export interface EntityData {
 export interface ClientEntityData extends EntityData {
   visibleToClient: boolean
 }
+
+export type AttributeChangeData = {
+  name: string
+  value: any
+}

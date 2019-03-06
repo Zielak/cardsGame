@@ -1,7 +1,7 @@
 import * as colyseus from "colyseus.js"
 import { EntityEvents, deg2rad } from "@cardsgame/utils"
 import { Container } from "pixi.js"
-import { ClientEntityData } from "../types"
+import { ClientEntityData, AttributeChangeData } from "../types"
 
 export class EntityView extends Container {
   isContainer: boolean = false

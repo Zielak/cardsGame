@@ -10,13 +10,13 @@ export const randomName = () => {
   return randomLetter() + randomLetter() + randomLetter()
 }
 
-export const camelCase = (str: string) =>
+export const camelCase = (str: string = "") =>
   str
     .replace(/\s(.)/g, $1 => $1.toUpperCase())
     .replace(/\s/g, "")
     .replace(/^(.)/, $1 => $1.toLowerCase())
 
-export const sentenceCase = (str: string) =>
+export const sentenceCase = (str: string = "") =>
   str
     .replace(/\s(.)/g, $1 => $1.toUpperCase())
     .replace(/^(.)/, $1 => $1.toUpperCase())
