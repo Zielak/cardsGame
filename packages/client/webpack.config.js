@@ -1,5 +1,7 @@
 const path = require("path")
 const DeclarationBundler = require("webpack-plugin-typescript-declaration-bundler")
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin
 
 module.exports = env => {
   if (env === undefined) {
@@ -28,6 +30,10 @@ module.exports = env => {
       new DeclarationBundler({
         moduleName: "@cardsgame/client",
         out: "index.d.ts"
+      }),
+      new BundleAnalyzerPlugin({
+        analyzerMode: "static",
+        openAnalyzer: false
       })
     ],
     resolve: {

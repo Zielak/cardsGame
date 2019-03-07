@@ -49,6 +49,7 @@
     "ts-loader": "^5.3.3",
     "ts-node": "^8.0.2",
     "typescript": "^3.3.3333",
+    "webpack-bundle-analyzer": "^3.1.0",
     "webpack-plugin-typescript-declaration-bundler": "^1.0.4"
   }
 }

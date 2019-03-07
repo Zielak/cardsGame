@@ -43,6 +43,10 @@ export class GamesList extends React.Component<GamesListProps, {}> {
   }
 
   scheduleFetchRooms() {
+    if (this.active) {
+      console.warn(`I'm aleady active!`)
+      return
+    }
     this.timerID = setTimeout(() => {
       if (!this.active) {
         return

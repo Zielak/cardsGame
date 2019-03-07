@@ -1,208 +1,64 @@
-import * as colyseus from "colyseus.js"
 import * as pixi from "pixi.js"
-import { EntityEvents } from "@cardsgame/utils"
-import { Room } from "./room"
-import { logs } from "./logs"
-import { entityFactory } from "./entities/factory"
-import { EntityView } from "./entities/entityView"
-import { ClientEntityData, ClientPlayerEvent } from "./types"
 import { EventEmitter } from "eventemitter3"
-
-const VIEW_WIDTH = 600
-const VIEW_HEIGHT = 600
+import { EntityView } from "./entities/entityView"
+import { logs } from "./logs"
 
 interface AppOptions {
   viewElement: HTMLElement
-  gameNames?: string[]
+  viewWidth: number
+  viewHeight: number
 }
 
-/**
- * Renderer
- * Get events from the game and put everything on the screen.
- * Provide an interface for the players: play area, settings and others
- */
 export class App extends EventEmitter {
-  client: colyseus.Client
-  app: pixi.Application
-  gameRoom: Room
-
-  gameNames: string[]
+  pixiApp: pixi.Application
   viewElement: HTMLElement
+  viewWidth: number
+  viewHeight: number
 
-  listAllRoomsInterval: NodeJS.Timeout
-
-  constructor({ gameNames, viewElement }: AppOptions) {
+  constructor({ viewElement, viewWidth, viewHeight }: AppOptions) {
     super()
-    this.gameNames = gameNames
+
     this.viewElement = viewElement
-
-    const host = window.document.location.hostname
-    const port = window.document.location.port ? ":" + 2657 : ""
-    this.client = new colyseus.Client("ws://" + host + port)
-
-    this.client.onOpen.add(() => {
-      logs.info("CLIENT open")
-
-      // Create renderer
-      this.app = new pixi.Application(VIEW_WIDTH, VIEW_HEIGHT, {
-        antialias: true,
-        backgroundColor: 0x1099bb,
-        resolution: window.devicePixelRatio,
-        autoResize: true
-      })
-      this.viewElement.appendChild(this.app.view)
-
-      // Offset the stage, so (0,0) is in the middle of screen
-      this.app.stage.x = VIEW_WIDTH / 2
-      this.app.stage.y = VIEW_HEIGHT / 2
-
-      const lowerFps = (() => {
-        if (!this.app) return
-        this.app.ticker.stop()
-        let lastTime = performance.now()
-        return setInterval(() => {
-          if (!this.app) {
-            clearInterval(lowerFps)
-            return
-          }
-          const now = performance.now()
-          this.app.ticker.update(now - lastTime)
-          lastTime = performance.now()
-        }, 1000 / 10)
-      })()
-
-      this.emit(App.events.clientOpen)
-    })
-
-    this.client.onClose.add(() => {
-      this.emit(App.events.clientClose)
-      this.destroy()
-    })
-
-    // Hot module replacement - there can be only one app on page plz
-    document.dispatchEvent(new Event("destroy"))
-    document.addEventListener("destroy", () => {
-      this.destroy()
-    })
+    this.viewWidth = viewWidth
+    this.viewHeight = viewHeight
   }
 
-  prepareRenderingApp() {
-    this.gameRoom.on(
-      EntityEvents.childRemoved,
-      (change: colyseus.DataChange) => {
-        const entity = this.getEntity(change.rawPath)
-        if (!entity) {
-          logs.error(
-            EntityEvents.childRemoved,
-            `wat, such entity doesn't exist?`,
-            change
-          )
-        }
-        const parent = entity.parent as EntityView
-        parent.emit(EntityEvents.childRemoved, change)
-        parent.removeChild(entity)
-        logs.notice(`> child.removed[${change.rawPath.join("/")}]`)
-        // logs.verbose('entity:', change.value)
-      }
+  create() {
+    this.pixiApp = new pixi.Application(this.viewWidth, this.viewHeight, {
+      antialias: true,
+      backgroundColor: 0x1099bb,
+      resolution: window.devicePixelRatio,
+      autoResize: true
+    })
+    this.viewElement.appendChild(this.pixiApp.view)
+
+    // Offset the stage, so (0,0) is in the middle of screen
+    this.pixiApp.stage.x = this.viewWidth / 2
+    this.pixiApp.stage.y = this.viewHeight / 2
+
+    this.pixiApp.stage.interactive = true
+
+    // Pass interaction up to the "Game"
+    this.pixiApp.stage.on("click", (event: pixi.interaction.InteractionEvent) =>
+      this.emit("click", event)
     )
-
-    this.gameRoom.on(EntityEvents.childAdded, (change: colyseus.DataChange) => {
-      const data = change.value as ClientEntityData
-      const newEntity = entityFactory(data)
-      if (!newEntity) {
-        logs.error(
-          "entityFactory",
-          `Failed to create "${data.type}" entity!`,
-          data
-        )
-      }
-      if (change.rawPath.slice(2).length > 1) {
-        const parent = this.getEntity(change.rawPath.slice(2, -2))
-        parent.addChild(newEntity)
-        parent.emit(EntityEvents.childAdded, change)
-      } else {
-        this.app.stage.addChild(newEntity)
-      }
-      logs.notice(
-        `> child.added ${change.value.type} [${change.rawPath.join("/")}]`
-      )
-      // logs.verbose('entity:', change.value)
-    })
-
-    const publicAttributes = [
-      // Basic things
-      "x",
-      "y",
-      "angle",
-      // ClassicCards stuff
-      "faceUp",
-      "marked",
-      "rotated"
-    ]
-    const privateAttributes = [
-      "visibleToClient",
-      "selected",
-      "suit",
-      "rank",
-      "name"
-    ]
-
-    publicAttributes.forEach(propName => {
-      this.gameRoom.on(
-        `child.attribute.${propName}`,
-        (change: colyseus.DataChange) => {
-          this.getEntity(change.rawPath).emit("attributeChanged", {
-            name: change.path.attribute,
-            value: change.value
-          })
-        }
-      )
-    })
-    privateAttributes.forEach(propName => {
-      this.gameRoom.on(
-        `visibility.${propName}`,
-        (change: colyseus.DataChange) => {
-          logs.verbose(`> visibility.${propName}`, change)
-          this.getEntity(change.rawPath).emit("attributeChanged", {
-            name: change.path.attribute,
-            value: change.value
-          })
-        }
-      )
-    })
-
-    // -------
-
-    this.app.stage.interactive = true
-    this.app.stage.on("click", (event: pixi.interaction.InteractionEvent) => {
-      const targetEntity = event.target as EntityView
-      logs.info("Table got clicked", targetEntity)
-
-      const playerEvent: ClientPlayerEvent = {
-        type: event.type,
-        targetPath: targetEntity.idxPath
-        // additional/optional data
-        // data?: any
-      }
-      this.gameRoom.send(playerEvent)
-    })
   }
 
-  joinRoom(gameName: string) {
-    const gameRoom = this.client.join(gameName)
-    this.gameRoom = new Room(gameRoom)
-    this.prepareRenderingApp()
-  }
-
-  getAvailableRooms(gameName: string) {
-    return new Promise((resolve, reject) => {
-      this.client.getAvailableRooms(gameName, (rooms, err) => {
-        if (err) {
-          reject(err)
+  setLowerFPS() {
+    const lowerFps = (() => {
+      if (!this.pixiApp) return
+      this.pixiApp.ticker.stop()
+      let lastTime = performance.now()
+      return setInterval(() => {
+        if (!this.pixiApp) {
+          clearInterval(lowerFps)
+          return
         }
-        resolve(rooms)
-      })
-    })
+        const now = performance.now()
+        this.pixiApp.ticker.update(now - lastTime)
+        lastTime = performance.now()
+      }, 1000 / 10)
+    })()
   }
 
   /**
@@ -242,27 +98,16 @@ export class App extends EventEmitter {
       return arr
     }, [])
 
-    return travel(pathOfIDs, this.app.stage as EntityView)
+    return travel(pathOfIDs, this.pixiApp.stage as EntityView)
+  }
+
+  addChild(entity: EntityView) {
+    this.pixiApp.stage.addChild(entity)
   }
 
   destroy() {
-    this.client.close()
-
-    if (this.app) {
-      this.app.destroy()
-      this.app = null
-    }
-    this.viewElement.innerHTML = ""
-
-    if (this.gameRoom) {
-      this.gameRoom.destroy()
-      this.gameRoom = null
-    }
-  }
-
-  static events = {
-    clientOpen: Symbol("clientOpen"),
-    clientClose: Symbol("clientClose")
-    // clientOpen: Symbol("clientOpen")
+    this.pixiApp.destroy()
+    this.viewElement.parentElement.removeChild(this.viewElement)
+    this.viewElement = undefined
   }
 }

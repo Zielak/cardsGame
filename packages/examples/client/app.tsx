@@ -1,22 +1,22 @@
-import { App } from "@cardsgame/client"
+import { Game } from "@cardsgame/client"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { GamesList } from "./components/gamesList"
 
-const app = new App({
+const game = new Game({
   viewElement: document.getElementById("view"),
   gameNames: ["Makao", "ContainerTest"]
 })
 
-app.on(App.events.clientOpen, () => {
+game.on(Game.events.clientOpen, () => {
   const element = (
     <GamesList
-      getAvailableRooms={gameName => app.getAvailableRooms(gameName)}
-      joinRoom={gameName => app.joinRoom(gameName)}
-      gameNames={app.gameNames}
+      getAvailableRooms={gameName => game.getAvailableRooms(gameName)}
+      joinRoom={gameName => game.joinRoom(gameName)}
+      gameNames={game.gameNames}
     />
   )
   ReactDOM.render(element, document.getElementById("gamesList"))
 })
 
-window["game"] = app
+window["game"] = game
