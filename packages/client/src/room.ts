@@ -2,6 +2,7 @@ import * as colyseus from "colyseus.js"
 import { EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
 import { EntityEvents } from "@cardsgame/utils"
+import { EntityData } from "./types"
 
 export class Room extends EventEmitter {
   childrenListeners = []
@@ -14,6 +15,7 @@ export class Room extends EventEmitter {
 
     room.onStateChange.addOnce(state => {
       logs.notice("ROOM, this is the first room state!", state)
+      this.emit(Room.events.stateChange, state)
     })
     room.onStateChange.add(state => {
       logs.notice("ROOM, state been updated:", state)
@@ -27,7 +29,10 @@ export class Room extends EventEmitter {
         }
         return value
       }
+      // TODO: html rendering is not Room's responsibility
       this.stateView.innerHTML = JSON.stringify(state, replacer, "  ")
+
+      this.emit(Room.events.stateChange, state)
     })
     room.onMessage.add(message => {
       if (message.event && message.data) {
@@ -55,30 +60,42 @@ export class Room extends EventEmitter {
         // Any other silly type of message:
         logs.verbose("server just sent this message:", message)
       }
+      this.emit(Room.events.message, message)
     })
     room.onJoin.add(() => {
       logs.notice("client joined successfully")
+      this.emit(Room.events.join)
     })
-    room.onLeave.add(() => {
-      logs.notice("client left the room")
+    room.onLeave.add(data => {
+      logs.notice("client left the room", data)
+      this.emit(Room.events.leave, data)
     })
     room.onError.add(err => {
       logs.error("oops, error ocurred:", err)
+      this.emit(Room.events.error, err)
     })
 
-    this.gameStateListeners()
     this.entitiesListeners()
+    this.gameStateListeners()
   }
 
   gameStateListeners() {
+    this.room.listen("clients/:idx", (change: colyseus.DataChange) => {
+      if (change.operation === "add") {
+        logs.notice("new client joined", change)
+        this.emit(Room.events.clientJoined, change.value)
+      } else if (change.operation === "remove") {
+        logs.notice("client left", change)
+        this.emit(Room.events.clientLeft, change.value)
+      }
+    })
     this.room.listen("players/:idx", (change: colyseus.DataChange) => {
       if (change.operation === "add") {
-        logs.notice("new player added to the state")
-        logs.verbose("player id:", change.path.idx)
-        logs.verbose("player data:", change.value)
+        logs.notice("player created", change)
+        this.emit(Room.events.playerAdded, change.value)
       } else if (change.operation === "remove") {
-        logs.notice("player has been removed from the state")
-        logs.verbose("player id:", change.path.idx)
+        logs.notice("player removed", change)
+        this.emit(Room.events.playerRemoved, change.value)
       }
     })
   }
@@ -139,4 +156,21 @@ export class Room extends EventEmitter {
     this.room.removeAllListeners()
     this.room.leave()
   }
+
+  static events = {
+    stateChange: Symbol("stateChange"),
+    message: Symbol("message"),
+    join: Symbol("join"),
+    leave: Symbol("leave"),
+    error: Symbol("error"),
+    clientJoined: Symbol("clientJoined"),
+    clientLeft: Symbol("clientLeft"),
+    playerAdded: Symbol("playerAdded"),
+    playerRemoved: Symbol("playerRemoved")
+  }
+}
+
+export type PlayerData = {
+  clientID: string
+  entity: EntityData
 }

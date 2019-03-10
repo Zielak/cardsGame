@@ -7,7 +7,17 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug example project",
+      "name": "Nodemon build example server",
+      "runtimeExecutable": "nodemon",
+      "program": "${workspaceFolder}/packages/examples/dist/server/index.js",
+      "restart": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "-- old -- Debug example project",
       "args": ["${workspaceFolder}/packages/examples/server/index.ts"],
       "runtimeArgs": ["-r", "${workspaceFolder}/scripts/ts-node.js"],
       "cwd": "${workspaceRoot}",

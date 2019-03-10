@@ -15,6 +15,7 @@ export class State extends EventEmitter {
   entities: Entity
 
   players = new EntityMap<PlayerData>()
+  clients = new EntityMap<string>()
   currentPlayerIdx: number
   get currentPlayer(): PlayerData {
     return this.players[this.currentPlayerIdx]
@@ -51,30 +52,6 @@ export class State extends EventEmitter {
       logs.info("State.privatePropsSyncRequest")
       this.entities.emit(StateEvents.privatePropsSyncRequest, client)
     })
-  }
-
-  /**
-   * FIXME: that should be client-side code...
-   * Player playing the game needs to have his cards visible
-   * at HIS pottom of the screen...
-   */
-  private updatePlayers() {
-    this.entities.childrenArray
-      .filter((entity: Entity) => entity.type === "player")
-      .forEach((player: Player, idx: number, players: Player[]) => {
-        const angle = ((Math.PI * 2) / players.length) * idx
-        const point = {
-          x: Math.sin(angle) * (this.tableWidth * 0.4),
-          y: Math.cos(angle) * (this.tableHeight * 0.4)
-        }
-        player.angle = -rad2deg(angle)
-        player.x = point.x
-        player.y = point.y
-        logs.log(
-          "updatePlayers",
-          `player[${idx}] angle: ${angle}, point: (${point.x}, ${point.y})`
-        )
-      })
   }
 
   /**

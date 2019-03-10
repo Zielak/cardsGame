@@ -60,24 +60,7 @@ export class Room<S extends State> extends colRoom<S> {
     )
   }
 
-  addPlayer(clientID: string) {
-    const entity = new Player({
-      state: this.state,
-      clientID: clientID,
-      parent: this.state.entities.id
-    })
-
-    // const idx = this.entities.children.add(newPlayer)
-    // newPlayer.idx = idx
-
-    this.state.players.add({ clientID, entity })
-
-    this.onPlayerAdded(clientID, entity)
-
-    // this.updatePlayers()
-    this.state.logTreeState()
-  }
-
+  // I don't think I even need to call this function
   removePlayer(clientID: string) {
     // TODO: What about all player's cards and stuff?
     // I want those cards back, or be discarded, or put back into deck?
@@ -103,32 +86,35 @@ export class Room<S extends State> extends colRoom<S> {
   requestJoin(options: any, isRoomNew?: boolean): boolean | number {
     // TODO: private rooms?
     // TODO: reject on maxClients reached?
+    // TODO: this.state.isGameStarted
     return true
   }
 
-  onJoin(client: Client) {
-    if (!this.state.isGameStarted) {
-      this.addPlayer(client.id)
-      this.state.emit(StateEvents.privatePropsSyncRequest, client.id)
-      logs.log("onJoin", `player "${client.id}" joined`)
-    } else {
-      logs.info("onJoin", "player joined, but game already started")
+  onJoin(newClient: Client) {
+    // If not on the list already
+    if (
+      this.state.clients.toArray().every(clientID => newClient.id !== clientID)
+    ) {
+      this.state.clients.add(newClient.id)
     }
+
+    this.state.emit(StateEvents.privatePropsSyncRequest, newClient.id)
+    logs.log("onJoin", `client "${newClient.id}" joined`)
   }
 
   onLeave(client: Client, consented: boolean) {
     if (consented) {
-      this.removePlayer(client.id)
-      logs.log("onLeave", `player "${client.id}" left permamently`)
+      this.state.clients.remove(client.id)
+      logs.log("onLeave", `client "${client.id}" left permamently`)
     } else {
-      logs.log("onLeave", `player "${client.id}" disconnected, might be back`)
+      logs.log("onLeave", `client "${client.id}" disconnected, might be back`)
     }
   }
 
   onMessage(client: Client, event: ServerPlayerEvent) {
     if (event.data === "start" && !this.state.isGameStarted) {
-      this.onStartGame(this.state)
       new StartGame().execute(this.state)
+      this.onStartGame(this.state)
       return
     } else if (event.data === "start" && this.state.isGameStarted) {
       logs.log("onMessage", `Game is already started, ignoring...`)
@@ -317,9 +303,15 @@ export class Room<S extends State> extends colRoom<S> {
     logs.error("Room", `onStartGame is not implemented!`)
   }
 
+  /**
+   * @deprecated
+   */
   onPlayerAdded(clientID: string, entity: Entity) {
     logs.info("Room", `onPlayerAdded is not implemented.`)
   }
+  /**
+   * @deprecated
+   */
   onPlayerRemoved(clientID: string) {
     logs.info("Room", `onPlayerRemoved is not implemented.`)
   }
