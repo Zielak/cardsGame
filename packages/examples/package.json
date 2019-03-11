@@ -16,13 +16,13 @@
     "server": "npm run build:server && nodemon dist/server/index.js --watch server",
     "server:ts": "nodemon -x ts-node --project server/tsconfig.json --files server/index.ts --watch server",
     "build": "npm run build:client && npm run build:server",
-    "build:client": "rm -rf dist/client/* && parcel build client/index.html --out-dir dist/client",
+    "build:client": "parcel build client/index.html --out-dir dist/client",
     "build:server": "tsc -b server"
   },
   "dependencies": {
-    "@cardsgame/client": "file:../client",
-    "@cardsgame/server": "file:../server",
-    "@cardsgame/types": "file:../types",
+    "@cardsgame/client": "^0.1.1",
+    "@cardsgame/server": "^0.1.1",
+    "@cardsgame/types": "^0.1.1",
     "react": "^16.8.3",
     "react-dom": "^16.8.3"
   },
@@ -31,6 +31,7 @@
     "@types/react-dom": "^16.8.2",
     "nodemon": "^1.18.10",
     "parcel-bundler": "^1.11.0",
+    "parcel-plugin-clean-dist": "0.0.6",
     "ts-node": "^8.0.2",
     "typescript": "^3.3.3333"
   }
