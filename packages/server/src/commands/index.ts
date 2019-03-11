@@ -1,4 +1,4 @@
-export { ChangeParent } from "./changeParent"
+export { Move as ChangeParent } from "./move"
 export { DealCards } from "./dealCards"
 export { FlipCard } from "./flipCard"
 export { HideCard } from "./hideCard"

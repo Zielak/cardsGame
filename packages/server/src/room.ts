@@ -191,19 +191,24 @@ export class Room<S extends State> extends colRoom<S> {
       return
     }
 
-    const result = this.commandsManager.orderExecution(
-      actions[0].commandFactory,
-      this.state,
-      event
-    )
-    if (result) {
-      console.info(`Action completed.`)
-    } else {
-      this.broadcast({
-        event: "game.error",
-        data: `Client "${client.id}" failed to perform action.`
+    this.commandsManager
+      .orderExecution(actions[0].commandFactory, this.state, event)
+      .then(result => {
+        if (!result) {
+          this.broadcast({
+            event: "game.error",
+            data: `Client "${client.id}" failed to perform action.`
+          })
+        } else {
+          console.info(`Action completed.`)
+        }
       })
-    }
+      .catch(error => {
+        this.broadcast({
+          event: "game.error",
+          data: `Game broke!, ${error}`
+        })
+      })
   }
 
   /**
@@ -301,19 +306,6 @@ export class Room<S extends State> extends colRoom<S> {
    */
   onStartGame(state: State) {
     logs.error("Room", `onStartGame is not implemented!`)
-  }
-
-  /**
-   * @deprecated
-   */
-  onPlayerAdded(clientID: string, entity: Entity) {
-    logs.info("Room", `onPlayerAdded is not implemented.`)
-  }
-  /**
-   * @deprecated
-   */
-  onPlayerRemoved(clientID: string) {
-    logs.info("Room", `onPlayerRemoved is not implemented.`)
   }
 }
 

@@ -195,7 +195,8 @@ export const PlayNormalCards: ActionTemplate = {
     logs.log("PlayNormalCard")
     return [
       new cmd.ClearSelection(event.player),
-      new cmd.ChangeParent(cards, source, target),
+      new cmd.ChangeParent(cards[0], source, target),
+      ,
       // TODO: let player choose the order of the rest
       new cmd.ShowCard(cards),
       new cmd.NextPlayer()

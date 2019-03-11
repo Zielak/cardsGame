@@ -88,6 +88,19 @@ export class MakaoRoom extends Room<MakaoState> {
           })
       )
 
+    // Temp container for picking/ordering cards.
+    state.players
+      .toArray()
+      .map(data => data.entity)
+      .forEach((player: Player) => {
+        new Row({
+          state,
+          y: -60,
+          name: "orderingRowOf" + player.clientID,
+          parent: player.id
+        })
+      })
+
     new commands.ShuffleChildren(this.deck).execute(state)
     new commands.DealCards(this.deck, playersHands, 5).execute(state)
     new commands.ChangeParent(this.deck.top, this.deck, this.pile).execute(
@@ -97,13 +110,5 @@ export class MakaoRoom extends Room<MakaoState> {
 
     logs.info("Final state")
     state.logTreeState()
-  }
-
-  onPlayerAdded(clientID, entity) {
-    this.state.turnSkips[clientID] = 0
-  }
-
-  onPlayerRemoved(clientID) {
-    delete this.state.turnSkips[clientID]
   }
 }
