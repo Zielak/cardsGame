@@ -6,6 +6,7 @@ import {
   Hand,
   Pile,
   Deck,
+  Row,
   ClassicCard,
   standardDeck,
   commands,
@@ -72,6 +73,9 @@ export class MakaoRoom extends Room<MakaoState> {
   }
 
   onStartGame(state: MakaoState) {
+    state.players.toArray().forEach(pd => (state.turnSkips[pd.clientID] = 0))
+
+    // Hands of each player
     const playersHands = state.players
       .toArray()
       .map(data => data.entity)
