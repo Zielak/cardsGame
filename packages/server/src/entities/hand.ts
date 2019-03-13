@@ -1,12 +1,7 @@
-// const Bezier = require("bezier-js") as typeof BezierJs.Bezier
 import Bezier from "bezier-js"
-import { Entity } from "../entity"
 import { Container } from "./container"
+import { Entity } from "../entity"
 
-/**
- * TODO: Should ensure that none of the cards in hand
- * are visible to other players
- */
 export class Hand extends Container {
   type = "hand"
 

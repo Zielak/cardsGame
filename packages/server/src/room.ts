@@ -6,8 +6,7 @@ import { State } from "./state"
 import { Entity } from "./entity"
 import { EntityEvents, StateEvents } from "@cardsgame/utils"
 import { Player, ServerPlayerEvent } from "./player"
-import { ICondition } from "./condition"
-import { ActionsSet, ActionTemplate } from "./actionTemplate"
+import { ActionsSet } from "./actionTemplate"
 
 export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
@@ -25,7 +24,7 @@ export class Room<S extends State> extends colRoom<S> {
         hostID: options.hostID
       })
     )
-    this.commandsManager = new CommandsManager()
+    this.commandsManager = new CommandsManager(this.possibleActions)
 
     this.setupPrivatePropsSync()
     this.onSetupGame(this.state)
@@ -152,140 +151,11 @@ export class Room<S extends State> extends colRoom<S> {
         )
       )
     )
-    this.performAction(client, event)
-  }
-
-  /**
-   * Check conditions and perform given action
-   */
-  performAction(client: Client, event: ServerPlayerEvent) {
-    const actions = this.getActionsByInteraction(event).filter(action =>
-      this.isLegal(action.getConditions(this.state), event)
-    )
-
-    const logActions = actions.map(el => el.name)
-    logs.info(
-      "performAction",
-      `only ${actions.length} filtered by conditions:`,
-      logActions
-    )
-
-    if (actions.length > 1) {
-      logs.warn(
-        "performAction",
-        `Whoops, even after filtering actions by conditions, I still have ${
-          actions.length
-        } actions!`
-      )
-      // log(actions)
-    }
-
-    if (actions.length === 0) {
-      logs.info("performAction", `no actions, ignoring.`)
-      this.broadcast({
-        event: "game.info",
-        data: `Client ${client.id}: No actions found for that ${
-          event.type
-        }, ignoring...`
-      })
-      return
-    }
 
     this.commandsManager
-      .orderExecution(actions[0].getCommands, this.state, event)
-      .then(result => {
-        if (!result) {
-          this.broadcast({
-            event: "game.error",
-            data: `Client "${client.id}" failed to perform action.`
-          })
-        } else {
-          console.info(`Action completed.`)
-        }
-      })
-      .catch(error => {
-        this.broadcast({
-          event: "game.error",
-          data: `Game broke!, ${error}`
-        })
-      })
-  }
-
-  /**
-   * Gets you a list of all possible game actions
-   * that match with player's interaction
-   */
-  getActionsByInteraction(event: ServerPlayerEvent): ActionTemplate[] {
-    const possibleEntityProps = ["name", "type", "value", "rank", "suit"]
-
-    const actions = Array.from(this.possibleActions.values()).filter(
-      template => {
-        // All interactions defined in the template by game author
-        const interactions = template.getInteractions(this.state)
-
-        // TODO: REFACTOR
-        // You just introduced event.targets, is an array of all child-parent
-        // from the top-most entity down to the thing that was actually clicked.
-        /**
-         * * there can be many sets of interactions
-         * * an interaction signature may point to elements by set of properties
-         * 		['name', 'rank', 'type'...]
-         * * FIXME: client may click on nth card in pile, but is required to interact with TOP card only.
-         *   - this doesn't work
-         *
-         * get reversed targets array (from target to its parents)
-         * for each interaction (or one)
-         * 	for each reversedTargets ->
-         * 		chek all its props
-         */
-
-        /**
-         * For every possible prop, check if its defined in this action.
-         * If so, push it to checkProp()
-         */
-        const entityMatchesInteraction = (
-          target: Entity,
-          interaction: InteractionDefinition
-        ) => {
-          return possibleEntityProps.every((prop: string) => {
-            if (interaction[prop]) {
-              if (Array.isArray(interaction[prop])) {
-                return interaction[prop].some(value => value === target[prop])
-              } else if (target[prop] !== interaction[prop]) {
-                return false
-              }
-            }
-            // Prop either matches or was not defined in interaction/desired
-            return true
-          })
-        }
-
-        return event.targets
-          .filter(target => target.interactive)
-          .some(target =>
-            interactions.some(int => entityMatchesInteraction(target, int))
-          )
-      }
-    )
-
-    const logActions = actions.map(el => el.name)
-    logs.info(
-      "performAction",
-      `${actions.length} actions by this interaction:`,
-      logActions
-    )
-
-    return actions
-  }
-
-  /**
-   * Checks all attatched conditions (if any) to see if this action is legal
-   */
-  isLegal(conditions: ICondition[], event: ServerPlayerEvent): boolean {
-    if (conditions === undefined || conditions.length === 0) {
-      return true
-    }
-    return conditions.every(condition => condition(this.state, event))
+      .action(this.state, client, event)
+      .then(data => logs.log(`action() completed`, data))
+      .catch(error => logs.error(`action() failed`, error))
   }
 
   /**
@@ -307,11 +177,15 @@ export class Room<S extends State> extends colRoom<S> {
   }
 }
 
-export type InteractionDefinition = {
-  eventType?: string
+export type EntityProps = {
   name?: string | string[]
   type?: string | string[]
   value?: number | number[]
   rank?: string | string[]
   suit?: string | string[]
+  parent?: EntityProps
+}
+
+export type InteractionDefinition = EntityProps & {
+  eventType?: string
 }

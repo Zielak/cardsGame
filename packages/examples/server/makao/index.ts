@@ -38,7 +38,7 @@ export class MakaoRoom extends Room<MakaoState> {
     PlayNormalCards
   ])
 
-  // Some aliases for main game containers
+  // Some references for main game containers
   pile: Pile
   deck: Deck
 
@@ -75,6 +75,19 @@ export class MakaoRoom extends Room<MakaoState> {
   onStartGame(state: MakaoState) {
     state.players.toArray().forEach(pd => (state.turnSkips[pd.clientID] = 0))
 
+    // Temp container for picking/ordering cards.
+    state.players
+      .toArray()
+      .map(data => data.entity)
+      .forEach((player: Player) => {
+        new Hand({
+          state,
+          y: -80,
+          name: "chosenCards",
+          parent: player.id
+        })
+      })
+
     // Hands of each player
     const playersHands = state.players
       .toArray()
@@ -83,23 +96,10 @@ export class MakaoRoom extends Room<MakaoState> {
         (player: Player) =>
           new Hand({
             state,
-            name: "handOf" + player.clientID,
+            name: "playersHand",
             parent: player.id
           })
       )
-
-    // Temp container for picking/ordering cards.
-    state.players
-      .toArray()
-      .map(data => data.entity)
-      .forEach((player: Player) => {
-        new Row({
-          state,
-          y: -60,
-          name: "orderingRowOf" + player.clientID,
-          parent: player.id
-        })
-      })
 
     new commands.ShuffleChildren(this.deck).execute(state)
     new commands.DealCards(this.deck, playersHands, 5).execute(state)

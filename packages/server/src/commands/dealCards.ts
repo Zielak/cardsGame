@@ -1,9 +1,9 @@
 import { State } from "../state"
 import { Entity } from "../entity"
 import { Card } from "../entities/card"
-import { Move } from "./move"
 import { logs } from "../logs"
 import { ICommand } from "../command"
+import { ChangeParent } from "./changeParent"
 
 export class DealCards implements ICommand {
   targets: Entity[]
@@ -34,7 +34,7 @@ export class DealCards implements ICommand {
       const currentTarget = this.targets[i % this.targets.length]
 
       // This command thing moves the entity
-      new Move(card, this.source, currentTarget).execute(state)
+      new ChangeParent(card, this.source, currentTarget).execute(state)
 
       i++
       if (this.source.length > 0 && i < maxDeals) {

@@ -3,13 +3,15 @@ import { ICondition } from "../condition"
 import { ServerPlayerEvent } from "../player"
 
 export * from "./isPlayersTurn"
-export * from "./matchesRank"
-export * from "./matchesSuit"
+export * from "./matchesRankWithPile"
+export * from "./matchesSuitWithPile"
 export * from "./targetsNameIs"
 export * from "./isOwner"
 export * from "./isSelected"
 export * from "./hasAtLeastXEntitiesSelected"
 export * from "./matchesSelectedWith"
+export * from "./matchesPropWith"
+export * from "./parentIs"
 export { default as selectedEntities } from "./selectedEntities"
 
 export const OR = (...conditions: ICondition[]): ICondition => {

@@ -11,8 +11,9 @@ export type ICommandFactory = (
 
 export type ActionTemplate = {
   name: string
+  parallel?: boolean
   getInteractions(state: State): InteractionDefinition[]
-  getConditions(state: State): ICondition[]
+  getConditions(state: State, event?: ServerPlayerEvent): ICondition[]
   getCommands: ICommandFactory
 }
 

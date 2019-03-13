@@ -6,17 +6,19 @@ import { PlayerView } from "./playerView"
 import { HandView } from "./handView"
 import { ContainerView } from "./containerView"
 import { ClientEntityData } from "../types"
+import { RowView } from "./rowView"
 
 export const entityFactory = (data: ClientEntityData) => {
   const factories: {
     [key: string]: typeof EntityView
   } = {
-    player: PlayerView,
     classicCard: ClassicCardView,
+    container: ContainerView,
     deck: DeckView,
     hand: HandView,
     pile: PileView,
-    container: ContainerView
+    player: PlayerView,
+    row: RowView
   }
   return factories[data.type]
     ? new factories[data.type](data)
