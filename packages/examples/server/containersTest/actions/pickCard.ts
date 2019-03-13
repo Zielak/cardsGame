@@ -12,11 +12,13 @@ import { ChangeCardPickedState } from "../commands/changeCardPickedState"
 
 export const PickCard: ActionTemplate = {
   name: "PickCard",
-  interaction: {
-    type: ["classicCard", "deck", "pile"]
-  },
-  conditions: [con.NOT(isCardPicked)],
-  commandFactory: (state: State, event: ServerPlayerEvent) => {
+  getInteractions: () => [
+    {
+      type: ["classicCard", "deck", "pile"]
+    }
+  ],
+  getConditions: () => [con.NOT(isCardPicked)],
+  getCommands: (state: State, event: ServerPlayerEvent) => {
     const targetEntity = event.target.isContainer
       ? event.target.top
       : event.target

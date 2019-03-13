@@ -37,9 +37,7 @@ export class ChangeParent implements ICommand {
       this.target
     )
 
-    this.entities.forEach(entity => {
-      this.target.addChild(entity)
-    })
+    this.entities.forEach(entity => this.target.addChild(entity))
 
     logs.log("┕━" + _, `done`)
     // state.logTreeState()

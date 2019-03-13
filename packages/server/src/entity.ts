@@ -39,6 +39,7 @@ export class Entity extends EventEmitter {
   isContainer = false
   type: string
   name: string
+
   @condvis
   selected: boolean
 

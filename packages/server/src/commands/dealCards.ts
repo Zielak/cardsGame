@@ -1,9 +1,9 @@
 import { State } from "../state"
 import { Entity } from "../entity"
 import { Card } from "../entities/card"
-import { ChangeParent } from "./changeParent"
 import { logs } from "../logs"
 import { ICommand } from "../command"
+import { ChangeParent } from "./changeParent"
 
 export class DealCards implements ICommand {
   targets: Entity[]

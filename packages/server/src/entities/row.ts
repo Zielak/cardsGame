@@ -1,6 +1,6 @@
+import { def } from "@cardsgame/utils"
 import { Container } from "./container"
 import { Entity, IEntityOptions } from "../entity"
-import { def } from "@cardsgame/utils"
 
 export class Row extends Container {
   type = "row"
@@ -10,6 +10,7 @@ export class Row extends Container {
     this.width = def(options.width, 30)
   }
 
+  // TODO: test it
   restyleChild(child: Entity, idx: number, children: Entity[]) {
     const MAX = children.length
     const INTERVAL = Math.min(this.width / MAX, child.width)

@@ -4,7 +4,7 @@ import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 import { ClassicCard } from "../entities"
 
-export const matchesRank: ICondition = (
+export const matchesRankWithPile: ICondition = (
   state: State,
   event: ServerPlayerEvent
 ): boolean => {
@@ -14,7 +14,7 @@ export const matchesRank: ICondition = (
     return true
   }
   logs.warn(
-    "matchesRank",
+    "matchesRankWithPile",
     `pile.top "${pileTop.rank}" !== cards rank "${chosenCard.rank}"`
   )
   return false

@@ -29,43 +29,46 @@ const isNonFunctional = (card: ClassicCard) => {
   return matchType && (nonFunCard || nonFunKing)
 }
 
-export const selectedAreNonFunctional: ICondition = (
+export const chosenAreNonFunctional: ICondition = (
   _,
   event: ServerPlayerEvent
 ) => {
-  const selected = event.player.selectedEntities as ClassicCard[]
-  return selected.every(isNonFunctional)
+  const chosen = event.player.findByName("chosenCards")
+    .childrenArray as ClassicCard[]
+  return chosen.every(isNonFunctional)
 }
 
-export const selectedMatchRank: ICondition = (
+export const chosenMatchRank: ICondition = (
   state: MakaoState,
   event: ServerPlayerEvent
 ) => {
   const pileTop = state.entities.findByName("mainPile").top as ClassicCard
-  const selectedRank = (event.player.selectedEntities[0] as ClassicCard).rank
-  if (selectedRank === pileTop.rank) {
+  const chosenRank = (event.player.findByName("chosenCards")
+    .childrenArray[0] as ClassicCard).rank
+  if (chosenRank === pileTop.rank) {
     return true
   } else {
     logs.warn(
-      "selectedMatchRank",
-      `pile.top "${pileTop.rank}" !== cards rank "${selectedRank}"`
+      "chosenMatchRank",
+      `pile.top "${pileTop.rank}" !== cards rank "${chosenRank}"`
     )
     return false
   }
 }
 
-export const selectedMatchSuit: ICondition = (
+export const chosenMatchSuit: ICondition = (
   state: MakaoState,
   event: ServerPlayerEvent
 ) => {
   const pileTop = state.entities.findByName("mainPile").top as ClassicCard
-  const selectedSuit = (event.player.selectedEntities[0] as ClassicCard).suit
-  if (selectedSuit === pileTop.suit) {
+  const chosenSuit = (event.player.findByName("chosenCards")
+    .childrenArray[0] as ClassicCard).suit
+  if (chosenSuit === pileTop.suit) {
     return true
   } else {
     logs.warn(
-      "selectedMatchSuit",
-      `pile.top "${pileTop.suit}" !== cards rank "${selectedSuit}"`
+      "chosenMatchSuit",
+      `pile.top "${pileTop.suit}" !== cards rank "${chosenSuit}"`
     )
     return false
   }
