@@ -2,7 +2,7 @@ export { Server } from "colyseus"
 
 export * from "./entities"
 
-export { ICommand, ICommandFactory } from "./command"
+export * from "./command"
 
 import * as commands from "./commands"
 export { commands }
@@ -13,6 +13,7 @@ export { conditions }
 
 export * from "./transform"
 
+export * from "./actionTemplate"
 export * from "./entity"
 export * from "./entityMap"
 export * from "./player"

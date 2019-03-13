@@ -1,5 +1,4 @@
 import {
-  ActionTemplate,
   conditions as con,
   commands as cmd,
   ServerPlayerEvent,
@@ -7,7 +6,8 @@ import {
   Card,
   ClassicCard,
   Deck,
-  logs
+  logs,
+  ActionTemplate
 } from "@cardsgame/server"
 
 import { MakaoState } from "./state"
@@ -25,27 +25,31 @@ import {
 
 export const SelectCard: ActionTemplate = {
   name: "SelectCard",
-  interaction: {
-    type: "classicCard"
-  },
-  conditions: [
+  getInteractions: () => [
+    {
+      type: "classicCard"
+    }
+  ],
+  getConditions: () => [
     con.isOwner,
     con.isPlayersTurn,
     con.NOT(con.isSelected),
     con.matchesSelectedWith("rank")
   ],
-  commandFactory: (state: State, event: ServerPlayerEvent) => {
+  getCommands: (state: State, event: ServerPlayerEvent) => {
     return new cmd.SelectEntity(event.player, event.target, true)
   }
 }
 
 export const DeselectCard: ActionTemplate = {
   name: "DeselectCard",
-  interaction: {
-    type: "classicCard"
-  },
-  conditions: [con.isOwner, con.isPlayersTurn, con.isSelected],
-  commandFactory: (state: MakaoState, event: ServerPlayerEvent) => {
+  getInteractions: () => [
+    {
+      type: "classicCard"
+    }
+  ],
+  getConditions: () => [con.isOwner, con.isPlayersTurn, con.isSelected],
+  getCommands: (state: MakaoState, event: ServerPlayerEvent) => {
     const selected = event.target as ClassicCard
     const isSelected = event.player.isEntitySelected(selected)
 
@@ -61,15 +65,17 @@ export const DeselectCard: ActionTemplate = {
 
 export const Atack23: ActionTemplate = {
   name: "Atack23",
-  interaction: {
-    type: "pile"
-  },
-  conditions: [
+  getInteractions: () => [
+    {
+      type: "pile"
+    }
+  ],
+  getConditions: () => [
     con.isPlayersTurn,
     con.isOwner,
     con.OR(con.matchesSuit, con.matchesRank)
   ],
-  commandFactory: (state: State, event: ServerPlayerEvent) => {
+  getCommands: (state: State, event: ServerPlayerEvent) => {
     const card = event.target as ClassicCard
     const source = event.target.parentEntity
     const target = state.entities.findByName("mainPile")
@@ -86,17 +92,19 @@ export const Atack23: ActionTemplate = {
 
 export const AtackKing: ActionTemplate = {
   name: "AtackKing",
-  interaction: {
-    type: "classicCard",
-    rank: "K",
-    suit: ["H", "S"]
-  },
-  conditions: [
+  getInteractions: () => [
+    {
+      type: "classicCard",
+      rank: "K",
+      suit: ["H", "S"]
+    }
+  ],
+  getConditions: () => [
     con.isPlayersTurn,
     con.isOwner,
     con.OR(con.matchesSuit, con.matchesRank)
   ],
-  commandFactory: (state: State, event: ServerPlayerEvent) => {
+  getCommands: (state: State, event: ServerPlayerEvent) => {
     const card = event.target as ClassicCard
     const source = event.target.parentEntity
     const target = state.entities.findByName("mainPile")
@@ -114,11 +122,13 @@ export const AtackKing: ActionTemplate = {
 
 export const DrawCards: ActionTemplate = {
   name: "DrawCards",
-  interaction: {
-    type: "deck"
-  },
-  conditions: [con.isPlayersTurn],
-  commandFactory: (state: MakaoState, event: ServerPlayerEvent) => {
+  getInteractions: () => [
+    {
+      type: "deck"
+    }
+  ],
+  getConditions: () => [con.isPlayersTurn],
+  getCommands: (state: MakaoState, event: ServerPlayerEvent) => {
     const deck = event.target as Deck
     const target = event.player.findByType("hand")
 
@@ -133,11 +143,13 @@ export const DrawCards: ActionTemplate = {
 
 export const SkipTurn: ActionTemplate = {
   name: "SkipTurn",
-  interaction: {
-    type: "pile",
-    name: "mainPile"
-  },
-  conditions: [
+  getInteractions: () => [
+    {
+      type: "pile",
+      name: "mainPile"
+    }
+  ],
+  getConditions: () => [
     con.isPlayersTurn,
     con.NOT(isAtWar),
     /**
@@ -149,7 +161,7 @@ export const SkipTurn: ActionTemplate = {
     // 4 was just played
     con.AND(playedSkipTurn, con.matchesRank)
   ],
-  commandFactory: (state: State, event: ServerPlayerEvent) => {
+  getCommands: (state: State, event: ServerPlayerEvent) => {
     const source = event.target.parentEntity
     const target = state.entities.findByName("mainPile")
     logs.log("SkipTurn")
@@ -164,17 +176,19 @@ export const SkipTurn: ActionTemplate = {
 
 export const PlayNormalCards: ActionTemplate = {
   name: "PlayNormalCards",
-  interaction: {
-    type: "pile",
-    name: "mainPile"
-  },
-  conditions: [
+  getInteractions: () => [
+    {
+      type: "pile",
+      name: "mainPile"
+    }
+  ],
+  getConditions: () => [
     con.isPlayersTurn,
     con.NOT(isAtWar),
     con.selectedEntities.matchRank(["5", "6", "7", "8", "9", "10"]),
     con.OR(selectedMatchSuit, selectedMatchRank)
   ],
-  commandFactory: (state: State, event: ServerPlayerEvent) => {
+  getCommands: (state: State, event: ServerPlayerEvent) => {
     const cards = event.player.selectedEntities as ClassicCard[]
     const source = event.player.findByType("hand")
     const target = state.entities.findByName("mainPile")
@@ -196,7 +210,6 @@ export const PlayNormalCards: ActionTemplate = {
     return [
       new cmd.ClearSelection(event.player),
       new cmd.ChangeParent(cards[0], source, target),
-      ,
       // TODO: let player choose the order of the rest
       new cmd.ShowCard(cards),
       new cmd.NextPlayer()

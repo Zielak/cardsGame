@@ -1,8 +1,9 @@
 import { logs } from "./logs"
 import { CompositeCommand } from "./commands/compositeCommand"
 import { State } from "./state"
-import { ICommand, ICommandFactory } from "./command"
+import { ICommand } from "./command"
 import { ServerPlayerEvent } from "./player"
+import { ICommandFactory } from "./actionTemplate"
 
 export class CommandsManager {
   history: ICommand[] = []

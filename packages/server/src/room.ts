@@ -7,7 +7,7 @@ import { Entity } from "./entity"
 import { EntityEvents, StateEvents } from "@cardsgame/utils"
 import { Player, ServerPlayerEvent } from "./player"
 import { ICondition } from "./condition"
-import { ICommandFactory } from "./command"
+import { ActionsSet, ActionTemplate } from "./actionTemplate"
 
 export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
@@ -159,9 +159,9 @@ export class Room<S extends State> extends colRoom<S> {
    * Check conditions and perform given action
    */
   performAction(client: Client, event: ServerPlayerEvent) {
-    const actions = this.getActionsByInteraction(event).filter(action => {
-      return this.isLegal(action.conditions, event)
-    })
+    const actions = this.getActionsByInteraction(event).filter(action =>
+      this.isLegal(action.getConditions(this.state), event)
+    )
 
     const logActions = actions.map(el => el.name)
     logs.info(
@@ -192,7 +192,7 @@ export class Room<S extends State> extends colRoom<S> {
     }
 
     this.commandsManager
-      .orderExecution(actions[0].commandFactory, this.state, event)
+      .orderExecution(actions[0].getCommands, this.state, event)
       .then(result => {
         if (!result) {
           this.broadcast({
@@ -221,9 +221,7 @@ export class Room<S extends State> extends colRoom<S> {
     const actions = Array.from(this.possibleActions.values()).filter(
       template => {
         // All interactions defined in the template by game author
-        const interactions = Array.isArray(template.interaction)
-          ? template.interaction
-          : [template.interaction]
+        const interactions = template.getInteractions(this.state)
 
         // TODO: REFACTOR
         // You just introduced event.targets, is an array of all child-parent
@@ -316,11 +314,4 @@ export type InteractionDefinition = {
   value?: number | number[]
   rank?: string | string[]
   suit?: string | string[]
-}
-export type ActionsSet = Set<ActionTemplate>
-export type ActionTemplate = {
-  name: string
-  interaction?: InteractionDefinition | InteractionDefinition[]
-  conditions?: ICondition[]
-  commandFactory: ICommandFactory
 }

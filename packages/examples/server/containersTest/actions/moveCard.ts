@@ -11,7 +11,7 @@ import { ChangeCardPickedState } from "../commands/changeCardPickedState"
 
 export const MoveCards: ActionTemplate = {
   name: "MoveCard",
-  commandFactory: (state: State, event: ServerPlayerEvent) => {
+  getCommands: (state: State, event: ServerPlayerEvent) => {
     // Get container from targets
     const targetContainer = event.targets.find(el => el.isContainer)
     const entity = state.entities.findByName("middle").top
@@ -21,8 +21,10 @@ export const MoveCards: ActionTemplate = {
       new ChangeCardPickedState(false)
     ])
   },
-  interaction: {
-    type: ["deck", "pile", "hand"]
-  },
-  conditions: [isCardPicked]
+  getInteractions: () => [
+    {
+      type: ["deck", "pile", "hand"]
+    }
+  ],
+  getConditions: () => [isCardPicked]
 }
