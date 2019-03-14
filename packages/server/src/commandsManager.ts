@@ -7,6 +7,7 @@ import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
 import { Entity } from "./entity"
 import { InteractionDefinition } from "./room"
+import chalk from "chalk"
 
 export class CommandsManager {
   history: ICommand[] = []
@@ -26,10 +27,23 @@ export class CommandsManager {
     if (this.actionPending) {
     }
 
-    const actions = this.getActionsByInteraction(state, event).filter(action =>
-      action
-        .getConditions(state, event)
-        .every(condition => condition(state, event))
+    const actions = this.getActionsByInteraction(state, event).filter(
+      action => {
+        logs.verbose(`\tFilter out actions by CONDITIONS`)
+        logs.verbose(`┌─ action: ${action.name} ───────────────────────────`)
+        const result = action.getConditions(state, event).every(condition => {
+          const result = condition(state, event)
+          logs.verbose(`│\tcondition: ${condition._name} =`, result)
+          return result
+        })
+
+        logs.verbose(
+          `└─ result:`,
+          chalk[result ? "green" : "red"](String(result))
+        )
+
+        return result
+      }
     )
 
     if (actions.length === 0) {
@@ -41,12 +55,6 @@ export class CommandsManager {
       )
     }
 
-    logs.info(
-      "performAction",
-      `only ${actions.length} filtered by conditions:`,
-      actions.map(el => el.name)
-    )
-
     if (actions.length > 1) {
       logs.warn(
         "performAction",
@@ -56,7 +64,7 @@ export class CommandsManager {
       )
     }
 
-    return this.requestExecution(actions[0], state, event)
+    return this.parseAction(actions[0], state, event)
       .then(result => {
         if (!result) {
           throw new Error(`Client "${client.id}" failed to perform action.`)
@@ -132,8 +140,9 @@ export class CommandsManager {
     const logActions = actions.map(el => el.name)
     logs.info(
       "performAction",
-      `${actions.length} actions by this interaction:`,
-      logActions
+      actions.length,
+      `actions by this interaction`
+      // logActions
     )
 
     return actions
@@ -145,7 +154,7 @@ export class CommandsManager {
    * @param state current room's state
    * @param event incomming user's event
    */
-  async requestExecution(
+  async parseAction(
     action: ActionTemplate,
     state: State,
     event: ServerPlayerEvent
@@ -160,25 +169,33 @@ export class CommandsManager {
     let result = false
     this.actionPending = true
     this.currentAction = action
+    logs.info("parseAction", `current action: ${action.name}`)
 
     try {
       let cmd = action.getCommands(state, event)
       if (Array.isArray(cmd)) {
         cmd = new CompositeCommand(cmd)
       }
-      this.currentCommand = cmd
-      await this.currentCommand.execute(state)
-
-      this.history.push(cmd)
+      await this.execute(state, cmd)
       result = true
-    } catch (e) {
+    } catch (error) {
       this.actionPending = false
-      logs.error("orderExecution", `command FAILED to execute`, e)
+      logs.error(
+        "parseAction",
+        `command "${this.currentCommand.constructor.name}" FAILED to execute`,
+        error
+      )
     }
 
     this.actionPending = false
     this.currentAction = null
 
     return result
+  }
+
+  async execute(state: State, command: ICommand): Promise<void> {
+    this.currentCommand = command
+    await this.currentCommand.execute(state)
+    this.history.push(command)
   }
 }

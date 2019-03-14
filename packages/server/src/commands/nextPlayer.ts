@@ -9,8 +9,12 @@ export class NextPlayer implements ICommand {
     const current = state.currentPlayerIdx
     const next: number = current + 1 === state.playersCount ? 0 : current + 1
 
+    state.emit(State.events.playerTurnFinished)
+
     state.currentPlayerIdx = next
     logs.log(_, `now it's ${state.currentPlayer.clientID} player turn`)
     // state.logTreeState()
+
+    state.emit(State.events.playerTurnStarted)
   }
 }

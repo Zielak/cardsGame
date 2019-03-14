@@ -243,6 +243,7 @@ export class App extends EventEmitter {
   destroy() {
     if (this.pixiApp) {
       this.pixiApp.destroy()
+      this.viewElement.innerHTML = ""
     }
   }
 }

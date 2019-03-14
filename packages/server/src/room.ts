@@ -4,7 +4,7 @@ import { CommandsManager } from "./commandsManager"
 import { StartGame } from "./commands/startGame"
 import { State } from "./state"
 import { Entity } from "./entity"
-import { EntityEvents, StateEvents } from "@cardsgame/utils"
+import { EntityEvents } from "@cardsgame/utils"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
 
@@ -97,7 +97,7 @@ export class Room<S extends State> extends colRoom<S> {
       this.state.clients.add(newClient.id)
     }
 
-    this.state.emit(StateEvents.privatePropsSyncRequest, newClient.id)
+    this.state.emit(State.events.privatePropsSyncRequest, newClient.id)
     logs.log("onJoin", `client "${newClient.id}" joined`)
   }
 

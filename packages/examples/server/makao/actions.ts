@@ -14,39 +14,63 @@ import { MakaoState } from "./state"
 import {
   IncreaseAtackPoints,
   SetAtackPoints,
-  IncreaseSkipPoints
+  IncreaseSkipPoints,
+  SetRequestedSuit
 } from "./commands"
-import {
-  isAtWar,
-  playedSkipTurn,
-  chosenMatchSuit,
-  chosenMatchRank
-} from "./conditions"
+import { isAtWar } from "./conditions"
 
 export const SelectCard: ActionTemplate = {
   name: "SelectCard",
-  getInteractions: () => [
-    {
-      type: "classicCard"
+  description: `Selecting cards makes sure that cards match with the pile.
+  No need to keep checking for it in other actions`,
+  getInteractions: (state: MakaoState) => {
+    if (state.atackPoints > 0) {
+      return [
+        { type: "classicCard", rank: ["2", "3"] },
+        { type: "classicCard", rank: "K", suit: ["H", "S"] }
+      ]
+    } else if (state.skipPoints > 0) {
+      return [{ type: "classicCard", rank: "4" }]
+    } else if (state.requestedRank) {
+      return [{ type: "classicCard", rank: state.requestedRank }]
+    } else if (state.requestedSuit) {
+      return [{ type: "classicCard", suit: state.requestedSuit }]
     }
-  ],
-  getConditions: (_, event: ServerPlayerEvent) => {
-    const conds = [
+    return [{ type: "classicCard" }]
+  },
+  getConditions: (state: MakaoState, event: ServerPlayerEvent) => {
+    const conditions = [
       con.isOwner,
       con.isPlayersTurn,
       con.parentIs({ name: "playersHand" })
     ]
+    // Keep checking pile and state for any current functional cards in effect
+    const pile = state.entities.findByName("mainPile")
+    const pickedCard = event.target as ClassicCard
+    // 4? you shant play any other cards
+    if (state.skipPoints > 0) {
+      conditions.push(con.matchesRankWithPile)
+    }
+    // 2,3,K? you shall only play atack cards
+    // if (state.atackPoints > 0) {
+    //   conditions.push(con.)
+    // }
+    // A? you should only play requested suit OR other Ace
+    // J? you should only play what was requested or another J
+
     if (event.player.findByName("chosenCards").length === 0) {
-      conds.push(con.OR(con.matchesRankWithPile, con.matchesSuitWithPile))
+      // First card should match anything on Pile
+      conditions.push(con.OR(con.matchesRankWithPile, con.matchesSuitWithPile))
     } else {
-      conds.push(
+      // The rest should match anything already selected
+      conditions.push(
         con.matchesPropWith(
           "rank",
           (_, event) => event.player.findByName("chosenCards").childrenArray
         )
       )
     }
-    return conds
+    return conditions
   },
   getCommands: (state: State, event: ServerPlayerEvent) => {
     const playersHand = event.player.findByName("playersHand")
@@ -72,7 +96,13 @@ export const DeselectCard: ActionTemplate = {
     const playersHand = event.player.findByName("playersHand")
     const chosenCardsRow = event.player.findByName("chosenCards")
 
-    return new cmd.ChangeParent(event.target, chosenCardsRow, playersHand)
+    if (event.target.idx > 0) {
+      return new cmd.ChangeParent(event.target, chosenCardsRow, playersHand)
+    } else {
+      const allChosenCards = event.player.findByName("chosenCards")
+        .childrenArray as ClassicCard[]
+      return new cmd.ChangeParent(allChosenCards, chosenCardsRow, playersHand)
+    }
   }
 }
 
@@ -80,24 +110,26 @@ export const Atack23: ActionTemplate = {
   name: "Atack23",
   getInteractions: () => [
     {
-      type: "pile"
+      type: "pile",
+      name: "mainPile"
     }
   ],
-  getConditions: () => [
-    con.isPlayersTurn,
-    con.isOwner,
-    con.OR(con.matchesSuitWithPile, con.matchesRankWithPile)
+  getConditions: (_, event: ServerPlayerEvent) => [
+    con
+      .childrenOf(event.player.findByName("chosenCards"))
+      .matchRank(["2", "3"]),
+    con.isPlayersTurn
   ],
   getCommands: (state: State, event: ServerPlayerEvent) => {
-    const card = event.target as ClassicCard
-    const source = event.target.parentEntity
+    const cards = event.player.findByName("chosenCards")
+      .childrenArray as ClassicCard[]
+    const source = event.player.findByName("chosenCards")
     const target = state.entities.findByName("mainPile")
 
-    logs.log("Atack23")
     return [
-      new cmd.ChangeParent(event.target, source, target),
-      new cmd.ShowCard(event.target as Card),
-      new IncreaseAtackPoints(parseInt(card.rank)),
+      new cmd.ChangeParent(cards, source, target),
+      new cmd.ShowCard(cards),
+      new IncreaseAtackPoints(parseInt(cards[0].rank) * cards.length),
       new cmd.NextPlayer()
     ]
   }
@@ -107,49 +139,29 @@ export const AtackKing: ActionTemplate = {
   name: "AtackKing",
   getInteractions: () => [
     {
-      type: "classicCard",
-      rank: "K",
-      suit: ["H", "S"]
+      type: "pile",
+      name: "mainPile"
     }
   ],
-  getConditions: () => [
-    con.isPlayersTurn,
-    con.isOwner,
-    con.OR(con.matchesSuitWithPile, con.matchesRankWithPile)
+  getConditions: (_, event: ServerPlayerEvent) => [
+    con.childrenOf(event.player.findByName("chosenCards")).matchRank("K"),
+    con
+      .childrenOf(event.player.findByName("chosenCards"))
+      .matchSuit(["S", "H"]),
+    con.isPlayersTurn
   ],
   getCommands: (state: State, event: ServerPlayerEvent) => {
-    const card = event.target as ClassicCard
-    const source = event.target.parentEntity
+    const card = event.player.findByName("chosenCards")
+      .childrenArray[0] as ClassicCard
+    const source = event.player.findByName("chosenCards")
     const target = state.entities.findByName("mainPile")
 
-    logs.log("AtackKing")
     return [
-      new cmd.ChangeParent(event.target, source, target),
-      new cmd.ShowCard(event.target as Card),
+      new cmd.ChangeParent(card, source, target),
+      new cmd.ShowCard(card),
       new IncreaseAtackPoints(5),
       // Variant here
       card.suit === "H" ? new cmd.NextPlayer() : new cmd.PreviousPlayer()
-    ]
-  }
-}
-
-export const DrawCards: ActionTemplate = {
-  name: "DrawCards",
-  getInteractions: () => [
-    {
-      type: "deck"
-    }
-  ],
-  getConditions: () => [con.isPlayersTurn],
-  getCommands: (state: MakaoState, event: ServerPlayerEvent) => {
-    const deck = event.target as Deck
-    const target = event.player.findByName("playersHand")
-
-    logs.log("DrawCards", state.atackPoints)
-    return [
-      new cmd.DealCards(deck, target, Math.max(1, state.atackPoints)),
-      state.atackPoints > 0 ? new SetAtackPoints(0) : new cmd.Noop(),
-      new cmd.NextPlayer()
     ]
   }
 }
@@ -162,26 +174,50 @@ export const PlaySkipTurn: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: () => [
-    con.isPlayersTurn,
+  getConditions: (_, event: ServerPlayerEvent) => [
+    con.childrenOf(event.player.findByName("chosenCards")).matchRank("4"),
     con.NOT(isAtWar),
-    /**
-     * 4 was not yet played
-     *   OR
-     * 4 was played and you have 4 in hand
-     */
-    con.AND(con.NOT(playedSkipTurn)),
-    // 4 was just played
-    con.AND(playedSkipTurn, con.matchesRankWithPile)
+    con.isPlayersTurn
   ],
   getCommands: (state: State, event: ServerPlayerEvent) => {
-    const source = event.target.parentEntity
+    const cards = event.player.findByName("chosenCards")
+      .childrenArray as ClassicCard[]
+    const source = event.player.findByName("chosenCards")
     const target = state.entities.findByName("mainPile")
-    logs.log("SkipTurn")
+
     return [
-      new cmd.ChangeParent(event.target, source, target),
-      new cmd.ShowCard(event.target as Card),
-      new IncreaseSkipPoints(1),
+      new cmd.ChangeParent(cards, source, target),
+      new cmd.ShowCard(cards),
+      new IncreaseSkipPoints(cards.length),
+      new cmd.NextPlayer()
+    ]
+  }
+}
+
+export const AceRequestSuit: ActionTemplate = {
+  name: "AceRequestSuit",
+  getInteractions: () => [
+    {
+      type: "pile",
+      name: "mainPile"
+    }
+  ],
+  getConditions: (_, event: ServerPlayerEvent) => [
+    con.childrenOf(event.player.findByName("chosenCards")).matchRank("A"),
+    con.NOT(isAtWar),
+    con.isPlayersTurn
+  ],
+  getCommands: (state: State, event: ServerPlayerEvent) => {
+    const cards = event.player.findByName("chosenCards")
+      .childrenArray as ClassicCard[]
+    const source = event.player.findByName("chosenCards")
+    const target = state.entities.findByName("mainPile")
+
+    return [
+      new cmd.ChangeParent(cards, source, target),
+      new cmd.ShowCard(cards),
+      // TODO: Require that information from the player... somehow.
+      new SetRequestedSuit("9"),
       new cmd.NextPlayer()
     ]
   }
@@ -196,24 +232,43 @@ export const PlayNormalCards: ActionTemplate = {
     }
   ],
   getConditions: (_, event: ServerPlayerEvent) => [
-    con.isPlayersTurn,
-    con.NOT(isAtWar),
     con
       .childrenOf(event.player.findByName("chosenCards"))
       .matchRank(["5", "6", "7", "8", "9", "10"]),
-    con.OR(chosenMatchSuit, chosenMatchRank)
+    con.NOT(isAtWar),
+    con.isPlayersTurn
   ],
   getCommands: (state: State, event: ServerPlayerEvent) => {
     const cards = event.player.findByName("chosenCards")
       .childrenArray as ClassicCard[]
-    const orderingRow = event.player.findByName("chosenCards")
+    const source = event.player.findByName("chosenCards")
     const pile = state.entities.findByName("mainPile")
 
-    logs.log("PlayNormalCard")
     return [
-      new cmd.ClearSelection(event.player),
-      new cmd.ChangeParent(cards, orderingRow, pile),
+      new cmd.ChangeParent(cards, source, pile),
       new cmd.ShowCard(cards),
+      new cmd.NextPlayer()
+    ]
+  }
+}
+
+export const DrawCards: ActionTemplate = {
+  name: "DrawCards",
+  description: `Player may draw 1 card if he can't do anything, OR he'll be forced to pull more cards after he can't defend the atack points.`,
+  getInteractions: () => [
+    {
+      type: "deck"
+    }
+  ],
+  getConditions: () => [con.isPlayersTurn],
+  getCommands: (state: MakaoState, event: ServerPlayerEvent) => {
+    const deck = event.target as Deck
+    const target = event.player.findByName("playersHand")
+
+    logs.log("DrawCards", state.atackPoints)
+    return [
+      new cmd.DealCards(deck, target, Math.max(1, state.atackPoints)),
+      state.atackPoints > 0 ? new SetAtackPoints(0) : new cmd.Noop(),
       new cmd.NextPlayer()
     ]
   }

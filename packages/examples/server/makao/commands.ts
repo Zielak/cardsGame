@@ -75,3 +75,33 @@ export class SetSkipPoints implements ICommand {
     state.skipPoints = this.lastValue
   }
 }
+
+export class SetRequestedSuit implements ICommand {
+  lastValue: string
+
+  constructor(private value: string) {}
+
+  execute(state: MakaoState) {
+    this.lastValue = state.requestedSuit
+    state.requestedSuit = this.value
+  }
+
+  undo(state: MakaoState) {
+    state.requestedSuit = this.lastValue
+  }
+}
+
+export class SetRequestedRank implements ICommand {
+  lastValue: string
+
+  constructor(private value: string) {}
+
+  execute(state: MakaoState) {
+    this.lastValue = state.requestedRank
+    state.requestedRank = this.value
+  }
+
+  undo(state: MakaoState) {
+    state.requestedRank = this.lastValue
+  }
+}

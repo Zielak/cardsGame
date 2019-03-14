@@ -23,3 +23,4 @@ export const isPlayersTurn: ICondition = (
   )
   return false
 }
+isPlayersTurn._name = "isPlayersTurn"

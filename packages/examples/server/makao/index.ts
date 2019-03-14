@@ -6,7 +6,6 @@ import {
   Hand,
   Pile,
   Deck,
-  Row,
   ClassicCard,
   standardDeck,
   commands,
@@ -68,8 +67,15 @@ export class MakaoRoom extends Room<MakaoState> {
       })
     })
 
-    logs.info("Final state")
-    state.logTreeState()
+    state.on(MakaoState.events.playerTurnStarted, () => {
+      const current = state.currentPlayer.clientID
+
+      // [4] Check turn skips, if this player should keep on waiting
+      if (state.turnSkips[current] > 0) {
+        state.turnSkips[current]--
+        this.commandsManager.execute(state, new commands.NextPlayer())
+      }
+    })
   }
 
   onStartGame(state: MakaoState) {

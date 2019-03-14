@@ -13,3 +13,4 @@ export const isSelected: ICondition = (
 ) => {
   return event.player.isEntitySelected(event.target)
 }
+isSelected._name = "isSelected"

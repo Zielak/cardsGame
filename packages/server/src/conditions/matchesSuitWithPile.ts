@@ -20,3 +20,4 @@ export const matchesSuitWithPile: ICondition = (
     return false
   }
 }
+matchesSuitWithPile._name = "matchesSuitWithPile"

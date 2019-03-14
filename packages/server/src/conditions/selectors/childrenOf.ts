@@ -1,6 +1,7 @@
 import { ServerPlayerEvent } from "../../player"
 import { propsMatch } from "./helpers"
 import { Entity } from "../../entity"
+import { logs } from "../../logs"
 
 export default (entity: Entity) => {
   const children = entity.childrenArray
@@ -9,16 +10,26 @@ export default (entity: Entity) => {
     matchRank: (_ranks: string | string[]) => {
       const ranks = Array.isArray(_ranks) ? _ranks : [_ranks]
 
-      return (_, event: ServerPlayerEvent) => {
-        return children.every(propsMatch("rank", ranks))
+      const cond = (_, event: ServerPlayerEvent) => {
+        const result = children.every(propsMatch("rank", ranks))
+        logs.verbose(`│\t\tmatchRank:`, result)
+        return result
       }
+      // cond._name = `childrenOf(${entity.type}:${entity.name}).matchRank`
+      cond._name = `childrenOf.matchRank`
+      return cond
     },
     matchSuit: (_suits: string | string[]) => {
       const suits = Array.isArray(_suits) ? _suits : [_suits]
 
-      return (_, event: ServerPlayerEvent) => {
-        return children.every(propsMatch("suit", suits))
+      const cond = (_, event: ServerPlayerEvent) => {
+        const result = children.every(propsMatch("suit", suits))
+        logs.verbose(`│\t\tmatchSuit:`, result)
+        return result
       }
+      // cond._name = `childrenOf(${entity.type}:${entity.name}).matchSuit`
+      cond._name = `childrenOf.matchSuit`
+      return cond
     }
   }
 }

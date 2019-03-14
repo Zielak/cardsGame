@@ -19,3 +19,4 @@ export const matchesRankWithPile: ICondition = (
   )
   return false
 }
+matchesRankWithPile._name = "matchesRankWithPile"

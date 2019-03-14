@@ -14,10 +14,6 @@ export const EntityEvents = {
   selectedByPlayer: "selectedByPlayer"
 }
 
-export const StateEvents = {
-  privatePropsSyncRequest: "privatePropsSyncRequest"
-}
-
 export type EntityTransformData = {
   x?: number
   y?: number

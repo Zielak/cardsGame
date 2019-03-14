@@ -1,10 +1,8 @@
 import { nosync } from "colyseus"
 import { EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
-import { deg2rad, rad2deg, StateEvents } from "@cardsgame/utils"
 import { Entity } from "./entity"
 import { EntityMap } from "./entityMap"
-import { Player } from "./player"
 
 export class State extends EventEmitter {
   // 60 cm
@@ -47,10 +45,10 @@ export class State extends EventEmitter {
   }
 
   setupListeners() {
-    this.on(StateEvents.privatePropsSyncRequest, (client: string) => {
+    this.on(State.events.privatePropsSyncRequest, (client: string) => {
       // Bubble it down to every entity
       logs.info("State.privatePropsSyncRequest")
-      this.entities.emit(StateEvents.privatePropsSyncRequest, client)
+      this.entities.emit(State.events.privatePropsSyncRequest, client)
     })
   }
 
@@ -165,6 +163,12 @@ export class State extends EventEmitter {
   }
 
   static ROOT_ID = 0
+
+  static events = {
+    privatePropsSyncRequest: Symbol("privatePropsSyncRequest"),
+    playerTurnFinished: Symbol("playerTurnFinished"),
+    playerTurnStarted: Symbol("playerTurnStarted")
+  }
 }
 
 // Get rid of EventEmitter stuff from the client

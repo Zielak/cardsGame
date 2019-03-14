@@ -10,3 +10,4 @@ import { ServerPlayerEvent } from "../player"
 export const isOwner: ICondition = (state: State, event: ServerPlayerEvent) => {
   return event.target.owner === event.player
 }
+isOwner._name = "isOwner"

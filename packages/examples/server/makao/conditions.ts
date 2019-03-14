@@ -9,13 +9,23 @@ import {
 export const isAtWar: ICondition = (state: MakaoState) => {
   return state.isAtWar
 }
+isAtWar._name = "isAtWar"
 
-export const playedSkipTurn: ICondition = (state: MakaoState) => {
+/**
+ * Is there 4 on the top of Pile
+ */
+export const skipTurnPlayed: ICondition = (state: MakaoState) => {
   const pile = state.entities.findByName("mainPile")
   const topCard = pile.top as ClassicCard
-  return topCard.rank === "4"
+  const result = topCard.rank === "4"
+  logs.verbose(`│\t\tskipTurnPlayed:`, result)
+  return result
 }
+skipTurnPlayed._name = "skipTurnPlayed"
 
+/**
+ * Given card has no special function
+ */
 const isNonFunctional = (card: ClassicCard) => {
   const matchType = card.type === "classicCard"
 
@@ -37,6 +47,7 @@ export const chosenAreNonFunctional: ICondition = (
     .childrenArray as ClassicCard[]
   return chosen.every(isNonFunctional)
 }
+chosenAreNonFunctional._name = "chosenAreNonFunctional"
 
 export const chosenMatchRank: ICondition = (
   state: MakaoState,
@@ -55,6 +66,7 @@ export const chosenMatchRank: ICondition = (
     return false
   }
 }
+chosenMatchRank._name = "chosenMatchRank"
 
 export const chosenMatchSuit: ICondition = (
   state: MakaoState,
@@ -73,3 +85,4 @@ export const chosenMatchSuit: ICondition = (
     return false
   }
 }
+chosenMatchSuit._name = "chosenMatchSuit"

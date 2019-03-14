@@ -1,12 +1,7 @@
 import { nosync } from "colyseus"
 import { EventEmitter } from "eventemitter3"
 
-import {
-  def,
-  EntityEvents,
-  EntityTransformData,
-  StateEvents
-} from "@cardsgame/utils"
+import { def, EntityEvents, EntityTransformData } from "@cardsgame/utils"
 import { EntityMap } from "./entityMap"
 import { State } from "./state"
 import { Player } from "./player"
@@ -142,9 +137,9 @@ export class Entity extends EventEmitter {
       // Need to update even if owner stayed the same.
       // Client will create entirely new container
       if (event.lastParent) {
-        event.lastParent.emit(StateEvents.privatePropsSyncRequest)
+        event.lastParent.emit(State.events.privatePropsSyncRequest)
       }
-      this.parentEntity.emit(StateEvents.privatePropsSyncRequest)
+      this.parentEntity.emit(State.events.privatePropsSyncRequest)
     })
 
     this.on(EntityEvents.sendPropToEveryone, (key: string) => {
@@ -154,10 +149,10 @@ export class Entity extends EventEmitter {
       this._sendPrivAttrUpdate(key, false)
     })
 
-    this.on(StateEvents.privatePropsSyncRequest, (client: string) => {
+    this.on(State.events.privatePropsSyncRequest, (client: string) => {
       this.sendAllPrivateAttributes(client)
       this.childrenArray.forEach(child => {
-        child.emit(StateEvents.privatePropsSyncRequest, client)
+        child.emit(State.events.privatePropsSyncRequest, client)
       })
     })
   }
