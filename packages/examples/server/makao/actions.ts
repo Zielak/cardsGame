@@ -154,8 +154,8 @@ export const DrawCards: ActionTemplate = {
   }
 }
 
-export const SkipTurn: ActionTemplate = {
-  name: "SkipTurn",
+export const PlaySkipTurn: ActionTemplate = {
+  name: "PlaySkipTurn",
   getInteractions: () => [
     {
       type: "pile",
@@ -195,10 +195,12 @@ export const PlayNormalCards: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: () => [
+  getConditions: (_, event: ServerPlayerEvent) => [
     con.isPlayersTurn,
     con.NOT(isAtWar),
-    con.selectedEntities.matchRank(["5", "6", "7", "8", "9", "10"]),
+    con
+      .childrenOf(event.player.findByName("chosenCards"))
+      .matchRank(["5", "6", "7", "8", "9", "10"]),
     con.OR(chosenMatchSuit, chosenMatchRank)
   ],
   getCommands: (state: State, event: ServerPlayerEvent) => {

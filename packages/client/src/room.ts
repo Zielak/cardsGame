@@ -6,12 +6,9 @@ import { EntityData } from "./types"
 
 export class Room extends EventEmitter {
   childrenListeners = []
-  stateView: HTMLElement
 
   constructor(private room: colyseus.Room) {
     super()
-
-    this.stateView = document.getElementById("stateView")
 
     room.onStateChange.addOnce(state => {
       logs.notice("ROOM, this is the first room state!", state)
@@ -19,19 +16,6 @@ export class Room extends EventEmitter {
     })
     room.onStateChange.add(state => {
       logs.notice("ROOM, state been updated:", state)
-      function replacer(key, value) {
-        if (key === "") {
-          return value
-        }
-        // Filtering out properties
-        if (typeof value === "object") {
-          return undefined
-        }
-        return value
-      }
-      // TODO: html rendering is not Room's responsibility
-      this.stateView.innerHTML = JSON.stringify(state, replacer, "  ")
-
       this.emit(Room.events.stateChange, state)
     })
     room.onMessage.add(message => {

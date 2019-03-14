@@ -12,7 +12,8 @@ export * from "./hasAtLeastXEntitiesSelected"
 export * from "./matchesSelectedWith"
 export * from "./matchesPropWith"
 export * from "./parentIs"
-export { default as selectedEntities } from "./selectedEntities"
+export { default as selectedEntities } from "./selectors/selectedEntities"
+export { default as childrenOf } from "./selectors/childrenOf"
 
 export const OR = (...conditions: ICondition[]): ICondition => {
   return (state: State, event: ServerPlayerEvent) => {

@@ -18,7 +18,7 @@ import {
   DrawCards,
   Atack23,
   AtackKing,
-  SkipTurn,
+  PlaySkipTurn,
   PlayNormalCards,
   DeselectCard,
   SelectCard
@@ -34,7 +34,7 @@ export class MakaoRoom extends Room<MakaoState> {
     DrawCards,
     Atack23,
     AtackKing,
-    SkipTurn,
+    PlaySkipTurn,
     PlayNormalCards
   ])
 

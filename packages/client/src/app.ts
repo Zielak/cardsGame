@@ -241,8 +241,8 @@ export class App extends EventEmitter {
   }
 
   destroy() {
-    this.pixiApp.destroy()
-    this.viewElement.parentElement.removeChild(this.viewElement)
-    this.viewElement = undefined
+    if (this.pixiApp) {
+      this.pixiApp.destroy()
+    }
   }
 }

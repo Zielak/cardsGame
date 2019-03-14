@@ -12,7 +12,7 @@ export class PreviousPlayer implements ICommand {
       current - 1 === -1 ? state.playersCount - 1 : current - 1
 
     state.currentPlayerIdx = next
-    logs.log(_, `now it's ${state.currentPlayer} player turn`)
+    logs.log(_, `now it's ${state.currentPlayer.clientID} player turn`)
     // state.logTreeState()
   }
 }
