@@ -3,7 +3,6 @@ import {
   commands as cmd,
   ServerPlayerEvent,
   State,
-  Card,
   ClassicCard,
   Deck,
   logs,
@@ -194,8 +193,8 @@ export const PlaySkipTurn: ActionTemplate = {
   }
 }
 
-export const AceRequestSuit: ActionTemplate = {
-  name: "AceRequestSuit",
+export const PlayAce: ActionTemplate = {
+  name: "PlayAce",
   getInteractions: () => [
     {
       type: "pile",
@@ -215,11 +214,22 @@ export const AceRequestSuit: ActionTemplate = {
 
     return [
       new cmd.ChangeParent(cards, source, target),
-      new cmd.ShowCard(cards),
-      // TODO: Require that information from the player... somehow.
-      new SetRequestedSuit("9"),
-      new cmd.NextPlayer()
+      new cmd.ShowCard(cards)
+      // To be continued in RequestSuit action...
     ]
+  }
+}
+
+export const RequestSuit: ActionTemplate = {
+  name: "RequestSuit",
+  getInteractions: () => [
+    {
+      type: "UI.button"
+    }
+  ],
+  getConditions: () => [],
+  getCommands: (state: State, event: ServerPlayerEvent) => {
+    return [new SetRequestedSuit("9"), new cmd.NextPlayer()]
   }
 }
 

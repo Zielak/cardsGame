@@ -50,7 +50,7 @@ export class CommandsManager {
       logs.info("performAction", `no actions, ignoring.`)
       throw new Error(
         `Client ${client.id}: No actions found for that ${
-          event.type
+          event.eventType
         }, ignoring...`
       )
     }
@@ -84,58 +84,31 @@ export class CommandsManager {
     state: State,
     event: ServerPlayerEvent
   ): ActionTemplate[] {
-    const possibleEntityProps = ["name", "type", "value", "rank", "suit"]
+    // FIXME: There can be all kinds of unknown props in action definition...
 
-    const actions = Array.from(this.possibleActions.values()).filter(
-      template => {
-        // All interactions defined in the template by game author
-        const interactions = template.getInteractions(state)
+    const actions = Array.from(this.possibleActions.values()).filter(action => {
+      const interactions = action.getInteractions(state)
 
-        // TODO: REFACTOR
-        // You just introduced event.targets, is an array of all child-parent
-        // from the top-most entity down to the thing that was actually clicked.
-        // TODO: check for parent props and its parent and so on
-        /**
-         * * there can be many sets of interactions
-         * * an interaction signature may point to elements by set of properties
-         * 		['name', 'rank', 'type'...]
-         * * FIXME: client may click on nth card in pile, but is required to interact with TOP card only.
-         *   - this doesn't work
-         *
-         * get reversed targets array (from target to its parents)
-         * for each interaction (or one)
-         * 	for each reversedTargets ->
-         * 		chek all its props
-         */
-
-        /**
-         * For every possible prop, check if its defined in this action.
-         * If so, push it to checkProp()
-         */
-        const entityMatchesInteraction = (
-          target: Entity,
-          interaction: InteractionDefinition
-        ) => {
-          return possibleEntityProps.every((prop: string) => {
-            if (interaction[prop]) {
-              if (Array.isArray(interaction[prop])) {
-                return interaction[prop].some(value => value === target[prop])
-              } else if (target[prop] !== interaction[prop]) {
-                return false
-              }
-            }
-            // Prop either matches or was not defined in interaction/desired
-            return true
-          })
+      return interactions.some(definition => {
+        if (
+          definition.$targetType === undefined ||
+          definition.$targetType === "Entity"
+        ) {
+          // Check props for every interactive entity in `targets` array
+          return event.targets
+            .filter(currentTarget => currentTarget.interactive)
+            .some(currentTarget =>
+              // Every key in definition should be present in the Entity
+              // and be of eqaul value
+              Object.keys(definition).some(
+                // TODO: handle `parent`
+                key => currentTarget[key] === definition[key]
+              )
+            )
+        } else if (definition.$targetType === "UIButton") {
         }
-
-        return event.targets
-          .filter(target => target.interactive)
-          .some(target =>
-            interactions.some(int => entityMatchesInteraction(target, int))
-          )
-      }
-    )
+      })
+    })
 
     const logActions = actions.map(el => el.name)
     logs.info(

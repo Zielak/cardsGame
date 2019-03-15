@@ -2,7 +2,7 @@ import { Entity, IEntityOptions } from "../entity"
 import { def } from "@cardsgame/utils"
 import { nosync } from "../decorators"
 
-export class Card extends Entity {
+export class BaseCard extends Entity {
   @nosync
   id: EntityID
   type = "card"
@@ -12,7 +12,7 @@ export class Card extends Entity {
   // Publically known to be "marked" in some way.
   marked: boolean
 
-  constructor(options: ICardOptions) {
+  constructor(options: IBaseCardOptions) {
     super(options)
 
     this.faceUp = def(options.faceUp, false)
@@ -40,7 +40,7 @@ export class Card extends Entity {
   }
 }
 
-export interface ICardOptions extends IEntityOptions {
+export interface IBaseCardOptions extends IEntityOptions {
   faceUp?: boolean
   rotated?: number
   marked?: boolean

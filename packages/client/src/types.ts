@@ -1,12 +1,3 @@
-export type ClientPlayerEvent = {
-  // most likely 'click'
-  type: string
-  // Path to target object, by idx/idx/idx...
-  targetPath?: number[]
-  // additional/optional data
-  data?: any
-}
-
 export interface EntityData {
   id: number
   idx: number

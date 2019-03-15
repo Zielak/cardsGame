@@ -1,14 +1,14 @@
 import { State } from "../state"
-import { Card } from "../entities/card"
+import { BaseCard } from "../entities/baseCard"
 import { logs } from "../logs"
 import { ICommand } from "../command"
 
 export class ShowCard implements ICommand {
-  cards: Card[]
+  cards: BaseCard[]
 
-  constructor(card: Card)
-  constructor(cards: Card[])
-  constructor(_cards: Card | Card[]) {
+  constructor(card: BaseCard)
+  constructor(cards: BaseCard[])
+  constructor(_cards: BaseCard | BaseCard[]) {
     this.cards = Array.isArray(_cards) ? _cards : [_cards]
   }
   execute(state: State) {

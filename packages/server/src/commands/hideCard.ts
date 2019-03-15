@@ -1,10 +1,10 @@
 import { State } from "../state"
-import { Card } from "../entities/card"
+import { BaseCard } from "../entities/baseCard"
 import { logs } from "../logs"
 import { ICommand } from "../command"
 
 export class HideCard implements ICommand {
-  constructor(private card: Card) {}
+  constructor(private card: BaseCard) {}
   execute(state: State) {
     logs.log(`${this.constructor.name}`, "executing")
     this.card.hide()

@@ -1,5 +1,4 @@
 import {
-  Card,
   ActionTemplate,
   Room,
   Player,
@@ -20,7 +19,8 @@ import {
   PlaySkipTurn,
   PlayNormalCards,
   DeselectCard,
-  SelectCard
+  SelectCard,
+  PlayAce
 } from "./actions"
 
 export class MakaoRoom extends Room<MakaoState> {
@@ -34,6 +34,7 @@ export class MakaoRoom extends Room<MakaoState> {
     Atack23,
     AtackKing,
     PlaySkipTurn,
+    PlayAce,
     PlayNormalCards
   ])
 
@@ -112,7 +113,7 @@ export class MakaoRoom extends Room<MakaoState> {
     new commands.ChangeParent(this.deck.top, this.deck, this.pile).execute(
       state
     )
-    new commands.FlipCard(this.pile.top as Card).execute(state)
+    new commands.FlipCard(this.pile.top as ClassicCard).execute(state)
 
     logs.info("Final state")
     state.logTreeState()

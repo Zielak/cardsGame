@@ -18,7 +18,7 @@ export class Room extends EventEmitter {
       logs.notice("ROOM, state been updated:", state)
       this.emit(Room.events.stateChange, state)
     })
-    room.onMessage.add(message => {
+    room.onMessage.add((message: ServerMessage) => {
       if (message.event && message.data) {
         switch (message.event) {
           case "game.info":
@@ -131,7 +131,7 @@ export class Room extends EventEmitter {
     })
   }
 
-  send(message: any) {
+  send(message: PlayerEvent) {
     logs.info("Sending:", message)
     this.room.send(message)
   }

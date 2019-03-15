@@ -77,16 +77,9 @@ export interface IPlayerOptions extends IEntityOptions {
   clientID: string
 }
 
-export type ServerPlayerEvent = {
+export type ServerPlayerEvent = PlayerEvent & {
+  // Auto filled on the server:
   player?: Player
-  // most likely 'click'
-  type: string
-  // Parsed, server-side entity reference
   target?: Entity
-  // Path to target object, by idx/idx/idx...
-  targetPath?: number[]
-  // All entities along the path of interaction
   targets?: Entity[]
-  // additional/optional data
-  data?: any
 }

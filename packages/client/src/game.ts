@@ -2,7 +2,6 @@ import * as colyseus from "colyseus.js"
 import { EntityEvents } from "@cardsgame/utils"
 import { Room, PlayerData } from "./room"
 import { logs } from "./logs"
-import { ClientPlayerEvent } from "./types"
 import { EventEmitter } from "eventemitter3"
 import * as app from "./app"
 
@@ -98,6 +97,9 @@ export class Game extends EventEmitter {
     this.room.on(Room.events.clientLeft, () => {
       this.emit(Room.events.clientLeft)
     })
+    this.room.on(Room.events.message, (message: ServerMessage) => {
+      this.emit(Room.events.message, message)
+    })
   }
 
   prepareRenderingApp() {
@@ -147,8 +149,9 @@ export class Game extends EventEmitter {
     // -------
 
     this.app.on("click", (event: app.ClickEvent) => {
-      const playerEvent: ClientPlayerEvent = {
-        type: event.type,
+      const playerEvent: PlayerEvent = {
+        eventType: event.type,
+        targetType: "Entity",
         targetPath: event.targetEntity.idxPath
       }
       this.room.send(playerEvent)
@@ -167,7 +170,7 @@ export class Game extends EventEmitter {
     })
   }
 
-  send(event: ClientPlayerEvent) {
+  send(event: PlayerEvent) {
     this.room.send(event)
   }
 

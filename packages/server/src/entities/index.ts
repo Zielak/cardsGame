@@ -1,4 +1,4 @@
-export * from "./card"
+export * from "./baseCard"
 export * from "./classicCard"
 export * from "./container"
 export * from "./deck"

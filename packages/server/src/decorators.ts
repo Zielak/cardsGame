@@ -1,6 +1,7 @@
-export { nosync } from "colyseus"
 import { EntityEvents } from "@cardsgame/utils"
 import { Entity } from "./entity"
+
+export { nosync } from "colyseus"
 
 export function condvis(target, key: string) {
   Object.defineProperty(target, key, {

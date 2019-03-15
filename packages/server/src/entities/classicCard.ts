@@ -1,13 +1,13 @@
-import { Card, ICardOptions } from "./card"
+import { BaseCard, IBaseCardOptions } from "./baseCard"
 import { logs } from "../logs"
 import { condvis } from "../decorators"
 
-export interface IClassicCardOptions extends ICardOptions {
+export interface IClassicCardOptions extends IBaseCardOptions {
   suit: string
   rank: string
 }
 
-export class ClassicCard extends Card {
+export class ClassicCard extends BaseCard {
   type = "classicCard"
 
   @condvis

@@ -42,7 +42,7 @@ export class Room<S extends State> extends colRoom<S> {
           this.broadcast({
             data,
             event: EntityEvents.privateAttributeChange
-          })
+          } as ServerMessage)
         } else {
           const client = this.clients.find(c => c.id === data.owner)
           if (client) {
@@ -50,7 +50,7 @@ export class Room<S extends State> extends colRoom<S> {
             this.send(client, {
               data,
               event: EntityEvents.privateAttributeChange
-            })
+            } as ServerMessage)
           } else {
             // logs.log(`couldn't find the client to sent it to`, data.owner, data)
           }
@@ -110,7 +110,7 @@ export class Room<S extends State> extends colRoom<S> {
     }
   }
 
-  onMessage(client: Client, event: ServerPlayerEvent) {
+  onMessage(client: Client, event: PlayerEvent) {
     if (event.data === "start" && !this.state.isGameStarted) {
       new StartGame().execute(this.state)
       this.onStartGame(this.state)
@@ -121,16 +121,17 @@ export class Room<S extends State> extends colRoom<S> {
     }
 
     // Populate event with server-side known data
-    if (event.targetPath) {
+    const newEvent: ServerPlayerEvent = { ...event }
+    if (newEvent.targetPath) {
       // Make sure
-      event.targets = this.state
-        .getEntitiesAlongPath(event.targetPath)
+      newEvent.targets = this.state
+        .getEntitiesAlongPath(newEvent.targetPath)
         .reverse()
         .filter(target => target.interactive)
-      event.target = event.targets[0]
+      newEvent.target = newEvent.targets[0]
     }
 
-    event.player = this.state.players
+    newEvent.player = this.state.players
       .toArray()
       .find(playerData => playerData.clientID === client.id).entity as Player
 
@@ -144,16 +145,16 @@ export class Room<S extends State> extends colRoom<S> {
       "onMessage",
       JSON.stringify(
         Object.assign(
-          { ...event },
-          event.target ? { target: minifyTarget(event.target) } : {},
-          { targets: event.targets.map(minifyTarget) },
-          event.player ? { player: minifyPlayer(event.player) } : {}
+          { ...newEvent },
+          newEvent.target ? { target: minifyTarget(newEvent.target) } : {},
+          { targets: newEvent.targets.map(minifyTarget) },
+          newEvent.player ? { player: minifyPlayer(newEvent.player) } : {}
         )
       )
     )
 
     this.commandsManager
-      .action(this.state, client, event)
+      .action(this.state, client, newEvent)
       .then(data => logs.log(`action() completed`, data))
       .catch(error => logs.error(`action() failed`, error))
   }
@@ -178,6 +179,7 @@ export class Room<S extends State> extends colRoom<S> {
 }
 
 export type EntityProps = {
+  [key: string]: unknown
   name?: string | string[]
   type?: string | string[]
   value?: number | number[]
@@ -187,5 +189,6 @@ export type EntityProps = {
 }
 
 export type InteractionDefinition = EntityProps & {
-  eventType?: string
+  $targetType?: PlayerEventTargetType
+  $eventType?: string
 }

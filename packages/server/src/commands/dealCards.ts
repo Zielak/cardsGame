@@ -1,6 +1,6 @@
 import { State } from "../state"
 import { Entity } from "../entity"
-import { Card } from "../entities/card"
+import { BaseCard } from "../entities/baseCard"
 import { logs } from "../logs"
 import { ICommand } from "../command"
 import { ChangeParent } from "./changeParent"
@@ -30,7 +30,7 @@ export class DealCards implements ICommand {
     let i = 0
     const maxDeals = this.count * this.targets.length
     const next = () => {
-      const card = this.source.top as Card
+      const card = this.source.top as BaseCard
       const currentTarget = this.targets[i % this.targets.length]
 
       // This command thing moves the entity
