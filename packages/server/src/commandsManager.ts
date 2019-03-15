@@ -30,7 +30,9 @@ export class CommandsManager {
     const actions = this.getActionsByInteraction(state, event).filter(
       action => {
         logs.verbose(`\tFilter out actions by CONDITIONS`)
-        logs.verbose(`┌─ action: ${action.name} ───────────────────────────`)
+        logs.verbose(
+          `┌─ action: ${chalk.white(action.name)} ───────────────────────────`
+        )
         const result = action.getConditions(state, event).every(condition => {
           const result = condition(state, event)
           logs.verbose(`│\tcondition: ${condition._name} =`, result)
@@ -142,7 +144,7 @@ export class CommandsManager {
     let result = false
     this.actionPending = true
     this.currentAction = action
-    logs.info("parseAction", `current action: ${action.name}`)
+    logs.info("parseAction", "current action:", chalk.white(action.name))
 
     try {
       let cmd = action.getCommands(state, event)

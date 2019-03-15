@@ -13,6 +13,7 @@ export * from "./hasAtLeastXEntitiesSelected"
 export * from "./matchesSelectedWith"
 export * from "./matchesPropWith"
 export * from "./parentIs"
+export * from "./hasChildren"
 export { default as selectedEntities } from "./selectors/selectedEntities"
 export { default as childrenOf } from "./selectors/childrenOf"
 

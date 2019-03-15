@@ -113,12 +113,14 @@ export const Atack23: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: (_, event: ServerPlayerEvent) => [
-    con
-      .childrenOf(event.player.findByName("chosenCards"))
-      .matchRank(["2", "3"]),
-    con.isPlayersTurn
-  ],
+  getConditions: (_, event: ServerPlayerEvent) => {
+    const choosenCards = event.player.findByName("chosenCards")
+    return [
+      con.hasChildren(choosenCards),
+      con.childrenOf(choosenCards).matchRank(["2", "3"]),
+      con.isPlayersTurn
+    ]
+  },
   getCommands: (state: State, event: ServerPlayerEvent) => {
     const cards = event.player.findByName("chosenCards")
       .childrenArray as ClassicCard[]
@@ -142,13 +144,15 @@ export const AtackKing: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: (_, event: ServerPlayerEvent) => [
-    con.childrenOf(event.player.findByName("chosenCards")).matchRank("K"),
-    con
-      .childrenOf(event.player.findByName("chosenCards"))
-      .matchSuit(["S", "H"]),
-    con.isPlayersTurn
-  ],
+  getConditions: (_, event: ServerPlayerEvent) => {
+    const choosenCards = event.player.findByName("chosenCards")
+    return [
+      con.hasChildren(choosenCards),
+      con.childrenOf(choosenCards).matchRank("K"),
+      con.childrenOf(choosenCards).matchSuit(["S", "H"]),
+      con.isPlayersTurn
+    ]
+  },
   getCommands: (state: State, event: ServerPlayerEvent) => {
     const card = event.player.findByName("chosenCards")
       .childrenArray[0] as ClassicCard
@@ -173,11 +177,15 @@ export const PlaySkipTurn: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: (_, event: ServerPlayerEvent) => [
-    con.childrenOf(event.player.findByName("chosenCards")).matchRank("4"),
-    con.NOT(isAtWar),
-    con.isPlayersTurn
-  ],
+  getConditions: (_, event: ServerPlayerEvent) => {
+    const choosenCards = event.player.findByName("chosenCards")
+    return [
+      con.hasChildren(choosenCards),
+      con.childrenOf(choosenCards).matchRank("4"),
+      con.NOT(isAtWar),
+      con.isPlayersTurn
+    ]
+  },
   getCommands: (state: State, event: ServerPlayerEvent) => {
     const cards = event.player.findByName("chosenCards")
       .childrenArray as ClassicCard[]
@@ -201,11 +209,15 @@ export const PlayAce: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: (_, event: ServerPlayerEvent) => [
-    con.childrenOf(event.player.findByName("chosenCards")).matchRank("A"),
-    con.NOT(isAtWar),
-    con.isPlayersTurn
-  ],
+  getConditions: (_, event: ServerPlayerEvent) => {
+    const choosenCards = event.player.findByName("chosenCards")
+    return [
+      con.hasChildren(choosenCards),
+      con.childrenOf(choosenCards).matchRank("A"),
+      con.NOT(isAtWar),
+      con.isPlayersTurn
+    ]
+  },
   getCommands: (state: State, event: ServerPlayerEvent) => {
     const cards = event.player.findByName("chosenCards")
       .childrenArray as ClassicCard[]
@@ -241,13 +253,25 @@ export const PlayNormalCards: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: (_, event: ServerPlayerEvent) => [
-    con
-      .childrenOf(event.player.findByName("chosenCards"))
-      .matchRank(["5", "6", "7", "8", "9", "10"]),
-    con.NOT(isAtWar),
-    con.isPlayersTurn
-  ],
+  getConditions: (_, event: ServerPlayerEvent) => {
+    const choosenCards = event.player.findByName("chosenCards")
+    return [
+      con.hasChildren(choosenCards),
+      con.OR(
+        // All non-functional cards
+        con
+          .childrenOf(choosenCards)
+          .matchRank(["5", "6", "7", "8", "9", "10", "Q"]),
+        // Non-functional kings
+        con.AND(
+          con.childrenOf(choosenCards).matchRank("K"),
+          con.childrenOf(choosenCards).matchSuit(["C", "D"])
+        )
+      ),
+      con.NOT(isAtWar),
+      con.isPlayersTurn
+    ]
+  },
   getCommands: (state: State, event: ServerPlayerEvent) => {
     const cards = event.player.findByName("chosenCards")
       .childrenArray as ClassicCard[]

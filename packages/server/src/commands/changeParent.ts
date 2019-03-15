@@ -30,11 +30,11 @@ export class ChangeParent implements ICommand {
     logs.log(
       "│ " + _,
       "starting, moving",
-      this.entities,
+      this.entities.map(e => e.name),
       "entities from",
-      this.source,
+      this.source.name,
       "to",
-      this.target
+      this.target.name
     )
 
     this.entities.forEach(entity => this.target.addChild(entity))
