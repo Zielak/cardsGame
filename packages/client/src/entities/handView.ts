@@ -15,7 +15,7 @@ export class HandView extends EntityView {
     this.bg = new Graphics()
 
     this.bg.beginFill(0xff0099, 0.1)
-    this.bg.lineStyle(3, 0xff0099, 1)
+    this.bg.lineStyle(3, 0xff0099, 0.2)
     this.bg.drawRoundedRect(
       -ClassicCardView.width / 2 - PLUS_SIZE * 2,
       -ClassicCardView.height / 2 - PLUS_SIZE,

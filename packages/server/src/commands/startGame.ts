@@ -20,8 +20,10 @@ export class StartGame implements ICommand {
       state.players.add({ clientID, entity })
     })
 
+    const curr = state.currentPlayer
+
     logs.log(_, `${state.playersCount} players`)
-    logs.log(_, `Current player is`, state.currentPlayer)
+    logs.log(_, `Current player is`, curr.entity.name, curr.clientID)
     state.logTreeState()
   }
 }

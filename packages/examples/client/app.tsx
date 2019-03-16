@@ -3,11 +3,11 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { GamesList } from "./components/gamesList"
 import { StateView } from "./components/stateView"
-import { RankPicker } from "./components/rankPicker"
+import { MakaoGameUI } from "./makao"
 
 const game = new Game({
   viewElement: document.getElementById("view"),
-  gameNames: ["Makao", "ContainerTest"]
+  gameNames: ["Makao", "ContainerTest", "Splendor"]
 })
 
 interface AppProps {
@@ -15,15 +15,13 @@ interface AppProps {
 }
 interface AppState {
   gameState: any
-  rankPickerActive: boolean
 }
 
 class App extends React.Component<AppProps, AppState> {
   constructor(props) {
     super(props)
     this.state = {
-      gameState: {},
-      rankPickerActive: false
+      gameState: {}
     }
   }
   componentDidMount() {
@@ -37,18 +35,7 @@ class App extends React.Component<AppProps, AppState> {
     const game = this.props.gameRef
     return (
       <div>
-        <RankPicker
-          visible={this.state.rankPickerActive}
-          handleRankChosen={value => {
-            game.send({
-              data: {
-                // TODO: there's currently no way to program
-                // UI interaction, buttons etc
-                type: "UI.button"
-              }
-            })
-          }}
-        />
+        <MakaoGameUI gameRef={game} gameState={this.state.gameState} />
         <GamesList
           getAvailableRooms={game.getAvailableRooms.bind(game)}
           joinRoom={game.joinRoom.bind(game)}

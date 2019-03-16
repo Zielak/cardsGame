@@ -17,10 +17,10 @@ export class Hand extends Container {
     //   /         \
     // [0]        [3]
     const b = new Bezier([
-      { x: -outerX, y: 3 + addY },
-      { x: -outerX + outerX / 2.5, y: -3 - addY },
-      { x: outerX - outerX / 2.5, y: -3 - addY },
-      { x: outerX, y: 3 + addY }
+      { x: -outerX, y: 4 + addY },
+      { x: -outerX + outerX / 2.5, y: -2 - addY },
+      { x: outerX - outerX / 2.5, y: -2 - addY },
+      { x: outerX, y: 4 + addY }
     ])
 
     const space = 1 / maxSpread

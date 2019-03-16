@@ -16,6 +16,7 @@ export class Player extends Entity {
   constructor(options: IPlayerOptions) {
     super(options)
     this.clientID = options.clientID
+    this.name = getRandomName()
     this._selectedEntities = new Set()
   }
 
@@ -82,4 +83,23 @@ export type ServerPlayerEvent = PlayerEvent & {
   player?: Player
   target?: Entity
   targets?: Entity[]
+}
+
+const randomPlayerNames = [
+  "Bob",
+  "Alicja",
+  "Darek",
+  "Pablo",
+  "Witeck",
+  "Pauline",
+  "Karen",
+  "Sandra",
+  "Mat",
+  "Gordon"
+]
+const getRandomName = (): string => {
+  randomPlayerNames.sort(() => {
+    return Math.floor(Math.random() * 3) - 1
+  })
+  return randomPlayerNames.pop()
 }

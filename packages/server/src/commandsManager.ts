@@ -5,8 +5,6 @@ import { State } from "./state"
 import { ICommand } from "./command"
 import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
-import { Entity } from "./entity"
-import { InteractionDefinition } from "./room"
 import chalk from "chalk"
 
 export class CommandsManager {
@@ -86,12 +84,21 @@ export class CommandsManager {
     state: State,
     event: ServerPlayerEvent
   ): ActionTemplate[] {
-    // FIXME: There can be all kinds of unknown props in action definition...
-
+    logs.info(
+      `getActionsByInteraction()`,
+      `for each ${event.targets.length} targets`
+    )
     const actions = Array.from(this.possibleActions.values()).filter(action => {
       const interactions = action.getInteractions(state)
+      logs.log(
+        action.name,
+        `got`,
+        interactions.length,
+        `interaction${interactions.length > 1 ? "s" : ""}`
+      )
 
       return interactions.some(definition => {
+        logs.verbose(`\tInteraction:\n\t`, JSON.stringify(definition))
         if (
           definition.$targetType === undefined ||
           definition.$targetType === "Entity"
@@ -100,14 +107,23 @@ export class CommandsManager {
           return event.targets
             .filter(currentTarget => currentTarget.interactive)
             .some(currentTarget =>
-              // Every key in definition should be present in the Entity
-              // and be of eqaul value
-              Object.keys(definition).some(
+              // Every KEY in definition should be present
+              // in the Entity and be of eqaul value
+              // or either of values if its an array
+              Object.keys(definition).every((prop: string) => {
+                const value = definition[prop]
+                // is simple type or array of these, NOT an {object}
+                if (Array.isArray(value) || typeof value !== "object") {
+                  const values = Array.isArray(value) ? value : [value]
+                  return values.some(
+                    testValue => currentTarget[prop] === testValue
+                  )
+                }
                 // TODO: handle `parent`
-                key => currentTarget[key] === definition[key]
-              )
+              })
             )
         } else if (definition.$targetType === "UIButton") {
+          // TODO: react on button click or anything else
         }
       })
     })

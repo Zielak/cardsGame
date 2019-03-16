@@ -1,16 +1,14 @@
-import * as React from "react"
+import React, { FunctionComponent, useState } from "react"
 
 interface ButtonProps {
   label: string
   onClick: () => void
 }
 
-export class Button extends React.Component<ButtonProps, {}> {
-  render() {
-    return (
-      <button type="button" onClick={() => this.props.onClick()}>
-        {this.props.label}
-      </button>
-    )
-  }
+export const Button: FunctionComponent<ButtonProps> = props => {
+  return (
+    <button type="button" onClick={() => props.onClick()}>
+      {props.label}
+    </button>
+  )
 }

@@ -4,7 +4,7 @@ import { Entity } from "../../entity"
 import { logs } from "../../logs"
 import { ICondition } from "../../condition"
 
-export default (entity: Entity) => {
+export const childrenOf = (entity: Entity) => {
   const children = entity.childrenArray
 
   return {

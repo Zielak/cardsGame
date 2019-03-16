@@ -179,7 +179,7 @@ export class Room<S extends State> extends colRoom<S> {
 }
 
 export type EntityProps = {
-  [key: string]: unknown
+  [key: string]: boolean | string | number | string[] | number[] | EntityProps
   name?: string | string[]
   type?: string | string[]
   value?: number | number[]

@@ -1,8 +1,6 @@
 import { ICommand } from "@cardsgame/server"
 import { MakaoState } from "./state"
 
-// export class MakaoNextPlayer extends
-
 export class IncreaseAtackPoints implements ICommand {
   lastValue: number
 
@@ -31,19 +29,6 @@ export class IncreaseSkipPoints implements ICommand {
   undo(state: MakaoState) {
     state.skipPoints = this.lastValue
   }
-}
-
-/**
- * TODO: grab all cards from pile,
- * put it on deck and shuffle,
- * put top card to pile nd show it.
- */
-export class PrepareNewDeck implements ICommand {
-  constructor(private value: number) {}
-
-  execute(state: MakaoState) {}
-
-  undo(state: MakaoState) {}
 }
 
 export class SetAtackPoints implements ICommand {
@@ -104,4 +89,17 @@ export class SetRequestedRank implements ICommand {
   undo(state: MakaoState) {
     state.requestedRank = this.lastValue
   }
+}
+
+/**
+ * TODO: grab all cards from pile,
+ * put it on deck and shuffle,
+ * put top card to pile nd show it.
+ */
+export class PrepareNewDeck implements ICommand {
+  constructor(private value: number) {}
+
+  execute(state: MakaoState) {}
+
+  undo(state: MakaoState) {}
 }

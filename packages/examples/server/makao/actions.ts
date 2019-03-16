@@ -58,8 +58,13 @@ export const SelectCard: ActionTemplate = {
     // J? you should only play what was requested or another J
 
     if (event.player.findByName("chosenCards").length === 0) {
-      // First card should match anything on Pile
-      conditions.push(con.OR(con.matchesRankWithPile, con.matchesSuitWithPile))
+      conditions.push(
+        con.OR(
+          `First card should match anything on Pile`,
+          con.matchesRankWithPile,
+          con.matchesSuitWithPile
+        )
+      )
     } else {
       // The rest should match anything already selected
       conditions.push(

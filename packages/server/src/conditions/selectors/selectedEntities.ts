@@ -9,7 +9,3 @@ export const matchRank = (_ranks: string | string[]) => {
     return selected.every(propsMatch("rank", ranks))
   }
 }
-
-export default {
-  matchRank
-}

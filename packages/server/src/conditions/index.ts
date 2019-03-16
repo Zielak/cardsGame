@@ -2,6 +2,7 @@ import { State } from "../state"
 import { ICondition } from "../condition"
 import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
+import chalk from "chalk"
 
 export * from "./isPlayersTurn"
 export * from "./matchesRankWithPile"
@@ -14,35 +15,88 @@ export * from "./matchesSelectedWith"
 export * from "./matchesPropWith"
 export * from "./parentIs"
 export * from "./hasChildren"
-export { default as selectedEntities } from "./selectors/selectedEntities"
-export { default as childrenOf } from "./selectors/childrenOf"
+export * from "./selectors/selectedEntities"
+export * from "./selectors/childrenOf"
 
-export const OR = (...conditions: ICondition[]): ICondition => {
+const generateName = (
+  name: string,
+  conditions: ICondition[],
+  description?: string
+) => {
+  const desc = description ? `"${chalk.italic(description)}"\n\t │\t\t` : ""
+  return `${desc}${name}( ${conditions.map(c => c._name).join(", ")} )`
+}
+
+function OR(...conditions: ICondition[]): ICondition
+function OR(description: string, ...conditions: ICondition[]): ICondition
+function OR(
+  condOrDesc: ICondition | string,
+  ...conds: ICondition[]
+): ICondition {
+  let conditions: ICondition[]
+  let description: string = ""
+  if (typeof condOrDesc === "string") {
+    description = condOrDesc
+    conditions = [...conds]
+  } else {
+    conditions = [condOrDesc, ...conds]
+  }
+
   const OR = (state: State, event: ServerPlayerEvent) => {
     const result = conditions.some(cond => cond(state, event))
     logs.verbose(`│\t\tOR:`, result)
     return result
   }
-  OR._name = `OR( ${conditions.map(c => c._name).join(", ")} )`
+  OR._name = generateName("OR", conditions, description)
   return OR
 }
 
-export const AND = (...conditions: ICondition[]): ICondition => {
+function AND(...conditions: ICondition[]): ICondition
+function AND(description: string, ...conditions: ICondition[]): ICondition
+function AND(
+  condOrDesc: ICondition | string,
+  ...conds: ICondition[]
+): ICondition {
+  let conditions: ICondition[]
+  let description: string = ""
+  if (typeof condOrDesc === "string") {
+    description = condOrDesc
+    conditions = [...conds]
+  } else {
+    conditions = [condOrDesc, ...conds]
+  }
+
   const AND = (state: State, event: ServerPlayerEvent) => {
     const result = conditions.every(cond => cond(state, event))
     logs.verbose(`│\t\tAND:`, result)
     return result
   }
-  AND._name = `AND( ${conditions.map(c => c._name).join(", ")} )`
+  AND._name = generateName("AND", conditions, description)
   return AND
 }
 
-export const NOT = (...conditions: ICondition[]): ICondition => {
+function NOT(...conditions: ICondition[]): ICondition
+function NOT(description: string, ...conditions: ICondition[]): ICondition
+function NOT(
+  condOrDesc: ICondition | string,
+  ...conds: ICondition[]
+): ICondition {
+  let conditions: ICondition[]
+  let description: string = ""
+  if (typeof condOrDesc === "string") {
+    description = condOrDesc
+    conditions = [...conds]
+  } else {
+    conditions = [condOrDesc, ...conds]
+  }
+
   const NOT = (state: State, event: ServerPlayerEvent) => {
     const result = !conditions.every(cond => cond(state, event))
     logs.verbose(`│\t\tNOT:`, result)
     return result
   }
-  NOT._name = `NOT( ${conditions.map(c => c._name).join(", ")} )`
+  NOT._name = generateName("NOT", conditions, description)
   return NOT
 }
+
+export { OR, AND, NOT }
