@@ -3,7 +3,7 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { GamesList } from "./components/gamesList"
 import { StateView } from "./components/stateView"
-import { MakaoGameUI } from "./makao"
+import { MakaoGameUI } from "./games/makao"
 
 const game = new Game({
   viewElement: document.getElementById("view"),

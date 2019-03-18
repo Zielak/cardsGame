@@ -1,7 +1,7 @@
-import React, { FunctionComponent, useState } from "react"
+import React, { FunctionComponent, useState, useEffect } from "react"
 import { Game } from "@cardsgame/client"
-import { RankPicker } from "./components/rankPicker"
-import { Button } from "./components/button"
+import { RankPicker } from "./rankPicker"
+import { Button } from "../components/button"
 
 interface MakaoGameUIProps {
   gameRef: Game
@@ -10,6 +10,11 @@ interface MakaoGameUIProps {
 
 export const MakaoGameUI: FunctionComponent<MakaoGameUIProps> = props => {
   const [rankPickerActive, setRankPickerActive] = useState(false)
+  useEffect(() => {
+    // setRankPickerActive(props.gameState.requestedRank)
+  }, [props.gameState.requestedRank])
+
+  const [suitPickerActive, setSuitPickerActive] = useState(false)
 
   const sendPass = () => {
     props.gameRef.send({})
@@ -23,13 +28,7 @@ export const MakaoGameUI: FunctionComponent<MakaoGameUIProps> = props => {
         key="RankPicker"
         visible={rankPickerActive}
         handleRankChosen={value => {
-          props.gameRef.send({
-            data: {
-              // TODO: there's currently no way to program
-              // UI interaction, buttons etc
-              type: "UI.button"
-            }
-          })
+          props.gameRef.send({ data: { type: "UI.button" } })
         }}
       />
     )

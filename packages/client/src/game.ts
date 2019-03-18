@@ -4,6 +4,7 @@ import { Room, PlayerData } from "./room"
 import { logs } from "./logs"
 import { EventEmitter } from "eventemitter3"
 import * as app from "./app"
+import { RoomAvailable } from "colyseus.js/lib/Room"
 
 const VIEW_WIDTH = 600
 const VIEW_HEIGHT = 600
@@ -158,15 +159,11 @@ export class Game extends EventEmitter {
     })
   }
 
-  getAvailableRooms(gameName: string) {
+  getAvailableRooms(gameName: string): Promise<RoomAvailable[]> {
     return new Promise((resolve, reject) => {
-      this.client.getAvailableRooms(gameName, (rooms, err) => {
-        if (err) {
-          reject(err)
-        }
-        logs.info(`AVAILABLE ROOMS:`, rooms)
-        resolve(rooms)
-      })
+      this.client.getAvailableRooms(gameName, (rooms, err) =>
+        err ? reject(err) : resolve(rooms)
+      )
     })
   }
 

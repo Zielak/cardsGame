@@ -106,6 +106,8 @@ export class App extends EventEmitter {
       }) as EntityView
 
       if (!foundChild) {
+        // This probably shouldn't always be an ERROR
+        // Game runs fine after this happens (makao -> playing multiple cards)
         logs.error("getEntity", `Whoops, this guy didn't have that child`)
       }
       if (path.length === 0) {
@@ -147,7 +149,7 @@ export class App extends EventEmitter {
     parent.emit(EntityEvents.childRemoved, change)
     parent.removeChild(entity)
 
-    logs.notice(`> child.removed[${change.rawPath.join("/")}]`)
+    logs.verbose(`> child.removed[${change.rawPath.join("/")}]`)
     // logs.verbose('entity:', change.value)
   }
 
@@ -171,7 +173,7 @@ export class App extends EventEmitter {
       // It's top-level entity
       this.pixiApp.stage.addChild(newEntity)
     }
-    logs.notice(
+    logs.verbose(
       `> child.added ${change.value.type} [${change.rawPath.join("/")}]`
     )
     // logs.verbose('entity:', change.value)
@@ -235,8 +237,6 @@ export class App extends EventEmitter {
       playerEntity.rotation = angle
       playerEntity.x = point.x
       playerEntity.y = point.y
-
-      logs.warn(`player ${idx}.${pd.clientID}:`, angle, point)
     })
   }
 

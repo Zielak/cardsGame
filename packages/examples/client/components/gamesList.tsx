@@ -1,69 +1,67 @@
-import * as React from "react"
+import React, { FunctionComponent, useState, useEffect } from "react"
+import { RoomAvailable } from "@cardsgame/client"
 import "./gamesList.scss"
 
 export interface GamesListProps {
   joinRoom(gameName: string): any
-  getAvailableRooms(gameName: string): Promise<{}>
+  getAvailableRooms(gameName: string): Promise<RoomAvailable[]>
   gameNames: string[]
 }
-export class GamesList extends React.Component<GamesListProps, {}> {
-  timerID: NodeJS.Timeout
-  active = false
 
-  constructor(props: GamesListProps) {
-    super(props)
-    this.state = props.gameNames.reduce((prev, key) => {
+export const GamesList: FunctionComponent<GamesListProps> = props => {
+  // const [timerID, setTimerID] = useState<NodeJS.Timeout>()
+  const [pending, setPending] = useState(false)
+
+  const [gameRooms, setGameRooms] = useState(
+    props.gameNames.reduce((prev, key) => {
       prev[key] = []
       return prev
     }, {})
-  }
-  componentDidMount() {
-    this.scheduleFetchRooms()
-    this.active = true
-  }
-  componentWillUnmount() {
-    clearInterval(this.timerID)
-    this.active = false
-  }
-  render() {
-    return (
-      <aside>
-        {this.props.gameNames.map((gameName, idx) => {
-          return (
-            <GameSection
-              key={idx + gameName}
-              title={gameName}
-              rooms={this.state[gameName]}
-              joinRoom={this.props.joinRoom}
-            />
-          )
-        })}
-      </aside>
-    )
-  }
+  )
 
-  scheduleFetchRooms() {
-    if (this.active) {
-      console.warn(`I'm aleady active!`)
-      return
-    }
-    this.timerID = setTimeout(() => {
-      if (!this.active) {
-        return
-      }
-      this.props.gameNames.forEach(gameName => {
-        this.props
-          .getAvailableRooms(gameName)
+  useEffect(() => {
+    let timerID: NodeJS.Timeout
+
+    const scheduleFetchRooms = () => {
+      setPending(true)
+      timerID = setTimeout(() => {
+        Promise.all(props.gameNames.map(g => props.getAvailableRooms(g)))
           .then(rooms => {
-            const newState = {}
-            newState[gameName] = rooms
-            this.setState(newState)
+            setGameRooms(
+              rooms.reduce((prev, room, idx) => {
+                prev[props.gameNames[idx]] = room
+                return prev
+              }, {})
+            )
+            setPending(false)
           })
-          .catch(err => console.error(err))
-          .finally(() => this.scheduleFetchRooms())
-      })
-    }, 1000)
-  }
+          .catch(err => {
+            console.error(err)
+          })
+          .then(() => scheduleFetchRooms())
+      }, 1000)
+    }
+
+    scheduleFetchRooms()
+    return () => {
+      clearTimeout(timerID)
+    }
+  }, [])
+
+  return (
+    <aside>
+      {props.gameNames.map((gameName, idx) => {
+        return (
+          <GameSection
+            key={idx + gameName}
+            title={gameName}
+            rooms={gameRooms[gameName]}
+            joinRoom={props.joinRoom}
+          />
+        )
+      })}
+    </aside>
+  )
 }
 
 interface GameSectionProps {

@@ -23,16 +23,16 @@
     "@cardsgame/client": "^0.1.4",
     "@cardsgame/server": "^0.1.4",
     "@cardsgame/types": "^0.1.1",
-    "react": "^16.8.3",
-    "react-dom": "^16.8.3"
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   },
   "devDependencies": {
-    "@types/react": "^16.8.5",
+    "@types/react": "^16.8.8",
     "@types/react-dom": "^16.8.2",
     "nodemon": "^1.18.10",
-    "parcel-bundler": "^1.11.0",
+    "parcel-bundler": "^1.12.2",
     "parcel-plugin-clean-dist": "0.0.6",
-    "ts-node": "^8.0.2",
+    "ts-node": "^8.0.3",
     "typescript": "^3.3.3333"
   }
 }
