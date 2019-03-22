@@ -4,5 +4,12 @@
     "**/dist": true,
     "**/lib": true
   },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.exclude": {
+    ".vscode": true,
+    "**/.cache": true,
+    "**/dist": true,
+    "**/lib": true,
+    "**/node_modules": true
+  }
 }
