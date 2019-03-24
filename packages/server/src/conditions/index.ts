@@ -7,7 +7,7 @@ import chalk from "chalk"
 export * from "./isPlayersTurn"
 export * from "./matchesRankWithPile"
 export * from "./matchesSuitWithPile"
-export * from "./targetsNameIs"
+export * from "./entitiesNameIs"
 export * from "./isOwner"
 export * from "./isSelected"
 export * from "./hasAtLeastXEntitiesSelected"
@@ -17,6 +17,8 @@ export * from "./parentIs"
 export * from "./hasChildren"
 export * from "./selectors/selectedEntities"
 export * from "./selectors/childrenOf"
+export * from "./hasRevealedUI"
+export * from "./propEquals"
 
 const generateName = (
   name: string,

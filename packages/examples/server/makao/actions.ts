@@ -40,7 +40,10 @@ export const SelectCard: ActionTemplate = {
       return [{ type: "classicCard", rank: state.requestedRank }]
     } else if (state.requestedSuit) {
       // A? you should only play requested suit OR other Ace
-      return [{ type: "classicCard", suit: state.requestedSuit }]
+      return [
+        { type: "classicCard", suit: state.requestedSuit },
+        { type: "classicCard", rank: "A" }
+      ]
     }
     return [{ type: "classicCard" }]
   },
@@ -48,15 +51,22 @@ export const SelectCard: ActionTemplate = {
     const conditions = [
       con.isOwner,
       con.isPlayersTurn,
-      con.parentIs({ name: "playersHand" })
+      con.parentIs({ name: "playersHand" }),
+      // You can't go selecting cards when you have unfinished
+      // bussiness with the UI.
+      con.NOT(con.hasRevealedUI(["suitPicker", "rankPicker"]))
     ]
 
     if (event.player.findByName("chosenCards").length === 0) {
       conditions.push(
         con.OR(
           `First card should match anything on Pile`,
-          con.matchesRankWithPile,
-          con.matchesSuitWithPile
+          state.requestedRank
+            ? con.propEquals("rank", state.requestedRank)
+            : con.matchesRankWithPile,
+          state.requestedSuit
+            ? con.propEquals("suit", state.requestedSuit)
+            : con.matchesSuitWithPile
         )
       )
     } else {
@@ -130,6 +140,8 @@ export const Atack23: ActionTemplate = {
       new cmd.ChangeParent(cards, source, target),
       new cmd.ShowCard(cards),
       new IncreaseAtackPoints(parseInt(cards[0].rank) * cards.length),
+
+      new SetRequestedSuit(undefined),
       new cmd.NextPlayer()
     ]
   }
@@ -162,6 +174,8 @@ export const AtackKing: ActionTemplate = {
       new cmd.ChangeParent(card, source, target),
       new cmd.ShowCard(card),
       new IncreaseAtackPoints(5),
+
+      new SetRequestedSuit(undefined),
       // Variant here
       card.suit === "H" ? new cmd.NextPlayer() : new cmd.PreviousPlayer()
     ]
@@ -195,6 +209,8 @@ export const PlaySkipTurn: ActionTemplate = {
       new cmd.ChangeParent(cards, source, target),
       new cmd.ShowCard(cards),
       new IncreaseSkipPoints(cards.length),
+
+      new SetRequestedSuit(undefined),
       new cmd.NextPlayer()
     ]
   }
@@ -285,6 +301,8 @@ export const PlayNormalCards: ActionTemplate = {
     return [
       new cmd.ChangeParent(cards, source, pile),
       new cmd.ShowCard(cards),
+
+      new SetRequestedSuit(undefined),
       new cmd.NextPlayer()
     ]
   }

@@ -7,9 +7,7 @@ import { ServerPlayerEvent } from "../player"
  * Function returns an actual `Condition`
  * @param count X
  */
-export const hasAtLeastXEntitiesSelected: IConditionFactory = (
-  count: number
-): ICondition => {
+export const hasAtLeastXEntitiesSelected = (count: number): ICondition => {
   const cond: ICondition = (state: State, event: ServerPlayerEvent) =>
     event.player.selectedEntitiesCount >= count
   cond._name = `hasAtLeast(${count})EntitiesSelected`

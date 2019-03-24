@@ -5,7 +5,7 @@ import { logs } from "../logs"
 import { sentenceCase } from "@cardsgame/utils"
 import { Entity } from "../entity"
 
-export const matchesPropWith: IConditionFactory = (
+export const matchesPropWith = (
   propName: string,
   entities: (state: State, event: ServerPlayerEvent) => Entity[]
 ) => {
