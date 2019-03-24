@@ -72,7 +72,9 @@ export class Game extends EventEmitter {
     const gameRoom = this.client.join(gameName)
     this.room = new Room(gameRoom)
 
-    this.room.once(Room.events.join, () => this.emit(Game.events.joinedRoom))
+    this.room.once(Room.events.join, () =>
+      this.emit(Game.events.joinedRoom, gameName)
+    )
 
     // Create renderer
     this.app.create()

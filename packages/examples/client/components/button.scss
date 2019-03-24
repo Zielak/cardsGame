@@ -1,0 +1,12 @@
+button {
+  font-size: 1rem;
+  padding: 0.5em 1em;
+
+  &.noPadding {
+    padding: 0;
+  }
+  &.square {
+    width: 1em;
+    height: 1em;
+  }
+}

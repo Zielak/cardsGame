@@ -20,12 +20,13 @@ interface AppState {
 export const App: FunctionComponent<AppProps> = props => {
   const [gameState, setGameState] = useState({})
 
-  const [currentRoomElement, setCurrentRoomElement] = useState()
+  const [currentGame, setCurrentGame] = useState("")
 
   useEffect(() => {
-    const joinedRoomHandler = () => {
+    const joinedRoomHandler = (gameName: string) => {
       console.info("joinedRoom")
-      // Every time we join a game, listen differently
+      setCurrentGame(gameName)
+
       const room = props.gameRef.room
       room.on(Room.events.stateChange, gameState => {
         setGameState(gameState)
@@ -41,15 +42,25 @@ export const App: FunctionComponent<AppProps> = props => {
 
   const game = props.gameRef
 
+  let gameUI
+
+  switch (currentGame) {
+    case "Makao":
+      gameUI = <MakaoGameUI gameRef={game} gameState={gameState} />
+      break
+    default:
+      gameUI = <h3>Join some game!</h3>
+  }
+
   return (
     <div>
-      <MakaoGameUI gameRef={game} gameState={gameState} />
+      {gameUI}
+      <StateView state={gameState} />
       <GamesList
         getAvailableRooms={game.getAvailableRooms.bind(game)}
         joinRoom={game.joinRoom.bind(game)}
         gameNames={game.gameNames}
       />
-      <StateView state={gameState} />
     </div>
   )
 }

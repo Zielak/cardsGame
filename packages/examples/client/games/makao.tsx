@@ -32,21 +32,23 @@ export const MakaoGameUI: FunctionComponent<MakaoGameUIProps> = props => {
   //     />
   //   )
   // }
-  if (gameState.ui.suitPicker === game.client.id) {
-    children.push(
-      <SuitPicker
-        key="SuitPicker"
-        handleSuitChosen={value => {
-          props.gameRef.send({ data: { type: "UI.button" } })
-        }}
-      />
-    )
-  }
-  if (gameState.skipPoints > 0 && gameState) {
-    const sendPass = () => {
-      props.gameRef.send({})
+  if (gameState) {
+    if (gameState.ui && gameState.ui.suitPicker === game.client.id) {
+      children.push(
+        <SuitPicker
+          key="SuitPicker"
+          handleSuitChosen={value => {
+            props.gameRef.send({ event: "requestSuit", data: value })
+          }}
+        />
+      )
     }
-    children.push(<Button key="PassButton" label="PASS" onClick={sendPass} />)
+    if (gameState.skipPoints > 0 && gameState) {
+      const sendPass = () => {
+        props.gameRef.send({})
+      }
+      children.push(<Button key="PassButton" label="PASS" onClick={sendPass} />)
+    }
   }
   return <>{...children}</>
 }

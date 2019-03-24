@@ -13,7 +13,7 @@ export const MoveCards: ActionTemplate = {
   name: "MoveCard",
   getCommands: (state: State, event: ServerPlayerEvent) => {
     // Get container from targets
-    const targetContainer = event.targets.find(el => el.isContainer)
+    const targetContainer = event.entities.find(el => el.isContainer)
     const entity = state.entities.findByName("middle").top
 
     return new cmd.CompositeCommand([

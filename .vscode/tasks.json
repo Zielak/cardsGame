@@ -7,7 +7,7 @@
       "type": "shell",
       "args": ["Validated, check output in 'Problems' panel."],
       "presentation": {
-        "reveal": "silent"
+        "reveal": "never"
       },
       "dependsOn": ["Validate Server", "Validate Client", "Validate Utils"],
       "problemMatcher": ["$tsc"]
@@ -16,9 +16,9 @@
       "label": "Validate Server",
       "command": "tsc",
       "type": "shell",
-      "args": ["tsc --noEmit -p packages/server/src"],
+      "args": ["--noEmit", "-p", "packages/server/src"],
       "presentation": {
-        "reveal": "silent"
+        "reveal": "never"
       },
       "problemMatcher": "$tsc"
     },
@@ -26,9 +26,9 @@
       "label": "Validate Client",
       "command": "tsc",
       "type": "shell",
-      "args": ["tsc --noEmit -p packages/client/src"],
+      "args": ["--noEmit", "-p", "packages/client/src"],
       "presentation": {
-        "reveal": "silent"
+        "reveal": "never"
       },
       "problemMatcher": "$tsc"
     },
@@ -36,9 +36,19 @@
       "label": "Validate Utils",
       "command": "tsc",
       "type": "shell",
-      "args": ["tsc --noEmit -p packages/utils/src"],
+      "args": ["--noEmit", "-p", "packages/utils/src"],
       "presentation": {
-        "reveal": "silent"
+        "reveal": "never"
+      },
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "Validate Examples",
+      "command": "tsc",
+      "type": "shell",
+      "args": ["--noEmit", "-p", "packages/examples/server"],
+      "presentation": {
+        "reveal": "never"
       },
       "problemMatcher": "$tsc"
     }

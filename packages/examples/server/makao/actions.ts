@@ -47,7 +47,7 @@ export const SelectCard: ActionTemplate = {
     ]
     // Keep checking pile and state for any current functional cards in effect
     const pile = state.entities.findByName("mainPile")
-    const pickedCard = event.target as ClassicCard
+    const pickedCard = event.entity as ClassicCard
     // 4? you shant play any other cards
     if (state.skipPoints > 0) {
       conditions.push(con.matchesRankWithPile)
@@ -82,7 +82,7 @@ export const SelectCard: ActionTemplate = {
     const playersHand = event.player.findByName("playersHand")
     const chosenCardsRow = event.player.findByName("chosenCards")
 
-    return new cmd.ChangeParent(event.target, playersHand, chosenCardsRow)
+    return new cmd.ChangeParent(event.entity, playersHand, chosenCardsRow)
   }
 }
 
@@ -102,8 +102,8 @@ export const DeselectCard: ActionTemplate = {
     const playersHand = event.player.findByName("playersHand")
     const chosenCardsRow = event.player.findByName("chosenCards")
 
-    if (event.target.idx > 0) {
-      return new cmd.ChangeParent(event.target, chosenCardsRow, playersHand)
+    if (event.entity.idx > 0) {
+      return new cmd.ChangeParent(event.entity, chosenCardsRow, playersHand)
     } else {
       const allChosenCards = event.player.findByName("chosenCards")
         .childrenArray as ClassicCard[]
@@ -234,7 +234,7 @@ export const PlayAce: ActionTemplate = {
     return [
       new cmd.ChangeParent(cards, source, target),
       new cmd.ShowCard(cards),
-      new RevealUI("requerstSuit")
+      new RevealUI("suitPicker")
       // To be continued in RequestSuit action...
     ]
   }
@@ -244,15 +244,14 @@ export const RequestSuit: ActionTemplate = {
   name: "RequestSuit",
   getInteractions: () => [
     {
-      $targetType: "UIButton",
-      type: "UI.button"
+      event: "requestSuit"
     }
   ],
   getConditions: () => [],
   getCommands: (state: State, event: ServerPlayerEvent) => {
     return [
-      new SetRequestedSuit(event.targetType),
-      new HideUI("requerstSuit"),
+      new SetRequestedSuit(event.data),
+      new HideUI("suitPicker"),
       new cmd.NextPlayer()
     ]
   }
@@ -309,7 +308,7 @@ export const DrawCards: ActionTemplate = {
   ],
   getConditions: () => [con.isPlayersTurn],
   getCommands: (state: MakaoState, event: ServerPlayerEvent) => {
-    const deck = event.target as Deck
+    const deck = event.entity as Deck
     const target = event.player.findByName("playersHand")
 
     logs.log("DrawCards", state.atackPoints)

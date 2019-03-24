@@ -44,7 +44,8 @@ export const GamesList: FunctionComponent<GamesListProps> = props => {
   }, [])
 
   return (
-    <aside>
+    <aside className="GamesList">
+      <h2>Games list</h2>
       {props.gameNames.map((gameName, idx) => {
         return (
           <GameSection

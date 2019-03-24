@@ -19,9 +19,9 @@ export const PickCard: ActionTemplate = {
   ],
   getConditions: () => [con.NOT(isCardPicked)],
   getCommands: (state: State, event: ServerPlayerEvent) => {
-    const targetEntity = event.target.isContainer
-      ? event.target.top
-      : event.target
+    const targetEntity = event.entity.isContainer
+      ? event.entity.top
+      : event.entity
 
     return new cmd.CompositeCommand([
       new cmd.ChangeParent(

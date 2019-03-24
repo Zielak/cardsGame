@@ -122,10 +122,10 @@ export class Room<S extends State> extends colRoom<S> {
 
     // Populate event with server-side known data
     const newEvent: ServerPlayerEvent = { ...event }
-    if (newEvent.targetPath) {
+    if (newEvent.entityPath) {
       // Make sure
       newEvent.entities = this.state
-        .getEntitiesAlongPath(newEvent.targetPath)
+        .getEntitiesAlongPath(newEvent.entityPath)
         .reverse()
         .filter(target => target.interactive)
       newEvent.entity = newEvent.entities[0]
@@ -190,6 +190,5 @@ export type EntityProps = {
 }
 
 export type InteractionDefinition = EntityProps & {
-  $targetType?: PlayerEventTargetType
-  $eventType?: string
+  event?: string
 }

@@ -1,4 +1,4 @@
-#gamesList {
+.GamesList {
   section {
     padding: 0.5em;
   }
@@ -9,5 +9,9 @@
     button.join {
       margin-left: 0.5em;
     }
+  }
+
+  ol {
+    margin: 0;
   }
 }
