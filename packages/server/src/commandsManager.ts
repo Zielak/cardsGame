@@ -104,8 +104,8 @@ export class CommandsManager {
       return interactions.some(definition => {
         logs.verbose(`\tInteraction:\n\t`, JSON.stringify(definition))
         if (
-          definition.$targetType === undefined ||
-          definition.$targetType === "Entity"
+          event.entities &&
+          (!definition.command || definition.command === "EntityInteraction")
         ) {
           // Check props for every interactive entity in `targets` array
           return event.entities
@@ -126,8 +126,15 @@ export class CommandsManager {
                 // TODO: handle `parent`
               })
             )
-        } else if (definition.$targetType === "UIButton") {
+        } else if (definition.command) {
           // TODO: react on button click or anything else
+          logs.verbose(
+            `\t\tCommand:\n\t`,
+            definition.command,
+            "===",
+            event.command
+          )
+          return definition.command === event.command
         }
       })
     })

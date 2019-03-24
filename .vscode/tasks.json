@@ -46,7 +46,7 @@
       "label": "Validate Examples",
       "command": "tsc",
       "type": "shell",
-      "args": ["--noEmit", "-p", "packages/examples/server"],
+      "args": ["--noEmit", "--jsx", "react", "-p", "packages/examples/server"],
       "presentation": {
         "reveal": "never"
       },

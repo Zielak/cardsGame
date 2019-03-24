@@ -20,7 +20,8 @@ import {
   PlayNormalCards,
   DeselectCard,
   SelectCard,
-  PlayAce
+  PlayAce,
+  RequestSuit
 } from "./actions"
 
 export class MakaoRoom extends Room<MakaoState> {
@@ -28,6 +29,10 @@ export class MakaoRoom extends Room<MakaoState> {
 
   // Order of definition matters.
   possibleActions = new Set<ActionTemplate>([
+    // UI related actions
+    RequestSuit,
+
+    // Entity-related actions
     SelectCard,
     DeselectCard,
     DrawCards,

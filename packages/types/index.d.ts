@@ -30,13 +30,16 @@ type PrivateAttributeChangeData = {
  * while interacting with game elements
  */
 type PlayerEvent = {
-  // Interaction-related events ("click") OR any other custom, game-related command ("pass", "done", etc)
+  // EntityInteraction or any other Game-related command
+  command?: string
+
+  // Interaction-related events ("click")
   event?: string
 
   // Path to target Entity, by idx/idx/idx...
   entityPath?: number[]
 
-  // custom event's data
+  // custom command's data
   data?: any
 }
 

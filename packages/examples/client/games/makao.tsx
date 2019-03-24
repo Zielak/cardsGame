@@ -38,7 +38,7 @@ export const MakaoGameUI: FunctionComponent<MakaoGameUIProps> = props => {
         <SuitPicker
           key="SuitPicker"
           handleSuitChosen={value => {
-            props.gameRef.send({ event: "requestSuit", data: value })
+            props.gameRef.send({ command: "requestSuit", data: value })
           }}
         />
       )
@@ -47,7 +47,25 @@ export const MakaoGameUI: FunctionComponent<MakaoGameUIProps> = props => {
       const sendPass = () => {
         props.gameRef.send({})
       }
-      children.push(<Button key="PassButton" label="PASS" onClick={sendPass} />)
+      children.push(
+        <Button key="PassButton" onClick={sendPass}>
+          PASS
+        </Button>
+      )
+    }
+    if (gameState.requestedSuit) {
+      children.push(
+        <p key="requestedSuit">
+          Requested suit is now {gameState.requestedSuit}!
+        </p>
+      )
+    }
+    if (gameState.requestedRank) {
+      children.push(
+        <p key="requestedRank">
+          Requested rank is now {gameState.requestedRank}!
+        </p>
+      )
     }
   }
   return <>{...children}</>

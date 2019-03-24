@@ -22,19 +22,24 @@ import { isAtWar } from "./conditions"
 
 export const SelectCard: ActionTemplate = {
   name: "SelectCard",
-  description: `Selecting cards makes sure that cards match with the pile.
-  No need to keep checking for it in other actions`,
+  description: `Selecting cards makes sure that cards match with the pile and/or.
+  with currently requested cards.
+  No need to keep checking for it in other actions.`,
   getInteractions: (state: MakaoState) => {
     if (state.atackPoints > 0) {
+      // 2,3,K? you shall only play atack cards
       return [
         { type: "classicCard", rank: ["2", "3"] },
         { type: "classicCard", rank: "K", suit: ["H", "S"] }
       ]
     } else if (state.skipPoints > 0) {
+      // 4? you shant play any other cards
       return [{ type: "classicCard", rank: "4" }]
     } else if (state.requestedRank) {
+      // J? you should only play what was requested or another J
       return [{ type: "classicCard", rank: state.requestedRank }]
     } else if (state.requestedSuit) {
+      // A? you should only play requested suit OR other Ace
       return [{ type: "classicCard", suit: state.requestedSuit }]
     }
     return [{ type: "classicCard" }]
@@ -45,19 +50,6 @@ export const SelectCard: ActionTemplate = {
       con.isPlayersTurn,
       con.parentIs({ name: "playersHand" })
     ]
-    // Keep checking pile and state for any current functional cards in effect
-    const pile = state.entities.findByName("mainPile")
-    const pickedCard = event.entity as ClassicCard
-    // 4? you shant play any other cards
-    if (state.skipPoints > 0) {
-      conditions.push(con.matchesRankWithPile)
-    }
-    // 2,3,K? you shall only play atack cards
-    // if (state.atackPoints > 0) {
-    //   conditions.push(con.)
-    // }
-    // A? you should only play requested suit OR other Ace
-    // J? you should only play what was requested or another J
 
     if (event.player.findByName("chosenCards").length === 0) {
       conditions.push(
@@ -244,7 +236,7 @@ export const RequestSuit: ActionTemplate = {
   name: "RequestSuit",
   getInteractions: () => [
     {
-      event: "requestSuit"
+      command: "requestSuit"
     }
   ],
   getConditions: () => [],

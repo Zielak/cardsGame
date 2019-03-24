@@ -157,6 +157,7 @@ export class Game extends EventEmitter {
 
     this.app.on("click", (event: app.ClickEvent) => {
       const playerEvent: PlayerEvent = {
+        command: "EntityInteraction",
         event: event.type,
         entityPath: event.targetEntity.idxPath
       }

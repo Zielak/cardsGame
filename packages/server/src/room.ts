@@ -190,5 +190,6 @@ export type EntityProps = {
 }
 
 export type InteractionDefinition = EntityProps & {
+  command?: string
   event?: string
 }
