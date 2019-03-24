@@ -91,6 +91,43 @@ export class SetRequestedRank implements ICommand {
   }
 }
 
+export class RevealUI implements ICommand {
+  lastUiName: string
+  lastUiValue: string
+
+  constructor(private uiName: string, private clientID?: string) {}
+
+  execute(state: MakaoState) {
+    const update = (uiName: string) => {
+      this.lastUiName = uiName
+      this.lastUiValue = state.ui[uiName]
+      state.ui[uiName] = this.clientID || state.currentPlayer.clientID
+    }
+    update(this.uiName)
+  }
+
+  undo(state: MakaoState) {
+    state.ui[this.lastUiName] = this.lastUiValue
+  }
+}
+
+export class HideUI implements ICommand {
+  lastUiName: string
+  lastUiValue: string
+
+  constructor(private uiName: string) {}
+
+  execute(state: MakaoState) {
+    this.lastUiName = this.uiName
+    this.lastUiValue = state.ui[this.uiName]
+    state.ui[this.uiName] = ""
+  }
+
+  undo(state: MakaoState) {
+    state.ui[this.lastUiName] = this.lastUiValue
+  }
+}
+
 /**
  * TODO: grab all cards from pile,
  * put it on deck and shuffle,

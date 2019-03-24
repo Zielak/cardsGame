@@ -9,9 +9,6 @@ export interface GamesListProps {
 }
 
 export const GamesList: FunctionComponent<GamesListProps> = props => {
-  // const [timerID, setTimerID] = useState<NodeJS.Timeout>()
-  const [pending, setPending] = useState(false)
-
   const [gameRooms, setGameRooms] = useState(
     props.gameNames.reduce((prev, key) => {
       prev[key] = []
@@ -23,7 +20,6 @@ export const GamesList: FunctionComponent<GamesListProps> = props => {
     let timerID: NodeJS.Timeout
 
     const scheduleFetchRooms = () => {
-      setPending(true)
       timerID = setTimeout(() => {
         Promise.all(props.gameNames.map(g => props.getAvailableRooms(g)))
           .then(rooms => {
@@ -33,7 +29,6 @@ export const GamesList: FunctionComponent<GamesListProps> = props => {
                 return prev
               }, {})
             )
-            setPending(false)
           })
           .catch(err => {
             console.error(err)

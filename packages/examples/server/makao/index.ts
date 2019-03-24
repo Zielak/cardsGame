@@ -43,6 +43,7 @@ export class MakaoRoom extends Room<MakaoState> {
   deck: Deck
 
   onSetupGame(state: MakaoState) {
+    logs.info("Makao", `setting up the game`)
     state.atackPoints = 0
     state.skipPoints = 0
     state.turnSkips = {}
@@ -115,7 +116,21 @@ export class MakaoRoom extends Room<MakaoState> {
     )
     new commands.FlipCard(this.pile.top as ClassicCard).execute(state)
 
-    logs.info("Final state")
+    // debug, all players get aces
+    playersHands
+      .map(() => [
+        new ClassicCard({ state, suit: "D", rank: "A", parent: this.deck }),
+        new ClassicCard({ state, suit: "H", rank: "A", parent: this.deck }),
+        new ClassicCard({ state, suit: "C", rank: "A", parent: this.deck }),
+        new ClassicCard({ state, suit: "S", rank: "A", parent: this.deck })
+      ])
+      .reduce((prev, next) => {
+        prev.push(...next)
+        return prev
+      }, [])
+    new commands.DealCards(this.deck, playersHands, 1, 4).execute(state)
+
+    logs.info("Final state HELLO")
     state.logTreeState()
   }
 }

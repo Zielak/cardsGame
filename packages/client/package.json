@@ -12,6 +12,7 @@
   "scripts": {
     "build": "webpack --env.production",
     "build:dev": "webpack",
+    "build:watch": "webpack --watch",
     "test": "echo \"¯\\_(ツ)_/¯\""
   },
   "devDependencies": {

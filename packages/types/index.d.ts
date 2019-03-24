@@ -26,19 +26,21 @@ type PrivateAttributeChangeData = {
 }
 
 /**
- * Event created by player
+ * Event created by player on client
  * while interacting with game elements
  */
 type PlayerEvent = {
-  eventType?: string
-  targetType: PlayerEventTargetType
+  // Interaction-related events ("click") OR any other custom, game-related command ("pass", "done", etc)
+  event?: string
+
   // Path to target Entity, by idx/idx/idx...
-  targetPath?: number[]
-  // additional/optional data
+  entityPath?: number[]
+
+  // custom event's data
   data?: any
 }
 
 /**
  * Type of the element which player interacted with
  */
-type PlayerEventTargetType = "Entity" | "UIButton"
+// type PlayerEventTargetType = "Entity" | "UIElement"

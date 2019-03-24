@@ -1,0 +1,46 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "TSC Validate",
+      "command": "tsc",
+      "type": "shell",
+      "args": ["Validated, check output in 'Problems' panel."],
+      "presentation": {
+        "reveal": "silent"
+      },
+      "dependsOn": ["Validate Server", "Validate Client", "Validate Utils"],
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Validate Server",
+      "command": "tsc",
+      "type": "shell",
+      "args": ["tsc --noEmit -p packages/server/src"],
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "Validate Client",
+      "command": "tsc",
+      "type": "shell",
+      "args": ["tsc --noEmit -p packages/client/src"],
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "Validate Utils",
+      "command": "tsc",
+      "type": "shell",
+      "args": ["tsc --noEmit -p packages/utils/src"],
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$tsc"
+    }
+  ]
+}

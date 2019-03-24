@@ -14,7 +14,9 @@ import {
   IncreaseAtackPoints,
   SetAtackPoints,
   IncreaseSkipPoints,
-  SetRequestedSuit
+  SetRequestedSuit,
+  RevealUI,
+  HideUI
 } from "./commands"
 import { isAtWar } from "./conditions"
 
@@ -231,7 +233,8 @@ export const PlayAce: ActionTemplate = {
 
     return [
       new cmd.ChangeParent(cards, source, target),
-      new cmd.ShowCard(cards)
+      new cmd.ShowCard(cards),
+      new RevealUI("requerstSuit")
       // To be continued in RequestSuit action...
     ]
   }
@@ -241,12 +244,17 @@ export const RequestSuit: ActionTemplate = {
   name: "RequestSuit",
   getInteractions: () => [
     {
+      $targetType: "UIButton",
       type: "UI.button"
     }
   ],
   getConditions: () => [],
   getCommands: (state: State, event: ServerPlayerEvent) => {
-    return [new SetRequestedSuit("9"), new cmd.NextPlayer()]
+    return [
+      new SetRequestedSuit(event.targetType),
+      new HideUI("requerstSuit"),
+      new cmd.NextPlayer()
+    ]
   }
 }
 

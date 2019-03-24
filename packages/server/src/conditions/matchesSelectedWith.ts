@@ -6,7 +6,7 @@ import { sentenceCase } from "@cardsgame/utils"
 
 export const matchesSelectedWith: IConditionFactory = (propName: string) => {
   const cond: ICondition = (state: State, event: ServerPlayerEvent) => {
-    const target = event.target
+    const target = event.entity
     const selected = event.player.selectedEntities
     const matches = selected.every(entity => {
       return entity[propName] === target[propName]

@@ -3,12 +3,13 @@ import { EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
 import { Entity } from "./entity"
 import { EntityMap } from "./entityMap"
+import { cm2px } from "@cardsgame/utils"
 
 export class State extends EventEmitter {
   // 60 cm
-  tableWidth = 600
+  tableWidth = cm2px(60)
   // 60 cm
-  tableHeight = 600
+  tableHeight = cm2px(60)
 
   entities: Entity
 
@@ -26,6 +27,9 @@ export class State extends EventEmitter {
   gameVariants: any
 
   isGameStarted = false
+
+  ui = {}
+
   @nosync
   _lastID = -1
   @nosync

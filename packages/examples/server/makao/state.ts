@@ -1,12 +1,19 @@
 import { State } from "@cardsgame/server"
 
+interface MakaoUI {
+  suitPicker: string
+  rankPicker: string
+}
+
 export class MakaoState extends State {
   atackPoints: number
   // [4]
   skipPoints: number
-  // Ace
+  // Ace - changes the color of current top card on the pile
+  // duration - until someone plays a card over it
   requestedSuit: string
-  // Jack
+  // Jack - requests all the players to play only this card
+  // duration - until turn gets to the requesting player
   requestedRank: string
 
   turnSkips: {
@@ -15,5 +22,11 @@ export class MakaoState extends State {
 
   get isAtWar(): boolean {
     return this.atackPoints > 0
+  }
+
+  // Which players to show specific interface
+  ui: MakaoUI = {
+    suitPicker: "",
+    rankPicker: ""
   }
 }

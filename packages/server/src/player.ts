@@ -78,11 +78,11 @@ export interface IPlayerOptions extends IEntityOptions {
   clientID: string
 }
 
+// Event from client, with stuff auto filled when comming to server
 export type ServerPlayerEvent = PlayerEvent & {
-  // Auto filled on the server:
   player?: Player
-  target?: Entity
-  targets?: Entity[]
+  entity?: Entity
+  entities?: Entity[]
 }
 
 const randomPlayerNames = [

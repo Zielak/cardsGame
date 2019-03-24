@@ -50,7 +50,7 @@ export class CommandsManager {
       logs.info("performAction", `no actions, ignoring.`)
       throw new Error(
         `Client ${client.id}: No actions found for that ${
-          event.eventType
+          event.event
         }, ignoring...`
       )
     }
@@ -84,10 +84,14 @@ export class CommandsManager {
     state: State,
     event: ServerPlayerEvent
   ): ActionTemplate[] {
-    logs.info(
-      `getActionsByInteraction()`,
-      `for each ${event.targets.length} targets`
-    )
+    if (event.entities) {
+      logs.info(
+        `getActionsByInteraction()`,
+        `for each ${event.entities.length} targets`
+      )
+    } else {
+      logs.info(`getActionsByInteraction()`)
+    }
     const actions = Array.from(this.possibleActions.values()).filter(action => {
       const interactions = action.getInteractions(state)
       logs.log(
@@ -104,7 +108,7 @@ export class CommandsManager {
           definition.$targetType === "Entity"
         ) {
           // Check props for every interactive entity in `targets` array
-          return event.targets
+          return event.entities
             .filter(currentTarget => currentTarget.interactive)
             .some(currentTarget =>
               // Every KEY in definition should be present

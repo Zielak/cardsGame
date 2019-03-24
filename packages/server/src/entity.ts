@@ -197,7 +197,9 @@ export class Entity extends EventEmitter {
     }
 
     const lastParent: Entity =
-      child.parent === State.ROOT_ID || !child.parent
+      // BUGFIX: You MUST be able to move stuff from ROOT.
+      //         I don't know why that condition was like that.
+      /*child.parent === State.ROOT_ID ||*/ typeof child.parent !== "number"
         ? null
         : child.parentEntity
     const lastOwner = child.owner
@@ -251,6 +253,7 @@ export class Entity extends EventEmitter {
   }
 
   removeChildAt(idx: number, _silent: boolean = false): boolean {
+    if (idx < 0) throw new Error(`Entity.removeChildAt - idx must be >= 0`)
     const child: Entity = this.children[idx]
     const result = this.children.remove(idx)
     if (!result) {

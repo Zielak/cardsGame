@@ -16,7 +16,7 @@ function hasChildren(
     cond._name = `hasChildren{entity}`
     return cond
   } else {
-    return event.target.length > 0
+    return event.entity.length > 0
   }
 }
 hasChildren._name = `hasChildren`

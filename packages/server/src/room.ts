@@ -124,16 +124,21 @@ export class Room<S extends State> extends colRoom<S> {
     const newEvent: ServerPlayerEvent = { ...event }
     if (newEvent.targetPath) {
       // Make sure
-      newEvent.targets = this.state
+      newEvent.entities = this.state
         .getEntitiesAlongPath(newEvent.targetPath)
         .reverse()
         .filter(target => target.interactive)
-      newEvent.target = newEvent.targets[0]
+      newEvent.entity = newEvent.entities[0]
     }
 
-    newEvent.player = this.state.players
+    const playerData = this.state.players
       .toArray()
-      .find(playerData => playerData.clientID === client.id).entity as Player
+      .find(playerData => playerData.clientID === client.id)
+    if (!playerData) {
+      logs.error("onMessage", `You're no a player, get out!`)
+      return
+    }
+    newEvent.player = playerData.entity as Player
 
     const minifyTarget = (e: Entity) => {
       return `${e.type}:${e.name}`
@@ -141,17 +146,13 @@ export class Room<S extends State> extends colRoom<S> {
     const minifyPlayer = (p: Player) => {
       return `${p.type}:${p.name}[${p.clientID}]`
     }
-    logs.info(
-      "onMessage",
-      JSON.stringify(
-        Object.assign(
-          { ...newEvent },
-          newEvent.target ? { target: minifyTarget(newEvent.target) } : {},
-          { targets: newEvent.targets.map(minifyTarget) },
-          newEvent.player ? { player: minifyPlayer(newEvent.player) } : {}
-        )
-      )
+    const logObj = Object.assign(
+      { ...newEvent },
+      newEvent.entity ? { target: minifyTarget(newEvent.entity) } : {},
+      newEvent.entities ? { targets: newEvent.entities.map(minifyTarget) } : {},
+      newEvent.player ? { player: minifyPlayer(newEvent.player) } : {}
     )
+    logs.info("onMessage", JSON.stringify(logObj))
 
     this.commandsManager
       .action(this.state, client, newEvent)

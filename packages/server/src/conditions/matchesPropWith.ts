@@ -10,7 +10,7 @@ export const matchesPropWith: IConditionFactory = (
   entities: (state: State, event: ServerPlayerEvent) => Entity[]
 ) => {
   const cond: ICondition = (state: State, event: ServerPlayerEvent) => {
-    const target = event.target
+    const target = event.entity
     const ents = entities(state, event)
     const matches = ents.every(entity => {
       return entity[propName] === target[propName]
