@@ -1,3 +1,4 @@
+import chalk from "chalk"
 import {
   ActionTemplate,
   Room,
@@ -88,6 +89,34 @@ export class MakaoRoom extends Room<MakaoState> {
   onStartGame(state: MakaoState) {
     state.players.toArray().forEach(pd => (state.turnSkips[pd.clientID] = 0))
 
+    const handSorting = (childA: ClassicCard, childB: ClassicCard): number => {
+      const suits = {
+        S: 400,
+        H: 300,
+        D: 200,
+        C: 100
+      }
+      const ranks = {
+        A: 14,
+        K: 13,
+        Q: 12,
+        J: 11
+      }
+
+      const childAScore =
+        suits[childA.suit] + (ranks[childA.rank] || Number(childA.rank))
+      const childBScore =
+        suits[childB.suit] + (ranks[childB.rank] || Number(childB.rank))
+      logs.log(
+        `\thandSorting`,
+        `childA[${chalk.yellow(childA.name)}] =`,
+        childAScore,
+        `childB[${chalk.yellow(childB.name)}] =`,
+        childBScore
+      )
+      return childAScore - childBScore
+    }
+
     // Temp container for picking/ordering cards.
     state.players
       .toArray()
@@ -109,31 +138,32 @@ export class MakaoRoom extends Room<MakaoState> {
         (player: Player) =>
           new Hand({
             state,
+            autoSort: handSorting,
             name: "playersHand",
             parent: player.id
           })
       )
 
     new commands.ShuffleChildren(this.deck).execute(state)
-    new commands.DealCards(this.deck, playersHands, 5).execute(state)
+    new commands.DealCards(this.deck, playersHands, 3).execute(state)
     new commands.ChangeParent(this.deck.top, this.deck, this.pile).execute(
       state
     )
     new commands.FlipCard(this.pile.top as ClassicCard).execute(state)
 
     // debug, all players get aces
-    playersHands
-      .map(() => [
-        new ClassicCard({ state, suit: "D", rank: "A", parent: this.deck }),
-        new ClassicCard({ state, suit: "H", rank: "A", parent: this.deck }),
-        new ClassicCard({ state, suit: "C", rank: "A", parent: this.deck }),
-        new ClassicCard({ state, suit: "S", rank: "A", parent: this.deck })
-      ])
-      .reduce((prev, next) => {
-        prev.push(...next)
-        return prev
-      }, [])
-    new commands.DealCards(this.deck, playersHands, 1, 4).execute(state)
+    // playersHands
+    //   .map(() => [
+    //     new ClassicCard({ state, suit: "D", rank: "A", parent: this.deck }),
+    //     new ClassicCard({ state, suit: "H", rank: "A", parent: this.deck }),
+    //     new ClassicCard({ state, suit: "C", rank: "A", parent: this.deck }),
+    //     new ClassicCard({ state, suit: "S", rank: "A", parent: this.deck })
+    //   ])
+    //   .reduce((prev, next) => {
+    //     prev.push(...next)
+    //     return prev
+    //   }, [])
+    // new commands.DealCards(this.deck, playersHands, 1, 4).execute(state)
 
     logs.info("Final state HELLO")
     state.logTreeState()

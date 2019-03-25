@@ -1,9 +1,48 @@
 import Bezier from "bezier-js"
 import { Container } from "./container"
-import { Entity } from "../entity"
+import { Entity, IEntityOptions } from "../entity"
+import { EntityEvents } from "@cardsgame/utils"
+import { logs } from "../logs"
+import { State } from "../state"
 
 export class Hand extends Container {
   type = "hand"
+  autoSort: SortingFunction
+
+  constructor(options?: IHandOptions) {
+    super(options)
+
+    if (options.autoSort) {
+      this.autoSort = options.autoSort
+      this.on(EntityEvents.childAdded, (childA: Entity) => {
+        const count = this.children.length - 1
+        logs.info(`Hand.autoSort`, `0..${count}`)
+        for (let idx = 0; idx < count; idx++) {
+          if (this.autoSort(childA, this.children[idx]) > 0) {
+            continue
+          }
+          // this._state.logTreeState(this)
+          // I shall drop incomming child right here
+          logs.info(`Hand.autoSort`, `children.moveTo(${childA.idx}, ${idx})`)
+          this.children.moveTo(childA.idx, idx)
+
+          logs.info(`Hand.autoSort`, `AFTER:`)
+          this._state.logTreeState(this)
+          break
+        }
+
+        // logs.info(
+        //   `Hand.autoSort`,
+        //   `privatePropsSyncRequest, owner:`,
+        //   this.owner
+        // )
+        // this.emit(State.events.privatePropsSyncRequest, this.owner)
+        logs.verbose(`-------------------------------------------------`)
+      })
+      // No need to sort again when child gets removed
+      // this.on(EntityEvents.childRemoved, (childID: EntityID) => {})
+    }
+  }
 
   restyleChild(child: Entity, idx: number, arr) {
     const max = arr.length
@@ -47,3 +86,9 @@ export class Hand extends Container {
     }
   }
 }
+
+interface IHandOptions extends IEntityOptions {
+  autoSort?: SortingFunction
+}
+
+type SortingFunction = (childA: Entity, childB: Entity) => number

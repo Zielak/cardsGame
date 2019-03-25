@@ -114,18 +114,12 @@ export class Entity extends EventEmitter {
   }
 
   protected setupListeners() {
-    this.on(EntityEvents.childAdded, (child: Entity) => {
-      this.onChildAdded(child)
-      this.restyleChildren()
-    })
-
-    this.on(EntityEvents.childRemoved, (childID: EntityID) => {
-      this.onChildRemoved(childID)
-      this.restyleChildren()
-    })
+    this.on(EntityEvents.childAdded, () => this.restyleChildren())
+    this.on(EntityEvents.childRemoved, () => this.restyleChildren())
 
     // Rare case, when entityMap's self check finds inconsistency.
     this.on(EntityEvents.idxUpdate, (idx: number) => {
+      logs.verbose(`Entity.idxUpdate:`, this.idx, `=>`, idx)
       this.idx = idx
     })
 
@@ -163,12 +157,24 @@ export class Entity extends EventEmitter {
    * @param {string} [client] - if defined, will send private stuff only to this client if he owns this element (prevents too much updates)
    */
   sendAllPrivateAttributes(client?: string) {
-    // logs.info('sendAllPrivateAttributes', client)
     this._visibilityData.keys.forEach(key => {
       if (this._visibilityData.shouldSendToEveryone(key)) {
+        logs.log(`\t_sendPrivAttrUpdate[${this.name}].${key}`, `-- toEveryone`)
         this._sendPrivAttrUpdate(key, true)
       } else if (this._visibilityData.shouldSendToOwner(key)) {
+        if (!client && !this.owner) {
+          // logs.verbose(
+          //   `\tsendAllPrivateAttributes`,
+          //   `There's noone to send that update to.`
+          // )
+          return
+        }
         if (!client || (this.owner && this.owner.clientID === client)) {
+          logs.log(
+            `\t_sendPrivAttrUpdate[${this.name}].${key}`,
+            `-- toOwner`,
+            this.owner
+          )
           this._sendPrivAttrUpdate(key, false)
         }
       }
@@ -177,6 +183,17 @@ export class Entity extends EventEmitter {
 
   _sendPrivAttrUpdate(key: string, _public: boolean) {
     // logs.log('_sendPrivAttrUpdate', _public ? 'public' : 'owner', key)
+
+    if (!_public && !this.owner) {
+      logs.verbose(
+        `_sendPrivAttrUpdate`,
+        `wanted to send private update for "${
+          this.name
+        }", but has no owner... SKIPPING`
+      )
+      return
+    }
+
     const event: PrivateAttributeChangeData = {
       path: this.idxPath,
       owner: this.owner && this.owner.clientID,
@@ -274,9 +291,6 @@ export class Entity extends EventEmitter {
     this.emit(EntityEvents.childRemoved, child.id)
     return true
   }
-
-  onChildAdded(child: Entity) {}
-  onChildRemoved(childID: EntityID) {}
 
   restyleChildren() {
     this.childrenArray.forEach(
