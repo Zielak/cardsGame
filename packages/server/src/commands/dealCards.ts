@@ -28,7 +28,7 @@ export class DealCards implements ICommand {
 
   execute(state: State) {
     const _ = this.constructor.name
-    logs.log(_, "executing")
+    logs.log(_, "executing", "count:", this.count, ", step:", this.step)
     let targetI = 0
     let stepI = 0
 

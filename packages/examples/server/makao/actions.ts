@@ -321,7 +321,13 @@ export const DrawCards: ActionTemplate = {
     const deck = event.entity as Deck
     const target = event.player.findByName("playersHand")
 
-    logs.log("DrawCards", state.atackPoints)
+    logs.log(
+      "DrawCards",
+      "atk:",
+      state.atackPoints,
+      "=>",
+      Math.max(1, state.atackPoints)
+    )
     return [
       new cmd.DealCards(deck, target, Math.max(1, state.atackPoints)),
       state.atackPoints > 0 ? new SetAtackPoints(0) : new cmd.Noop(),

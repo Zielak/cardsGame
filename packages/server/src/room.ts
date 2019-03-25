@@ -7,6 +7,7 @@ import { Entity } from "./entity"
 import { EntityEvents } from "@cardsgame/utils"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
+import chalk from "chalk"
 
 export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
@@ -46,13 +47,26 @@ export class Room<S extends State> extends colRoom<S> {
         } else {
           const client = this.clients.find(c => c.id === data.owner)
           if (client) {
-            // logs.log(`privateAttributeChange`, 'sending data to client', client.id, data)
+            const logAttrChange = (data: PrivateAttributeChangeData) => {
+              return `[${data.path.join(",")}], (${
+                data.public ? "public" : "private"
+              }) owner: '${chalk.green(data.owner)}' => ${chalk.yellow(
+                data.attribute
+              )} = ${chalk.yellow(data.value)}`
+            }
+
+            logs.log(
+              `privateAttributeChange`,
+              "sending data to client",
+              client.id,
+              logAttrChange(data)
+            )
             this.send(client, {
               data,
               event: EntityEvents.privateAttributeChange
             } as ServerMessage)
           } else {
-            // logs.log(`couldn't find the client to sent it to`, data.owner, data)
+            logs.log(`couldn't find the client to sent it to`, data.owner, data)
           }
         }
       }
@@ -148,8 +162,10 @@ export class Room<S extends State> extends colRoom<S> {
     }
     const logObj = Object.assign(
       { ...newEvent },
-      newEvent.entity ? { target: minifyTarget(newEvent.entity) } : {},
-      newEvent.entities ? { targets: newEvent.entities.map(minifyTarget) } : {},
+      newEvent.entity ? { entity: minifyTarget(newEvent.entity) } : {},
+      newEvent.entities
+        ? { entities: newEvent.entities.map(minifyTarget) }
+        : {},
       newEvent.player ? { player: minifyPlayer(newEvent.player) } : {}
     )
     logs.info("onMessage", JSON.stringify(logObj))

@@ -1,5 +1,5 @@
 import { nosync } from "colyseus"
-import { float } from "@cardsgame/utils"
+import { float, EntityEvents } from "@cardsgame/utils"
 import { Entity, IEntityOptions } from "../entity"
 import { Container } from "./container"
 
@@ -27,13 +27,13 @@ export class Pile extends Container {
       },
       options.limits
     )
-  }
 
-  onChildAdded(child: Entity) {
-    this.cardsData.set(child.id, cardsDataFactory(this.limits))
-  }
-  onChildRemoved(childID: EntityID) {
-    this.cardsData.delete(childID)
+    this.on(EntityEvents.childAdded, (child: Entity) => {
+      this.cardsData.set(child.id, cardsDataFactory(this.limits))
+    })
+    this.on(EntityEvents.childRemoved, (childID: EntityID) => {
+      this.cardsData.delete(childID)
+    })
   }
 
   restyleChild(child: Entity, idx: number, children: Entity[]) {

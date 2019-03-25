@@ -56,7 +56,7 @@ export class EntityMap<T> {
 
   @nosync
   toArray(): T[] {
-    return Object.keys(this).map(key => this[key])
+    return Object.keys(this).map(idx => this[idx])
   }
 
   @nosync

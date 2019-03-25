@@ -117,7 +117,7 @@ export class State extends EventEmitter {
     return travel(this.entities, [...path])
   }
 
-  logTreeState() {
+  logTreeState(startingPoint?: Entity) {
     logs.log("")
     const indent = (level: number) => {
       return "│ ".repeat(level)
@@ -163,7 +163,7 @@ export class State extends EventEmitter {
       `${root.type}:${root.name}`,
       root.length + "children"
     )
-    travel(root, 1)
+    travel(startingPoint || root, 1)
   }
 
   static ROOT_ID = 0

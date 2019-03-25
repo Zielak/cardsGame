@@ -176,7 +176,7 @@ export class CommandsManager {
     try {
       let cmd = action.getCommands(state, event)
       if (Array.isArray(cmd)) {
-        cmd = new CompositeCommand(cmd.filter(cmd => typeof cmd === "function"))
+        cmd = new CompositeCommand(cmd.filter(cmd => typeof cmd === "object"))
       }
       await this.execute(state, cmd)
       result = true
