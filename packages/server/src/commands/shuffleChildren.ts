@@ -10,7 +10,7 @@ export class ShuffleChildren implements ICommand {
   execute(state: State) {
     logs.log(`${this.constructor.name}`, "executing")
 
-    let fromIdx = this.container.children.length
+    let fromIdx = this.container.length
     if (fromIdx === 0) return
     while (--fromIdx) {
       const toIdx = Math.floor(Math.random() * (fromIdx + 1))

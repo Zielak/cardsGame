@@ -1,50 +1,85 @@
+import { Schema, type, MapSchema } from "@colyseus/schema"
 import { nosync } from "colyseus"
-import { EventEmitter } from "eventemitter3"
+import { default as EEmitter, EventEmitter } from "eventemitter3"
 
 import { def, EntityEvents, EntityTransformData } from "@cardsgame/utils"
-import { EntityMap } from "./entityMap"
-import { State } from "./state"
+
+import { IState } from "./state"
 import { Player } from "./player"
 import { EntityTransform } from "./transform"
 import { logs } from "./logs"
-import { VisibilityData } from "./visibilityData"
-import { condvis } from "./decorators"
 
-export class Entity extends EventEmitter {
+export class Entity extends Schema {
+  // @type("uint16")
   @nosync
-  _visibilityData: VisibilityData
-
-  @nosync
-  _state: State
-
-  // @condvis
   id: EntityID
-  idx: number
-
-  children = new EntityMap<Entity>()
 
   // Will always point to some Entity, can point to `state.entities`
+  @type("uint16")
   parent: EntityID
 
-  @nosync
-  hijacksInteractionTarget: boolean = false
-
+  @type("boolean")
   visibleToPublic: boolean
 
+  @type("boolean")
   isContainer = false
+  @type("string")
   type: string
+  @type("string")
   name: string
 
-  @condvis
-  selected: boolean
-
+  @type("number")
   width: number
+  @type("number")
   height: number
 
   // Transform data applied
+  @type("number")
   x: number
+  @type("number")
   y: number
+  @type("number")
   angle: number
+
+  // ----------------------------------
+  // MapSchema management
+  @type({ map: Entity })
+  children = new MapSchema<Entity>()
+
+  @type("uint16")
+  idx: number
+
+  // ----------------------------------
+  // Private vars
+
+  @nosync
+  _emitter: EEmitter
+  @nosync
+  on: (
+    event: string | symbol,
+    fn: EEmitter.ListenerFn,
+    context?: any
+  ) => EEmitter<string | symbol>
+  @nosync
+  once: (
+    event: string | symbol,
+    fn: EEmitter.ListenerFn,
+    context?: any
+  ) => EEmitter<string | symbol>
+  @nosync
+  off: (
+    event: string | symbol,
+    fn?: EEmitter.ListenerFn,
+    context?: any,
+    once?: boolean
+  ) => EEmitter<string | symbol>
+  @nosync
+  emit: (event: string | symbol, ...args: any[]) => boolean
+
+  @nosync
+  _state: IState
+  @nosync
+  hijacksInteractionTarget: boolean = false
 
   // quote: Current transform of the object based on local factors
   // eg. author-chosen transform when creating this entity
@@ -59,17 +94,16 @@ export class Entity extends EventEmitter {
   constructor(options: IEntityOptions) {
     super()
 
+    // Prepare emitter
+    this._emitter = new EventEmitter()
+    this.on = this._emitter.on.bind(this._emitter)
+    this.once = this._emitter.once.bind(this._emitter)
+    this.off = this._emitter.off.bind(this._emitter)
+    this.emit = this._emitter.emit.bind(this._emitter)
+
     // state && id
     this._state = options.state
     this.id = this._state.rememberEntity(this)
-    this._visibilityData = new VisibilityData()
-
-    this._visibilityData.add(
-      "selected",
-      // it's always player's private bussiness
-      /* toEveryone */ () => false,
-      /* toOwner */ () => true
-    )
 
     // transform
     this._localTransform = new EntityTransform(
@@ -88,11 +122,11 @@ export class Entity extends EventEmitter {
     this.visibleToPublic = true
 
     // parent
-    if (this._state.entities) {
+    if (this._state.entities[0]) {
       if (!options.parent) {
         // no parent = root as parent
-        // this.parent = State.ROOT_ID
-        this._state.entities.addChild(this)
+        // this.parent = 0
+        this._state.entities[0].addChild(this)
       } else {
         const newParent =
           typeof options.parent === "number"
@@ -102,11 +136,11 @@ export class Entity extends EventEmitter {
       }
     } else {
       // It must be the root!
-      if (this.id !== State.ROOT_ID) {
+      if (this.id !== 0) {
         // IT ISN'T!!!
         throw new Error(`Shouldn't happen. Root doesn't have root's ID?`)
       } else {
-        this.parent = null
+        this.parent = undefined
       }
     }
 
@@ -123,85 +157,14 @@ export class Entity extends EventEmitter {
       this.idx = idx
     })
 
-    this.on(EntityEvents.ownerUpdate, (event: EOwnerUpdate) => {
-      this.sendAllPrivateAttributes()
-    })
-
-    this.on(EntityEvents.parentUpdate, (event: EParentUpdate) => {
-      // Need to update even if owner stayed the same.
-      // Client will create entirely new container
-      if (event.lastParent) {
-        event.lastParent.emit(State.events.privatePropsSyncRequest)
-      }
-      this.parentEntity.emit(State.events.privatePropsSyncRequest)
-    })
-
-    this.on(EntityEvents.sendPropToEveryone, (key: string) => {
-      this._sendPrivAttrUpdate(key, true)
-    })
-    this.on(EntityEvents.sendPropToOwner, (key: string) => {
-      this._sendPrivAttrUpdate(key, false)
-    })
-
-    this.on(State.events.privatePropsSyncRequest, (client: string) => {
-      this.sendAllPrivateAttributes(client)
-      this.childrenArray.forEach(child => {
-        child.emit(State.events.privatePropsSyncRequest, client)
-      })
-    })
-  }
-
-  /**
-   * Send out all private attributes, depending on their "privacy state"
-   *
-   * @param {string} [client] - if defined, will send private stuff only to this client if he owns this element (prevents too much updates)
-   */
-  sendAllPrivateAttributes(client?: string) {
-    this._visibilityData.keys.forEach(key => {
-      if (this._visibilityData.shouldSendToEveryone(key)) {
-        logs.log(`\t_sendPrivAttrUpdate[${this.name}].${key}`, `-- toEveryone`)
-        this._sendPrivAttrUpdate(key, true)
-      } else if (this._visibilityData.shouldSendToOwner(key)) {
-        if (!client && !this.owner) {
-          // logs.verbose(
-          //   `\tsendAllPrivateAttributes`,
-          //   `There's noone to send that update to.`
-          // )
-          return
-        }
-        if (!client || (this.owner && this.owner.clientID === client)) {
-          logs.log(
-            `\t_sendPrivAttrUpdate[${this.name}].${key}`,
-            `-- toOwner`,
-            this.owner
-          )
-          this._sendPrivAttrUpdate(key, false)
-        }
-      }
-    })
-  }
-
-  _sendPrivAttrUpdate(key: string, _public: boolean) {
-    // logs.log('_sendPrivAttrUpdate', _public ? 'public' : 'owner', key)
-
-    if (!_public && !this.owner) {
-      logs.verbose(
-        `_sendPrivAttrUpdate`,
-        `wanted to send private update for "${
-          this.name
-        }", but has no owner... SKIPPING`
-      )
-      return
-    }
-
-    const event: PrivateAttributeChangeData = {
-      path: this.idxPath,
-      owner: this.owner && this.owner.clientID,
-      public: _public,
-      attribute: key,
-      value: this[key]
-    }
-    this._state.emit(EntityEvents.privateAttributeChange, event)
+    // this.on(EntityEvents.parentUpdate, (event: EParentUpdate) => {
+    //   // Need to update even if owner stayed the same.
+    //   // Client will create entirely new container
+    //   if (event.lastParent) {
+    //     event.lastParent.emit(State.events.privatePropsSyncRequest)
+    //   }
+    //   this.parentEntity.emit(State.events.privatePropsSyncRequest)
+    // })
   }
 
   addChild(child: Entity) {
@@ -214,11 +177,7 @@ export class Entity extends EventEmitter {
     }
 
     const lastParent: Entity =
-      // BUGFIX: You MUST be able to move stuff from ROOT.
-      //         I don't know why that condition was like that.
-      /*child.parent === State.ROOT_ID ||*/ typeof child.parent !== "number"
-        ? null
-        : child.parentEntity
+      typeof child.parent !== "number" ? undefined : child.parentEntity
     const lastOwner = child.owner
 
     if (lastParent) {
@@ -226,9 +185,10 @@ export class Entity extends EventEmitter {
       lastParent.removeChild(child.id, true)
     }
 
-    const idx = this.children.add(child)
-    child.parent = this.id
+    const idx = this.length
+    this.children[idx] = child
     child.idx = idx
+    child.parent = this.id
 
     const event: EParentUpdate = {
       entity: child,
@@ -238,8 +198,8 @@ export class Entity extends EventEmitter {
     // Also emit owner update if that happened
     if (
       child.owner !== lastOwner &&
-      child.owner !== null &&
-      lastOwner !== null
+      child.owner !== undefined &&
+      lastOwner !== undefined
     ) {
       logs.warn("child.owner", child.owner)
       const event: EOwnerUpdate = {
@@ -263,21 +223,28 @@ export class Entity extends EventEmitter {
   addChildAt(newChild: Entity, idx: number) {}
 
   removeChild(id: EntityID, _silent: boolean = false): boolean {
-    const idx = this.childrenArray.findIndex(child => {
-      return child.id === id
-    })
+    const idx = this.childrenArray.findIndex(child => child.id === id)
     return this.removeChildAt(idx, _silent)
   }
 
   removeChildAt(idx: number, _silent: boolean = false): boolean {
-    if (idx < 0) throw new Error(`Entity.removeChildAt - idx must be >= 0`)
-    const child: Entity = this.children[idx]
-    const result = this.children.remove(idx)
-    if (!result) {
-      return false
+    if (idx < 0)
+      throw new Error(`Entity.removeChildAt - idx must be >= 0, but is ${idx}`)
+    if (idx > this.length - 1) {
+      logs.warn(
+        "Entity.removeChildAt()",
+        `Tried to remove idx out of bounds:`,
+        idx,
+        "/",
+        this.length
+      )
     }
+    const child: Entity = this.children[idx]
     const lastParent: Entity = child.parentEntity
-    child.parent = State.ROOT_ID
+
+    delete this.children[idx]
+
+    child.parent = 0
     // Reset last parent's stylings
     child.resetWorldTransform()
 
@@ -339,16 +306,16 @@ export class Entity extends EventEmitter {
   }
 
   filterByName(name: string) {
-    return this.childrenArray.filter(EntityMap.byName(name))
+    return this.childrenArray.filter(byName(name))
   }
   findByName(name: string) {
-    return this.childrenArray.find(EntityMap.byName(name))
+    return this.childrenArray.find(byName(name))
   }
   filterByType(type: string) {
-    return this.childrenArray.filter(EntityMap.byType(type))
+    return this.childrenArray.filter(byType(type))
   }
   findByType(type: string) {
-    return this.childrenArray.find(EntityMap.byType(type))
+    return this.childrenArray.find(byType(type))
   }
 
   /**
@@ -373,6 +340,13 @@ export class Entity extends EventEmitter {
   }
 
   /**
+   * Gets all children in array form, "sorted" by idx
+   */
+  get childrenArray(): Entity[] {
+    return Object.keys(this.children).map(key => this.children[key])
+  }
+
+  /**
    * Points out if this element can be
    * target of any interaction
    */
@@ -385,29 +359,22 @@ export class Entity extends EventEmitter {
   }
 
   /**
-   * Gets all children in array form, "sorted" by idx
-   */
-  get childrenArray(): Entity[] {
-    return this.children.toArray()
-  }
-
-  /**
    * Gets a reference to this entity's parent.
-   * There must be any parent, so any null will fallback to state's `entities`
+   * There must be any parent, so any undefined will fallback to state's `entities`
    */
   get parentEntity(): Entity {
     const parent = this._state.getEntity(this.parent)
-    return parent || this._state.entities
+    return parent || this._state.entities[0]
   }
 
   /**
    * Get the real owner of this container, by traversing `this.parent` chain.
    *
-   * @returns `Player` or `null` if this container doesn't belong to anyone
+   * @returns `Player` or `undefined` if this container doesn't belong to anyone
    */
   get owner(): Player {
-    if (this.parent === State.ROOT_ID || this.parent === null) {
-      return null
+    if (this.parent === 0 || this.parent === undefined) {
+      return undefined
     }
     if (this.parentEntity.type === "player") {
       return this.parentEntity as Player
@@ -432,18 +399,27 @@ export class Entity extends EventEmitter {
     return path
   }
 
+  // ----------------------------------
+  // Static
+
   static DEFAULT_NAME = "Unnamed"
   static DEFAULT_TYPE = "Entity"
 }
 
+const byName = (name: string) => (entity: Entity): boolean =>
+  entity.name === name
+
+const byType = (type: string) => (entity: Entity): boolean =>
+  entity.type === type
+
 // Get rid of EventEmitter stuff from the client
-nosync(Entity.prototype, "_events")
-nosync(Entity.prototype, "_eventsCount")
-nosync(Entity.prototype, "_maxListeners")
-nosync(Entity.prototype, "domain")
+// nosync(Entity.prototype, "_events")
+// nosync(Entity.prototype, "_eventsCount")
+// nosync(Entity.prototype, "_maxListeners")
+// nosync(Entity.prototype, "domain")
 
 export interface IEntityOptions {
-  state: State
+  state: IState
   type?: string
   name?: string
   width?: number

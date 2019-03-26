@@ -1,34 +1,103 @@
+import { Schema, type, MapSchema } from "@colyseus/schema"
 import { nosync } from "colyseus"
-import { EventEmitter } from "eventemitter3"
+import { default as EEmitter, EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
 import { Entity } from "./entity"
-import { EntityMap } from "./entityMap"
 import { cm2px } from "@cardsgame/utils"
 
-export class State extends EventEmitter {
-  // 60 cm
-  tableWidth = cm2px(60)
-  // 60 cm
-  tableHeight = cm2px(60)
+class PlayerData extends Schema {
+  @type("uint16")
+  entityID: EntityID
 
-  entities: Entity
+  @type("string")
+  clientID: string
+}
 
-  players = new EntityMap<PlayerData>()
-  clients = new EntityMap<string>()
+export interface IState {
+  entities: MapSchema<Entity>
+  getEntity(id: EntityID): Entity
+  getEntity(path: number[]): Entity
+  getEntitiesAlongPath(path: number[]): Entity[]
+  rememberEntity(entity: Entity)
+  logTreeState(startingPoint?: Entity)
+  on: (
+    event: string | symbol,
+    fn: EEmitter.ListenerFn,
+    context?: any
+  ) => EEmitter<string | symbol>
+  once: (
+    event: string | symbol,
+    fn: EEmitter.ListenerFn,
+    context?: any
+  ) => EEmitter<string | symbol>
+  off: (
+    event: string | symbol,
+    fn?: EEmitter.ListenerFn,
+    context?: any,
+    once?: boolean
+  ) => EEmitter<string | symbol>
+  emit: (event: string | symbol, ...args: any[]) => boolean
+}
+
+export class State extends Schema implements IState {
+  @type("number")
+  tableWidth = cm2px(60) // 60 cm
+
+  @type("number")
+  tableHeight = cm2px(60) // 60 cm
+
+  @type({ map: Entity })
+  entities: MapSchema<Entity>
+
+  @type({ map: PlayerData })
+  players = new MapSchema<PlayerData>()
+
+  @type({ map: "string" })
+  clients = new MapSchema<string>()
+
+  @type("uint8")
   currentPlayerIdx: number
+
+  @nosync
   get currentPlayer(): PlayerData {
     return this.players[this.currentPlayerIdx]
   }
+  @nosync
   get playersCount(): number {
     return this.players.length
   }
 
   // TODO: think this through:
-  gameVariants: any
+  // gameVariants: any
 
+  @type("boolean")
   isGameStarted = false
 
-  ui = {}
+  ui: { [id: string]: string } = {}
+
+  @nosync
+  _emitter: EEmitter
+  @nosync
+  on: (
+    event: string | symbol,
+    fn: EEmitter.ListenerFn,
+    context?: any
+  ) => EEmitter<string | symbol>
+  @nosync
+  once: (
+    event: string | symbol,
+    fn: EEmitter.ListenerFn,
+    context?: any
+  ) => EEmitter<string | symbol>
+  @nosync
+  off: (
+    event: string | symbol,
+    fn?: EEmitter.ListenerFn,
+    context?: any,
+    once?: boolean
+  ) => EEmitter<string | symbol>
+  @nosync
+  emit: (event: string | symbol, ...args: any[]) => boolean
 
   @nosync
   _lastID = -1
@@ -38,22 +107,28 @@ export class State extends EventEmitter {
   constructor(options?: IStateOptions) {
     super()
     // TODO: do something with these options.
-
-    this.entities = new Entity({
+    this.entities = new MapSchema<Entity>()
+    this.entities[0] = new Entity({
       state: this,
       type: "root",
       name: "root"
     })
 
+    this._emitter = new EventEmitter()
+    this.on = this._emitter.on.bind(this._emitter)
+    this.once = this._emitter.once.bind(this._emitter)
+    this.off = this._emitter.off.bind(this._emitter)
+    this.emit = this._emitter.emit.bind(this._emitter)
+
     this.setupListeners()
   }
 
   setupListeners() {
-    this.on(State.events.privatePropsSyncRequest, (client: string) => {
-      // Bubble it down to every entity
-      logs.info("State.privatePropsSyncRequest")
-      this.entities.emit(State.events.privatePropsSyncRequest, client)
-    })
+    // this.on(State.events.privatePropsSyncRequest, (client: string) => {
+    //   // Bubble it down to every entity
+    //   logs.info("State.privatePropsSyncRequest")
+    //   this.entities.emit(State.events.privatePropsSyncRequest, client)
+    // })
   }
 
   /**
@@ -91,7 +166,7 @@ export class State extends EventEmitter {
           return newChild
         }
       }
-      return travel(this.entities, [...idOrPath])
+      return travel(this.entities[0], [...idOrPath])
     }
     return this._allEntities.get(idOrPath)
   }
@@ -114,7 +189,7 @@ export class State extends EventEmitter {
         return result
       }
     }
-    return travel(this.entities, [...path])
+    return travel(this.entities[0], [...path])
   }
 
   logTreeState(startingPoint?: Entity) {
@@ -157,7 +232,7 @@ export class State extends EventEmitter {
         }
       })
     }
-    const root = this.entities
+    const root = this.entities[0]
     logs.log(
       `┍━[${root.idx}]`,
       `${root.type}:${root.name}`,
@@ -166,8 +241,6 @@ export class State extends EventEmitter {
     travel(startingPoint || root, 1)
   }
 
-  static ROOT_ID = 0
-
   static events = {
     privatePropsSyncRequest: Symbol("privatePropsSyncRequest"),
     playerTurnFinished: Symbol("playerTurnFinished"),
@@ -175,19 +248,8 @@ export class State extends EventEmitter {
   }
 }
 
-// Get rid of EventEmitter stuff from the client
-nosync(State.prototype, "_events")
-nosync(State.prototype, "_eventsCount")
-nosync(State.prototype, "_maxListeners")
-nosync(State.prototype, "domain")
-
 export interface IStateOptions {
   minClients: number
   maxClients: number
   hostID: string
-}
-
-export type PlayerData = {
-  entity: Entity
-  clientID: string
 }

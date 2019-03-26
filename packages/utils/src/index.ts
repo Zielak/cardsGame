@@ -1,4 +1,5 @@
 export * from "./events"
+export * from "./mapSchema"
 export * from "./numbers"
 export * from "./strings"
 export * from "./utils"

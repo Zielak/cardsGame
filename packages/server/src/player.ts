@@ -1,16 +1,24 @@
 import { nosync } from "colyseus"
 import { Entity, IEntityOptions } from "./entity"
 import { EntityEvents } from "@cardsgame/utils"
+import { type } from "@colyseus/schema"
 
 export class Player extends Entity {
   type = "player"
 
+  @type("string")
   clientID: string
+
+  @type("number")
   score: number = 0
-  timeLeft: number = Infinity
+
+  @type("number")
+  timeLeft: number = -1
 
   @nosync
   _selectedEntities: Set<Entity>
+
+  @type("boolean")
   selectedEntitiesCount: number
 
   constructor(options: IPlayerOptions) {

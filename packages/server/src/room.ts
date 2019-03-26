@@ -4,7 +4,12 @@ import { CommandsManager } from "./commandsManager"
 import { StartGame } from "./commands/startGame"
 import { State } from "./state"
 import { Entity } from "./entity"
-import { EntityEvents } from "@cardsgame/utils"
+import {
+  EntityEvents,
+  map2Array,
+  mapAdd,
+  mapRemoveEntry
+} from "@cardsgame/utils"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
 import chalk from "chalk"
@@ -74,27 +79,26 @@ export class Room<S extends State> extends colRoom<S> {
   }
 
   // I don't think I even need to call this function
-  removePlayer(clientID: string) {
-    // TODO: What about all player's cards and stuff?
-    // I want those cards back, or be discarded, or put back into deck?
-    //  ###==> OR make the game author decide what happens. <==###
-    const player = this.state.players
-      .toArray()
-      .find(data => data.clientID === clientID)
-    const playerIdx = player.entity.idx
-    if (!player) {
-      logs.error(
-        "removePlayer",
-        `can't find player's data, removed already?`,
-        clientID
-      )
-    }
-    this.state.entities.removeChild(player.entity.id)
-    this.state.players.remove(playerIdx)
+  // removePlayer(clientID: string) {
+  //   // TODO: What about all player's cards and stuff?
+  //   // I want those cards back, or be discarded, or put back into deck?
+  //   //  ###==> OR make the game author decide what happens. <==###
+  //   const player = map2Array(this.state.players)
+  //     .find(data => data.clientID === clientID)
+  //   const playerIdx = player.entity.idx
+  //   if (!player) {
+  //     logs.error(
+  //       "removePlayer",
+  //       `can't find player's data, removed already?`,
+  //       clientID
+  //     )
+  //   }
+  //   this.state.entities.removeChild(player.entity.id)
+  //   mapRemove(this.state.players, playerIdx)
 
-    // this.updatePlayers()
-    this.state.logTreeState()
-  }
+  //   // this.updatePlayers()
+  //   this.state.logTreeState()
+  // }
 
   requestJoin(options: any, isRoomNew?: boolean): boolean | number {
     // TODO: private rooms?
@@ -106,18 +110,18 @@ export class Room<S extends State> extends colRoom<S> {
   onJoin(newClient: Client) {
     // If not on the list already
     if (
-      this.state.clients.toArray().every(clientID => newClient.id !== clientID)
+      map2Array(this.state.clients).every(clientID => newClient.id !== clientID)
     ) {
-      this.state.clients.add(newClient.id)
+      mapAdd(this.state.clients, newClient.id)
     }
 
-    this.state.emit(State.events.privatePropsSyncRequest, newClient.id)
+    // this.state.emit(State.events.privatePropsSyncRequest, newClient.id)
     logs.log("onJoin", `client "${newClient.id}" joined`)
   }
 
   onLeave(client: Client, consented: boolean) {
     if (consented) {
-      this.state.clients.remove(client.id)
+      mapRemoveEntry(this.state.clients, client.id)
       logs.log("onLeave", `client "${client.id}" left permamently`)
     } else {
       logs.log("onLeave", `client "${client.id}" disconnected, might be back`)
@@ -145,14 +149,14 @@ export class Room<S extends State> extends colRoom<S> {
       newEvent.entity = newEvent.entities[0]
     }
 
-    const playerData = this.state.players
-      .toArray()
-      .find(playerData => playerData.clientID === client.id)
+    const playerData = map2Array(this.state.players).find(
+      playerData => playerData.clientID === client.id
+    )
     if (!playerData) {
       logs.error("onMessage", `You're no a player, get out!`)
       return
     }
-    newEvent.player = playerData.entity as Player
+    newEvent.player = this.state.getEntity(playerData.entityID) as Player
 
     const minifyTarget = (e: Entity) => {
       return `${e.type}:${e.name}`

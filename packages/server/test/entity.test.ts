@@ -18,6 +18,9 @@ describe(`Entity`, () => {
   })
 
   describe(`#constructor`, () => {
+    test(`doesn't throw up`, () => {
+      expect(() => new Entity({ state })).not.toThrow()
+    })
     test(`remembers the state`, () => {
       entity = new Entity({ state })
       expect(entity._state).toBe(state)
@@ -63,9 +66,9 @@ describe(`Entity`, () => {
       const parent = new Entity({ state })
       entity = new Entity({ state })
 
-      expect(parent.children.length).toBe(0)
+      expect(parent.length).toBe(0)
       parent.addChild(entity)
-      expect(parent.children.length).toBe(1)
+      expect(parent.length).toBe(1)
     })
     test(`adds new child to parent with children`, () => {})
     test(`emits "parentUpdate" on child`, () => {})

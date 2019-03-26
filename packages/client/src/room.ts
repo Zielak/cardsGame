@@ -12,6 +12,8 @@ export class Room extends EventEmitter {
 
     room.onStateChange.addOnce(state => {
       logs.notice("ROOM, this is the first room state!", state)
+      this.entitiesListeners()
+      this.gameStateListeners()
       this.emit(Room.events.stateChange, state)
     })
     room.onStateChange.add(state => {
@@ -58,34 +60,35 @@ export class Room extends EventEmitter {
       logs.error("oops, error ocurred:", err)
       this.emit(Room.events.error, err)
     })
-
-    this.entitiesListeners()
-    this.gameStateListeners()
   }
 
   gameStateListeners() {
-    this.room.listen("clients/:idx", (change: colyseus.DataChange) => {
-      if (change.operation === "add") {
-        logs.notice("new client joined", change)
-        this.emit(Room.events.clientJoined, change.value)
-      } else if (change.operation === "remove") {
-        logs.notice("client left", change)
-        this.emit(Room.events.clientLeft, change.value)
-      }
-    })
-    this.room.listen("players/:idx", (change: colyseus.DataChange) => {
-      if (change.operation === "add") {
-        logs.notice("player created", change)
-        this.emit(Room.events.playerAdded, change.value)
-      } else if (change.operation === "remove") {
-        logs.notice("player removed", change)
-        this.emit(Room.events.playerRemoved, change.value)
-      }
-    })
+    this.room.state.clients.onAdd = (client, key) => {
+      logs.notice("new client joined", client)
+      this.emit(Room.events.clientJoined, client)
+    }
+    this.room.state.clients.onRemove = (client, key) => {
+      logs.notice("client left", client)
+      this.emit(Room.events.clientLeft, client)
+    }
+
+    this.room.state.players.onAdd = (player: EntityData, key) => {
+      logs.notice("player created", player.name)
+      this.emit(Room.events.playerAdded, player)
+    }
+    this.room.state.players.onRemove = (player: EntityData, key) => {
+      logs.notice("player removed", player.name)
+      this.emit(Room.events.playerRemoved, player)
+    }
   }
 
   // TODO: What the fuck is this?
   entitiesListeners() {
+    // on every new entity, add listeners in its children
+
+    this.room.state.entities.onAdd = (entity: EntityData, key) => {}
+    this.room.state.entities.onRemove = (entity: EntityData, key) => {}
+
     const addListeners = path => {
       this.room.listen(path, this.childrenHandler.bind(this))
       this.room.listen(

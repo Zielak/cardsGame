@@ -9,7 +9,4 @@ module.exports = {
       diagnostics: true
     }
   }
-  // transform: {
-  //   "^.+\\.(ts|tsx)$": "ts-jest"
-  // }
 }

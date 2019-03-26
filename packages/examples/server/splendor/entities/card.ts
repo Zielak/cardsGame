@@ -1,28 +1,43 @@
-import { BaseCard, decorators, IBaseCardOptions } from "@cardsgame/server"
+import { type, filter } from "@colyseus/schema"
+import {
+  BaseCard,
+  IBaseCardOptions,
+  faceDownOnlyOwner
+} from "@cardsgame/server"
 
 export class Card extends BaseCard {
   type = "card"
+
+  @filter(faceDownOnlyOwner)
+  @type("uint8")
   level: number
 
-  @decorators.condvis
+  @filter(faceDownOnlyOwner)
+  @type("uint8")
   costD: number // White
 
-  @decorators.condvis
+  @filter(faceDownOnlyOwner)
+  @type("uint8")
   costS: number // Blue
 
-  @decorators.condvis
+  @filter(faceDownOnlyOwner)
+  @type("uint8")
   costE: number // Green
 
-  @decorators.condvis
+  @filter(faceDownOnlyOwner)
+  @type("uint8")
   costR: number // Red
 
-  @decorators.condvis
+  @filter(faceDownOnlyOwner)
+  @type("uint8")
   costO: number // Black
 
-  @decorators.condvis
+  @filter(faceDownOnlyOwner)
+  @type("uint8")
   gem: Gems
 
-  @decorators.condvis
+  @filter(faceDownOnlyOwner)
+  @type("uint8")
   vp: number
 
   constructor(options: ICardOptions) {

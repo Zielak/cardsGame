@@ -27,8 +27,6 @@ export class Game extends EventEmitter {
   gameNames: string[]
   viewElement: HTMLElement
 
-  listAllRoomsInterval: NodeJS.Timeout
-
   constructor({ gameNames, viewElement }: GameOptions) {
     super()
 
@@ -82,32 +80,6 @@ export class Game extends EventEmitter {
     // this.prepareRoomEvents()
     this.prepareRenderingApp()
   }
-
-  // TODO: I shouldn't be passing events like that
-  //       clients can simply: `game.room.on()`...
-  // prepareRoomEvents() {
-  //   this.room.on(Room.events.stateChange, state => {
-  //     this.emit(Room.events.stateChange, state)
-  //   })
-  //   this.room.on(Room.events.join, () => {
-  //     this.emit(Room.events.join)
-  //   })
-  //   this.room.on(Room.events.leave, () => {
-  //     this.emit(Room.events.leave)
-  //   })
-  //   this.room.on(Room.events.error, err => {
-  //     this.emit(Room.events.error, err)
-  //   })
-  //   this.room.on(Room.events.clientJoined, () => {
-  //     this.emit(Room.events.clientJoined)
-  //   })
-  //   this.room.on(Room.events.clientLeft, () => {
-  //     this.emit(Room.events.clientLeft)
-  //   })
-  //   this.room.on(Room.events.message, (message: ServerMessage) => {
-  //     this.emit(Room.events.message, message)
-  //   })
-  // }
 
   prepareRenderingApp() {
     // this.gameRoom.on(Room.events.clientJoined, (data: string) => {})

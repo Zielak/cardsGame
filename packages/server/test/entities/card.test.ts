@@ -1,7 +1,7 @@
 import { State } from "../../src/state"
-import { Card } from "../../src/entities/card"
+import { BaseCard } from "../../src/entities/baseCard"
 
-let card: Card
+let card: BaseCard
 let state: State
 
 beforeEach(() => {
@@ -10,7 +10,7 @@ beforeEach(() => {
     maxClients: 4,
     hostID: "asd"
   })
-  card = new Card({ state })
+  card = new BaseCard({ state })
 })
 
 afterEach(() => {

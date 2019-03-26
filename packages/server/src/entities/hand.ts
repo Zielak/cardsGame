@@ -15,7 +15,7 @@ export class Hand extends Container {
     if (options.autoSort) {
       this.autoSort = options.autoSort
       this.on(EntityEvents.childAdded, (childA: Entity) => {
-        const count = this.children.length - 1
+        const count = this.length - 1
         logs.info(`Hand.autoSort`, `0..${count}`)
         for (let idx = 0; idx < count; idx++) {
           if (this.autoSort(childA, this.children[idx]) > 0) {

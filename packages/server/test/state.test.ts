@@ -7,15 +7,31 @@ describe(`State`, () => {
   test(`creates entities`, () => {
     state = new State()
     expect(state.entities).toBeDefined()
+    expect(state.entities instanceof Entity).toBe(true)
+    expect(state.entities.id).toBe(0)
+    expect(state.entities.length).toBe(0)
+    expect(state.entities.parent).toBe(undefined)
+    expect(state.entities.owner).toBe(undefined)
+  })
+
+  test(`creates proper Root element`, () => {
+    state = new State()
+  })
+
+  test(`#rememberEntity`, () => {
+    state = new State()
+    expect(state.entities.id).toBe(0)
+
+    let newID = state.rememberEntity({} as Entity)
+    expect(newID).toBe(1)
+
+    newID = state.rememberEntity({} as Entity)
+    expect(newID).toBe(2)
   })
 
   describe(`#getEntity`, () => {
     beforeEach(() => {
-      state = new State({
-        minClients: 1,
-        maxClients: 4,
-        hostID: "asd"
-      })
+      state = new State()
     })
 
     test(`child of root, by ID`, () => {

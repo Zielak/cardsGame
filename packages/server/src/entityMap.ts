@@ -34,7 +34,7 @@ export class EntityMap<T> {
       for (let idx = from + 1; idx <= to; idx++) {
         const newIdx = idx - 1
         this[newIdx] = this[idx]
-        // notifyNewIdx(this[newIdx], newIdx)
+        notifyNewIdx(this[newIdx], newIdx)
       }
     } else if (from > to) {
       //  0  1  2  3  4  5  6
@@ -46,7 +46,7 @@ export class EntityMap<T> {
       for (let idx = from - 1; idx >= to; idx--) {
         const newIdx = idx + 1
         this[newIdx] = this[idx]
-        // notifyNewIdx(this[newIdx], newIdx)
+        notifyNewIdx(this[newIdx], newIdx)
       }
     } else {
       logs.warn(
@@ -121,12 +121,6 @@ export class EntityMap<T> {
   get length(): number {
     return Object.keys(this).length
   }
-
-  static byName = (name: string) => (entity: Entity): boolean =>
-    entity.name === name
-
-  static byType = (type: string) => (entity: Entity): boolean =>
-    entity.type === type
 
   /**
    * @deprecated seems to be unused

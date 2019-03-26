@@ -1,15 +1,19 @@
 import { Entity, IEntityOptions } from "../entity"
 import { def } from "@cardsgame/utils"
-import { nosync } from "../decorators"
+import { Client } from "colyseus"
+import { type } from "@colyseus/schema"
 
 export class BaseCard extends Entity {
-  @nosync
-  id: EntityID
   type = "card"
 
+  @type("boolean")
   faceUp: boolean
+
+  @type("uint16")
   rotated: number
+
   // Publically known to be "marked" in some way.
+  @type("boolean")
   marked: boolean
 
   constructor(options: IBaseCardOptions) {
@@ -36,7 +40,7 @@ export class BaseCard extends Entity {
   }
   updateVisibleToPublic() {
     this.visibleToPublic = this.faceUp
-    this.sendAllPrivateAttributes()
+    // this.sendAllPrivateAttributes()
   }
 }
 
@@ -44,4 +48,14 @@ export interface IBaseCardOptions extends IEntityOptions {
   faceUp?: boolean
   rotated?: number
   marked?: boolean
+}
+
+export const faceDownOnlyOwner = (my: BaseCard, client: any): boolean => {
+  // 1. To everyone only if it's faceUp
+  // 2. To owner, only if it's in his hands
+  return (
+    my.faceUp ||
+    (my.owner.clientID === (client as Client).id &&
+      my.parentEntity.type === "hand")
+  )
 }

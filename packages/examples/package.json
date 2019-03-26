@@ -13,8 +13,8 @@
   "scripts": {
     "start": "echo 'http://localhost:1234' && npm run client | npm run server",
     "client": "parcel client/index.html --out-dir dist/client",
-    "server": "npm run build:server && nodemon dist/server/index.js --watch server",
-    "server:ts": "nodemon -x ts-node --project server/tsconfig.json --files server/index.ts --watch server",
+    "server": "npm run build:server && nodemon dist/server/index.js --delay 250ms --watch server --watch ../server/lib/",
+    "server:ts": "nodemon --delay 250ms --watch server --watch ../server/src/ -x ts-node --project server/tsconfig.json --files server/index.ts",
     "build": "npm run build:client && npm run build:server",
     "build:client": "parcel build client/index.html --out-dir dist/client",
     "build:server": "tsc -b server"
@@ -23,17 +23,18 @@
     "@cardsgame/client": "^0.1.4",
     "@cardsgame/server": "^0.1.4",
     "@cardsgame/types": "^0.1.1",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5"
   },
   "devDependencies": {
+    "@colyseus/schema": "^0.4.0",
     "@types/react": "^16.8.8",
-    "@types/react-dom": "^16.8.2",
+    "@types/react-dom": "^16.8.3",
     "chalk": "^2.4.2",
     "nodemon": "^1.18.10",
-    "parcel-bundler": "^1.12.2",
+    "parcel-bundler": "^1.12.3",
     "parcel-plugin-clean-dist": "0.0.6",
     "ts-node": "^8.0.3",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.4000"
   }
 }

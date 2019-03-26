@@ -1,8 +1,5 @@
 export { Server } from "colyseus"
 
-import * as decorators from "./decorators"
-export { decorators }
-
 export * from "./entities"
 
 export * from "./command"

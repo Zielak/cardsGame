@@ -31,7 +31,7 @@ export class App extends EventEmitter {
   playersData: PlayerData[] = []
   clientEntity = new Map<string, PlayerView>()
 
-  _lowerFps: number | NodeJS.Timeout
+  _lowerFps: number
 
   constructor({ viewElement, viewWidth, viewHeight, clientID }: AppOptions) {
     super()
@@ -83,7 +83,7 @@ export class App extends EventEmitter {
       let lastTime = performance.now()
       return setInterval(() => {
         if (!this.pixiApp || !this.pixiApp.ticker) {
-          clearInterval(this._lowerFps as NodeJS.Timeout)
+          clearInterval(this._lowerFps)
           return
         }
         const now = performance.now()

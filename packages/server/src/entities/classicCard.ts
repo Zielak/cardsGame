@@ -1,6 +1,6 @@
-import { BaseCard, IBaseCardOptions } from "./baseCard"
+import { BaseCard, IBaseCardOptions, faceDownOnlyOwner } from "./baseCard"
 import { logs } from "../logs"
-import { condvis } from "../decorators"
+import { filter, type } from "@colyseus/schema"
 
 export interface IClassicCardOptions extends IBaseCardOptions {
   suit: string
@@ -10,25 +10,20 @@ export interface IClassicCardOptions extends IBaseCardOptions {
 export class ClassicCard extends BaseCard {
   type = "classicCard"
 
-  @condvis
+  @filter(faceDownOnlyOwner)
+  @type("string")
   name: string
-  @condvis
+
+  @filter(faceDownOnlyOwner)
+  @type("string")
   suit: string
-  @condvis
+
+  @filter(faceDownOnlyOwner)
+  @type("string")
   rank: string
 
   constructor(options: IClassicCardOptions) {
     super(options)
-
-    this._visibilityData.add(
-      ["name", "suit", "rank"],
-      /* toEveryone */ () => this.faceUp,
-      /* toOwner */ () => {
-        // Only if it's in his hand
-        const parentContainer = (this as ClassicCard).parentEntity
-        return parentContainer.type === "hand"
-      }
-    )
 
     this.suit = options.suit
     this.rank = options.rank
@@ -37,20 +32,9 @@ export class ClassicCard extends BaseCard {
 }
 
 export const standardDeck = (
+  // prettier-ignore
   ranks: string[] = [
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "J",
-    "Q",
-    "K",
-    "A"
+    "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"
   ],
   suits: string[] = ["H", "S", "C", "D"]
 ): IClassicCardOptions[] => {

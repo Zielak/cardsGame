@@ -1,6 +1,7 @@
 import { State } from "@cardsgame/server"
 
 interface MakaoUI {
+  [id: string]: string
   suitPicker: string
   rankPicker: string
 }
