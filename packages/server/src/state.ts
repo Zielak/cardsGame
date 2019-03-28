@@ -1,5 +1,4 @@
 import { Schema, type, MapSchema } from "@colyseus/schema"
-import { nosync } from "colyseus"
 import { default as EEmitter, EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
 import { Entity } from "./entity"
@@ -58,11 +57,9 @@ export class State extends Schema implements IState {
   @type("uint8")
   currentPlayerIdx: number
 
-  @nosync
   get currentPlayer(): PlayerData {
     return this.players[this.currentPlayerIdx]
   }
-  @nosync
   get playersCount(): number {
     return this.players.length
   }
@@ -73,35 +70,29 @@ export class State extends Schema implements IState {
   @type("boolean")
   isGameStarted = false
 
-  ui: { [id: string]: string } = {}
+  @type({ map: "string" })
+  ui: StateUI = new MapSchema<string>()
 
-  @nosync
   _emitter: EEmitter
-  @nosync
   on: (
     event: string | symbol,
     fn: EEmitter.ListenerFn,
     context?: any
   ) => EEmitter<string | symbol>
-  @nosync
   once: (
     event: string | symbol,
     fn: EEmitter.ListenerFn,
     context?: any
   ) => EEmitter<string | symbol>
-  @nosync
   off: (
     event: string | symbol,
     fn?: EEmitter.ListenerFn,
     context?: any,
     once?: boolean
   ) => EEmitter<string | symbol>
-  @nosync
   emit: (event: string | symbol, ...args: any[]) => boolean
 
-  @nosync
   _lastID = -1
-  @nosync
   _allEntities = new Map<number, Entity>()
 
   constructor(options?: IStateOptions) {
@@ -246,6 +237,13 @@ export class State extends Schema implements IState {
     playerTurnFinished: Symbol("playerTurnFinished"),
     playerTurnStarted: Symbol("playerTurnStarted")
   }
+}
+
+export interface StateUI {
+  clone: () => MapSchema
+  onAdd: (item: any, key: string) => void
+  onRemove: (item: any, key: string) => void
+  onChange: (item: any, key: string) => void
 }
 
 export interface IStateOptions {

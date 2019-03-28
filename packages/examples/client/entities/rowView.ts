@@ -1,7 +1,7 @@
 import { Graphics, Text } from "pixi.js"
 import { ClassicCardView } from "./classicCardView"
 import { EntityView } from "./entityView"
-import { ClientEntityData, EntityData } from "../types"
+import { ClientEntityData, EntityData } from "@cardsgame/client/src/types"
 
 export class RowView extends EntityView {
   disablesTargetingChildren = false

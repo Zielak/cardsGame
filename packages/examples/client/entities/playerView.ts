@@ -1,7 +1,10 @@
 import { Sprite, Text } from "pixi.js"
 import { ClassicCardView } from "./classicCardView"
 import { EntityView } from "./entityView"
-import { ClientEntityData, AttributeChangeData } from "../types"
+import {
+  ClientEntityData,
+  AttributeChangeData
+} from "@cardsgame/client/src/types"
 
 export class PlayerView extends EntityView {
   icon: Sprite

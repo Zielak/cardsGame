@@ -10,15 +10,15 @@ export interface IClassicCardOptions extends IBaseCardOptions {
 export class ClassicCard extends BaseCard {
   type = "classicCard"
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("string")
   name: string
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("string")
   suit: string
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("string")
   rank: string
 

@@ -2,13 +2,15 @@ import { Game, Room } from "@cardsgame/client"
 import React, { FunctionComponent, useState, useEffect } from "react"
 import * as ReactDOM from "react-dom"
 import { GamesList } from "./components/gamesList"
-import { StateView } from "./components/stateView"
 import { MakaoGameUI } from "./games/makao"
+import { Renderer } from "./renderer"
+import { StateView } from "./components/stateView"
 
 const game = new Game({
   viewElement: document.getElementById("view"),
   gameNames: ["Makao", "ContainerTest", "Splendor"]
 })
+game.room
 
 interface AppProps {
   gameRef: Game
@@ -19,6 +21,7 @@ interface AppState {
 
 export const App: FunctionComponent<AppProps> = props => {
   const [gameState, setGameState] = useState({})
+  const [room, setRoom] = useState(undefined)
 
   const [currentGame, setCurrentGame] = useState("")
 
@@ -28,12 +31,15 @@ export const App: FunctionComponent<AppProps> = props => {
       setCurrentGame(gameName)
 
       const room = props.gameRef.room
+
       room.on(Room.events.stateChange, gameState => {
         setGameState(gameState)
       })
       room.on(Room.events.message, message => {})
     }
     props.gameRef.on(Game.events.joinedRoom, joinedRoomHandler)
+
+    setRoom(room)
 
     return () => {
       props.gameRef.off(Game.events.joinedRoom, joinedRoomHandler)
@@ -54,6 +60,7 @@ export const App: FunctionComponent<AppProps> = props => {
 
   return (
     <div>
+      <Renderer gameRef={game} roomRef={room} />
       {gameUI}
       <StateView state={gameState} />
       <GamesList

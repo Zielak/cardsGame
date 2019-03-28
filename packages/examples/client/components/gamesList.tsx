@@ -38,6 +38,7 @@ export const GamesList: FunctionComponent<GamesListProps> = props => {
     }
 
     scheduleFetchRooms()
+
     return () => {
       clearTimeout(timerID)
     }

@@ -1,4 +1,3 @@
-import { nosync } from "colyseus"
 import { Entity, IEntityOptions } from "./entity"
 import { EntityEvents } from "@cardsgame/utils"
 import { type } from "@colyseus/schema"
@@ -15,7 +14,6 @@ export class Player extends Entity {
   @type("number")
   timeLeft: number = -1
 
-  @nosync
   _selectedEntities: Set<Entity>
 
   @type("boolean")

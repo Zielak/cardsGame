@@ -5,7 +5,7 @@ import { PileView } from "./pileView"
 import { PlayerView } from "./playerView"
 import { HandView } from "./handView"
 import { ContainerView } from "./containerView"
-import { ClientEntityData } from "../types"
+import { ClientEntityData } from "@cardsgame/client/src/types"
 import { RowView } from "./rowView"
 
 export const entityFactory = (data: ClientEntityData) => {

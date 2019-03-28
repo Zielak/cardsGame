@@ -1,5 +1,4 @@
 import { Schema, type, MapSchema } from "@colyseus/schema"
-import { nosync } from "colyseus"
 import { default as EEmitter, EventEmitter } from "eventemitter3"
 
 import { def, EntityEvents, EntityTransformData } from "@cardsgame/utils"
@@ -11,7 +10,6 @@ import { logs } from "./logs"
 
 export class Entity extends Schema {
   // @type("uint16")
-  @nosync
   id: EntityID
 
   // Will always point to some Entity, can point to `state.entities`
@@ -51,44 +49,37 @@ export class Entity extends Schema {
 
   // ----------------------------------
   // Private vars
-
-  @nosync
   _emitter: EEmitter
-  @nosync
   on: (
     event: string | symbol,
     fn: EEmitter.ListenerFn,
     context?: any
   ) => EEmitter<string | symbol>
-  @nosync
   once: (
     event: string | symbol,
     fn: EEmitter.ListenerFn,
     context?: any
   ) => EEmitter<string | symbol>
-  @nosync
   off: (
     event: string | symbol,
     fn?: EEmitter.ListenerFn,
     context?: any,
     once?: boolean
   ) => EEmitter<string | symbol>
-  @nosync
   emit: (event: string | symbol, ...args: any[]) => boolean
 
-  @nosync
   _state: IState
-  @nosync
+
   hijacksInteractionTarget: boolean = false
 
   // quote: Current transform of the object based on local factors
   // eg. author-chosen transform when creating this entity
-  @nosync
+
   _localTransform: EntityTransform
 
   // quote: Current transform of the object based on world (parent) factors
   // eg. transform applied by parent container
-  @nosync
+
   _worldTransform: EntityTransform
 
   constructor(options: IEntityOptions) {
@@ -411,12 +402,6 @@ const byName = (name: string) => (entity: Entity): boolean =>
 
 const byType = (type: string) => (entity: Entity): boolean =>
   entity.type === type
-
-// Get rid of EventEmitter stuff from the client
-// nosync(Entity.prototype, "_events")
-// nosync(Entity.prototype, "_eventsCount")
-// nosync(Entity.prototype, "_maxListeners")
-// nosync(Entity.prototype, "domain")
 
 export interface IEntityOptions {
   state: IState

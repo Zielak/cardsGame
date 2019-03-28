@@ -24,6 +24,8 @@ import {
   PlayAce,
   RequestSuit
 } from "./actions"
+import { MapSchema } from "@colyseus/schema"
+import { map2Array } from "../../../utils/lib"
 
 export class MakaoRoom extends Room<MakaoState> {
   name = "Makao"
@@ -52,7 +54,7 @@ export class MakaoRoom extends Room<MakaoState> {
     logs.info("Makao", `setting up the game`)
     state.atackPoints = 0
     state.skipPoints = 0
-    state.turnSkips = {}
+    state.turnSkips = new MapSchema<number>()
 
     // Prepare deck of cards and main pile
     this.pile = new Pile({
@@ -87,7 +89,7 @@ export class MakaoRoom extends Room<MakaoState> {
   }
 
   onStartGame(state: MakaoState) {
-    state.players.toArray().forEach(pd => (state.turnSkips[pd.clientID] = 0))
+    map2Array(state.players).forEach(pd => (state.turnSkips[pd.clientID] = 0))
 
     const handSorting = (childA: ClassicCard, childB: ClassicCard): number => {
       const suits = {
@@ -118,9 +120,8 @@ export class MakaoRoom extends Room<MakaoState> {
     }
 
     // Temp container for picking/ordering cards.
-    state.players
-      .toArray()
-      .map(data => data.entity)
+    map2Array(state.players)
+      .map(data => state.getEntity(data.entityID))
       .forEach((player: Player) => {
         new Hand({
           state,
@@ -131,9 +132,8 @@ export class MakaoRoom extends Room<MakaoState> {
       })
 
     // Hands of each player
-    const playersHands = state.players
-      .toArray()
-      .map(data => data.entity)
+    const playersHands = map2Array(state.players)
+      .map(data => state.getEntity(data.entityID))
       .map(
         (player: Player) =>
           new Hand({

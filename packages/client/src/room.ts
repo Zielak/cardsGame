@@ -12,7 +12,6 @@ export class Room extends EventEmitter {
 
     room.onStateChange.addOnce(state => {
       logs.notice("ROOM, this is the first room state!", state)
-      this.entitiesListeners()
       this.gameStateListeners()
       this.emit(Room.events.stateChange, state)
     })
@@ -73,7 +72,7 @@ export class Room extends EventEmitter {
     }
 
     this.room.state.players.onAdd = (player: EntityData, key) => {
-      logs.notice("player created", player.name)
+      logs.notice("player created", key, player.name)
       this.emit(Room.events.playerAdded, player)
     }
     this.room.state.players.onRemove = (player: EntityData, key) => {
@@ -83,46 +82,46 @@ export class Room extends EventEmitter {
   }
 
   // TODO: What the fuck is this?
-  entitiesListeners() {
-    // on every new entity, add listeners in its children
+  // entitiesListeners() {
+  //   // on every new entity, add listeners in its children
 
-    this.room.state.entities.onAdd = (entity: EntityData, key) => {}
-    this.room.state.entities.onRemove = (entity: EntityData, key) => {}
+  //   // this.room.state.entities.onAdd = (entity: EntityData, key) => {}
+  //   // this.room.state.entities.onRemove = (entity: EntityData, key) => {}
 
-    const addListeners = path => {
-      this.room.listen(path, this.childrenHandler.bind(this))
-      this.room.listen(
-        path + "/:attribute",
-        this.attributeChangeHandler.bind(this)
-      )
-    }
-    let path = "entities/children/:idx"
-    addListeners(path)
+  //   const addListeners = path => {
+  //     this.room.listen(path, this.childrenHandler.bind(this))
+  //     this.room.listen(
+  //       path + "/:attribute",
+  //       this.attributeChangeHandler.bind(this)
+  //     )
+  //   }
+  //   let path = "entities/children/:idx"
+  //   addListeners(path)
 
-    path += "/children/:idx"
-    addListeners(path)
+  //   path += "/children/:idx"
+  //   addListeners(path)
 
-    path += "/children/:idx"
-    addListeners(path)
+  //   path += "/children/:idx"
+  //   addListeners(path)
 
-    path += "/children/:idx"
-    addListeners(path)
-  }
+  //   path += "/children/:idx"
+  //   addListeners(path)
+  // }
 
-  childrenHandler(change: colyseus.DataChange) {
-    if (change.operation === "add") {
-      this.emit(EntityEvents.childAdded, change)
-    } else if (change.operation === "remove") {
-      this.emit(EntityEvents.childRemoved, change)
-    } else {
-      logs.error("Woah, you forgot about something")
-    }
-  }
+  // childrenHandler(change: colyseus.DataChange) {
+  //   if (change.operation === "add") {
+  //     this.emit(EntityEvents.childAdded, change)
+  //   } else if (change.operation === "remove") {
+  //     this.emit(EntityEvents.childRemoved, change)
+  //   } else {
+  //     logs.error("Woah, you forgot about something")
+  //   }
+  // }
 
-  attributeChangeHandler(change: colyseus.DataChange) {
-    // log.verbose(`[${change.path.idx}] child.attribute.${change.path['attribute']}:`, change)
-    this.emit("child.attribute." + change.path["attribute"], change)
-  }
+  // attributeChangeHandler(change: colyseus.DataChange) {
+  //   // log.verbose(`[${change.path.idx}] child.attribute.${change.path['attribute']}:`, change)
+  //   this.emit("child.attribute." + change.path["attribute"], change)
+  // }
 
   updatePrivateAttribute(data: PrivateAttributeChangeData) {
     this.emit(`visibility.${data.attribute}`, {
@@ -144,6 +143,10 @@ export class Room extends EventEmitter {
     this.room.leave()
   }
 
+  get state() {
+    return this.room ? this.room.state : undefined
+  }
+
   static events = {
     stateChange: Symbol("stateChange"),
     message: Symbol("message"),
@@ -159,5 +162,5 @@ export class Room extends EventEmitter {
 
 export type PlayerData = {
   clientID: string
-  entity: EntityData
+  entityData: EntityData
 }

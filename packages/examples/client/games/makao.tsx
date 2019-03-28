@@ -17,7 +17,7 @@ export const MakaoGameUI: FunctionComponent<MakaoGameUIProps> = props => {
   // const [suitPickerActive, setSuitPickerActive] = useState(false)
 
   useEffect(() => {
-    game.client.id
+    // game.client.id
   }, [])
 
   const children = []

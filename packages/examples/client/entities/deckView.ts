@@ -1,25 +1,30 @@
 import { Graphics, Text } from "pixi.js"
 import { ClassicCardView } from "./classicCardView"
 import { ContainerView } from "./containerView"
-import { EntityData, ClientEntityData } from "../types"
+import { ClientEntityData, EntityData } from "@cardsgame/client/src/types"
 
-export class PileView extends ContainerView {
+export class DeckView extends ContainerView {
   bg: Graphics
   label: Text
 
   constructor(data: ClientEntityData) {
     super(data)
+    const PLUS_SIZE = 10
     this.bg = new Graphics()
-    const radius = Math.max(ClassicCardView.width, ClassicCardView.height) / 1.5
 
     this.bg.beginFill(0x491008, 0.1)
     this.bg.lineStyle(3, 0xff754a, 1)
-    this.bg.drawCircle(0, 0, radius)
-
+    this.bg.drawRoundedRect(
+      -ClassicCardView.width / 2 - PLUS_SIZE,
+      -ClassicCardView.height / 2 - PLUS_SIZE,
+      ClassicCardView.width + PLUS_SIZE * 2,
+      ClassicCardView.height + PLUS_SIZE * 2,
+      8
+    )
     this.label = new Text(labelText(this.data), {
       fill: ["#ffffff", "#00ff99"],
       stroke: "#4a1850",
-      strokeThickness: 4
+      strokeThickness: 5
     })
     this.label.x = -this.label.width / 2
     this.label.y = ClassicCardView.height / 2

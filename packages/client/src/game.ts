@@ -1,13 +1,8 @@
 import * as colyseus from "colyseus.js"
-import { EntityEvents } from "@cardsgame/utils"
-import { Room, PlayerData } from "./room"
+import { Room } from "./room"
 import { logs } from "./logs"
 import { EventEmitter } from "eventemitter3"
-import * as app from "./app"
 import { RoomAvailable } from "colyseus.js/lib/Room"
-
-const VIEW_WIDTH = 600
-const VIEW_HEIGHT = 600
 
 interface GameOptions {
   viewElement: HTMLElement
@@ -21,7 +16,6 @@ interface GameOptions {
  */
 export class Game extends EventEmitter {
   client: colyseus.Client
-  app: app.App
   room: Room
 
   gameNames: string[]
@@ -47,13 +41,6 @@ export class Game extends EventEmitter {
       this.destroy()
     })
 
-    this.app = new app.App({
-      viewElement,
-      viewWidth: VIEW_WIDTH,
-      viewHeight: VIEW_HEIGHT,
-      clientID: this.client.id
-    })
-
     // Hot module replacement - there can be only one app on page plz
     document.dispatchEvent(new Event("destroy"))
     document.addEventListener("destroy", () => {
@@ -65,7 +52,7 @@ export class Game extends EventEmitter {
     if (this.room) {
       this.room.destroy()
     }
-    this.app.destroy()
+    // this.app.destroy()
 
     const gameRoom = this.client.join(gameName)
     this.room = new Room(gameRoom)
@@ -73,68 +60,50 @@ export class Game extends EventEmitter {
     this.room.once(Room.events.join, () =>
       this.emit(Game.events.joinedRoom, gameName)
     )
-
-    // Create renderer
-    this.app.create()
-    // Hook it up to room events
-    // this.prepareRoomEvents()
-    this.prepareRenderingApp()
   }
 
+  /**
+   * @deprecated
+   */
   prepareRenderingApp() {
     // this.gameRoom.on(Room.events.clientJoined, (data: string) => {})
     // this.gameRoom.on(Room.events.clientLeft, (data: string) => {})
-    this.room.on(Room.events.playerAdded, (data: PlayerData) => {
-      this.app.emit(Room.events.playerAdded, data)
-    })
-    this.room.on(Room.events.playerRemoved, (data: PlayerData) => {
-      this.app.emit(Room.events.playerRemoved, data)
-    })
-
-    this.room.on(EntityEvents.childRemoved, this.app.removeChild.bind(this.app))
-    this.room.on(EntityEvents.childAdded, this.app.addChild.bind(this.app))
-
-    const publicAttributes = [
-      // Basic things
-      "x",
-      "y",
-      "angle",
-      // ClassicCards stuff
-      "faceUp",
-      "marked",
-      "rotated"
-    ]
-    publicAttributes.forEach(propName => {
-      this.room.on(
-        `child.attribute.${propName}`,
-        this.app.attributeChange.bind(this.app)
-      )
-    })
-
-    const privateAttributes = [
-      "visibleToClient",
-      "selected",
-      "suit",
-      "rank",
-      "name"
-    ]
-    privateAttributes.forEach(propName => {
-      this.room.on(
-        `visibility.${propName}`,
-        this.app.visibilityChange.bind(this.app)
-      )
-    })
-
+    // this.room.on(Room.events.playerAdded, (data: PlayerData) => {
+    //   this.app.emit(Room.events.playerAdded, data)
+    // })
+    // this.room.on(Room.events.playerRemoved, (data: PlayerData) => {
+    //   this.app.emit(Room.events.playerRemoved, data)
+    // })
+    // this.room.on(EntityEvents.childRemoved, this.app.removeChild.bind(this.app))
+    // this.room.on(EntityEvents.childAdded, this.app.addChild.bind(this.app))
+    // publicAttributes.forEach(propName => {
+    //   this.room.on(
+    //     `child.attribute.${propName}`,
+    //     this.app.attributeChange.bind(this.app)
+    //   )
+    // })
+    // const privateAttributes = [
+    //   "visibleToClient",
+    //   "selected",
+    //   "suit",
+    //   "rank",
+    //   "name"
+    // ]
+    // privateAttributes.forEach(propName => {
+    //   this.room.on(
+    //     `visibility.${propName}`,
+    //     this.app.visibilityChange.bind(this.app)
+    //   )
+    // })
     // -------
-
-    this.app.on("click", (event: app.ClickEvent) => {
-      const playerEvent: PlayerEvent = {
-        command: "EntityInteraction",
-        event: event.type,
-        entityPath: event.targetEntity.idxPath
-      }
-      this.room.send(playerEvent)
-    })
+    // this.on("click", (event: app.ClickEvent) => {
+    //   const playerEvent: PlayerEvent = {
+    //     command: "EntityInteraction",
+    //     event: event.type,
+    //     entityPath: event.targetEntity.idxPath
+    //   }
+    //   this.room.send(playerEvent)
+    // })
   }
 
   getAvailableRooms(gameName: string): Promise<RoomAvailable[]> {
@@ -151,11 +120,6 @@ export class Game extends EventEmitter {
 
   destroy() {
     this.client.close()
-
-    if (this.app) {
-      this.app.destroy()
-      this.app = null
-    }
 
     if (this.room) {
       this.room.destroy()

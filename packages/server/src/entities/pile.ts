@@ -1,4 +1,3 @@
-import { nosync } from "colyseus"
 import { float, EntityEvents } from "@cardsgame/utils"
 import { Entity, IEntityOptions } from "../entity"
 import { Container } from "./container"
@@ -7,9 +6,7 @@ export class Pile extends Container {
   type = "pile"
   hijacksInteractionTarget = true
 
-  @nosync
   limits: PileVisualLimits
-  @nosync
   cardsData = new Map<EntityID, CardsData>()
 
   constructor(options: IPileOptions) {

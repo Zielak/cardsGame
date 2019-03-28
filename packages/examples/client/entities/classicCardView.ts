@@ -1,8 +1,11 @@
 import { Graphics, Text, TextStyle } from "pixi.js"
 import { cm2px } from "@cardsgame/utils"
 import { EntityView } from "./entityView"
-import { logs } from "../logs"
-import { ClientEntityData, AttributeChangeData } from "../types"
+import { logs } from "@cardsgame/client"
+import {
+  ClientEntityData,
+  AttributeChangeData
+} from "@cardsgame/client/src/types"
 
 export class ClassicCardView extends EntityView {
   paper: Graphics

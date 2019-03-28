@@ -2,6 +2,7 @@ import { State } from "../state"
 import { logs } from "../logs"
 import { ICommand } from "../command"
 import { Player } from "../player"
+import { map2Array } from "@cardsgame/utils"
 
 export class StartGame implements ICommand {
   execute(state: State) {
@@ -10,7 +11,7 @@ export class StartGame implements ICommand {
     state.isGameStarted = true
     state.currentPlayerIdx = 0
 
-    state.clients.toArray().forEach(clientID => {
+    map2Array(state.clients).forEach(clientID => {
       const entity = new Player({
         state: state,
         clientID: clientID,

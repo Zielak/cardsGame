@@ -1,4 +1,3 @@
-import { nosync } from "colyseus"
 import chalk from "chalk"
 import { Entity } from "./entity"
 import { EntityEvents } from "@cardsgame/utils"
@@ -7,7 +6,6 @@ import { logs } from "./logs"
 export class EntityMap<T> {
   [entityID: number]: T | any
 
-  @nosync
   add(entity: T): number {
     const idx = this.length
     this[idx] = entity
@@ -15,7 +13,6 @@ export class EntityMap<T> {
     // notifyNewIdx(entity, idx)
   }
 
-  @nosync
   moveTo(from: number, to: number) {
     const entry = this[from]
     this[from] = undefined
@@ -74,7 +71,6 @@ export class EntityMap<T> {
 
   remove(idx: number)
   remove(idx: string)
-  @nosync
   remove(_idx: number | string) {
     const idx = typeof _idx === "number" ? _idx : parseInt(_idx)
     if (typeof this[idx] === "undefined") {
@@ -91,7 +87,6 @@ export class EntityMap<T> {
    * Makes sure that every child is at its own
    * unique 'idx' value, starting with 0
    */
-  @nosync
   updateOrder() {
     const keys = Object.keys(this)
     keys.forEach((_key, idx) => {
@@ -112,12 +107,10 @@ export class EntityMap<T> {
     return this
   }
 
-  @nosync
   toArray(): T[] {
     return Object.keys(this).map(idx => this[idx])
   }
 
-  @nosync
   get length(): number {
     return Object.keys(this).length
   }
