@@ -1,21 +1,96 @@
 import chalk from "chalk"
-import { Entity } from "./entity"
+import { Entity } from "./entities/entity"
 import { EntityEvents } from "@cardsgame/utils"
 import { logs } from "./logs"
+import { Schema, type, ArraySchema } from "@colyseus/schema"
 
-export class EntityMap<T> {
-  [entityID: number]: T | any
+// type EntityMapArrayNames =
+//   | "entities"
+//   | "baseCards"
+//   | "classicCards"
+//   | "containers"
+//   | "decks"
+//   | "hands"
+//   | "piles"
+//   | "rows"
 
-  add(entity: T): number {
-    const idx = this.length
-    this[idx] = entity
-    return idx
-    // notifyNewIdx(entity, idx)
+export class EntityMap extends Schema {
+  private arrays = [
+    { prop: "entities", type: Entity },
+    { prop: "baseCards", type: BaseCard },
+    { prop: "classicCards", type: ClassicCard },
+    { prop: "containers", type: Container },
+    { prop: "decks", type: Deck },
+    { prop: "hands", type: Hand },
+    { prop: "piles", type: Pile },
+    { prop: "rows", type: Row }
+  ]
+
+  // Entity
+  @type([Entity])
+  entities = new ArraySchema<Entity>()
+
+  @type([BaseCard])
+  baseCards = new ArraySchema<BaseCard>()
+
+  @type([ClassicCard])
+  classicCards = new ArraySchema<ClassicCard>()
+
+  // Containers
+  @type([Container])
+  containers = new ArraySchema<Container>()
+
+  @type([Deck])
+  decks = new ArraySchema<Deck>()
+
+  @type([Hand])
+  hands = new ArraySchema<Hand>()
+
+  @type([Pile])
+  piles = new ArraySchema<Pile>()
+
+  @type([Row])
+  rows = new ArraySchema<Row>()
+
+  // TODO: Fully intergrate it
+  pointers: string[] = []
+
+  add(child: any): boolean {
+    const newIdx = this.length
+
+    const result = this.arrays.some(def => {
+      if (!(child instanceof def.type)) {
+        return false
+      }
+      this[def.prop].push(child)
+      child.idx = newIdx
+      this.pointers.push(def.prop)
+      return true
+    })
+
+    return result
+  }
+
+  remove(idx: number)
+  remove(child: Entity)
+  remove(childOrIdx: Entity | number): boolean {
+    const idx = typeof childOrIdx === "number" ? childOrIdx : childOrIdx.idx
+
+    const child = this[this.pointers[idx]].find(child => {
+      return child.idx === idx
+    })
+    if (!child) return false
+
+    this[this.pointers[idx]] = this[this.pointers[idx]].filter(
+      el => el !== child
+    )
+    this.pointers[idx] = undefined
+
+    this.updateChildrenIdx(idx)
   }
 
   moveTo(from: number, to: number) {
-    const entry = this[from]
-    this[from] = undefined
+    const child = this.get(from)
 
     // 1. pluck out the FROM
     // 2. keep moving from 3->2, to->3
@@ -30,8 +105,7 @@ export class EntityMap<T> {
       // [Fr, To]
       for (let idx = from + 1; idx <= to; idx++) {
         const newIdx = idx - 1
-        this[newIdx] = this[idx]
-        notifyNewIdx(this[newIdx], newIdx)
+        this.get(idx).idx = newIdx
       }
     } else if (from > to) {
       //  0  1  2  3  4  5  6
@@ -42,8 +116,7 @@ export class EntityMap<T> {
       // [To, Fr]
       for (let idx = from - 1; idx >= to; idx--) {
         const newIdx = idx + 1
-        this[newIdx] = this[idx]
-        notifyNewIdx(this[newIdx], newIdx)
+        this.get(idx).idx = newIdx
       }
     } else {
       logs.warn(
@@ -55,80 +128,69 @@ export class EntityMap<T> {
       )
     }
     // Plop entry to desired target place
-    this[to] = entry
-    // notifyNewIdx(entry, to)
+    child.idx = to
 
-    logs.verbose(`moveTo, keys:`, Object.keys(this))
-
-    const entries = Object.keys(this).map(idx =>
-      chalk.yellow(this[idx] && this[idx].name ? this[idx].name : this[idx])
-    )
+    const entries = this.toArray().map(child => chalk.yellow(child.name))
 
     logs.verbose(`moveTo, [`, entries.join(", "), `]`)
-    logs.verbose(`moveTo, done, now updateOrder()`)
-    this.updateOrder()
+    logs.verbose(`moveTo, done, now updatePointers()`)
+    this.updatePointers()
   }
 
-  remove(idx: number)
-  remove(idx: string)
-  remove(_idx: number | string) {
-    const idx = typeof _idx === "number" ? _idx : parseInt(_idx)
-    if (typeof this[idx] === "undefined") {
-      return false
+  private updateChildrenIdx(from: number = 0) {
+    const max = this.length
+    for (let i = from + 1; i <= max; i++) {
+      const array = this[this.pointers[i]] as ArraySchema<Entity>
+      const child = array.find(el => el.idx === i)
+      child.idx = i - 1
     }
-
-    notifyNewIdx(this[idx], undefined)
-    delete this[idx]
-    this.updateOrder()
-    return true
+    this.updatePointers()
   }
 
-  /**
-   * Makes sure that every child is at its own
-   * unique 'idx' value, starting with 0
-   */
-  updateOrder() {
-    const keys = Object.keys(this)
-    keys.forEach((_key, idx) => {
-      const key = parseInt(_key)
-      if (key === idx) return
-
-      // We've got empty space right here
-      if (this[idx] === undefined) {
-        this[idx] = this[key]
-        delete this[key]
-        notifyNewIdx(this[idx], idx)
-      } else {
-        this[idx] = this[key]
-        notifyNewIdx(this[idx], idx)
-        throw new Error(`I don't know how that happened to be honest`)
-      }
+  private updatePointers() {
+    this.toArray().forEach(child => {
+      const def = this.arrays.find(def => {
+        if (!(child instanceof def.type)) {
+          return false
+        }
+        return true
+      })
+      this.pointers[child.idx] = def.prop
     })
-    return this
   }
 
-  toArray(): T[] {
-    return Object.keys(this).map(idx => this[idx])
+  toArray<T extends Entity>(): T[] {
+    return this.arrays
+      .reduce((prev: T[], def) => {
+        return prev.concat(...this[def.prop])
+      }, [])
+      .sort(EntityMap.sortByIdx)
+  }
+
+  get<T extends Entity>(idx: number): T {
+    return this[this.pointers[idx]]
+  }
+
+  // Array-like methods
+
+  find<T extends Entity>(
+    predicate: (child: T, idx: number, array: T[]) => boolean
+  ): T {
+    return (this.toArray() as T[]).find(predicate)
   }
 
   get length(): number {
-    return Object.keys(this).length
-  }
-
-  /**
-   * @deprecated seems to be unused
-   */
-  static sortByIdx = (a: Entity, b: Entity): number => a.idx - b.idx
-}
-
-export const notifyNewIdx = (entity: any, idx: number) => {
-  if (entity instanceof Entity) {
-    const e = entity as Entity
-    logs.verbose(
-      "notifyNewIdx",
-      e.type + ":" + e.name,
-      `[${entity.idx} => ${idx}]`
+    return (
+      this.entities.length +
+      this.baseCards.length +
+      this.classicCards.length +
+      this.containers.length +
+      this.decks.length +
+      this.hands.length +
+      this.piles.length +
+      this.rows.length
     )
-    e.emit(EntityEvents.idxUpdate, idx)
   }
+
+  static sortByIdx = <T extends Entity>(a: T, b: T): number => a.idx - b.idx
 }

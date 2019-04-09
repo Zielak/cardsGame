@@ -15,9 +15,7 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@colyseus/schema": "^0.4.0",
-    "jest": "^24.1.0",
-    "typescript": "^3.3.3333"
+  "dependencies": {
+    "@colyseus/schema": "^0.4.19"
   }
 }

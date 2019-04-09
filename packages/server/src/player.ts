@@ -1,4 +1,4 @@
-import { Entity, IEntityOptions } from "./entity"
+import { Entity, IEntityOptions } from "./entities/entity"
 import { EntityEvents } from "@cardsgame/utils"
 import { type } from "@colyseus/schema"
 

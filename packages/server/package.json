@@ -14,12 +14,8 @@
     "build:watch": "tsc -b src --watch",
     "test": "jest"
   },
-  "devDependencies": {
-    "jest": "^24.1.0",
-    "typescript": "^3.3.3333"
-  },
   "dependencies": {
-    "@cardsgame/types": "^0.1.1",
-    "@cardsgame/utils": "^0.1.2"
+    "@cardsgame/types": "file:../types",
+    "@cardsgame/utils": "file:../utils"
   }
 }

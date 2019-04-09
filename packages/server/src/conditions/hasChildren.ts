@@ -1,6 +1,6 @@
 import { ServerPlayerEvent } from "../player"
 import { ICondition } from "../condition"
-import { Entity } from "../entity"
+import { Entity } from "../entities/entity"
 import { State } from "../state"
 
 function hasChildren(entity: Entity): ICondition

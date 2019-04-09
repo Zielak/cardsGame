@@ -1,4 +1,4 @@
-import { Entity } from "../entity"
+import { Entity } from "../entities/entity"
 import { State } from "../state"
 import { logs } from "../logs"
 import { ICommand } from "../command"

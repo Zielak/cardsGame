@@ -21,21 +21,10 @@
     "build:server": "tsc -b server"
   },
   "dependencies": {
-    "@cardsgame/client": "^0.1.4",
-    "@cardsgame/server": "^0.1.4",
-    "@cardsgame/types": "^0.1.1",
+    "@cardsgame/client": "file:../client",
+    "@cardsgame/server": "file:../server",
+    "@cardsgame/types": "file:../types",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
-  },
-  "devDependencies": {
-    "@colyseus/schema": "^0.4.4",
-    "@types/react": "^16.8.10",
-    "@types/react-dom": "^16.8.3",
-    "chalk": "^2.4.2",
-    "nodemon": "^1.18.10",
-    "parcel-bundler": "^1.12.3",
-    "parcel-plugin-clean-dist": "0.0.6",
-    "ts-node": "^8.0.3",
-    "typescript": "^3.3.4000"
   }
 }

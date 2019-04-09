@@ -15,7 +15,7 @@ export class StartGame implements ICommand {
       const entity = new Player({
         state: state,
         clientID: clientID,
-        parent: state.entities.id
+        parent: state.entities.get(0)
       })
 
       state.players.add({ clientID, entity })

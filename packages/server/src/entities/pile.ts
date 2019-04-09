@@ -1,44 +1,49 @@
 import { float, EntityEvents } from "@cardsgame/utils"
-import { Entity, IEntityOptions } from "../entity"
-import { Container } from "./container"
+import { Entity, IEntityImplementation, IEntityOptions } from "./entity"
 
-export class Pile extends Container {
-  type = "pile"
-  hijacksInteractionTarget = true
+/**
+ * Pile's implementation thing
+ */
+export const Pile: IEntityImplementation = (
+  entity: Entity,
+  options: IPileOptions
+) => {
+  const limits = Object.assign(
+    {},
+    {
+      minAngle: -45,
+      maxAngle: 45,
+      minX: -10,
+      minY: -10,
+      maxX: 10,
+      maxY: 10
+    },
+    options.limits
+  )
+  const cardsData = new Map<EntityID, CardsData>()
 
-  limits: PileVisualLimits
-  cardsData = new Map<EntityID, CardsData>()
+  entity.type = "pile"
+  entity.isContainer = true
+  entity.hijacksInteractionTarget = true
 
-  constructor(options: IPileOptions) {
-    super(options)
+  entity.on(EntityEvents.childAdded, (child: Entity) => {
+    cardsData.set(child.id, cardsDataFactory(limits))
+  })
+  entity.on(EntityEvents.childRemoved, (childID: EntityID) => {
+    cardsData.delete(childID)
+  })
 
-    this.limits = Object.assign(
-      {},
-      {
-        minAngle: -45,
-        maxAngle: 45,
-        minX: -10,
-        minY: -10,
-        maxX: 10,
-        maxY: 10
-      },
-      options.limits
-    )
-
-    this.on(EntityEvents.childAdded, (child: Entity) => {
-      this.cardsData.set(child.id, cardsDataFactory(this.limits))
-    })
-    this.on(EntityEvents.childRemoved, (childID: EntityID) => {
-      this.cardsData.delete(childID)
-    })
-  }
-
-  restyleChild(child: Entity, idx: number, children: Entity[]) {
-    const { x, y, angle } = this.cardsData.get(child.id) || DEFAULT_CARDS_DATA
-    return {
-      x,
-      y,
-      angle
+  return {
+    restyleChild: {
+      value: (child: Entity, idx: number, children: Entity[]) => {
+        const { x, y, angle } =
+          this.cardsData.get(child.id) || DEFAULT_CARDS_DATA
+        return {
+          x,
+          y,
+          angle
+        }
+      }
     }
   }
 }

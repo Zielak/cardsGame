@@ -15,13 +15,8 @@
     "build:watch": "webpack --watch",
     "test": "echo \"¯\\_(ツ)_/¯\""
   },
-  "devDependencies": {
-    "jest": "^24.1.0",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
-  },
   "dependencies": {
-    "@cardsgame/types": "^0.1.1",
-    "@cardsgame/utils": "^0.1.2"
+    "@cardsgame/types": "file:../types",
+    "@cardsgame/utils": "file:../utils"
   }
 }

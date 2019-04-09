@@ -1,46 +1,39 @@
-import { Entity, IEntityOptions } from "../entity"
-import { def } from "@cardsgame/utils"
 import { Client } from "colyseus"
-import { type } from "@colyseus/schema"
+import { def } from "@cardsgame/utils"
+import { Entity, IEntityImplementation, IEntityOptions } from "./entity"
 
-export class BaseCard extends Entity {
-  type = "card"
+export const BaseCard: IEntityImplementation = (
+  entity: Entity,
+  options: IBaseCardOptions
+) => {
+  entity.type = "baseCard"
+  entity.visibleToPublic = options.faceUp
+  entity.data.faceUp = def(options.faceUp, false)
+  entity.data.rotated = def(options.rotated, 0)
 
-  @type("boolean")
-  faceUp: boolean
-
-  @type("uint16")
-  rotated: number
-
-  // Publically known to be "marked" in some way.
-  @type("boolean")
-  marked: boolean
-
-  constructor(options: IBaseCardOptions) {
-    super(options)
-
-    this.faceUp = def(options.faceUp, false)
-    this.rotated = def(options.rotated, 0)
-    this.marked = def(options.marked, false)
-
-    this.visibleToPublic = this.faceUp
+  const updateVisibleToPublic = () => {
+    entity.visibleToPublic = entity.data.faceUp
   }
 
-  flip() {
-    this.faceUp = !this.faceUp
-    this.updateVisibleToPublic()
-  }
-  show() {
-    this.faceUp = true
-    this.updateVisibleToPublic()
-  }
-  hide() {
-    this.faceUp = false
-    this.updateVisibleToPublic()
-  }
-  updateVisibleToPublic() {
-    this.visibleToPublic = this.faceUp
-    // this.sendAllPrivateAttributes()
+  return {
+    flip: {
+      value: () => {
+        entity.data.faceUp = !entity.data.faceUp
+        updateVisibleToPublic()
+      }
+    },
+    show: {
+      value: () => {
+        entity.data.faceUp = true
+        updateVisibleToPublic()
+      }
+    },
+    hide: {
+      value: () => {
+        entity.data.faceUp = false
+        updateVisibleToPublic()
+      }
+    }
   }
 }
 
@@ -50,11 +43,11 @@ export interface IBaseCardOptions extends IEntityOptions {
   marked?: boolean
 }
 
-export const faceDownOnlyOwner = (my: BaseCard, client: any): boolean => {
+export const faceDownOnlyOwner = (my: Entity, client: any): boolean => {
   // 1. To everyone only if it's faceUp
   // 2. To owner, only if it's in his hands
   return (
-    my.faceUp ||
+    my.data.faceUp ||
     (my.owner.clientID === (client as Client).id &&
       my.parentEntity.type === "hand")
   )

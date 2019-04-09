@@ -3,7 +3,7 @@ import { ICondition, IConditionFactory } from "../condition"
 import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 import { sentenceCase } from "@cardsgame/utils"
-import { Entity } from "../entity"
+import { Entity } from "../entities/entity"
 
 export const matchesPropWith = (
   propName: string,

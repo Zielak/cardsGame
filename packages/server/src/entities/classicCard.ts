@@ -1,34 +1,29 @@
-import { BaseCard, IBaseCardOptions, faceDownOnlyOwner } from "./baseCard"
+import { IBaseCardOptions } from "./baseCard"
 import { logs } from "../logs"
-import { filter, type } from "@colyseus/schema"
+import { Entity, IEntityImplementation } from "./entity"
+
+export const ClassicCard: IEntityImplementation = (
+  entity: Entity,
+  options: IClassicCardOptions
+) => {
+  entity.type = "classicCard"
+  entity.data.suit = options.suit
+  entity.data.rank = options.rank
+  entity.name = options.suit + options.rank
+
+  return {
+    suit: {
+      get: () => entity.data.suit
+    },
+    rank: {
+      get: () => entity.data.rank
+    }
+  }
+}
 
 export interface IClassicCardOptions extends IBaseCardOptions {
   suit: string
   rank: string
-}
-
-export class ClassicCard extends BaseCard {
-  type = "classicCard"
-
-  // @filter(faceDownOnlyOwner)
-  @type("string")
-  name: string
-
-  // @filter(faceDownOnlyOwner)
-  @type("string")
-  suit: string
-
-  // @filter(faceDownOnlyOwner)
-  @type("string")
-  rank: string
-
-  constructor(options: IClassicCardOptions) {
-    super(options)
-
-    this.suit = options.suit
-    this.rank = options.rank
-    this.name = this.rank + this.suit
-  }
 }
 
 export const standardDeck = (

@@ -1,6 +1,6 @@
 import { ServerPlayerEvent } from "../../player"
 import { propsMatch } from "./helpers"
-import { Entity } from "../../entity"
+import { Entity } from "../../entities/entity"
 import { logs } from "../../logs"
 import { ICondition } from "../../condition"
 

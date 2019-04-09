@@ -3,7 +3,7 @@ import { logs } from "./logs"
 import { CommandsManager } from "./commandsManager"
 import { StartGame } from "./commands/startGame"
 import { State } from "./state"
-import { Entity } from "./entity"
+import { Entity } from "./entities/entity"
 import {
   EntityEvents,
   map2Array,

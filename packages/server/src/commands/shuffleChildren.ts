@@ -1,7 +1,6 @@
-import { Entity } from "../entity"
+import { Entity } from "../entities/entity"
 import { logs } from "../logs"
 import { State } from "../state"
-import { notifyNewIdx } from "../entityMap"
 import { ICommand } from "../command"
 
 export class ShuffleChildren implements ICommand {
@@ -18,8 +17,6 @@ export class ShuffleChildren implements ICommand {
       const childj = this.container.children[toIdx] as Entity
       this.container.children[fromIdx] = childj
       this.container.children[toIdx] = childi
-      notifyNewIdx(childi, toIdx)
-      notifyNewIdx(childj, fromIdx)
     }
     state.logTreeState()
   }

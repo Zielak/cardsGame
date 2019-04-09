@@ -1,8 +1,9 @@
 import { Schema, type, MapSchema } from "@colyseus/schema"
 import { default as EEmitter, EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
-import { Entity } from "./entity"
+import { Entity } from "./entities/entity"
 import { cm2px } from "@cardsgame/utils"
+import { EntityMap } from "./entityMap"
 
 class PlayerData extends Schema {
   @type("uint16")
@@ -13,29 +14,29 @@ class PlayerData extends Schema {
 }
 
 export interface IState {
-  entities: MapSchema<Entity>
+  entities: EntityMap
   getEntity(id: EntityID): Entity
   getEntity(path: number[]): Entity
   getEntitiesAlongPath(path: number[]): Entity[]
   rememberEntity(entity: Entity)
   logTreeState(startingPoint?: Entity)
-  on: (
-    event: string | symbol,
-    fn: EEmitter.ListenerFn,
-    context?: any
-  ) => EEmitter<string | symbol>
-  once: (
-    event: string | symbol,
-    fn: EEmitter.ListenerFn,
-    context?: any
-  ) => EEmitter<string | symbol>
-  off: (
-    event: string | symbol,
-    fn?: EEmitter.ListenerFn,
-    context?: any,
-    once?: boolean
-  ) => EEmitter<string | symbol>
-  emit: (event: string | symbol, ...args: any[]) => boolean
+  // on: (
+  //   event: string | symbol,
+  //   fn: EEmitter.ListenerFn,
+  //   context?: any
+  // ) => EEmitter<string | symbol>
+  // once: (
+  //   event: string | symbol,
+  //   fn: EEmitter.ListenerFn,
+  //   context?: any
+  // ) => EEmitter<string | symbol>
+  // off: (
+  //   event: string | symbol,
+  //   fn?: EEmitter.ListenerFn,
+  //   context?: any,
+  //   once?: boolean
+  // ) => EEmitter<string | symbol>
+  // emit: (event: string | symbol, ...args: any[]) => boolean
 }
 
 export class State extends Schema implements IState {
@@ -45,8 +46,8 @@ export class State extends Schema implements IState {
   @type("number")
   tableHeight = cm2px(60) // 60 cm
 
-  @type({ map: Entity })
-  entities: MapSchema<Entity>
+  @type(EntityMap)
+  entities = new EntityMap()
 
   @type({ map: PlayerData })
   players = new MapSchema<PlayerData>()
@@ -74,23 +75,23 @@ export class State extends Schema implements IState {
   ui: StateUI = new MapSchema<string>()
 
   _emitter: EEmitter
-  on: (
-    event: string | symbol,
-    fn: EEmitter.ListenerFn,
-    context?: any
-  ) => EEmitter<string | symbol>
-  once: (
-    event: string | symbol,
-    fn: EEmitter.ListenerFn,
-    context?: any
-  ) => EEmitter<string | symbol>
-  off: (
-    event: string | symbol,
-    fn?: EEmitter.ListenerFn,
-    context?: any,
-    once?: boolean
-  ) => EEmitter<string | symbol>
-  emit: (event: string | symbol, ...args: any[]) => boolean
+  // on: (
+  //   event: string | symbol,
+  //   fn: EEmitter.ListenerFn,
+  //   context?: any
+  // ) => EEmitter<string | symbol>
+  // once: (
+  //   event: string | symbol,
+  //   fn: EEmitter.ListenerFn,
+  //   context?: any
+  // ) => EEmitter<string | symbol>
+  // off: (
+  //   event: string | symbol,
+  //   fn?: EEmitter.ListenerFn,
+  //   context?: any,
+  //   once?: boolean
+  // ) => EEmitter<string | symbol>
+  // emit: (event: string | symbol, ...args: any[]) => boolean
 
   _lastID = -1
   _allEntities = new Map<number, Entity>()
@@ -98,18 +99,17 @@ export class State extends Schema implements IState {
   constructor(options?: IStateOptions) {
     super()
     // TODO: do something with these options.
-    this.entities = new MapSchema<Entity>()
     this.entities[0] = new Entity({
       state: this,
       type: "root",
       name: "root"
     })
 
-    this._emitter = new EventEmitter()
-    this.on = this._emitter.on.bind(this._emitter)
-    this.once = this._emitter.once.bind(this._emitter)
-    this.off = this._emitter.off.bind(this._emitter)
-    this.emit = this._emitter.emit.bind(this._emitter)
+    // this._emitter = new EventEmitter()
+    // this.on = this._emitter.on.bind(this._emitter)
+    // this.once = this._emitter.once.bind(this._emitter)
+    // this.off = this._emitter.off.bind(this._emitter)
+    // this.emit = this._emitter.emit.bind(this._emitter)
 
     this.setupListeners()
   }
@@ -123,6 +123,7 @@ export class State extends Schema implements IState {
   }
 
   /**
+   * @deprecated instead of this, provide users with factory functions, which would register entities automatically
    * Registers new entity to the gamestate
    * @param entity
    * @returns new ID to be assigned to that entity

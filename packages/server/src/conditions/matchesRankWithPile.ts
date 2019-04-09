@@ -8,7 +8,8 @@ export const matchesRankWithPile: ICondition = (
   state: State,
   event: ServerPlayerEvent
 ): boolean => {
-  const pileTop = state.entities.findByName("mainPile").top as ClassicCard
+  const pileTop = state.entities.find(e => e.name === "mainPile")
+    .top as ClassicCard
   const chosenCard = event.entity as ClassicCard
   if (chosenCard.rank === pileTop.rank) {
     return true

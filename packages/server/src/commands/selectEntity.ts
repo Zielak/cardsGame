@@ -1,7 +1,7 @@
 import { Player } from "../player"
 import { State } from "../state"
 import { logs } from "../logs"
-import { Entity } from "../entity"
+import { Entity } from "../entities/entity"
 import { ICommand } from "../command"
 
 export class SelectEntity implements ICommand {

@@ -1,5 +1,5 @@
 import { State } from "../state"
-import { Entity } from "../entity"
+import { Entity } from "../entities/entity"
 import { BaseCard } from "../entities/baseCard"
 import { logs } from "../logs"
 import { ICommand } from "../command"

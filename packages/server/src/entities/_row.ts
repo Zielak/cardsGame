@@ -1,6 +1,6 @@
 import { def } from "@cardsgame/utils"
 import { Container } from "./container"
-import { Entity, IEntityOptions } from "../entity"
+import { Entity, IEntityOptions } from "./entity"
 
 export class Row extends Container {
   type = "row"

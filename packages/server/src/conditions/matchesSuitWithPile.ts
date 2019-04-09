@@ -8,7 +8,8 @@ export const matchesSuitWithPile: ICondition = (
   state: State,
   event: ServerPlayerEvent
 ): boolean => {
-  const pileTop = state.entities.findByName("mainPile").top as ClassicCard
+  const pileTop = state.entities.find(e => e.name === "mainPile")
+    .top as ClassicCard
   const chosenCard = event.entity as ClassicCard
   if (chosenCard.suit === pileTop.suit) {
     return true

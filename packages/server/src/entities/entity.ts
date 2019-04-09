@@ -7,6 +7,7 @@ import { IState } from "./state"
 import { Player } from "./player"
 import { EntityTransform } from "./transform"
 import { logs } from "./logs"
+import { EntityMap } from "./entityMap"
 
 export class Entity extends Schema {
   // @type("uint16")
@@ -21,8 +22,12 @@ export class Entity extends Schema {
 
   @type("boolean")
   isContainer = false
+
   @type("string")
   type: string
+  @type({ map: "string" })
+  data: MapSchema<string>
+
   @type("string")
   name: string
 
@@ -41,9 +46,12 @@ export class Entity extends Schema {
 
   // ----------------------------------
   // MapSchema management
-  @type({ map: Entity })
-  children = new MapSchema<Entity>()
+  // FIXME: fix all the other things. I can't nest Entities,
+  // FIXME: so do this by ID matching.
+  @type(EntityMap)
+  children = new EntityMap()
 
+  // TODO: maybe make that read-only?
   @type("uint16")
   idx: number
 
@@ -96,6 +104,12 @@ export class Entity extends Schema {
     this._state = options.state
     this.id = this._state.rememberEntity(this)
 
+    // element data stuff
+    this.type = def(options.type, Entity.DEFAULT_TYPE)
+    this.name = def(options.name, Entity.DEFAULT_NAME)
+    this.visibleToPublic = true
+    this.data = new MapSchema<string>()
+
     // transform
     this._localTransform = new EntityTransform(
       options.x,
@@ -106,11 +120,6 @@ export class Entity extends Schema {
     this._worldTransform = new EntityTransform()
     this._worldTransform.on("update", () => this.updateTransform())
     this.updateTransform()
-
-    // element data stuff
-    this.type = def(options.type, Entity.DEFAULT_TYPE)
-    this.name = def(options.name, Entity.DEFAULT_NAME)
-    this.visibleToPublic = true
 
     // parent
     if (this._state.entities[0]) {
@@ -176,9 +185,10 @@ export class Entity extends Schema {
       lastParent.removeChild(child.id, true)
     }
 
-    const idx = this.length
-    this.children[idx] = child
-    child.idx = idx
+    const added = this.children.add(child)
+    if (!added) {
+      throw new Error(`EntityMap, couldn't add new child! ${child.type}`)
+    }
     child.parent = this.id
 
     const event: EParentUpdate = {
@@ -230,10 +240,21 @@ export class Entity extends Schema {
         this.length
       )
     }
-    const child: Entity = this.children[idx]
+    const child: Entity = this.children.get(idx)
+    if (!child) {
+      logs.error("removeChildAt", `children.get - I don't have ${idx} child?`)
+      return
+    }
+
     const lastParent: Entity = child.parentEntity
 
-    delete this.children[idx]
+    if (!this.children.remove(idx)) {
+      logs.error(
+        "removeChildAt",
+        `children.remove - I don't have ${idx} child?`
+      )
+      return
+    }
 
     child.parent = 0
     // Reset last parent's stylings
@@ -334,7 +355,7 @@ export class Entity extends Schema {
    * Gets all children in array form, "sorted" by idx
    */
   get childrenArray(): Entity[] {
-    return Object.keys(this.children).map(key => this.children[key])
+    return this.children.toArray()
   }
 
   /**
@@ -405,6 +426,7 @@ const byType = (type: string) => (entity: Entity): boolean =>
 
 export interface IEntityOptions {
   state: IState
+  // implementation?: IEntityImplementation
   type?: string
   name?: string
   width?: number
@@ -415,6 +437,11 @@ export interface IEntityOptions {
   parent?: EntityID | Entity
   idx?: number
 }
+
+export type IEntityImplementation = (
+  entity: Entity,
+  options?: IEntityOptions
+) => PropertyDescriptorMap
 
 export type EParentUpdate = {
   entity: Entity
