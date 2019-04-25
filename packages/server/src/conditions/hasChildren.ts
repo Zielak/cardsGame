@@ -1,22 +1,22 @@
 import { ServerPlayerEvent } from "../player"
 import { ICondition } from "../condition"
-import { Entity } from "../entities/entity"
 import { State } from "../state"
+import { IParent, countChildren } from "../entities/traits/parent"
 
-function hasChildren(entity: Entity): ICondition
+function hasChildren(entity: IParent): ICondition
 function hasChildren(state: State, event: ServerPlayerEvent): boolean
 function hasChildren(
-  stantity: Entity | State,
+  stantity: IParent | State,
   event?: ServerPlayerEvent
 ): ICondition | boolean {
-  if (stantity instanceof Entity) {
+  if (!(stantity instanceof State)) {
     const cond: ICondition = (state: State, event: ServerPlayerEvent) => {
-      return stantity.length > 0
+      return countChildren(stantity) > 0
     }
     cond._name = `hasChildren{entity}`
     return cond
   } else {
-    return event.entity.length > 0
+    return countChildren(event.entity as IParent) > 0
   }
 }
 hasChildren._name = `hasChildren`

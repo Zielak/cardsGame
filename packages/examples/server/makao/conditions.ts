@@ -86,3 +86,40 @@ export const chosenMatchSuit: ICondition = (
   }
 }
 chosenMatchSuit._name = "chosenMatchSuit"
+
+export const matchesRankWithPile: ICondition = (
+  state: MakaoState,
+  event: ServerPlayerEvent
+): boolean => {
+  const pileTop = state.entities.find(e => e.name === "mainPile")
+    .top as ClassicCard
+  const chosenCard = event.entity as ClassicCard
+  if (chosenCard.rank === pileTop.rank) {
+    return true
+  }
+  logs.warn(
+    "matchesRankWithPile",
+    `pile.top "${pileTop.rank}" !== cards rank "${chosenCard.rank}"`
+  )
+  return false
+}
+matchesRankWithPile._name = "matchesRankWithPile"
+
+export const matchesSuitWithPile: ICondition = (
+  state: MakaoState,
+  event: ServerPlayerEvent
+): boolean => {
+  const pileTop = state.entities.find(e => e.name === "mainPile")
+    .top as ClassicCard
+  const chosenCard = event.entity as ClassicCard
+  if (chosenCard.suit === pileTop.suit) {
+    return true
+  } else {
+    logs.warn(
+      "matchesSuitWithPile",
+      `pile.top "${pileTop.suit}" !== cards suit "${chosenCard.suit}"`
+    )
+    return false
+  }
+}
+matchesSuitWithPile._name = "matchesSuitWithPile"

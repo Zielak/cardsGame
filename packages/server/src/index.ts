@@ -1,7 +1,5 @@
 export { Server } from "colyseus"
 
-export * from "./entities"
-
 export * from "./command"
 
 import * as commands from "./commands"
@@ -15,7 +13,7 @@ export * from "./transform"
 
 export * from "./actionTemplate"
 export * from "./entities/entity"
-export * from "./entityMap"
+export * from "./entities/children"
 export * from "./player"
 export * from "./room"
 export * from "./state"

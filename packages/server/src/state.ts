@@ -1,56 +1,23 @@
 import { Schema, type, MapSchema } from "@colyseus/schema"
-import { default as EEmitter, EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
-import { Entity } from "./entities/entity"
-import { cm2px } from "@cardsgame/utils"
-import { EntityMap } from "./entityMap"
+import { IEntity, getOwner } from "./entities/entity"
+import { cm2px, mapCount } from "@cardsgame/utils"
+import { Children } from "./entities/children"
+import { IParent } from "./entities/traits/parent"
+import { Player } from "./player"
 
-class PlayerData extends Schema {
-  @type("uint16")
-  entityID: EntityID
-
-  @type("string")
-  clientID: string
-}
-
-export interface IState {
-  entities: EntityMap
-  getEntity(id: EntityID): Entity
-  getEntity(path: number[]): Entity
-  getEntitiesAlongPath(path: number[]): Entity[]
-  rememberEntity(entity: Entity)
-  logTreeState(startingPoint?: Entity)
-  // on: (
-  //   event: string | symbol,
-  //   fn: EEmitter.ListenerFn,
-  //   context?: any
-  // ) => EEmitter<string | symbol>
-  // once: (
-  //   event: string | symbol,
-  //   fn: EEmitter.ListenerFn,
-  //   context?: any
-  // ) => EEmitter<string | symbol>
-  // off: (
-  //   event: string | symbol,
-  //   fn?: EEmitter.ListenerFn,
-  //   context?: any,
-  //   once?: boolean
-  // ) => EEmitter<string | symbol>
-  // emit: (event: string | symbol, ...args: any[]) => boolean
-}
-
-export class State extends Schema implements IState {
+export class State extends Schema {
   @type("number")
   tableWidth = cm2px(60) // 60 cm
 
   @type("number")
   tableHeight = cm2px(60) // 60 cm
 
-  @type(EntityMap)
-  entities = new EntityMap()
+  @type(Children)
+  entities = new Children()
 
-  @type({ map: PlayerData })
-  players = new MapSchema<PlayerData>()
+  @type({ map: Player })
+  players = new MapSchema<Player>()
 
   @type({ map: "string" })
   clients = new MapSchema<string>()
@@ -58,11 +25,11 @@ export class State extends Schema implements IState {
   @type("uint8")
   currentPlayerIdx: number
 
-  get currentPlayer(): PlayerData {
+  get currentPlayer(): Player {
     return this.players[this.currentPlayerIdx]
   }
   get playersCount(): number {
-    return this.players.length
+    return mapCount(this.players)
   }
 
   // TODO: think this through:
@@ -74,61 +41,22 @@ export class State extends Schema implements IState {
   @type({ map: "string" })
   ui: StateUI = new MapSchema<string>()
 
-  _emitter: EEmitter
-  // on: (
-  //   event: string | symbol,
-  //   fn: EEmitter.ListenerFn,
-  //   context?: any
-  // ) => EEmitter<string | symbol>
-  // once: (
-  //   event: string | symbol,
-  //   fn: EEmitter.ListenerFn,
-  //   context?: any
-  // ) => EEmitter<string | symbol>
-  // off: (
-  //   event: string | symbol,
-  //   fn?: EEmitter.ListenerFn,
-  //   context?: any,
-  //   once?: boolean
-  // ) => EEmitter<string | symbol>
-  // emit: (event: string | symbol, ...args: any[]) => boolean
-
   _lastID = -1
-  _allEntities = new Map<number, Entity>()
+  _allEntities = new Map<number, IEntity>()
 
-  constructor(options?: IStateOptions) {
-    super()
-    // TODO: do something with these options.
-    this.entities[0] = new Entity({
-      state: this,
-      type: "root",
-      name: "root"
-    })
-
-    // this._emitter = new EventEmitter()
-    // this.on = this._emitter.on.bind(this._emitter)
-    // this.once = this._emitter.once.bind(this._emitter)
-    // this.off = this._emitter.off.bind(this._emitter)
-    // this.emit = this._emitter.emit.bind(this._emitter)
-
-    this.setupListeners()
-  }
-
-  setupListeners() {
-    // this.on(State.events.privatePropsSyncRequest, (client: string) => {
-    //   // Bubble it down to every entity
-    //   logs.info("State.privatePropsSyncRequest")
-    //   this.entities.emit(State.events.privatePropsSyncRequest, client)
-    // })
-  }
+  // constructor(options?: IStateOptions) {
+  //   super()
+  //   // TODO: do something with these options.
+  //   this.setupListeners()
+  // }
 
   /**
-   * @deprecated instead of this, provide users with factory functions, which would register entities automatically
+   * @deprecated? instead of this, provide users with factory functions, which would register entities automatically
    * Registers new entity to the gamestate
    * @param entity
    * @returns new ID to be assigned to that entity
    */
-  rememberEntity(entity: Entity) {
+  registerEntity(entity: IEntity) {
     const newID = ++this._lastID
     this._allEntities.set(newID, entity)
     return newID
@@ -138,27 +66,34 @@ export class State extends Schema implements IState {
    * Get an Entity by its ID
    * @param id
    */
-  getEntity(id: EntityID): Entity
+  getEntity(id: EntityID): IEntity
   /**
    * Get an Entity by its idx path
    * @param path
    */
-  getEntity(path: number[]): Entity
-  getEntity(idOrPath: EntityID | number[]): Entity {
+  getEntity(path: number[]): IEntity
+  getEntity(idOrPath: EntityID | number[]): IEntity {
     if (Array.isArray(idOrPath)) {
-      const travel = (entity: Entity, path: number[]) => {
-        const idx = path.shift()
-        const newChild = entity.children[idx] as Entity
+      const travel = (children: Children, remainingPath: number[]) => {
+        const idx = remainingPath.shift()
+        const newChild = children.get(idx) as IParent
         if (!newChild) {
-          logs.error("getEntity/path", `This entity doesn't have such child`)
+          throw new Error(
+            `getEntity/path: This entity doesn't have such child.`
+          )
         }
-        if (path.length > 0) {
-          return travel(newChild, path)
+        if (remainingPath.length > 0 && !newChild["_children"]) {
+          throw new Error(
+            `getEntity/path: Path inaccessible, entity doesn't have any children. Stopped at [${remainingPath}].`
+          )
+        }
+        if (remainingPath.length > 0) {
+          return travel(newChild._children, remainingPath)
         } else {
           return newChild
         }
       }
-      return travel(this.entities[0], [...idOrPath])
+      return travel(this.entities, [...idOrPath])
     }
     return this._allEntities.get(idOrPath)
   }
@@ -167,32 +102,44 @@ export class State extends Schema implements IState {
    * Gets an array of all entities from the top-most parent
    * to the lowest of the child.
    */
-  getEntitiesAlongPath(path: number[]): Entity[] {
-    const travel = (entity: Entity, path: number[], result: Entity[] = []) => {
-      const idx = path.shift()
-      const newChild = entity.children[idx] as Entity
+  getEntitiesAlongPath(path: number[]): IEntity[] {
+    const travel = (
+      children: Children,
+      remainingPath: number[],
+      result: IEntity[] = []
+    ) => {
+      const idx = remainingPath.shift()
+      const newChild = children.get(idx) as IParent
       if (!newChild) {
-        logs.error("getEntity/path", `This entity doesn't have such child`)
+        throw new Error(
+          `getEntitiesAlongPath: This entity doesn't have such child.`
+        )
       }
+      if (remainingPath.length > 0 && !newChild["_children"]) {
+        throw new Error(
+          `getEntitiesAlongPath: Path inaccessible, entity doesn't have any children. Stopped at [${path}].`
+        )
+      }
+
       result.push(newChild)
-      if (path.length > 0) {
-        return travel(newChild, path, result)
+      if (remainingPath.length > 0) {
+        return travel(newChild._children, remainingPath, result)
       } else {
         return result
       }
     }
-    return travel(this.entities[0], [...path])
+    return travel(this.entities, [...path])
   }
 
-  logTreeState(startingPoint?: Entity) {
+  logTreeState(startingPoint?: IEntity) {
     logs.log("")
     const indent = (level: number) => {
       return "│ ".repeat(level)
     }
-    const travel = (entity: Entity, level: number = 0) => {
-      entity.childrenArray.map((child, idx, entities) => {
+    const travel = (children: Children, level: number = 0) => {
+      children.toArray().map((child, idx, entities) => {
         if (
-          child.parentEntity.isContainer &&
+          // getParentEntity(child).isContainer && // Parent HAS to be a container...
           entities.length > 5 &&
           idx < entities.length - 5
         ) {
@@ -203,24 +150,28 @@ export class State extends Schema implements IState {
           return
         }
 
-        const owner = child.owner
+        const asParent = child as IParent
+
+        const owner = getOwner(child)
 
         const lastChild = entities.length - 1 === idx
         const sIdx = idx === child.idx ? `${idx}` : `e${child.idx}:s${idx}`
-        const sVisibility = child.visibleToPublic ? "Pub" : ""
 
-        const sChildren = child.length > 0 ? child.length + " children" : ""
-        const sOwner = owner ? `(${owner.type} ${owner.clientID})` : ""
+        const sChildren =
+          asParent._children && asParent._children.length > 0
+            ? asParent._children.length + " children"
+            : ""
+        const sOwner = owner ? `(${owner.name} ${owner.clientID})` : ""
         const branchSymbol = lastChild ? "┕━" : "┝━"
 
         logs.log(
-          `${indent(level)}${branchSymbol}[${sIdx}]${sVisibility}`,
+          `${indent(level)}${branchSymbol}[${sIdx}]`,
           `${child.type}:${child.name}-[${child.idx}]`,
           sChildren,
           sOwner
         )
-        if (child.length > 0) {
-          travel(child, level + 1)
+        if (asParent._children && asParent._children.length > 0) {
+          travel(asParent._children, level + 1)
         }
       })
     }
@@ -234,8 +185,6 @@ export class State extends Schema implements IState {
   }
 
   static events = {
-    privatePropsSyncRequest: Symbol("privatePropsSyncRequest"),
-    playerTurnFinished: Symbol("playerTurnFinished"),
     playerTurnStarted: Symbol("playerTurnStarted")
   }
 }
@@ -251,4 +200,6 @@ export interface IStateOptions {
   minClients: number
   maxClients: number
   hostID: string
+  tableWidth?: number
+  tableHeight?: number
 }

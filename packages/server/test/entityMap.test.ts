@@ -1,5 +1,5 @@
 import { EntityMap } from "../src/entityMap"
-import { Entity } from "../src/entity"
+import { IEntity } from "../src/entity"
 import { State } from "../src/state"
 
 const state = new State({

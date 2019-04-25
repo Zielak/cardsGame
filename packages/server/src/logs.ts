@@ -1,5 +1,5 @@
 import chalk from "chalk"
-import { Entity } from "./entities/entity"
+import { IEntity } from "./entities/entity"
 
 const syntaxHighlight = (arg: any) => {
   if (typeof arg === "string") {
@@ -11,7 +11,8 @@ const syntaxHighlight = (arg: any) => {
   if (typeof arg === "boolean") {
     return chalk.green.bold(arg.toString())
   }
-  if (arg instanceof Entity) {
+  // It must be some Entity
+  if (arg._state) {
     return chalk.yellow(minifyEntity(arg))
   }
   return arg
@@ -54,7 +55,7 @@ export const logs = {
   error
 }
 
-export const minifyEntity = (e: Entity): string => {
+export const minifyEntity = (e: IEntity): string => {
   return `${e.type}:${e.name}`
 }
 

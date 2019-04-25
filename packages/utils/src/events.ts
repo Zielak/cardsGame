@@ -13,9 +13,3 @@ export const EntityEvents = {
 
   selectedByPlayer: "selectedByPlayer"
 }
-
-export type EntityTransformData = {
-  x?: number
-  y?: number
-  angle?: number
-}

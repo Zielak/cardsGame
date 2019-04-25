@@ -1,5 +1,5 @@
 import { State } from "../src/state"
-import { Entity } from "../src/entity"
+import { IEntity } from "../src/entity"
 
 describe(`Entity`, () => {
   let entity: Entity

@@ -1,5 +1,6 @@
 import { DataChange } from "@colyseus/schema"
 
+// TODO: Ditch it...
 export interface EntityData {
   onAdd?: (entity: EntityData, key: number) => void
   onRemove?: (entity: EntityData, key: number) => void

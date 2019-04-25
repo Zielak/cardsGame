@@ -3,11 +3,11 @@ import { ICondition, IConditionFactory } from "../condition"
 import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 import { sentenceCase } from "@cardsgame/utils"
-import { Entity } from "../entities/entity"
+import { IEntity } from "../entities/entity"
 
 export const matchesPropWith = (
   propName: string,
-  entities: (state: State, event: ServerPlayerEvent) => Entity[]
+  entities: (state: State, event: ServerPlayerEvent) => IEntity[]
 ) => {
   const cond: ICondition = (state: State, event: ServerPlayerEvent) => {
     const target = event.entity

@@ -1,50 +1,77 @@
-import { float, EntityEvents } from "@cardsgame/utils"
-import { Entity, IEntityImplementation, IEntityOptions } from "./entity"
+import { float } from "@cardsgame/utils"
+import { IEntityOptions, IEntity, EntityConstructor } from "./entity"
+import { Schema, type } from "@colyseus/schema"
+import { IParent } from "./traits/parent"
+import { Children } from "./children"
+import { State } from "../state"
+import { EntityTransformData } from "../transform"
+import { Player } from "../player"
 
-/**
- * Pile's implementation thing
- */
-export const Pile: IEntityImplementation = (
-  entity: Entity,
-  options: IPileOptions
-) => {
-  const limits = Object.assign(
-    {},
-    {
-      minAngle: -45,
-      maxAngle: 45,
-      minX: -10,
-      minY: -10,
-      maxX: 10,
-      maxY: 10
-    },
-    options.limits
-  )
-  const cardsData = new Map<EntityID, CardsData>()
+export class Pile extends Schema implements IParent {
+  // IEntity
+  _state: State
+  id: EntityID
+  parent: EntityID
+  owner: Player
 
-  entity.type = "pile"
-  entity.isContainer = true
-  entity.hijacksInteractionTarget = true
+  @type("uint16")
+  idx: number
 
-  entity.on(EntityEvents.childAdded, (child: Entity) => {
-    cardsData.set(child.id, cardsDataFactory(limits))
-  })
-  entity.on(EntityEvents.childRemoved, (childID: EntityID) => {
-    cardsData.delete(childID)
-  })
+  @type("string")
+  type = "pile"
+  @type("string")
+  name = "Pile"
 
-  return {
-    restyleChild: {
-      value: (child: Entity, idx: number, children: Entity[]) => {
-        const { x, y, angle } =
-          this.cardsData.get(child.id) || DEFAULT_CARDS_DATA
-        return {
-          x,
-          y,
-          angle
-        }
-      }
-    }
+  @type("number")
+  x: number
+  @type("number")
+  y: number
+  @type("number")
+  angle: number
+
+  @type("number")
+  width: number
+  @type("number")
+  height: number
+
+  hijacksInteractionTarget = true
+
+  // IChildrenHolder
+  @type(Children)
+  _children = new Children()
+
+  // Pile's own props
+  cardsData = new Array<EntityTransformData>()
+  limits: PileVisualLimits
+
+  constructor(options: IPileOptions) {
+    super()
+    EntityConstructor(this, options)
+
+    this.limits = Object.assign(
+      {},
+      {
+        minAngle: -45,
+        maxAngle: 45,
+        minX: -10,
+        minY: -10,
+        maxX: 10,
+        maxY: 10
+      },
+      options.limits
+    )
+  }
+
+  restyleChild(child: IEntity) {
+    const { x, y, angle } = this.cardsData[child.idx] || DEFAULT_CARDS_DATA
+    return { x, y, angle, test: "a" }
+  }
+
+  onChildAdded() {
+    this.cardsData.push(cardsDataFactory(this.limits))
+  }
+  onChildRemoved(idx: number) {
+    this.cardsData = this.cardsData.filter((_, i) => i !== idx)
   }
 }
 
@@ -52,7 +79,7 @@ export interface IPileOptions extends IEntityOptions {
   limits?: PileVisualLimits
 }
 
-const cardsDataFactory = (limits): CardsData => {
+const cardsDataFactory = (limits): EntityTransformData => {
   return {
     x: float(limits.minX, limits.maxX),
     y: float(limits.minY, limits.maxY),
@@ -60,16 +87,10 @@ const cardsDataFactory = (limits): CardsData => {
   }
 }
 
-const DEFAULT_CARDS_DATA: CardsData = {
+const DEFAULT_CARDS_DATA: EntityTransformData = {
   x: 0,
   y: 0,
   angle: 0
-}
-
-interface CardsData {
-  angle: number
-  x: number
-  y: number
 }
 
 interface PileVisualLimits {

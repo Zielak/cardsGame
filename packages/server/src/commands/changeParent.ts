@@ -1,16 +1,17 @@
-import { Entity } from "../entities/entity"
+import { IEntity } from "../entities/entity"
 import { State } from "../state"
 import { logs } from "../logs"
 import { ICommand } from "../command"
+import { IParent, addChild } from "../entities/traits/parent"
 
 export class ChangeParent implements ICommand {
-  private entities: Entity[]
-  private source: Entity
-  private target: Entity
+  private entities: IEntity[]
+  private source: IParent
+  private target: IParent
 
-  constructor(entity: Entity, source: Entity, target: Entity)
-  constructor(entities: Entity[], source: Entity, target: Entity)
-  constructor(ents: Entity | Entity[], source: Entity, target: Entity) {
+  constructor(entity: IEntity, source: IParent, target: IParent)
+  constructor(entities: IEntity[], source: IParent, target: IParent)
+  constructor(ents: IEntity | IEntity[], source: IParent, target: IParent) {
     this.entities = Array.isArray(ents) ? ents : [ents]
     this.source = source
     this.target = target
@@ -37,15 +38,13 @@ export class ChangeParent implements ICommand {
       this.target.name
     )
 
-    this.entities.forEach(entity => this.target.addChild(entity))
+    this.entities.forEach(entity => addChild(this.target, entity))
 
     logs.log("┕━" + _, `done`)
     // state.logTreeState()
   }
 
   undo(state: State) {
-    this.entities.forEach(entity => {
-      this.source.addChild(entity)
-    })
+    this.entities.forEach(entity => addChild(this.source, entity))
   }
 }

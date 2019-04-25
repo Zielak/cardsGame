@@ -6,6 +6,7 @@ import { ICommand } from "./command"
 import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
 import chalk from "chalk"
+import { isInteractive } from "./entities/entity"
 
 export class CommandsManager {
   history: ICommand[] = []
@@ -109,7 +110,7 @@ export class CommandsManager {
         ) {
           // Check props for every interactive entity in `targets` array
           return event.entities
-            .filter(currentTarget => currentTarget.interactive)
+            .filter(currentTarget => isInteractive(currentTarget))
             .some(currentTarget =>
               // Every KEY in definition should be present
               // in the Entity and be of eqaul value

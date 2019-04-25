@@ -5,6 +5,19 @@
 - ♦ karo - diamonds
 - ♣ trefl - clubs
 
+## Installing
+
+```
+lerna exec npm install
+lerna bootstrap
+```
+
+And then run some code watchers:
+
+```
+lerna run --stream --scope @cardsgame/utils build:watch
+```
+
 ## Interaction
 
 What shall be sent to server and in what format?
@@ -126,10 +139,6 @@ but maybe I should be doing it on the server.
 
 - there are no cards, so I probably want to put
 - there are some cards, but I could pick one or place one there
-
-# TODO LATER
-
-- memoize everywhere?
 
 # Units
 

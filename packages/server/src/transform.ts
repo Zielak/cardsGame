@@ -1,5 +1,11 @@
 import { EventEmitter } from "eventemitter3"
 
+export type EntityTransformData = {
+  x: number
+  y: number
+  angle: number
+}
+
 export class EntityTransform extends EventEmitter {
   private _x: number
   private _y: number

@@ -21,15 +21,8 @@
       "git add"
     ]
   },
-  "dependencies": {
-    "@cardsgame/client": "file:packages/client",
-    "@cardsgame/examples": "file:packages/examples",
-    "@cardsgame/server": "file:packages/server",
-    "@cardsgame/types": "file:packages/types",
-    "@cardsgame/utils": "file:packages/utils"
-  },
   "devDependencies": {
-    "@colyseus/schema": "^0.4.22",
+    "@colyseus/schema": "^0.4.27",
     "@types/bezier-js": "0.0.8",
     "@types/jest": "^24.0.9",
     "@types/pixi.js": "^4.8.6",
@@ -38,10 +31,10 @@
     "bezier-js": "^2.4.0",
     "chalk": "^2.4.2",
     "colyseus": "^0.10.4",
-    "colyseus.js": "^0.10.4",
+    "colyseus.js": "^0.10.5",
     "css-loader": "^2.1.0",
     "eventemitter3": "^3.1.0",
-    "husky": "^1.3.1",
+    "husky": "^2.0.0",
     "jest": "^24.1.0",
     "lerna": "^3.13.1",
     "lint-staged": "^8.1.5",
@@ -58,7 +51,7 @@
     "ts-jest": "^24.0.2",
     "ts-loader": "^5.3.3",
     "ts-node": "^8.0.3",
-    "typescript": "^3.4.2",
+    "typescript": "^3.4.5",
     "webpack": "^4.29.6",
     "webpack-bundle-analyzer": "^3.2.0",
     "webpack-cli": "^3.2.3",

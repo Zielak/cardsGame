@@ -1,25 +1,24 @@
 import { State } from "../state"
-import { Entity } from "../entities/entity"
-import { BaseCard } from "../entities/baseCard"
 import { logs } from "../logs"
 import { ICommand } from "../command"
 import { ChangeParent } from "./changeParent"
+import { IParent, countChildren, getTop } from "../entities/traits/parent"
 
 export class DealCards implements ICommand {
-  targets: Entity[]
+  targets: IParent[]
 
   /**
    * Deals `count` cards from this container to other containers.
    * Eg. hands
    *
    * @param source will take cards from here
-   * @param targets and put them in these entities
+   * @param targets and put them in these containers
    * @param count how many cards should I deal for each target in total?
    * @param step number of cards on each singular deal
    */
   constructor(
-    private source: Entity,
-    targets: Entity | Entity[],
+    private source: IParent,
+    targets: IParent | IParent[],
     private count: number = Infinity,
     private step: number = 1
   ) {
@@ -34,7 +33,7 @@ export class DealCards implements ICommand {
 
     const maxDeals = this.count * this.targets.length
     const next = () => {
-      const card = this.source.top as BaseCard
+      const card = getTop(this.source)
       const currentTarget = this.targets[targetI % this.targets.length]
 
       // This command thing moves the entity
@@ -44,7 +43,7 @@ export class DealCards implements ICommand {
       if (++stepI % this.step === 0) {
         targetI++
       }
-      if (this.source.length > 0 && targetI < maxDeals) {
+      if (countChildren(this.source) > 0 && targetI < maxDeals) {
         // setTimeout(next, 500)
         next()
       } else {

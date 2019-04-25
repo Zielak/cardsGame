@@ -1,8 +1,12 @@
 import chalk from "chalk"
-import { Entity } from "./entities/entity"
-import { EntityEvents } from "@cardsgame/utils"
-import { logs } from "./logs"
+import { IEntity } from "./entity"
+import { logs } from "../logs"
 import { Schema, type, ArraySchema } from "@colyseus/schema"
+import { byIdx } from "./traits/parent"
+import { ClassicCard } from "./classicCard"
+import { Deck } from "./deck"
+import { Hand } from "./hand"
+import { Pile } from "./pile"
 
 // type EntityMapArrayNames =
 //   | "entities"
@@ -14,31 +18,17 @@ import { Schema, type, ArraySchema } from "@colyseus/schema"
 //   | "piles"
 //   | "rows"
 
-export class EntityMap extends Schema {
-  private arrays = [
-    { prop: "entities", type: Entity },
-    { prop: "baseCards", type: BaseCard },
-    { prop: "classicCards", type: ClassicCard },
-    { prop: "containers", type: Container },
-    { prop: "decks", type: Deck },
-    { prop: "hands", type: Hand },
-    { prop: "piles", type: Pile },
-    { prop: "rows", type: Row }
-  ]
+type ArraysDefinition = {
+  array: ArraySchema
+  typeName: string
+  constructor: Function
+}
 
-  // Entity
-  @type([Entity])
-  entities = new ArraySchema<Entity>()
-
-  @type([BaseCard])
-  baseCards = new ArraySchema<BaseCard>()
+export class Children extends Schema {
+  private arrays: ArraysDefinition[]
 
   @type([ClassicCard])
   classicCards = new ArraySchema<ClassicCard>()
-
-  // Containers
-  @type([Container])
-  containers = new ArraySchema<Container>()
 
   @type([Deck])
   decks = new ArraySchema<Deck>()
@@ -49,31 +39,69 @@ export class EntityMap extends Schema {
   @type([Pile])
   piles = new ArraySchema<Pile>()
 
-  @type([Row])
-  rows = new ArraySchema<Row>()
-
   // TODO: Fully intergrate it
   pointers: string[] = []
 
-  add(child: any): boolean {
-    const newIdx = this.length
-
-    const result = this.arrays.some(def => {
-      if (!(child instanceof def.type)) {
-        return false
+  constructor() {
+    super()
+    this.arrays = [
+      {
+        array: this.classicCards,
+        typeName: "classicCards",
+        constructor: ClassicCard
+      },
+      {
+        array: this.decks,
+        typeName: "decks",
+        constructor: Deck
+      },
+      {
+        array: this.hands,
+        typeName: "hands",
+        constructor: Hand
+      },
+      {
+        array: this.piles,
+        typeName: "piles",
+        constructor: Pile
       }
-      this[def.prop].push(child)
-      child.idx = newIdx
-      this.pointers.push(def.prop)
-      return true
-    })
-
-    return result
+    ]
   }
 
-  remove(idx: number)
-  remove(child: Entity)
-  remove(childOrIdx: Entity | number): boolean {
+  add(child: any, idx?: number): Children {
+    const targetDefinition = this.arrays.find(def => {
+      return child instanceof def.constructor
+    })
+    if (!targetDefinition) {
+      throw new Error(
+        `Children.add(), unexpected type of new child. "child.type" = ${
+          child.type
+        }`
+      )
+    }
+
+    // Check if it's already in
+    if (targetDefinition.array.includes(child)) {
+      logs.warn("Children.add()", `Child is already here`)
+      return
+    }
+
+    const newIdx = this.length
+    targetDefinition.array.push(child)
+    child.idx = newIdx
+    this.pointers.push(targetDefinition.typeName)
+
+    // Lazy solution, is it enough?
+    if (typeof idx == "number") {
+      this.moveTo(newIdx, idx)
+    }
+
+    return this
+  }
+
+  remove(idx: number): boolean
+  remove(child: IEntity): boolean
+  remove(childOrIdx: IEntity | number): boolean {
     const idx = typeof childOrIdx === "number" ? childOrIdx : childOrIdx.idx
 
     const child = this[this.pointers[idx]].find(child => {
@@ -87,6 +115,7 @@ export class EntityMap extends Schema {
     this.pointers[idx] = undefined
 
     this.updateChildrenIdx(idx)
+    return true
   }
 
   moveTo(from: number, to: number) {
@@ -140,7 +169,7 @@ export class EntityMap extends Schema {
   private updateChildrenIdx(from: number = 0) {
     const max = this.length
     for (let i = from + 1; i <= max; i++) {
-      const array = this[this.pointers[i]] as ArraySchema<Entity>
+      const array = this[this.pointers[i]] as ArraySchema<IEntity>
       const child = array.find(el => el.idx === i)
       child.idx = i - 1
     }
@@ -150,30 +179,30 @@ export class EntityMap extends Schema {
   private updatePointers() {
     this.toArray().forEach(child => {
       const def = this.arrays.find(def => {
-        if (!(child instanceof def.type)) {
+        if (!(child instanceof def.constructor)) {
           return false
         }
         return true
       })
-      this.pointers[child.idx] = def.prop
+      this.pointers[child.idx] = def.typeName
     })
   }
 
-  toArray<T extends Entity>(): T[] {
+  toArray<T extends IEntity>(): T[] {
     return this.arrays
       .reduce((prev: T[], def) => {
-        return prev.concat(...this[def.prop])
+        return prev.concat(...this[def.typeName])
       }, [])
-      .sort(EntityMap.sortByIdx)
+      .sort(byIdx)
   }
 
-  get<T extends Entity>(idx: number): T {
+  get<T extends IEntity>(idx: number): T {
     return this[this.pointers[idx]]
   }
 
   // Array-like methods
 
-  find<T extends Entity>(
+  find<T extends IEntity>(
     predicate: (child: T, idx: number, array: T[]) => boolean
   ): T {
     return (this.toArray() as T[]).find(predicate)
@@ -181,16 +210,13 @@ export class EntityMap extends Schema {
 
   get length(): number {
     return (
-      this.entities.length +
-      this.baseCards.length +
+      // this.baseCards.length +
       this.classicCards.length +
-      this.containers.length +
+      // this.containers.length +
       this.decks.length +
       this.hands.length +
-      this.piles.length +
-      this.rows.length
+      this.piles.length
+      // this.rows.length
     )
   }
-
-  static sortByIdx = <T extends Entity>(a: T, b: T): number => a.idx - b.idx
 }

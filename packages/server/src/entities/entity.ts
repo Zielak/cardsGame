@@ -1,432 +1,84 @@
-import { Schema, type, MapSchema } from "@colyseus/schema"
-import { default as EEmitter, EventEmitter } from "eventemitter3"
+import { State } from "../state"
+import { Player } from "../player"
+import { EntityTransform } from "../transform"
+import { IParent } from "./traits/parent"
 
-import { def, EntityEvents, EntityTransformData } from "@cardsgame/utils"
+export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
+  // state && id
+  entity._state = options.state
+  entity.id = entity._state.registerEntity(entity)
 
-import { IState } from "./state"
-import { Player } from "./player"
-import { EntityTransform } from "./transform"
-import { logs } from "./logs"
-import { EntityMap } from "./entityMap"
+  // Transforms
+  entity._localTransform = new EntityTransform(
+    options.x,
+    options.y,
+    options.angle
+  )
+  entity._localTransform.on("update", () => updateTransform(entity))
 
-export class Entity extends Schema {
-  // @type("uint16")
-  id: EntityID
+  entity._worldTransform = new EntityTransform()
+  entity._worldTransform.on("update", () => updateTransform(entity))
+  updateTransform(entity)
 
-  // Will always point to some Entity, can point to `state.entities`
-  @type("uint16")
-  parent: EntityID
-
-  @type("boolean")
-  visibleToPublic: boolean
-
-  @type("boolean")
-  isContainer = false
-
-  @type("string")
-  type: string
-  @type({ map: "string" })
-  data: MapSchema<string>
-
-  @type("string")
-  name: string
-
-  @type("number")
-  width: number
-  @type("number")
-  height: number
-
-  // Transform data applied
-  @type("number")
-  x: number
-  @type("number")
-  y: number
-  @type("number")
-  angle: number
-
-  // ----------------------------------
-  // MapSchema management
-  // FIXME: fix all the other things. I can't nest Entities,
-  // FIXME: so do this by ID matching.
-  @type(EntityMap)
-  children = new EntityMap()
-
-  // TODO: maybe make that read-only?
-  @type("uint16")
-  idx: number
-
-  // ----------------------------------
-  // Private vars
-  _emitter: EEmitter
-  on: (
-    event: string | symbol,
-    fn: EEmitter.ListenerFn,
-    context?: any
-  ) => EEmitter<string | symbol>
-  once: (
-    event: string | symbol,
-    fn: EEmitter.ListenerFn,
-    context?: any
-  ) => EEmitter<string | symbol>
-  off: (
-    event: string | symbol,
-    fn?: EEmitter.ListenerFn,
-    context?: any,
-    once?: boolean
-  ) => EEmitter<string | symbol>
-  emit: (event: string | symbol, ...args: any[]) => boolean
-
-  _state: IState
-
-  hijacksInteractionTarget: boolean = false
-
-  // quote: Current transform of the object based on local factors
-  // eg. author-chosen transform when creating this entity
-
-  _localTransform: EntityTransform
-
-  // quote: Current transform of the object based on world (parent) factors
-  // eg. transform applied by parent container
-
-  _worldTransform: EntityTransform
-
-  constructor(options: IEntityOptions) {
-    super()
-
-    // Prepare emitter
-    this._emitter = new EventEmitter()
-    this.on = this._emitter.on.bind(this._emitter)
-    this.once = this._emitter.once.bind(this._emitter)
-    this.off = this._emitter.off.bind(this._emitter)
-    this.emit = this._emitter.emit.bind(this._emitter)
-
-    // state && id
-    this._state = options.state
-    this.id = this._state.rememberEntity(this)
-
-    // element data stuff
-    this.type = def(options.type, Entity.DEFAULT_TYPE)
-    this.name = def(options.name, Entity.DEFAULT_NAME)
-    this.visibleToPublic = true
-    this.data = new MapSchema<string>()
-
-    // transform
-    this._localTransform = new EntityTransform(
-      options.x,
-      options.y,
-      options.angle
-    )
-    this._localTransform.on("update", () => this.updateTransform())
-    this._worldTransform = new EntityTransform()
-    this._worldTransform.on("update", () => this.updateTransform())
-    this.updateTransform()
-
-    // parent
-    if (this._state.entities[0]) {
-      if (!options.parent) {
-        // no parent = root as parent
-        // this.parent = 0
-        this._state.entities[0].addChild(this)
-      } else {
-        const newParent =
-          typeof options.parent === "number"
-            ? this._state.getEntity(options.parent)
-            : options.parent
-        newParent.addChild(this)
-      }
-    } else {
-      // It must be the root!
-      if (this.id !== 0) {
-        // IT ISN'T!!!
-        throw new Error(`Shouldn't happen. Root doesn't have root's ID?`)
-      } else {
-        this.parent = undefined
-      }
-    }
-
-    this.setupListeners()
-  }
-
-  protected setupListeners() {
-    this.on(EntityEvents.childAdded, () => this.restyleChildren())
-    this.on(EntityEvents.childRemoved, () => this.restyleChildren())
-
-    // Rare case, when entityMap's self check finds inconsistency.
-    this.on(EntityEvents.idxUpdate, (idx: number) => {
-      logs.verbose(`Entity.idxUpdate:`, this.idx, `=>`, idx)
-      this.idx = idx
-    })
-
-    // this.on(EntityEvents.parentUpdate, (event: EParentUpdate) => {
-    //   // Need to update even if owner stayed the same.
-    //   // Client will create entirely new container
-    //   if (event.lastParent) {
-    //     event.lastParent.emit(State.events.privatePropsSyncRequest)
-    //   }
-    //   this.parentEntity.emit(State.events.privatePropsSyncRequest)
-    // })
-  }
-
-  addChild(child: Entity) {
-    if (child === this) {
-      throw new Error(`adding itself as a child makes no sense.`)
-    }
-    if (this.childrenArray.some(el => el === child)) {
-      logs.verbose(`Child is already here`, child.idxPath)
-      return
-    }
-
-    const lastParent: Entity =
-      typeof child.parent !== "number" ? undefined : child.parentEntity
-    const lastOwner = child.owner
-
-    if (lastParent) {
-      // Remember to remove myself from first parent
-      lastParent.removeChild(child.id, true)
-    }
-
-    const added = this.children.add(child)
-    if (!added) {
-      throw new Error(`EntityMap, couldn't add new child! ${child.type}`)
-    }
-    child.parent = this.id
-
-    const event: EParentUpdate = {
-      entity: child,
-      lastParent
-    }
-
-    // Also emit owner update if that happened
-    if (
-      child.owner !== lastOwner &&
-      child.owner !== undefined &&
-      lastOwner !== undefined
-    ) {
-      logs.warn("child.owner", child.owner)
-      const event: EOwnerUpdate = {
-        entity: child,
-        previousOwner: lastOwner.clientID,
-        currentOwner: child.owner.clientID
-      }
-      this.emit(EntityEvents.ownerUpdate, event)
-    }
-    this.emit(EntityEvents.childAdded, child)
-    child.emit(EntityEvents.parentUpdate, event)
-  }
-
-  addChildren(children: Entity[]) {
-    children.forEach(newChild => {
-      this.addChild(newChild)
-    })
-  }
-
-  // TODO:
-  addChildAt(newChild: Entity, idx: number) {}
-
-  removeChild(id: EntityID, _silent: boolean = false): boolean {
-    const idx = this.childrenArray.findIndex(child => child.id === id)
-    return this.removeChildAt(idx, _silent)
-  }
-
-  removeChildAt(idx: number, _silent: boolean = false): boolean {
-    if (idx < 0)
-      throw new Error(`Entity.removeChildAt - idx must be >= 0, but is ${idx}`)
-    if (idx > this.length - 1) {
-      logs.warn(
-        "Entity.removeChildAt()",
-        `Tried to remove idx out of bounds:`,
-        idx,
-        "/",
-        this.length
+  // parent
+  if (!options.parent) {
+    // no parent = root as parent
+    // entity.parent = 0
+    entity._state.entities.add(entity)
+  } else {
+    const newParent =
+      typeof options.parent === "number"
+        ? entity._state.getEntity(options.parent)
+        : options.parent
+    if (!newParent["children"]) {
+      throw new Error(
+        `${
+          options.type
+        } constructor: given 'parent' is not really IParent (no 'children' property)`
       )
     }
-    const child: Entity = this.children.get(idx)
-    if (!child) {
-      logs.error("removeChildAt", `children.get - I don't have ${idx} child?`)
-      return
-    }
-
-    const lastParent: Entity = child.parentEntity
-
-    if (!this.children.remove(idx)) {
-      logs.error(
-        "removeChildAt",
-        `children.remove - I don't have ${idx} child?`
-      )
-      return
-    }
-
-    child.parent = 0
-    // Reset last parent's stylings
-    child.resetWorldTransform()
-
-    if (!_silent) {
-      const event: EParentUpdate = {
-        entity: child,
-        lastParent
-      }
-      child.emit(EntityEvents.parentUpdate, event)
-    }
-    this.emit(EntityEvents.childRemoved, child.id)
-    return true
+    ;(newParent as IParent)._children.add(entity)
   }
-
-  restyleChildren() {
-    this.childrenArray.forEach(
-      (child: Entity, idx: number, array: Entity[]) => {
-        const data = this.restyleChild(child, idx, array)
-        if (data.x) {
-          child._worldTransform.x = data.x
-        }
-        if (data.y) {
-          child._worldTransform.y = data.y
-        }
-        if (data.angle) {
-          child._worldTransform.angle = data.angle
-        }
-        child.updateTransform()
-      },
-      this
-    )
-  }
-
-  /**
-   * Override in each container-like entity
-   */
-  restyleChild(
-    child: Entity,
-    idx: number,
-    children: Entity[]
-  ): EntityTransformData {
-    return {
-      x: 0,
-      y: 0,
-      angle: 0
-    }
-  }
-
-  updateTransform() {
-    return ["x", "y", "angle"].map(prop => {
-      this[prop] = this._localTransform[prop] + this._worldTransform[prop]
-    })
-  }
-
-  resetWorldTransform() {
-    return ["x", "y", "angle"].map(prop => {
-      this._worldTransform[prop] = 0
-    })
-  }
-
-  filterByName(name: string) {
-    return this.childrenArray.filter(byName(name))
-  }
-  findByName(name: string) {
-    return this.childrenArray.find(byName(name))
-  }
-  filterByType(type: string) {
-    return this.childrenArray.filter(byType(type))
-  }
-  findByType(type: string) {
-    return this.childrenArray.find(byType(type))
-  }
-
-  /**
-   * Get the element with highest 'idx' value
-   */
-  get top(): Entity {
-    return this.children[this.length - 1]
-  }
-
-  /**
-   * Get the element with the lowest 'idx' value
-   */
-  get bottom(): Entity {
-    return this.children[0]
-  }
-
-  /**
-   * Number of child elements
-   */
-  get length(): number {
-    return Object.keys(this.children).length
-  }
-
-  /**
-   * Gets all children in array form, "sorted" by idx
-   */
-  get childrenArray(): Entity[] {
-    return this.children.toArray()
-  }
-
-  /**
-   * Points out if this element can be
-   * target of any interaction
-   */
-  get interactive(): boolean {
-    const parent = this.parentEntity
-    if (parent.hijacksInteractionTarget) {
-      return false
-    }
-    return true
-  }
-
-  /**
-   * Gets a reference to this entity's parent.
-   * There must be any parent, so any undefined will fallback to state's `entities`
-   */
-  get parentEntity(): Entity {
-    const parent = this._state.getEntity(this.parent)
-    return parent || this._state.entities[0]
-  }
-
-  /**
-   * Get the real owner of this container, by traversing `this.parent` chain.
-   *
-   * @returns `Player` or `undefined` if this container doesn't belong to anyone
-   */
-  get owner(): Player {
-    if (this.parent === 0 || this.parent === undefined) {
-      return undefined
-    }
-    if (this.parentEntity.type === "player") {
-      return this.parentEntity as Player
-    }
-    return this.parentEntity.owner
-  }
-
-  get idxPath(): number[] {
-    const path: number[] = [this.idx]
-    const getNext = (entity: Entity) => {
-      const parentsIdx = entity.parentEntity.idx
-      if (
-        entity.parentEntity instanceof Entity &&
-        typeof parentsIdx === "number"
-      ) {
-        path.unshift(parentsIdx)
-        getNext(entity.parentEntity)
-      }
-    }
-    getNext(this)
-
-    return path
-  }
-
-  // ----------------------------------
-  // Static
-
-  static DEFAULT_NAME = "Unnamed"
-  static DEFAULT_TYPE = "Entity"
 }
 
-const byName = (name: string) => (entity: Entity): boolean =>
-  entity.name === name
+export interface IEntity {
+  _state: State
+  id: EntityID
 
-const byType = (type: string) => (entity: Entity): boolean =>
-  entity.type === type
+  idx: number
+  parent: EntityID
+  owner: Player
 
+  type: string
+  name: string
+
+  x?: number
+  y?: number
+  angle?: number
+  width?: number
+  height?: number
+
+  // Private stuff, author shouldn't be care about these,
+  // entityConstructor() should take care of initing them
+
+  /**
+   * > Current transform of the object based on local factors
+   *
+   * eg. author-chosen transform when creating this entity
+   */
+  _localTransform?: EntityTransform
+
+  /**
+   * > Current transform of the object based on world (parent) factors
+   *
+   * eg.transform applied by parent container
+   */
+  _worldTransform?: EntityTransform
+}
+
+// Entity constructor options
 export interface IEntityOptions {
-  state: IState
-  // implementation?: IEntityImplementation
+  state: State
   type?: string
   name?: string
   width?: number
@@ -434,22 +86,76 @@ export interface IEntityOptions {
   x?: number
   y?: number
   angle?: number
-  parent?: EntityID | Entity
+  parent?: EntityID | IEntity
   idx?: number
+  owner?: Player
 }
 
-export type IEntityImplementation = (
-  entity: Entity,
-  options?: IEntityOptions
-) => PropertyDescriptorMap
-
-export type EParentUpdate = {
-  entity: Entity
-  lastParent: Entity
+/**
+ * Gets a reference to this entity's parent.
+ * There must be any parent, so any undefined will fallback to state's `entities`
+ */
+export function getParentEntity(entity: IEntity): IParent {
+  const parent = entity._state.getEntity(entity.parent) as IParent
+  return parent || entity._state.entities.get(0)
 }
 
-export type EOwnerUpdate = {
-  previousOwner: string
-  currentOwner: string
-  entity: Entity
+export function getIdxPath(entity: IEntity): number[] {
+  const path: number[] = [this.idx]
+  const getNext = (entity: IEntity) => {
+    const parent = getParentEntity(entity)
+    const parentsIdx = parent.idx
+    if (typeof parentsIdx === "number") {
+      path.unshift(parentsIdx)
+      getNext(parent)
+    }
+  }
+  getNext(entity)
+
+  return path
+}
+
+/**
+ * Points out if this element can be
+ * target of any interaction
+ */
+export function isInteractive(entity: IEntity) {
+  const parent = getParentEntity(entity)
+  if (parent.hijacksInteractionTarget) {
+    return false
+  }
+  return true
+}
+
+/**
+ * Get the real owner of this thing, by traversing `this.parent` chain.
+ * Owner could be set on an element or container, meaning every element in
+ * such container belongs to one owner.
+ *
+ * @returns `Player` or `undefined` if this container doesn't belong to anyone
+ */
+export function getOwner(entity: IEntity): Player {
+  if (entity.owner) {
+    return entity.owner
+  }
+  const parent = getParentEntity(entity)
+  if (!parent) {
+    return
+  }
+  if (parent.owner) {
+    return parent.owner
+  }
+  return getOwner(parent)
+}
+
+export function updateTransform(entity: IEntity) {
+  return ["x", "y", "angle"].map(prop => {
+    entity[prop] = entity._localTransform[prop] + entity._worldTransform[prop]
+  })
+}
+
+export function resetWorldTransform(entity: IEntity) {
+  return ["x", "y", "angle"].map(prop => {
+    entity._worldTransform[prop] = 0
+  })
 }

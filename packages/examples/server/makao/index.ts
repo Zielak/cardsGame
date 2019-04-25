@@ -50,7 +50,14 @@ export class MakaoRoom extends Room<MakaoState> {
   pile: Pile
   deck: Deck
 
-  onSetupGame(state: MakaoState) {
+  onSetupGame(options: any = {}) {
+    this.setState(
+      new MakaoState({
+        minClients: options.minClients || 1,
+        maxClients: options.maxClients || 4,
+        hostID: options.hostID
+      })
+    )
     logs.info("Makao", `setting up the game`)
     state.atackPoints = 0
     state.skipPoints = 0
@@ -88,7 +95,8 @@ export class MakaoRoom extends Room<MakaoState> {
     })
   }
 
-  onStartGame(state: MakaoState) {
+  onStartGame() {
+    const { state } = this
     map2Array(state.players).forEach(pd => (state.turnSkips[pd.clientID] = 0))
 
     const handSorting = (childA: ClassicCard, childB: ClassicCard): number => {
