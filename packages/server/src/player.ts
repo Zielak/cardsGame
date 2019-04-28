@@ -1,4 +1,4 @@
-import { IEntity } from "./entities/entity"
+import { IEntity } from "./entities/traits/entity"
 import { def } from "@cardsgame/utils"
 import { type, Schema } from "@colyseus/schema"
 import { State } from "./state"

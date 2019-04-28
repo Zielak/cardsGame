@@ -1,20 +1,23 @@
 import { State } from "../state"
-import { ICondition, IConditionFactory } from "../condition"
+import { ICondition } from "."
 import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 import { sentenceCase } from "@cardsgame/utils"
-import { IEntity } from "../entities/entity"
+import { IEntity } from "../entities/traits/entity"
 
+/**
+ * Interacted entity's prop needs to match with other specified entity/ies
+ * @param propName
+ * @param entities
+ */
 export const matchesPropWith = (
   propName: string,
-  entities: (state: State, event: ServerPlayerEvent) => IEntity[]
+  entities: IEntity | IEntity[]
 ) => {
   const cond: ICondition = (state: State, event: ServerPlayerEvent) => {
+    const ents = Array.isArray(entities) ? entities : [entities]
     const target = event.entity
-    const ents = entities(state, event)
-    const matches = ents.every(entity => {
-      return entity[propName] === target[propName]
-    })
+    const matches = ents.every(entity => entity[propName] === target[propName])
     if (!matches) {
       logs.warn(
         "matchesPropWith",

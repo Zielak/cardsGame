@@ -6,7 +6,7 @@ import {
   getParentEntity,
   IEntityOptions,
   EntityConstructor
-} from "./entity"
+} from "./traits/entity"
 import { State } from "../state"
 import { Client } from "colyseus"
 import { ITwoSided } from "./traits/twoSided"

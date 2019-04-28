@@ -1,14 +1,19 @@
 import { State } from "../state"
-import { ICondition } from "../condition"
 import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 import chalk from "chalk"
+
+export interface ICondition {
+  (state: State, event: ServerPlayerEvent): boolean
+  _name?: string
+}
+export type IConditionFactory = (...args: any) => ICondition
 
 export * from "./isPlayersTurn"
 export * from "./entitiesNameIs"
 export * from "./isOwner"
 export * from "./matchesPropWith"
-export * from "./parentIs"
+export * from "./parentMatches"
 export * from "./hasChildren"
 export * from "./selectors/childrenOf"
 export * from "./hasRevealedUI"
@@ -23,9 +28,9 @@ const generateName = (
   return `${desc}${name}( ${conditions.map(c => c._name).join(", ")} )`
 }
 
-function OR(...conditions: ICondition[]): ICondition
-function OR(description: string, ...conditions: ICondition[]): ICondition
-function OR(
+export function OR(...conditions: ICondition[]): ICondition
+export function OR(description: string, ...conditions: ICondition[]): ICondition
+export function OR(
   condOrDesc: ICondition | string,
   ...conds: ICondition[]
 ): ICondition {
@@ -47,9 +52,12 @@ function OR(
   return OR
 }
 
-function AND(...conditions: ICondition[]): ICondition
-function AND(description: string, ...conditions: ICondition[]): ICondition
-function AND(
+export function AND(...conditions: ICondition[]): ICondition
+export function AND(
+  description: string,
+  ...conditions: ICondition[]
+): ICondition
+export function AND(
   condOrDesc: ICondition | string,
   ...conds: ICondition[]
 ): ICondition {
@@ -71,9 +79,12 @@ function AND(
   return AND
 }
 
-function NOT(...conditions: ICondition[]): ICondition
-function NOT(description: string, ...conditions: ICondition[]): ICondition
-function NOT(
+export function NOT(...conditions: ICondition[]): ICondition
+export function NOT(
+  description: string,
+  ...conditions: ICondition[]
+): ICondition
+export function NOT(
   condOrDesc: ICondition | string,
   ...conds: ICondition[]
 ): ICondition {
@@ -94,5 +105,3 @@ function NOT(
   NOT._name = generateName("NOT", conditions, description)
   return NOT
 }
-
-export { OR, AND, NOT }

@@ -1,14 +1,18 @@
-import { ICondition } from "../condition"
+import { ICondition } from "."
 import { ServerPlayerEvent } from "../player"
 import { EntityProps } from "../room"
-import { getParentEntity } from "../entities/entity"
+import { getParentEntity } from "../entities/traits/entity"
 
-export const parentIs = (props: EntityProps): ICondition => {
+/**
+ * Entity's parent needs to match description with `props`
+ * @param props
+ */
+export const parentMatches = (props: EntityProps): ICondition => {
   const cond: ICondition = (_, event: ServerPlayerEvent) => {
     return Object.keys(props).every(
       key => getParentEntity(event.entity)[key] === props[key]
     )
   }
-  cond._name = "parentIs"
+  cond._name = "parentMatches"
   return cond
 }

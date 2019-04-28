@@ -7,5 +7,6 @@
     "target": "esnext",
     "types": [],
     "outDir": "../dist/server"
-  }
+  },
+  "exclude": ["splendor", "containersTest", "superhot"]
 }

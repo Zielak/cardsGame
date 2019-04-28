@@ -15,7 +15,8 @@ lerna bootstrap
 And then run some code watchers:
 
 ```
-lerna run --stream --scope @cardsgame/utils build:watch
+lerna run --stream --scope '*/server' build
+lerna run --stream --scope '*/utils' build:watch
 ```
 
 ## Interaction

@@ -1,8 +1,7 @@
-import { Children } from "../children"
-import { IEntity, getParentEntity, resetWorldTransform } from "../entity"
+import { Children } from "../../children"
+import { IEntity, getParentEntity, resetWorldTransform } from "./entity"
 import { logs } from "../../logs"
 import { EntityTransformData } from "../../transform"
-import { State } from "../../state"
 
 export interface IParent extends IEntity {
   _children: Children
@@ -115,16 +114,11 @@ export function countChildren(entity: IParent): number {
   return entity._children.length
 }
 
-export function getChild<T extends IEntity>(entity: IParent, idx: number): T {
-  if (!entity._children) return
-  return entity._children.get<T>(idx)
-}
-
 /**
  * Gets all children in array form, "sorted" by idx
  */
-export function childrenArray(entity: IParent) {
-  return entity._children.toArray()
+export function getChildren<T extends IEntity>(entity: IParent) {
+  return entity._children.toArray<T>()
 }
 
 /**
@@ -132,6 +126,11 @@ export function childrenArray(entity: IParent) {
  */
 export function childrenCount(entity: IParent) {
   return entity._children.length
+}
+
+export function getChild<T extends IEntity>(entity: IParent, idx: number): T {
+  if (!entity._children) return
+  return entity._children.get<T>(idx)
 }
 
 /**
@@ -153,50 +152,4 @@ export function getBottom<T extends IEntity>(parent: IParent): T {
  */
 export function byIdx<T extends IEntity>(a: T, b: T): number {
   return a.idx - b.idx
-}
-
-export function arrayOfChildren(entity: IParent): IEntity[] {
-  return entity._children.toArray()
-}
-
-const byName = (name: string) => (entity: IEntity): boolean =>
-  entity.name === name
-
-const byType = (type: string) => (entity: IEntity): boolean =>
-  entity.type === type
-
-export function filterByName(entity: IParent, name: string): IEntity[]
-export function filterByName(state: State, name: string): IEntity[]
-export function filterByName(parent: IParent | State, name: string): IEntity[] {
-  if (parent instanceof State) {
-    return parent.entities.toArray().filter(byName(name))
-  }
-  return parent._children.toArray().filter(byName(name))
-}
-
-export function findByName(entity: IParent, name: string): IEntity
-export function findByName(state: State, name: string): IEntity
-export function findByName(parent: IParent | State, name: string): IEntity {
-  if (parent instanceof State) {
-    return parent.entities.toArray().find(byName(name))
-  }
-  return parent._children.toArray().find(byName(name))
-}
-
-export function filterByType(entity: IParent, type: string): IEntity[]
-export function filterByType(state: State, type: string): IEntity[]
-export function filterByType(parent: IParent | State, type: string): IEntity[] {
-  if (parent instanceof State) {
-    return parent.entities.toArray().filter(byType(name))
-  }
-  return parent._children.toArray().filter(byType(type))
-}
-
-export function findByType(entity: IParent, type: string): IEntity
-export function findByType(state: State, type: string): IEntity
-export function findByType(parent: IParent | State, type: string): IEntity {
-  if (parent instanceof State) {
-    return parent.entities.toArray().find(byType(type))
-  }
-  return parent._children.toArray().find(byType(type))
 }

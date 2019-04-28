@@ -1,12 +1,14 @@
-import chalk from "chalk"
-import { IEntity } from "./entity"
-import { logs } from "../logs"
 import { Schema, type, ArraySchema } from "@colyseus/schema"
-import { byIdx } from "./traits/parent"
-import { ClassicCard } from "./classicCard"
-import { Deck } from "./deck"
-import { Hand } from "./hand"
-import { Pile } from "./pile"
+import chalk from "chalk"
+import { logs } from "./logs"
+import { IEntity } from "./entities/traits/entity"
+import { byIdx, IParent } from "./entities/traits/parent"
+
+import { ClassicCard } from "./entities/classicCard"
+import { Deck } from "./entities/deck"
+import { Hand } from "./entities/hand"
+import { Pile } from "./entities/pile"
+import { Player } from "./player"
 
 // type EntityMapArrayNames =
 //   | "entities"
@@ -27,9 +29,11 @@ type ArraysDefinition = {
 export class Children extends Schema {
   private arrays: ArraysDefinition[]
 
+  // Game objects
   @type([ClassicCard])
   classicCards = new ArraySchema<ClassicCard>()
 
+  // Containers
   @type([Deck])
   decks = new ArraySchema<Deck>()
 
@@ -68,7 +72,12 @@ export class Children extends Schema {
     ]
   }
 
-  add(child: any, idx?: number): Children {
+  /**
+   * Adds new children to this container
+   * @param child entity or container
+   * @param idx target index, last by default
+   */
+  add(child: IEntity | IParent, idx?: number): Children {
     const targetDefinition = this.arrays.find(def => {
       return child instanceof def.constructor
     })
@@ -101,6 +110,9 @@ export class Children extends Schema {
 
   remove(idx: number): boolean
   remove(child: IEntity): boolean
+  /**
+   * Remove a child from this collection
+   */
   remove(childOrIdx: IEntity | number): boolean {
     const idx = typeof childOrIdx === "number" ? childOrIdx : childOrIdx.idx
 
@@ -118,7 +130,7 @@ export class Children extends Schema {
     return true
   }
 
-  moveTo(from: number, to: number) {
+  moveTo(from: number, to: number): Children {
     const child = this.get(from)
 
     // 1. pluck out the FROM
@@ -164,6 +176,84 @@ export class Children extends Schema {
     logs.verbose(`moveTo, [`, entries.join(", "), `]`)
     logs.verbose(`moveTo, done, now updatePointers()`)
     this.updatePointers()
+
+    return this
+  }
+
+  /**
+   * Get's nth child of this collection
+   * @param idx
+   */
+  get<T extends IEntity>(idx: number): T {
+    return this[this.pointers[idx]]
+  }
+
+  toArray<T extends IEntity>(): T[] {
+    return this.arrays
+      .reduce((prev: T[], def) => {
+        return prev.concat(...def.array)
+      }, [])
+      .sort(byIdx)
+  }
+
+  // find = Object.assign(
+  //   <T extends IEntity>(
+  //     predicate: (child: T, idx: number, array: T[]) => boolean
+  //   ): T => {
+  //     return (this.toArray() as T[]).find(predicate)
+  //   },
+  //   query.find
+  // )
+
+  // filter = Object.assign(
+  //   <T extends IEntity>(
+  //     predicate: (child: T, idx: number, array: T[]) => boolean
+  //   ): T[] => {
+  //     return (this.toArray() as T[]).filter(predicate)
+  //   },
+  //   query.filter
+  // )
+
+  getContainers(deep = true): IParent[] {
+    return this.toArray<IParent>().reduce((prev, current) => {
+      if (current._children) {
+        prev.push(current)
+        if (deep) {
+          prev.push(current._children.getContainers())
+        }
+        return prev
+      }
+    }, [])
+  }
+
+  /**
+   * Recursively fetches all children
+   */
+  getDescendants<T extends IEntity>(): T[] {
+    return this.toArray<T>().reduce((prev, current) => {
+      prev.push(current)
+      if (current["_children"]) {
+        prev.concat(
+          ((current as unknown) as IParent)._children.getDescendants()
+        )
+      }
+      return prev
+    }, [])
+  }
+
+  /**
+   * Count all children in this collection
+   */
+  get length(): number {
+    return (
+      // this.baseCards.length +
+      this.classicCards.length +
+      // this.containers.length +
+      this.decks.length +
+      this.hands.length +
+      this.piles.length
+      // this.rows.length
+    )
   }
 
   private updateChildrenIdx(from: number = 0) {
@@ -188,35 +278,58 @@ export class Children extends Schema {
     })
   }
 
-  toArray<T extends IEntity>(): T[] {
-    return this.arrays
-      .reduce((prev: T[], def) => {
-        return prev.concat(...this[def.typeName])
-      }, [])
-      .sort(byIdx)
+  findAll<T extends IEntity>(
+    props: QuerableProps,
+    options?: QueryOptions
+  ): T[] {
+    const result = (options.deep
+      ? this.getDescendants<T>()
+      : this.toArray<T>()
+    ).filter(queryRunner(props))
+    if (result.length === 0) {
+      throw new Error(
+        `findAll: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
+      )
+    }
+    return result
   }
 
-  get<T extends IEntity>(idx: number): T {
-    return this[this.pointers[idx]]
+  find<T extends IEntity>(props: QuerableProps, options?: QueryOptions): T {
+    const result = (options.deep
+      ? this.getDescendants<T>()
+      : this.toArray<T>()
+    ).find(queryRunner(props))
+    if (!result) {
+      throw new Error(
+        `find: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
+      )
+    }
+    return result
   }
+}
 
-  // Array-like methods
+const queryRunner = (props: QuerableProps) => (entity: IEntity) => {
+  const propKeys = Object.keys(props)
 
-  find<T extends IEntity>(
-    predicate: (child: T, idx: number, array: T[]) => boolean
-  ): T {
-    return (this.toArray() as T[]).find(predicate)
-  }
+  return propKeys.every(propName => {
+    return entity[propName] === props[propName]
+  })
+}
 
-  get length(): number {
-    return (
-      // this.baseCards.length +
-      this.classicCards.length +
-      // this.containers.length +
-      this.decks.length +
-      this.hands.length +
-      this.piles.length
-      // this.rows.length
-    )
-  }
+interface QueryOptions {
+  deep: boolean
+  one: boolean
+}
+
+interface QuerableProps {
+  id?: EntityID
+
+  idx?: number
+  parent?: EntityID | QuerableProps
+  owner?: Player
+
+  type?: string
+  name?: string
+
+  [key: string]: any
 }

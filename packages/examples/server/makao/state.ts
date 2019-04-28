@@ -1,4 +1,4 @@
-import { State, IStateOptions, StateUI } from "@cardsgame/server"
+import { State, IStateOptions, StateUI, Pile, Deck } from "@cardsgame/server"
 import { type, Schema } from "@colyseus/schema"
 import { MapSchema } from "@colyseus/schema"
 
@@ -32,6 +32,10 @@ export class MakaoState extends State {
   }
 
   ui: MakaoUI
+
+  // Some references for main game containers
+  pile: Pile
+  deck: Deck
 
   constructor(options?: IStateOptions) {
     super(options)

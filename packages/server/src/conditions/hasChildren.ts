@@ -1,10 +1,15 @@
 import { ServerPlayerEvent } from "../player"
-import { ICondition } from "../condition"
+import { ICondition } from "."
 import { State } from "../state"
 import { IParent, countChildren } from "../entities/traits/parent"
 
 function hasChildren(entity: IParent): ICondition
 function hasChildren(state: State, event: ServerPlayerEvent): boolean
+/**
+ * Does specified entity or the one interacted with has any children?
+ * @param stantity
+ * @param event
+ */
 function hasChildren(
   stantity: IParent | State,
   event?: ServerPlayerEvent

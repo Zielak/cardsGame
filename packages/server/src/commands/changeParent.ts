@@ -1,7 +1,7 @@
-import { IEntity } from "../entities/entity"
+import { IEntity } from "../entities/traits/entity"
 import { State } from "../state"
 import { logs } from "../logs"
-import { ICommand } from "../command"
+import { ICommand } from "."
 import { IParent, addChild } from "../entities/traits/parent"
 
 export class ChangeParent implements ICommand {
@@ -9,8 +9,8 @@ export class ChangeParent implements ICommand {
   private source: IParent
   private target: IParent
 
-  constructor(entity: IEntity, source: IParent, target: IParent)
-  constructor(entities: IEntity[], source: IParent, target: IParent)
+  // constructor(entity: IEntity, source: IParent, target: IParent)
+  // constructor(entities: IEntity[], source: IParent, target: IParent)
   constructor(ents: IEntity | IEntity[], source: IParent, target: IParent) {
     this.entities = Array.isArray(ents) ? ents : [ents]
     this.source = source

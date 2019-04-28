@@ -6,7 +6,7 @@ import {
   Pile,
   Deck,
   ClassicCard,
-  standardDeck,
+  standardDeckFactory,
   ActionTemplate,
   logs
 } from "@cardsgame/server"
@@ -52,7 +52,7 @@ export class ContainersTest extends Room<ContainersTestState> {
     })
 
     // Make a bunch of cards
-    standardDeck(["2", "3", "4"], ["D", "C"])
+    standardDeckFactory(["2", "3", "4"], ["D", "C"])
       .map(options => ({
         ...options,
         state,
@@ -61,7 +61,7 @@ export class ContainersTest extends Room<ContainersTestState> {
       }))
       .forEach(options => new ClassicCard(options))
 
-    standardDeck(["5", "6", "7"], ["C", "H"])
+    standardDeckFactory(["5", "6", "7"], ["C", "H"])
       .map(options => ({
         ...options,
         state,
@@ -70,7 +70,7 @@ export class ContainersTest extends Room<ContainersTestState> {
       }))
       .forEach(options => new ClassicCard(options))
 
-    standardDeck(["8", "9", "10", "J"], ["H", "S"])
+    standardDeckFactory(["8", "9", "10", "J"], ["H", "S"])
       .map(options => ({
         ...options,
         state,

@@ -6,8 +6,14 @@ import { EntityTransformData } from "../transform"
 import { State } from "../state"
 import { Children } from "../children"
 import { Player } from "../player"
+import {
+  IFlexyContainer,
+  FlexyContainerConstructor,
+  IFlexyContainerOptions,
+  flexyContainerRestyleChild
+} from "./traits/flexyContainer"
 
-export class Deck extends Schema implements IEntity, IParent {
+export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
   // IEntity
   _state: State
   id: EntityID
@@ -18,9 +24,9 @@ export class Deck extends Schema implements IEntity, IParent {
   idx: number
 
   @type("string")
-  type = "deck"
+  type = "row"
   @type("string")
-  name = "Deck"
+  name = "Row"
 
   @type("number")
   x: number
@@ -40,23 +46,24 @@ export class Deck extends Schema implements IEntity, IParent {
 
   hijacksInteractionTarget = true
 
-  constructor(options: IEntityOptions) {
+  // IFlexyContainer
+  alignItems: "start" | "end" | "center"
+  directionReverse: boolean
+  justifyContent:
+    | "start"
+    | "end"
+    | "center"
+    | "spaceBetween"
+    | "spaceAround"
+    | "spaceEvenly"
+
+  constructor(options: IRowOptions) {
     super()
     EntityConstructor(this, options)
+    FlexyContainerConstructor(this, options)
   }
 
-  restyleChild(
-    child: IEntity,
-    idx: number,
-    children: IEntity[]
-  ): EntityTransformData {
-    const MAX_HEIGHT = cm2px(2.5)
-    const MIN_SPACE = cm2px(0.1)
-    const SPACE = limit(MAX_HEIGHT / children.length, 0, MIN_SPACE)
-    return {
-      x: idx * SPACE,
-      y: -idx * SPACE,
-      angle: 0
-    }
-  }
+  restyleChild = flexyContainerRestyleChild
 }
+
+interface IRowOptions extends IFlexyContainerOptions {}

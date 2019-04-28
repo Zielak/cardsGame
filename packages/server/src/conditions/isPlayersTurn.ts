@@ -1,5 +1,5 @@
 import { State } from "../state"
-import { ICondition } from "../condition"
+import { ICondition } from "."
 import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 

@@ -1,10 +1,15 @@
 import { Schema, type, MapSchema } from "@colyseus/schema"
 import { logs } from "./logs"
-import { IEntity, getOwner } from "./entities/entity"
+import { IEntity, getOwner } from "./entities/traits/entity"
 import { cm2px, mapCount } from "@cardsgame/utils"
-import { Children } from "./entities/children"
+import { Children } from "./children"
 import { IParent } from "./entities/traits/parent"
 import { Player } from "./player"
+
+// TODO: some query functions to help finding game objects
+// - by name
+// - of owner, by name
+// - by type
 
 export class State extends Schema {
   @type("number")

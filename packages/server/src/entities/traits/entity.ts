@@ -1,7 +1,7 @@
-import { State } from "../state"
-import { Player } from "../player"
-import { EntityTransform } from "../transform"
-import { IParent } from "./traits/parent"
+import { State } from "../../state"
+import { Player } from "../../player"
+import { EntityTransform } from "../../transform"
+import { IParent } from "./parent"
 
 export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
   // state && id

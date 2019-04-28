@@ -1,7 +1,7 @@
-import { ICommand } from "@cardsgame/server"
+import { commands } from "@cardsgame/server"
 import { MakaoState } from "./state"
 
-export class IncreaseAtackPoints implements ICommand {
+export class IncreaseAtackPoints implements commands.ICommand {
   lastValue: number
 
   constructor(private value: number) {}
@@ -16,7 +16,7 @@ export class IncreaseAtackPoints implements ICommand {
   }
 }
 
-export class IncreaseSkipPoints implements ICommand {
+export class IncreaseSkipPoints implements commands.ICommand {
   lastValue: number
 
   constructor(private value: number) {}
@@ -31,7 +31,7 @@ export class IncreaseSkipPoints implements ICommand {
   }
 }
 
-export class SetAtackPoints implements ICommand {
+export class SetAtackPoints implements commands.ICommand {
   lastValue: number
 
   constructor(private value: number) {}
@@ -46,7 +46,7 @@ export class SetAtackPoints implements ICommand {
   }
 }
 
-export class SetSkipPoints implements ICommand {
+export class SetSkipPoints implements commands.ICommand {
   lastValue: number
 
   constructor(private value: number) {}
@@ -61,7 +61,7 @@ export class SetSkipPoints implements ICommand {
   }
 }
 
-export class SetRequestedSuit implements ICommand {
+export class SetRequestedSuit implements commands.ICommand {
   lastValue: string
 
   constructor(private value: string) {}
@@ -76,7 +76,7 @@ export class SetRequestedSuit implements ICommand {
   }
 }
 
-export class SetRequestedRank implements ICommand {
+export class SetRequestedRank implements commands.ICommand {
   lastValue: string
 
   constructor(private value: string) {}
@@ -91,7 +91,7 @@ export class SetRequestedRank implements ICommand {
   }
 }
 
-export class RevealUI implements ICommand {
+export class RevealUI implements commands.ICommand {
   lastUiName: string
   lastUiValue: string
 
@@ -111,7 +111,7 @@ export class RevealUI implements ICommand {
   }
 }
 
-export class HideUI implements ICommand {
+export class HideUI implements commands.ICommand {
   lastUiName: string
   lastUiValue: string
 
@@ -133,7 +133,7 @@ export class HideUI implements ICommand {
  * put it on deck and shuffle,
  * put top card to pile nd show it.
  */
-export class PrepareNewDeck implements ICommand {
+export class PrepareNewDeck implements commands.ICommand {
   constructor(private value: number) {}
 
   execute(state: MakaoState) {}

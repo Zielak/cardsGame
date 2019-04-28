@@ -1,7 +1,5 @@
 # Makao
 
-# TODO: What about marking multiple cards?
-
 https://pl.wikipedia.org/wiki/Makao_(gra_karciana)
 
 # Play rules & variants

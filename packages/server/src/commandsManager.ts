@@ -2,11 +2,11 @@ import { Client } from "colyseus"
 import { logs } from "./logs"
 import { CompositeCommand } from "./commands/compositeCommand"
 import { State } from "./state"
-import { ICommand } from "./command"
 import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
 import chalk from "chalk"
-import { isInteractive } from "./entities/entity"
+import { isInteractive } from "./entities/traits/entity"
+import { ICommand } from "./commands"
 
 export class CommandsManager {
   history: ICommand[] = []
@@ -85,14 +85,7 @@ export class CommandsManager {
     state: State,
     event: ServerPlayerEvent
   ): ActionTemplate[] {
-    if (event.entities) {
-      logs.info(
-        `getActionsByInteraction()`,
-        `for each ${event.entities.length} targets`
-      )
-    } else {
-      logs.info(`getActionsByInteraction()`)
-    }
+    logs.info(`getActionsByInteraction()`)
     const actions = Array.from(this.possibleActions.values()).filter(action => {
       const interactions = action.getInteractions(state)
       logs.log(

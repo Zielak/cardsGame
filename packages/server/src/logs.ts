@@ -1,5 +1,5 @@
 import chalk from "chalk"
-import { IEntity } from "./entities/entity"
+import { IEntity } from "./entities/traits/entity"
 
 const syntaxHighlight = (arg: any) => {
   if (typeof arg === "string") {

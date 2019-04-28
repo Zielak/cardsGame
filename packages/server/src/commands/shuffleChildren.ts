@@ -1,6 +1,6 @@
 import { logs } from "../logs"
 import { State } from "../state"
-import { ICommand } from "../command"
+import { ICommand } from "."
 import {
   IParent,
   countChildren,

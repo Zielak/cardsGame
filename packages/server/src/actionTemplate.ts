@@ -1,8 +1,8 @@
-import { ICondition } from "./condition"
+import { ICondition } from "./conditions"
 import { InteractionDefinition } from "./room"
 import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
-import { ICommand } from "./command"
+import { ICommand } from "./commands"
 
 export type ICommandFactory = (
   state: State,

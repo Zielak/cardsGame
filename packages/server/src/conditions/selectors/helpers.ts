@@ -1,4 +1,4 @@
-import { IEntity } from "../../entities/entity"
+import { IEntity } from "../../entities/traits/entity"
 import { logs } from "../../logs"
 
 export const propsMatch = (propName: string, values: any[]) => (

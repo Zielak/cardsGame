@@ -2,11 +2,15 @@ import {
   conditions as con,
   commands as cmd,
   ServerPlayerEvent,
-  State,
-  ClassicCard,
   Deck,
   logs,
-  ActionTemplate
+  ActionTemplate,
+  countChildren,
+  IParent,
+  ClassicCard,
+  getChildren,
+  Hand,
+  getTop
 } from "@cardsgame/server"
 
 import { MakaoState } from "./state"
@@ -47,44 +51,58 @@ export const SelectCard: ActionTemplate = {
     }
     return [{ type: "classicCard" }]
   },
-  getConditions: (state: MakaoState, event: ServerPlayerEvent) => {
+  getConditions: (state: MakaoState, { player }: ServerPlayerEvent) => {
     const conditions = [
       con.isOwner,
       con.isPlayersTurn,
-      con.parentIs({ name: "playersHand" }),
+      con.parentMatches({ name: "playersHand" }),
       // You can't go selecting cards when you have unfinished
       // bussiness with the UI.
       con.NOT(con.hasRevealedUI(["suitPicker", "rankPicker"]))
     ]
 
-    if (event.player.findByName("chosenCards").length === 0) {
+    const myChosenCards = state.entities.find<IParent>({
+      name: "chosenCards",
+      owner: player
+    })
+    const pileTop = getTop(
+      state.entities.find<Hand>({
+        name: "mainPile"
+      })
+    )
+
+    if (countChildren(myChosenCards) === 0) {
       conditions.push(
         con.OR(
           `First card should match anything on Pile`,
           state.requestedRank
             ? con.propEquals("rank", state.requestedRank)
-            : con.matchesRankWithPile,
+            : con.matchesPropWith("rank", pileTop),
           state.requestedSuit
             ? con.propEquals("suit", state.requestedSuit)
-            : con.matchesSuitWithPile
+            : con.matchesPropWith("suit", pileTop)
         )
       )
     } else {
       // The rest should match anything already selected
-      conditions.push(
-        con.matchesPropWith(
-          "rank",
-          (_, event) => event.player.findByName("chosenCards").childrenArray
-        )
-      )
+      conditions.push(con.matchesPropWith("rank", getChildren(myChosenCards)))
     }
     return conditions
   },
-  getCommands: (state: State, event: ServerPlayerEvent) => {
-    const playersHand = event.player.findByName("playersHand")
-    const chosenCardsRow = event.player.findByName("chosenCards")
+  getCommands: (
+    { entities }: MakaoState,
+    { player, entity }: ServerPlayerEvent
+  ) => {
+    const playersHand = entities.find<IParent>({
+      owner: player,
+      name: "playersHand"
+    })
+    const chosenCardsRow = entities.find<IParent>({
+      owner: player,
+      name: "chosenCards"
+    })
 
-    return new cmd.ChangeParent(event.entity, playersHand, chosenCardsRow)
+    return new cmd.ChangeParent(entity, playersHand, chosenCardsRow)
   }
 }
 
@@ -98,17 +116,25 @@ export const DeselectCard: ActionTemplate = {
   getConditions: () => [
     con.isOwner,
     con.isPlayersTurn,
-    con.parentIs({ name: "chosenCards" })
+    con.parentMatches({ name: "chosenCards" })
   ],
-  getCommands: (state: MakaoState, event: ServerPlayerEvent) => {
-    const playersHand = event.player.findByName("playersHand")
-    const chosenCardsRow = event.player.findByName("chosenCards")
+  getCommands: (
+    { entities }: MakaoState,
+    { player, entity }: ServerPlayerEvent
+  ) => {
+    const playersHand = entities.find<IParent>({
+      owner: player,
+      name: "playersHand"
+    })
+    const chosenCardsRow = entities.find<IParent>({
+      owner: player,
+      name: "chosenCards"
+    })
 
-    if (event.entity.idx > 0) {
-      return new cmd.ChangeParent(event.entity, chosenCardsRow, playersHand)
+    if (entity.idx > 0) {
+      return new cmd.ChangeParent(entity, chosenCardsRow, playersHand)
     } else {
-      const allChosenCards = event.player.findByName("chosenCards")
-        .childrenArray as ClassicCard[]
+      const allChosenCards = getChildren(chosenCardsRow)
       return new cmd.ChangeParent(allChosenCards, chosenCardsRow, playersHand)
     }
   }
@@ -122,23 +148,31 @@ export const Atack23: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: (_, event: ServerPlayerEvent) => {
-    const choosenCards = event.player.findByName("chosenCards")
+  getConditions: ({ entities }: MakaoState, { player }: ServerPlayerEvent) => {
+    const choosenCards = entities.find<IParent>({
+      name: "chosenCards",
+      owner: player
+    })
     return [
       con.hasChildren(choosenCards),
       con.childrenOf(choosenCards).matchRank(["2", "3"]),
       con.isPlayersTurn
     ]
   },
-  getCommands: (state: State, event: ServerPlayerEvent) => {
-    const cards = event.player.findByName("chosenCards")
-      .childrenArray as ClassicCard[]
-    const source = event.player.findByName("chosenCards")
-    const target = state.entities.findByName("mainPile")
+  getCommands: (
+    { entities, pile }: MakaoState,
+    { player }: ServerPlayerEvent
+  ) => {
+    const source = entities.find<IParent>({
+      owner: player,
+      name: "chosenCards"
+    })
+    const cards = getChildren<ClassicCard>(source)
+    const target = pile
 
     return [
       new cmd.ChangeParent(cards, source, target),
-      new cmd.ShowCard(cards),
+      new cmd.FaceUp(cards),
       new IncreaseAtackPoints(parseInt(cards[0].rank) * cards.length),
 
       new SetRequestedSuit(undefined),
@@ -155,8 +189,11 @@ export const AtackKing: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: (_, event: ServerPlayerEvent) => {
-    const choosenCards = event.player.findByName("chosenCards")
+  getConditions: ({ entities }: MakaoState, { player }: ServerPlayerEvent) => {
+    const choosenCards = entities.find<IParent>({
+      name: "chosenCards",
+      owner: player
+    })
     return [
       con.hasChildren(choosenCards),
       con.childrenOf(choosenCards).matchRank("K"),
@@ -164,20 +201,25 @@ export const AtackKing: ActionTemplate = {
       con.isPlayersTurn
     ]
   },
-  getCommands: (state: State, event: ServerPlayerEvent) => {
-    const card = event.player.findByName("chosenCards")
-      .childrenArray[0] as ClassicCard
-    const source = event.player.findByName("chosenCards")
-    const target = state.entities.findByName("mainPile")
+  getCommands: (
+    { entities, pile }: MakaoState,
+    { player }: ServerPlayerEvent
+  ) => {
+    const source = entities.find<IParent>({
+      owner: player,
+      name: "chosenCards"
+    })
+    const card = getChildren<ClassicCard>(source)
+    const target = pile
 
     return [
       new cmd.ChangeParent(card, source, target),
-      new cmd.ShowCard(card),
+      new cmd.FaceUp(card),
       new IncreaseAtackPoints(5),
 
       new SetRequestedSuit(undefined),
       // Variant here
-      card.suit === "H" ? new cmd.NextPlayer() : new cmd.PreviousPlayer()
+      card[0].suit === "H" ? new cmd.NextPlayer() : new cmd.PreviousPlayer()
     ]
   }
 }
@@ -190,8 +232,11 @@ export const PlaySkipTurn: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: (_, event: ServerPlayerEvent) => {
-    const choosenCards = event.player.findByName("chosenCards")
+  getConditions: ({ entities }: MakaoState, { player }: ServerPlayerEvent) => {
+    const choosenCards = entities.find<IParent>({
+      name: "chosenCards",
+      owner: player
+    })
     return [
       con.hasChildren(choosenCards),
       con.childrenOf(choosenCards).matchRank("4"),
@@ -199,15 +244,20 @@ export const PlaySkipTurn: ActionTemplate = {
       con.isPlayersTurn
     ]
   },
-  getCommands: (state: State, event: ServerPlayerEvent) => {
-    const cards = event.player.findByName("chosenCards")
-      .childrenArray as ClassicCard[]
-    const source = event.player.findByName("chosenCards")
-    const target = state.entities.findByName("mainPile")
+  getCommands: (
+    { entities, pile }: MakaoState,
+    { player }: ServerPlayerEvent
+  ) => {
+    const source = entities.find<IParent>({
+      owner: player,
+      name: "chosenCards"
+    })
+    const cards = getChildren<ClassicCard>(source)
+    const target = pile
 
     return [
       new cmd.ChangeParent(cards, source, target),
-      new cmd.ShowCard(cards),
+      new cmd.FaceUp(cards),
       new IncreaseSkipPoints(cards.length),
 
       new SetRequestedSuit(undefined),
@@ -224,8 +274,11 @@ export const PlayAce: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: (_, event: ServerPlayerEvent) => {
-    const choosenCards = event.player.findByName("chosenCards")
+  getConditions: ({ entities }: MakaoState, { player }: ServerPlayerEvent) => {
+    const choosenCards = entities.find<IParent>({
+      owner: player,
+      name: "chosenCards"
+    })
     return [
       con.hasChildren(choosenCards),
       con.childrenOf(choosenCards).matchRank("A"),
@@ -233,15 +286,20 @@ export const PlayAce: ActionTemplate = {
       con.isPlayersTurn
     ]
   },
-  getCommands: (state: State, event: ServerPlayerEvent) => {
-    const cards = event.player.findByName("chosenCards")
-      .childrenArray as ClassicCard[]
-    const source = event.player.findByName("chosenCards")
-    const target = state.entities.findByName("mainPile")
+  getCommands: (
+    { entities, pile }: MakaoState,
+    { player }: ServerPlayerEvent
+  ) => {
+    const source = entities.find<IParent>({
+      owner: player,
+      name: "chosenCards"
+    })
+    const cards = getChildren<ClassicCard>(source)
+    const target = pile
 
     return [
       new cmd.ChangeParent(cards, source, target),
-      new cmd.ShowCard(cards),
+      new cmd.FaceUp(cards),
       new RevealUI("suitPicker")
       // To be continued in RequestSuit action...
     ]
@@ -256,7 +314,7 @@ export const RequestSuit: ActionTemplate = {
     }
   ],
   getConditions: () => [],
-  getCommands: (state: State, event: ServerPlayerEvent) => {
+  getCommands: (state: MakaoState, event: ServerPlayerEvent) => {
     return [
       new SetRequestedSuit(event.data),
       new HideUI("suitPicker"),
@@ -273,8 +331,11 @@ export const PlayNormalCards: ActionTemplate = {
       name: "mainPile"
     }
   ],
-  getConditions: (_, event: ServerPlayerEvent) => {
-    const choosenCards = event.player.findByName("chosenCards")
+  getConditions: ({ entities }: MakaoState, { player }: ServerPlayerEvent) => {
+    const choosenCards = entities.find<IParent>({
+      owner: player,
+      name: "chosenCards"
+    })
     return [
       con.hasChildren(choosenCards),
       con.OR(
@@ -292,15 +353,20 @@ export const PlayNormalCards: ActionTemplate = {
       con.isPlayersTurn
     ]
   },
-  getCommands: (state: State, event: ServerPlayerEvent) => {
-    const cards = event.player.findByName("chosenCards")
-      .childrenArray as ClassicCard[]
-    const source = event.player.findByName("chosenCards")
-    const pile = state.entities.findByName("mainPile")
+  getCommands: ({ entities }: MakaoState, { player }: ServerPlayerEvent) => {
+    const source = entities.find<IParent>({
+      owner: player,
+      name: "chosenCards"
+    })
+    const cards = getChildren<ClassicCard>(source)
+    const pile = entities.find<IParent>({
+      name: "mainPile",
+      type: "pile"
+    })
 
     return [
       new cmd.ChangeParent(cards, source, pile),
-      new cmd.ShowCard(cards),
+      new cmd.FaceUp(cards),
 
       new SetRequestedSuit(undefined),
       new cmd.NextPlayer()
@@ -319,7 +385,11 @@ export const DrawCards: ActionTemplate = {
   getConditions: () => [con.isPlayersTurn],
   getCommands: (state: MakaoState, event: ServerPlayerEvent) => {
     const deck = event.entity as Deck
-    const target = event.player.findByName("playersHand")
+    const target = state.entities.find<IParent>({
+      // name: "playersHand",
+      type: "hand",
+      owner: event.player
+    })
 
     logs.log(
       "DrawCards",

@@ -108,7 +108,7 @@ describe(`Entity`, () => {
     })
   })
   describe(`interactive`, () => {})
-  describe(`childrenArray`, () => {})
+  describe(`getChildren`, () => {})
   describe(`parentEntity`, () => {})
   describe(`currentOwner`, () => {
     // test()

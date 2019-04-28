@@ -1,6 +1,6 @@
 import { State } from "../state"
 import { logs } from "../logs"
-import { ICommand } from "../command"
+import { ICommand } from "."
 
 export class NextPlayer implements ICommand {
   execute(state: State) {

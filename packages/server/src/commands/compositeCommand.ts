@@ -1,5 +1,5 @@
 import { State } from "../state"
-import { ICommand } from "../command"
+import { ICommand } from "."
 
 export class CompositeCommand implements ICommand {
   constructor(private commands: ICommand[]) {}
