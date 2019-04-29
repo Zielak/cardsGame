@@ -1,7 +1,8 @@
 import { State } from "../../state"
 import { Player } from "../../player"
 import { EntityTransform } from "../../transform"
-import { IParent } from "./parent"
+import { IParent, addChild } from "./parent"
+import { IIdentity } from "./identity"
 
 export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
   // state && id
@@ -24,26 +25,26 @@ export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
   if (!options.parent) {
     // no parent = root as parent
     // entity.parent = 0
-    entity._state.entities.add(entity)
+    addChild(entity._state, this)
   } else {
     const newParent =
       typeof options.parent === "number"
         ? entity._state.getEntity(options.parent)
         : options.parent
-    if (!newParent["children"]) {
+    if (!newParent.isParent()) {
       throw new Error(
         `${
           options.type
         } constructor: given 'parent' is not really IParent (no 'children' property)`
       )
     }
-    ;(newParent as IParent)._children.add(entity)
+    addChild(newParent, this)
   }
 }
 
-export interface IEntity {
+export interface IEntity extends IIdentity {
   _state: State
-  id: EntityID
+  isParent(): this is IParent
 
   idx: number
   parent: EntityID
@@ -95,9 +96,11 @@ export interface IEntityOptions {
  * Gets a reference to this entity's parent.
  * There must be any parent, so any undefined will fallback to state's `entities`
  */
-export function getParentEntity(entity: IEntity): IParent {
-  const parent = entity._state.getEntity(entity.parent) as IParent
-  return parent || entity._state.entities.get(0)
+export function getParentEntity(entity: IEntity): IEntity & IParent {
+  const parent = entity._state.getEntity(entity.parent)
+  if (parent.isParent()) {
+    return parent
+  }
 }
 
 export function getIdxPath(entity: IEntity): number[] {

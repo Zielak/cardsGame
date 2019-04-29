@@ -1,10 +1,7 @@
-import { cm2px, limit } from "@cardsgame/utils"
-import { IEntity, IEntityOptions, EntityConstructor } from "./traits/entity"
+import { EntityConstructor, IEntity } from "./traits/entity"
 import { Schema, type } from "@colyseus/schema"
-import { IParent } from "./traits/parent"
-import { EntityTransformData } from "../transform"
+import { IParent, ParentConstructor } from "./traits/parent"
 import { State } from "../state"
-import { Children } from "../children"
 import { Player } from "../player"
 import {
   IFlexyContainer,
@@ -19,6 +16,9 @@ export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
   id: EntityID
   parent: EntityID
   owner: Player
+  isParent(): this is IParent {
+    return true
+  }
 
   @type("uint16")
   idx: number
@@ -41,9 +41,7 @@ export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
   height: number
 
   // IParent
-  @type(Children)
-  _children = new Children()
-
+  _childrenPointers: string[]
   hijacksInteractionTarget = true
 
   // IFlexyContainer
@@ -60,6 +58,7 @@ export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
   constructor(options: IRowOptions) {
     super()
     EntityConstructor(this, options)
+    ParentConstructor(this)
     FlexyContainerConstructor(this, options)
   }
 

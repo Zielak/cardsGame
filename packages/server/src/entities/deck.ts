@@ -1,18 +1,21 @@
 import { cm2px, limit } from "@cardsgame/utils"
 import { IEntity, IEntityOptions, EntityConstructor } from "./traits/entity"
 import { Schema, type } from "@colyseus/schema"
-import { IParent } from "./traits/parent"
+import { IParent, containsChildren, ParentConstructor } from "./traits/parent"
 import { EntityTransformData } from "../transform"
 import { State } from "../state"
-import { Children } from "../children"
 import { Player } from "../player"
 
+@containsChildren
 export class Deck extends Schema implements IEntity, IParent {
   // IEntity
   _state: State
   id: EntityID
   parent: EntityID
   owner: Player
+  isParent(): this is IParent {
+    return true
+  }
 
   @type("uint16")
   idx: number
@@ -35,14 +38,13 @@ export class Deck extends Schema implements IEntity, IParent {
   height: number
 
   // IParent
-  @type(Children)
-  _children = new Children()
-
+  _childrenPointers: string[]
   hijacksInteractionTarget = true
 
   constructor(options: IEntityOptions) {
     super()
     EntityConstructor(this, options)
+    ParentConstructor(this)
   }
 
   restyleChild(

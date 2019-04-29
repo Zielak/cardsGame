@@ -2,8 +2,9 @@ import { ServerPlayerEvent } from "../player"
 import { ICondition } from "."
 import { State } from "../state"
 import { IParent, countChildren } from "../entities/traits/parent"
+import { IEntity } from "../entities"
 
-function hasChildren(entity: IParent): ICondition
+function hasChildren(entity: IParent | IEntity): ICondition
 function hasChildren(state: State, event: ServerPlayerEvent): boolean
 /**
  * Does specified entity or the one interacted with has any children?
@@ -11,17 +12,20 @@ function hasChildren(state: State, event: ServerPlayerEvent): boolean
  * @param event
  */
 function hasChildren(
-  stantity: IParent | State,
+  stantity: IParent & IEntity | IEntity | State,
   event?: ServerPlayerEvent
 ): ICondition | boolean {
   if (!(stantity instanceof State)) {
-    const cond: ICondition = (state: State, event: ServerPlayerEvent) => {
-      return countChildren(stantity) > 0
-    }
+    const cond: ICondition = (state: State, event: ServerPlayerEvent) =>
+      stantity.isParent() ? countChildren(stantity) > 0 : false
+
     cond._name = `hasChildren{entity}`
     return cond
   } else {
-    return countChildren(event.entity as IParent) > 0
+    if (event.entity.isParent()) {
+      return countChildren(event.entity) > 0
+    }
+    return false
   }
 }
 hasChildren._name = `hasChildren`

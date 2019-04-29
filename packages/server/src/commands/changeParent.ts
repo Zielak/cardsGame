@@ -33,9 +33,9 @@ export class ChangeParent implements ICommand {
       "starting, moving",
       this.entities.map(e => e.name),
       "entities from",
-      this.source.name,
+      this.source["name"] || "ROOT",
       "to",
-      this.target.name
+      this.target["name"] || "ROOT"
     )
 
     this.entities.forEach(entity => addChild(this.target, entity))

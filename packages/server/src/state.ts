@@ -2,24 +2,28 @@ import { Schema, type, MapSchema } from "@colyseus/schema"
 import { logs } from "./logs"
 import { IEntity, getOwner } from "./entities/traits/entity"
 import { cm2px, mapCount } from "@cardsgame/utils"
-import { Children } from "./children"
-import { IParent } from "./entities/traits/parent"
+import {
+  IParent,
+  ParentConstructor,
+  getChild,
+  countChildren,
+  getChildren,
+  getDescendants
+} from "./entities/traits/parent"
 import { Player } from "./player"
 
-// TODO: some query functions to help finding game objects
-// - by name
-// - of owner, by name
-// - by type
+export class State extends Schema implements IParent {
+  // IParent
+  id = 0
+  _childrenPointers: string[]
+  hijacksInteractionTarget = false
 
-export class State extends Schema {
+  // State stuff
   @type("number")
   tableWidth = cm2px(60) // 60 cm
 
   @type("number")
   tableHeight = cm2px(60) // 60 cm
-
-  @type(Children)
-  entities = new Children()
 
   @type({ map: Player })
   players = new MapSchema<Player>()
@@ -49,11 +53,10 @@ export class State extends Schema {
   _lastID = -1
   _allEntities = new Map<number, IEntity>()
 
-  // constructor(options?: IStateOptions) {
-  //   super()
-  //   // TODO: do something with these options.
-  //   this.setupListeners()
-  // }
+  constructor(options?: IStateOptions) {
+    super()
+    ParentConstructor(this)
+  }
 
   /**
    * @deprecated? instead of this, provide users with factory functions, which would register entities automatically
@@ -79,9 +82,9 @@ export class State extends Schema {
   getEntity(path: number[]): IEntity
   getEntity(idOrPath: EntityID | number[]): IEntity {
     if (Array.isArray(idOrPath)) {
-      const travel = (children: Children, remainingPath: number[]) => {
+      const travel = (parent: IParent, remainingPath: number[]) => {
         const idx = remainingPath.shift()
-        const newChild = children.get(idx) as IParent
+        const newChild = getChild(parent, idx)
         if (!newChild) {
           throw new Error(
             `getEntity/path: This entity doesn't have such child.`
@@ -93,12 +96,12 @@ export class State extends Schema {
           )
         }
         if (remainingPath.length > 0) {
-          return travel(newChild._children, remainingPath)
+          return travel(newChild as IParent & IEntity, remainingPath)
         } else {
           return newChild
         }
       }
-      return travel(this.entities, [...idOrPath])
+      return travel(this, [...idOrPath])
     }
     return this._allEntities.get(idOrPath)
   }
@@ -109,12 +112,12 @@ export class State extends Schema {
    */
   getEntitiesAlongPath(path: number[]): IEntity[] {
     const travel = (
-      children: Children,
+      parent: IParent,
       remainingPath: number[],
       result: IEntity[] = []
     ) => {
       const idx = remainingPath.shift()
-      const newChild = children.get(idx) as IParent
+      const newChild = getChild<IParent & IEntity>(parent, idx)
       if (!newChild) {
         throw new Error(
           `getEntitiesAlongPath: This entity doesn't have such child.`
@@ -128,21 +131,21 @@ export class State extends Schema {
 
       result.push(newChild)
       if (remainingPath.length > 0) {
-        return travel(newChild._children, remainingPath, result)
+        return travel(newChild, remainingPath, result)
       } else {
         return result
       }
     }
-    return travel(this.entities, [...path])
+    return travel(this, [...path])
   }
 
-  logTreeState(startingPoint?: IEntity) {
+  logTreeState(startingPoint?: IParent & IEntity) {
     logs.log("")
     const indent = (level: number) => {
       return "│ ".repeat(level)
     }
-    const travel = (children: Children, level: number = 0) => {
-      children.toArray().map((child, idx, entities) => {
+    const travel = (parent: IParent, level: number = 0) => {
+      getChildren(parent).map((child, idx, entities) => {
         if (
           // getParentEntity(child).isContainer && // Parent HAS to be a container...
           entities.length > 5 &&
@@ -155,17 +158,13 @@ export class State extends Schema {
           return
         }
 
-        const asParent = child as IParent
-
         const owner = getOwner(child)
 
         const lastChild = entities.length - 1 === idx
         const sIdx = idx === child.idx ? `${idx}` : `e${child.idx}:s${idx}`
 
-        const sChildren =
-          asParent._children && asParent._children.length > 0
-            ? asParent._children.length + " children"
-            : ""
+        const childrenCount = countChildren(child as IParent & IEntity)
+        const sChildren = childrenCount > 0 ? childrenCount : ""
         const sOwner = owner ? `(${owner.name} ${owner.clientID})` : ""
         const branchSymbol = lastChild ? "┕━" : "┝━"
 
@@ -175,18 +174,26 @@ export class State extends Schema {
           sChildren,
           sOwner
         )
-        if (asParent._children && asParent._children.length > 0) {
-          travel(asParent._children, level + 1)
+        if (child.isParent() && childrenCount > 0) {
+          travel(child, level + 1)
         }
       })
     }
-    const root = this.entities[0]
-    logs.log(
-      `┍━[${root.idx}]`,
-      `${root.type}:${root.name}`,
-      root.length + "children"
-    )
-    travel(startingPoint || root, 1)
+
+    if (!startingPoint) {
+      logs.log(
+        `┍━ROOT`,
+        countChildren(this) + "direct children",
+        getDescendants(this).length + "in total)"
+      )
+    } else {
+      logs.log(
+        `┍━[${startingPoint.idx}]`,
+        `${startingPoint.type}:${startingPoint.name}`,
+        countChildren(startingPoint) + "children"
+      )
+    }
+    travel(startingPoint || this, 1)
   }
 
   static events = {

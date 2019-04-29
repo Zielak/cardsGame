@@ -1,18 +1,21 @@
 import { float } from "@cardsgame/utils"
 import { IEntityOptions, IEntity, EntityConstructor } from "./traits/entity"
 import { Schema, type } from "@colyseus/schema"
-import { IParent } from "./traits/parent"
-import { Children } from "../children"
+import { IParent, containsChildren, ParentConstructor } from "./traits/parent"
 import { State } from "../state"
 import { EntityTransformData } from "../transform"
 import { Player } from "../player"
 
-export class Pile extends Schema implements IParent {
+@containsChildren
+export class Pile extends Schema implements IEntity, IParent {
   // IEntity
   _state: State
   id: EntityID
   parent: EntityID
   owner: Player
+  isParent(): this is IParent {
+    return true
+  }
 
   @type("uint16")
   idx: number
@@ -34,11 +37,9 @@ export class Pile extends Schema implements IParent {
   @type("number")
   height: number
 
+  // IParent
+  _childrenPointers: string[]
   hijacksInteractionTarget = true
-
-  // IChildrenHolder
-  @type(Children)
-  _children = new Children()
 
   // Pile's own props
   cardsData = new Array<EntityTransformData>()
@@ -47,6 +48,7 @@ export class Pile extends Schema implements IParent {
   constructor(options: IPileOptions) {
     super()
     EntityConstructor(this, options)
+    ParentConstructor(this)
 
     this.limits = Object.assign(
       {},

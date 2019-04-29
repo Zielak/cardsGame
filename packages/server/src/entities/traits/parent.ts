@@ -1,14 +1,40 @@
-import { Children } from "../../children"
 import { IEntity, getParentEntity, resetWorldTransform } from "./entity"
 import { logs } from "../../logs"
 import { EntityTransformData } from "../../transform"
+import { type, ArraySchema } from "@colyseus/schema"
+import chalk from "chalk"
+import { Player } from "../../player"
+import { IIdentity } from "./identity"
 
-export interface IParent extends IEntity {
-  _children: Children
+const entityConstructors: Function[] = []
+
+export function containsChildren(newEntity: Function) {
+  // 1. Add all known entities to this one
+  entityConstructors.forEach(con => {
+    const arr = []
+    arr.push(con)
+    type(arr)(newEntity.prototype, `children${con.name}`)
+  })
+
+  // 2. Remember newEntity for the future classes
+  entityConstructors.push(newEntity)
+
+  // 3. Add this newEntity type to every other known entities
+  entityConstructors.forEach(con => {
+    const arr = []
+    arr.push(newEntity)
+    type(arr)(con.prototype, `children${newEntity.name}`)
+  })
+}
+
+// ====================
+
+export interface IParent extends IIdentity {
+  _childrenPointers: string[]
   hijacksInteractionTarget: boolean
 
   // FIXME: TS doesn't enforce return type of EntityTransformData
-  restyleChild: (
+  restyleChild?: (
     child: IEntity,
     idx: number,
     array: IEntity[]
@@ -18,8 +44,34 @@ export interface IParent extends IEntity {
   onChildRemoved?(idx: number): void
 }
 
-export function addChild(entity: IParent, child: IEntity) {
-  if (child === entity) {
+export function ParentConstructor(entity: IParent) {
+  entity._childrenPointers = []
+}
+
+const getKnownConstructor = (entity: IEntity | IParent) =>
+  entityConstructors.find(con => entity instanceof con)
+
+const updateChildrenIdx = (parent: IParent, from: number = 0) => {
+  const max = countChildren(parent)
+  for (let i = from + 1; i <= max; i++) {
+    const array = parent[parent._childrenPointers[i]] as ArraySchema<IEntity>
+    const child = array.find(el => el.idx === i)
+    child.idx = i - 1
+  }
+  updatePointers(parent)
+}
+
+const updatePointers = (parent: IParent) => {
+  getChildren(parent).forEach(child => {
+    const con = entityConstructors.find(con => child instanceof con)
+    parent._childrenPointers[child.idx] = con.name
+  })
+}
+
+export function addChild(parent: IParent, child: IEntity, idx?: number) {
+  // ----- check
+
+  if (child === (parent as IParent & IEntity)) {
     throw new Error(`adding itself as a child makes no sense.`)
   }
 
@@ -28,75 +80,144 @@ export function addChild(entity: IParent, child: IEntity) {
 
   if (lastParent) {
     // Remember to remove myself from first parent
-    removeChild(lastParent, child.id, true)
+    removeChild(lastParent, child.id)
   }
 
-  const added = entity._children.add(child)
-  if (!added) {
-    throw new Error(`EntityMap, couldn't add new child! ${child.type}`)
+  // ----- add
+
+  // const added = entity._children.add(child)
+
+  const con = getKnownConstructor(parent)
+  if (!con) {
+    throw new Error(
+      `addChild(), this type of child is unknown to me: ${child.type}.`
+    )
   }
-  child.parent = entity.id
 
-  restyleChildren(entity)
+  const targetArray = parent["children" + con.name]
+
+  // Check if it's already in
+  if (targetArray.includes(child)) {
+    logs.warn("addChild()", `Child is already here`)
+    return
+  }
+
+  const newIdx = countChildren(parent)
+  targetArray.push(child)
+  child.idx = newIdx
+  parent._childrenPointers.push(con.name)
+
+  // Lazy solution, is it enough?
+  if (typeof idx == "number") {
+    moveChildTo(parent, newIdx, idx)
+  }
+
+  child.parent = parent.id
+
+  if (parent.onChildAdded) parent.onChildAdded(child)
+  restyleChildren(parent)
 }
 
-export function addChildren(entity: IEntity & IParent, children: IEntity[]) {
-  children.forEach(newChild => addChild(entity, newChild))
+export function addChildren(parent: IParent & IEntity, children: IEntity[]) {
+  children.forEach(newChild => addChild(parent, newChild))
 }
 
-// TODO:
-export function addChildAt(entity: IParent, child: IEntity, idx: number) {}
-
-export const removeChild = (
-  entity: IEntity & IParent,
-  id: EntityID,
-  _silent: boolean = false
-): boolean => {
-  const idx = entity._children.toArray().findIndex(child => child.id === id)
-  return removeChildAt(entity, idx, _silent)
+export const removeChild = (parent: IParent, id: EntityID): boolean => {
+  const idx = getChildren(parent).findIndex(child => child.id === id)
+  return removeChildAt(parent, idx)
 }
 
-export function removeChildAt(
-  entity: IEntity & IParent,
-  idx: number,
-  _silent: boolean = false
-): boolean {
-  // TODO: These checks should probably be in EntityMap.
+export function removeChildAt(parent: IParent, idx: number): boolean {
+  // ------ check
+
   if (idx < 0)
-    throw new Error(`removeChildAt - idx must be >= 0, but is ${idx}`)
-  if (idx > entity._children.length - 1) {
+    throw new Error(`removeChildAt(): idx must be >= 0, but is ${idx}`)
+  if (idx > parent._childrenPointers.length - 1) {
     logs.warn(
       "removeChildAt()",
       `Tried to remove idx out of bounds:`,
       idx,
       "/",
-      entity._children.length
+      parent._childrenPointers.length
     )
   }
-  const child: IEntity = entity._children.get(idx)
+  const child: IEntity = getChild(parent, idx)
   if (!child) {
-    logs.error("removeChildAt", `children.get - I don't have ${idx} child?`)
+    logs.error("removeChildAt", `getChild - I don't have ${idx} child?`)
     return
   }
 
-  if (!entity._children.remove(idx)) {
-    logs.error("removeChildAt", `children.remove - I don't have ${idx} child?`)
-    return
-  }
+  // ------ remove
+
+  const targetArrayName = "children" + parent._childrenPointers[idx]
+  const targetArray: IEntity[] = parent[targetArrayName]
+  parent[targetArrayName] = targetArray.filter(el => el !== child)
+  parent._childrenPointers[idx] = undefined
   child.parent = 0
+
+  // ------ update
+
+  updateChildrenIdx(parent, idx)
 
   // Reset last parent's stylings
   resetWorldTransform(child)
-  restyleChildren(entity)
+  restyleChildren(parent)
 
   return true
 }
 
-export function restyleChildren(entity: IParent) {
-  entity._children
-    .toArray()
-    .forEach((child: IEntity, idx: number, array: IEntity[]) => {
-      const data = entity.restyleChild(child, idx, array)
+export function moveChildTo(parent: IParent, from: number, to: number) {
+  const child = getChild(parent, from)
+
+  // 1. pluck out the FROM
+  // 2. keep moving from 3->2, to->3
+  // 3. plop entry at empty TO
+
+  if (from < to) {
+    //  0  1  2  3  4  5  6
+    // [x, x, _, x, x, x, x]
+    //   from-^     ^-to
+
+    //  0   1
+    // [Fr, To]
+    for (let idx = from + 1; idx <= to; idx++) {
+      const newIdx = idx - 1
+      getChild(parent, idx).idx = newIdx
+    }
+  } else if (from > to) {
+    //  0  1  2  3  4  5  6
+    // [x, x, x, x, _, x, x]
+    //     TO-^     ^-FROM
+
+    //  0   1
+    // [To, Fr]
+    for (let idx = from - 1; idx >= to; idx--) {
+      const newIdx = idx + 1
+      getChild(parent, idx).idx = newIdx
+    }
+  } else {
+    logs.warn(
+      `moveChildTo()`,
+      `you were trying to move to the same index:`,
+      from,
+      "=>",
+      to
+    )
+  }
+  // Plop entry to desired target place
+  child.idx = to
+
+  const entries = getChildren(parent).map(child => chalk.yellow(child.name))
+
+  logs.verbose(`moveChildTo, [`, entries.join(", "), `]`)
+  logs.verbose(`moveChildTo, done, now updatePointers()`)
+  updatePointers(parent)
+}
+
+export function restyleChildren(parent: IParent) {
+  getChildren(parent).forEach(
+    (child: IEntity, idx: number, array: IEntity[]) => {
+      const data = parent.restyleChild(child, idx, array)
       if (data.x) {
         child._worldTransform.x = data.x
       }
@@ -106,50 +227,131 @@ export function restyleChildren(entity: IParent) {
       if (data.angle) {
         child._worldTransform.angle = data.angle
       }
-    }, this)
-}
-
-export function countChildren(entity: IParent): number {
-  if (!entity._children) return 0
-  return entity._children.length
-}
-
-/**
- * Gets all children in array form, "sorted" by idx
- */
-export function getChildren<T extends IEntity>(entity: IParent) {
-  return entity._children.toArray<T>()
+    },
+    this
+  )
 }
 
 /**
  * Number of child elements
  */
-export function childrenCount(entity: IParent) {
-  return entity._children.length
+export function countChildren(parent: IParent): number {
+  return parent._childrenPointers.length
 }
 
-export function getChild<T extends IEntity>(entity: IParent, idx: number): T {
-  if (!entity._children) return
-  return entity._children.get<T>(idx)
+/**
+ * Gets all direct children in array form, "sorted" by idx
+ */
+export function getChildren<T extends IEntity>(
+  parent: IParent
+): (T & IEntity)[] {
+  return parent._childrenPointers.map(name => parent["children" + name])
+}
+
+/**
+ * Get one direct child of `parent`
+ */
+export function getChild<T extends IEntity>(
+  parent: IParent,
+  idx: number
+): T & IEntity {
+  return parent["children" + parent._childrenPointers[idx]].find(
+    (child: IEntity) => child.idx === idx
+  )
 }
 
 /**
  * Get the element with highest 'idx' value
  */
-export function getTop<T extends IEntity>(entity: IParent): T {
-  return entity._children.get<T>(entity._children.length - 1)
+export function getTop<T extends IEntity>(parent: IParent): T {
+  return parent[
+    "children" + parent._childrenPointers[parent._childrenPointers.length - 1]
+  ]
 }
 
 /**
  * Get the element with the lowest 'idx' value
  */
 export function getBottom<T extends IEntity>(parent: IParent): T {
-  return parent._children[0]
+  return parent["children" + parent._childrenPointers[0]]
 }
 
 /**
- * Function to be used in sorting.
+ * Recursively fetches all children
  */
-export function byIdx<T extends IEntity>(a: T, b: T): number {
-  return a.idx - b.idx
+export function getDescendants<T extends IEntity>(parent: IParent): T[] {
+  return getChildren(parent).reduce((prev, entity) => {
+    prev.push(entity)
+    if (entity.isParent()) {
+      prev.concat(getDescendants(entity))
+    }
+    return prev
+  }, [])
+}
+
+// /**
+//  * Function to be used in sorting.
+//  */
+// export function byIdx<T extends IEntity>(a: T, b: T): number {
+//   return a.idx - b.idx
+// }
+
+const queryRunner = (props: QuerableProps) => (entity: IEntity) => {
+  const propKeys = Object.keys(props)
+
+  return propKeys.every(propName => {
+    return entity[propName] === props[propName]
+  })
+}
+
+interface QueryOptions {
+  deep: boolean
+  one: boolean
+}
+
+interface QuerableProps {
+  id?: EntityID
+
+  idx?: number
+  parent?: EntityID | QuerableProps
+  owner?: Player
+
+  type?: string
+  name?: string
+
+  [key: string]: any
+}
+
+export function findAll<T extends IEntity>(
+  parent: IParent,
+  props: QuerableProps,
+  options?: QueryOptions
+): T[] {
+  const result = (options.deep
+    ? getDescendants<T>(parent)
+    : getChildren<T>(parent)
+  ).filter(queryRunner(props))
+  if (result.length === 0) {
+    throw new Error(
+      `findAll: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
+    )
+  }
+  return result
+}
+
+export function find<T extends IEntity>(
+  parent: IParent,
+  props: QuerableProps,
+  options?: QueryOptions
+): T {
+  const result = (options.deep
+    ? getDescendants<T>(parent)
+    : getChildren<T>(parent)
+  ).find(queryRunner(props))
+  if (!result) {
+    throw new Error(
+      `find: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
+    )
+  }
+  return result
 }

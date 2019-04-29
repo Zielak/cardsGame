@@ -12,6 +12,7 @@ import { Client } from "colyseus"
 import { ITwoSided } from "./traits/twoSided"
 import { def } from "@cardsgame/utils"
 import { Player } from "../player"
+import { IParent } from "./traits/parent"
 
 interface IClassicCard extends IEntity, ITwoSided {}
 
@@ -21,6 +22,9 @@ export class ClassicCard extends Schema implements IClassicCard {
   id: EntityID
   parent: EntityID
   owner: Player
+  isParent(): this is IParent {
+    return false
+  }
 
   @type("uint16")
   idx: number

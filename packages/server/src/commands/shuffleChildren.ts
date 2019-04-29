@@ -5,7 +5,9 @@ import {
   IParent,
   countChildren,
   restyleChildren,
-  getChild
+  getChild,
+  removeChildAt,
+  addChild
 } from "../entities/traits/parent"
 
 export class ShuffleChildren implements ICommand {
@@ -17,17 +19,15 @@ export class ShuffleChildren implements ICommand {
     let fromIdx = countChildren(this.container)
     if (fromIdx === 0) return
     while (--fromIdx) {
-      const children = this.container._children
-
       const toIdx = Math.floor(Math.random() * (fromIdx + 1))
-      const childi = children.get(fromIdx)
-      const childj = children.get(toIdx)
+      const childi = getChild(this.container, fromIdx)
+      const childj = getChild(this.container, toIdx)
 
-      children.remove(fromIdx)
-      children.add(childj, fromIdx)
+      removeChildAt(this.container, fromIdx)
+      addChild(this.container, childj, fromIdx)
 
-      children.remove(toIdx + 1)
-      children.add(childi, toIdx + 1)
+      removeChildAt(this.container, toIdx + 1)
+      addChild(this.container, childi, toIdx + 1)
 
       restyleChildren(this.container)
     }

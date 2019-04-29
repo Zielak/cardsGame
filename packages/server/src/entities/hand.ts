@@ -3,18 +3,28 @@ import { Schema, type } from "@colyseus/schema"
 import { def } from "@cardsgame/utils"
 import { logs } from "../logs"
 import { IEntityOptions, IEntity, EntityConstructor } from "./traits/entity"
-import { IParent } from "./traits/parent"
+import {
+  IParent,
+  containsChildren,
+  ParentConstructor,
+  countChildren,
+  getChild,
+  moveChildTo
+} from "./traits/parent"
 import { State } from "../state"
-import { Children } from "../children"
 import { EntityTransformData } from "../transform"
 import { Player } from "../player"
 
+@containsChildren
 export class Hand extends Schema implements IEntity, IParent {
   // IEntity
   _state: State
   id: EntityID
   parent: EntityID
   owner: Player
+  isParent(): this is IParent {
+    return true
+  }
 
   @type("uint16")
   idx: number
@@ -36,11 +46,9 @@ export class Hand extends Schema implements IEntity, IParent {
   @type("number")
   height: number
 
+  // IParent
+  _childrenPointers: string[]
   hijacksInteractionTarget = false
-
-  // IChildrenHolder
-  @type(Children)
-  _children = new Children()
 
   // Hand's own stuff
   autoSort: SortingFunction
@@ -48,20 +56,21 @@ export class Hand extends Schema implements IEntity, IParent {
   constructor(options: IHandOptions) {
     super()
     EntityConstructor(this, options)
+    ParentConstructor(this)
 
     this.autoSort = def(options.autoSort, () => -1)
   }
 
   onChildAdded(child: IEntity) {
-    const count = this._children.length - 1
+    const count = countChildren(this)
     logs.info(`Hand.autoSort`, `0..${count}`)
     for (let idx = 0; idx < count; idx++) {
-      if (this.autoSort(child, this._children[idx]) > 0) {
+      if (this.autoSort(child, getChild(this, idx)) > 0) {
         continue
       }
       // I shall drop incomming child right here
-      logs.info(`Hand.autoSort`, `children.moveTo(${child.idx}, ${idx})`)
-      this._children.moveTo(child.idx, idx)
+      logs.info(`Hand.autoSort`, `children.moveChildTo(${child.idx}, ${idx})`)
+      moveChildTo(this, child.idx, idx)
 
       logs.info(`Hand.autoSort`, `AFTER:`)
       this._state.logTreeState(this)

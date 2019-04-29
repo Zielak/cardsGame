@@ -3,7 +3,6 @@ import { IEntity } from "./traits/entity"
 import { IParent } from "./traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
-import { Children } from "../children"
 import { EntityTransformData } from "../transform"
 
 /**
@@ -18,6 +17,9 @@ export class Line extends Schema implements IEntity, IParent {
   id: EntityID
   parent: EntityID
   owner: Player
+  isParent(): this is IParent {
+    return true
+  }
 
   @type("uint16")
   idx: number
@@ -40,9 +42,7 @@ export class Line extends Schema implements IEntity, IParent {
   height: number
 
   // IParent
-  @type(Children)
-  _children = new Children()
-
+  _childrenPointers: string[]
   hijacksInteractionTarget = true
 
   restyleChild(
