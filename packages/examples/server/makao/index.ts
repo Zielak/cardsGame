@@ -10,7 +10,8 @@ import {
   commands,
   logs,
   getTop,
-  standardDeckFactory
+  standardDeckFactory,
+  IEntity
 } from "@cardsgame/server"
 
 import { MakaoState } from "./state"
@@ -26,7 +27,7 @@ import {
   RequestSuit
 } from "./actions"
 import { MapSchema } from "@colyseus/schema"
-import { map2Array } from "../../../utils/lib"
+import { map2Array } from "@cardsgame/utils"
 
 export class MakaoRoom extends Room<MakaoState> {
   name = "Makao"
@@ -155,7 +156,7 @@ export class MakaoRoom extends Room<MakaoState> {
     new commands.ShuffleChildren(state.deck).execute(state)
     new commands.DealCards(state.deck, playersHands, 3).execute(state)
     new commands.ChangeParent(
-      getTop(state.deck),
+      getTop<IEntity>(state.deck),
       state.deck,
       state.pile
     ).execute(state)

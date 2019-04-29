@@ -7,7 +7,8 @@ import {
   getTop,
   getBottom,
   Hand,
-  getChildren
+  getChildren,
+  find
 } from "@cardsgame/server"
 
 export const isAtWar: conditions.ICondition = (state: MakaoState) => {
@@ -18,10 +19,8 @@ isAtWar._name = "isAtWar"
 /**
  * Is there 4 on the top of Pile
  */
-export const skipTurnPlayed: conditions.ICondition = ({
-  entities
-}: MakaoState) => {
-  const pile = entities.find<Hand>({ name: "mainPile" })
+export const skipTurnPlayed: conditions.ICondition = (state: MakaoState) => {
+  const pile = find<Hand>(state, { name: "mainPile" })
   const topCard = getTop<ClassicCard>(pile)
   const result = topCard.rank === "4"
   logs.verbose(`│\t\tskipTurnPlayed:`, result)
@@ -46,23 +45,23 @@ const isNonFunctional = (card: ClassicCard) => {
 }
 
 export const chosenAreNonFunctional: conditions.ICondition = (
-  { entities }: MakaoState,
+  state: MakaoState,
   { player }: ServerPlayerEvent
 ) => {
-  const chosen = getChildren(
-    entities.find({ owner: player, name: "chosenCards" })
-  )
+  const cards = find(state, { owner: player, name: "chosenCards" })
+  const chosen = getChildren(cards)
   return chosen.every(isNonFunctional)
 }
 chosenAreNonFunctional._name = "chosenAreNonFunctional"
 
 export const chosenMatchRank: conditions.ICondition = (
-  { entities }: MakaoState,
+  state: MakaoState,
   { player }: ServerPlayerEvent
 ) => {
-  const pileTop = getTop<ClassicCard>(entities.find({ name: "mainPile" }))
+  const pileTop = getTop<ClassicCard>(find(state, { name: "mainPile" }))
+
   const { rank: chosenRank } = getBottom<ClassicCard>(
-    entities.find({ owner: player, name: "chosenCards" })
+    find(state, { owner: player, name: "chosenCards" })
   )
   if (chosenRank === pileTop.rank) {
     return true
@@ -77,12 +76,12 @@ export const chosenMatchRank: conditions.ICondition = (
 chosenMatchRank._name = "chosenMatchRank"
 
 export const chosenMatchSuit: conditions.ICondition = (
-  { entities }: MakaoState,
+  state: MakaoState,
   { player }: ServerPlayerEvent
 ) => {
-  const pileTop = getTop<ClassicCard>(entities.find({ name: "mainPile" }))
+  const pileTop = getTop<ClassicCard>(find(state, { name: "mainPile" }))
   const { suit: chosenSuit } = getBottom<ClassicCard>(
-    entities.find({ owner: player, name: "chosenCards" })
+    find(state, { owner: player, name: "chosenCards" })
   )
   if (chosenSuit === pileTop.suit) {
     return true
@@ -97,10 +96,10 @@ export const chosenMatchSuit: conditions.ICondition = (
 chosenMatchSuit._name = "chosenMatchSuit"
 
 export const matchesRankWithPile: conditions.ICondition = (
-  { entities }: MakaoState,
+  state: MakaoState,
   { entity }: ServerPlayerEvent
 ): boolean => {
-  const pileTop = getTop<ClassicCard>(entities.find({ name: "mainPile" }))
+  const pileTop = getTop<ClassicCard>(find(state, { name: "mainPile" }))
   const chosenCard = entity as ClassicCard
   if (chosenCard.rank === pileTop.rank) {
     return true
@@ -114,10 +113,10 @@ export const matchesRankWithPile: conditions.ICondition = (
 matchesRankWithPile._name = "matchesRankWithPile"
 
 export const matchesSuitWithPile: conditions.ICondition = (
-  { entities }: MakaoState,
+  state: MakaoState,
   { entity }: ServerPlayerEvent
 ): boolean => {
-  const pileTop = getTop<ClassicCard>(entities.find({ name: "mainPile" }))
+  const pileTop = getTop<ClassicCard>(find(state, { name: "mainPile" }))
   const chosenCard = entity as ClassicCard
   if (chosenCard.suit === pileTop.suit) {
     return true

@@ -33,11 +33,18 @@ export class DealCards implements ICommand {
 
     const maxDeals = this.count * this.targets.length
     const next = () => {
-      const card = getTop(this.source)
+      const top = getTop(this.source)
+      if (top.isParent()) {
+        logs.warn(
+          "DealCards",
+          `Unlikely situation, you're making me deal a CONTAINER (IParent) instead of singular object. Is that really what you want?`
+        )
+        return
+      }
       const currentTarget = this.targets[targetI % this.targets.length]
 
       // This command thing moves the entity
-      new ChangeParent(card, this.source, currentTarget).execute(state)
+      new ChangeParent(top, this.source, currentTarget).execute(state)
 
       // Pick next target if we dealt `this.step` cards to current target
       if (++stepI % this.step === 0) {

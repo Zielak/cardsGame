@@ -32,6 +32,7 @@ export function containsChildren(newEntity: Function) {
 export interface IParent extends IIdentity {
   _childrenPointers: string[]
   hijacksInteractionTarget: boolean
+  isParent(): this is IParent
 
   // FIXME: TS doesn't enforce return type of EntityTransformData
   restyleChild?: (
@@ -235,17 +236,20 @@ export function restyleChildren(parent: IParent) {
 /**
  * Number of child elements
  */
-export function countChildren(parent: IParent): number {
-  return parent._childrenPointers.length
+export function countChildren(parent: IParent | IEntity): number {
+  return parent.isParent() ? parent._childrenPointers.length : 0
 }
 
 /**
  * Gets all direct children in array form, "sorted" by idx
  */
-export function getChildren<T extends IEntity>(
-  parent: IParent
+export function getChildren<T extends IEntity | IParent>(
+  parent: IParent | IEntity
 ): (T & IEntity)[] {
-  return parent._childrenPointers.map(name => parent["children" + name])
+  if (parent.isParent()) {
+    return parent._childrenPointers.map(name => parent["children" + name])
+  }
+  return []
 }
 
 /**
@@ -263,7 +267,7 @@ export function getChild<T extends IEntity>(
 /**
  * Get the element with highest 'idx' value
  */
-export function getTop<T extends IEntity>(parent: IParent): T {
+export function getTop<T extends IEntity | IParent>(parent: IParent): T {
   return parent[
     "children" + parent._childrenPointers[parent._childrenPointers.length - 1]
   ]
@@ -272,14 +276,16 @@ export function getTop<T extends IEntity>(parent: IParent): T {
 /**
  * Get the element with the lowest 'idx' value
  */
-export function getBottom<T extends IEntity>(parent: IParent): T {
+export function getBottom<T extends IEntity | IParent>(parent: IParent): T {
   return parent["children" + parent._childrenPointers[0]]
 }
 
 /**
  * Recursively fetches all children
  */
-export function getDescendants<T extends IEntity>(parent: IParent): T[] {
+export function getDescendants<T extends IEntity | IParent>(
+  parent: IParent
+): T[] {
   return getChildren(parent).reduce((prev, entity) => {
     prev.push(entity)
     if (entity.isParent()) {
@@ -296,7 +302,7 @@ export function getDescendants<T extends IEntity>(parent: IParent): T[] {
 //   return a.idx - b.idx
 // }
 
-const queryRunner = (props: QuerableProps) => (entity: IEntity) => {
+const queryRunner = (props: QuerableProps) => (entity: IEntity | IParent) => {
   const propKeys = Object.keys(props)
 
   return propKeys.every(propName => {
@@ -339,7 +345,7 @@ export function findAll<T extends IEntity>(
   return result
 }
 
-export function find<T extends IEntity>(
+export function find<T extends IEntity | IParent>(
   parent: IParent,
   props: QuerableProps,
   options?: QueryOptions

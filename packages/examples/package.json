@@ -24,6 +24,7 @@
     "@cardsgame/client": "file:../client",
     "@cardsgame/server": "file:../server",
     "@cardsgame/types": "file:../types",
+    "@cardsgame/utils": "file:../utils",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   }

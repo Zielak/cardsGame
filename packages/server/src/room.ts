@@ -1,4 +1,4 @@
-import colyseus, { Client } from "colyseus"
+import { Client, Room as colRoom } from "colyseus"
 import { logs } from "./logs"
 import { CommandsManager } from "./commandsManager"
 import { State } from "./state"
@@ -7,7 +7,7 @@ import { map2Array, mapAdd, mapRemoveEntry } from "@cardsgame/utils"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
 
-export class Room<S extends State> extends colyseus.Room<S> {
+export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
 
   commandsManager: CommandsManager

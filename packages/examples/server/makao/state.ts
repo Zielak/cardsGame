@@ -1,5 +1,5 @@
 import { State, IStateOptions, StateUI, Pile, Deck } from "@cardsgame/server"
-import { type, Schema } from "@colyseus/schema"
+import { type } from "@colyseus/schema"
 import { MapSchema } from "@colyseus/schema"
 
 interface MakaoUI extends StateUI {

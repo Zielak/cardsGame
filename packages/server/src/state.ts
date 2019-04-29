@@ -17,6 +17,9 @@ export class State extends Schema implements IParent {
   id = 0
   _childrenPointers: string[]
   hijacksInteractionTarget = false
+  isParent(): this is IParent {
+    return true
+  }
 
   // State stuff
   @type("number")
