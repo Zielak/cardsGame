@@ -12,10 +12,11 @@ import { Client } from "colyseus"
 import { ITwoSided } from "./traits/twoSided"
 import { def } from "@cardsgame/utils"
 import { Player } from "../player"
-import { IParent } from "./traits/parent"
+import { IParent, canBeChild } from "./traits/parent"
 
 interface IClassicCard extends IEntity, ITwoSided {}
 
+@canBeChild
 export class ClassicCard extends Schema implements IClassicCard {
   // IEntity
   _state: State
@@ -59,13 +60,13 @@ export class ClassicCard extends Schema implements IClassicCard {
 
   constructor(options: IClassicCardOptions) {
     super()
-    EntityConstructor(this, options)
-
     this.suit = options.suit
     this.rank = options.rank
     this.name = options.suit + options.rank
 
     this.faceUp = def(options.faceUp, false)
+
+    EntityConstructor(this, options)
   }
 }
 

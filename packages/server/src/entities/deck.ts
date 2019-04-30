@@ -1,11 +1,17 @@
 import { cm2px, limit } from "@cardsgame/utils"
 import { IEntity, IEntityOptions, EntityConstructor } from "./traits/entity"
 import { Schema, type } from "@colyseus/schema"
-import { IParent, containsChildren, ParentConstructor } from "./traits/parent"
+import {
+  IParent,
+  containsChildren,
+  ParentConstructor,
+  canBeChild
+} from "./traits/parent"
 import { EntityTransformData } from "../transform"
 import { State } from "../state"
 import { Player } from "../player"
 
+@canBeChild
 @containsChildren
 export class Deck extends Schema implements IEntity, IParent {
   // IEntity

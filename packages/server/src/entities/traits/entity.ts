@@ -25,7 +25,7 @@ export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
   if (!options.parent) {
     // no parent = root as parent
     // entity.parent = 0
-    addChild(entity._state, this)
+    addChild(entity._state, entity)
   } else {
     const newParent =
       typeof options.parent === "number"
@@ -38,7 +38,7 @@ export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
         } constructor: given 'parent' is not really IParent (no 'children' property)`
       )
     }
-    addChild(newParent, this)
+    addChild(newParent, entity)
   }
 }
 
@@ -104,7 +104,7 @@ export function getParentEntity(entity: IEntity): IEntity & IParent {
 }
 
 export function getIdxPath(entity: IEntity): number[] {
-  const path: number[] = [this.idx]
+  const path: number[] = [entity.idx]
   const getNext = (entity: IEntity) => {
     const parent = getParentEntity(entity)
     const parentsIdx = parent.idx

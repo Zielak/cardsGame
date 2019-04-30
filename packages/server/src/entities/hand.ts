@@ -9,12 +9,14 @@ import {
   ParentConstructor,
   countChildren,
   getChild,
-  moveChildTo
+  moveChildTo,
+  canBeChild
 } from "./traits/parent"
 import { State } from "../state"
 import { EntityTransformData } from "../transform"
 import { Player } from "../player"
 
+@canBeChild
 @containsChildren
 export class Hand extends Schema implements IEntity, IParent {
   // IEntity

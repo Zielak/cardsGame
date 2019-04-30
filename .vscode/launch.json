@@ -7,6 +7,15 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Run example server",
+      "runtimeExecutable": "node",
+      "program": "${workspaceFolder}/packages/examples/dist/server/index.js",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Nodemon build example server",
       "runtimeExecutable": "nodemon",
       "program": "${workspaceFolder}/packages/examples/dist/server/index.js",

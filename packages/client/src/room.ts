@@ -10,15 +10,6 @@ export class Room extends EventEmitter {
   constructor(private room: colyseus.Room) {
     super()
 
-    room.onStateChange.addOnce(state => {
-      logs.notice("ROOM, this is the first room state!", state)
-      this.gameStateListeners()
-      this.emit(Room.events.stateChange, state)
-    })
-    room.onStateChange.add(state => {
-      logs.notice("ROOM, state been updated:", state)
-      this.emit(Room.events.stateChange, state)
-    })
     room.onMessage.add((message: ServerMessage) => {
       if (message.event && message.data) {
         switch (message.event) {
@@ -47,6 +38,20 @@ export class Room extends EventEmitter {
       }
       this.emit(Room.events.message, message)
     })
+    room.onStateChange.addOnce(state => {
+      logs.notice("ROOM, state been updated:", state)
+      this.emit(Room.events.stateChange, state)
+
+      // state.onChange(changes => {
+      //   // this.gameStateListeners()
+      //   // this.emit(Room.events.stateChange, state)
+      //   changes.forEach(change => {
+      //     console.log(change.field)
+      //     console.log(change.value)
+      //     console.log(change.previousValue)
+      //   })
+      // })
+    })
     room.onJoin.add(() => {
       logs.notice("client joined successfully")
       this.emit(Room.events.join)
@@ -61,7 +66,7 @@ export class Room extends EventEmitter {
     })
   }
 
-  gameStateListeners() {
+  gameStateListeners(state) {
     this.room.state.clients.onAdd = (client, key) => {
       logs.notice("new client joined", client)
       this.emit(Room.events.clientJoined, client)

@@ -6,21 +6,23 @@ import chalk from "chalk"
 import { Player } from "../../player"
 import { IIdentity } from "./identity"
 
-const entityConstructors: Function[] = []
+const reegisteredChildren: Function[] = []
 
 export function containsChildren(newEntity: Function) {
-  // 1. Add all known entities to this one
-  entityConstructors.forEach(con => {
+  // Add all known entities to this one
+  reegisteredChildren.forEach(con => {
     const arr = []
     arr.push(con)
     type(arr)(newEntity.prototype, `children${con.name}`)
   })
+}
 
-  // 2. Remember newEntity for the future classes
-  entityConstructors.push(newEntity)
+export function canBeChild(newEntity: Function) {
+  // Remember this entity type for future classes
+  reegisteredChildren.push(newEntity)
 
-  // 3. Add this newEntity type to every other known entities
-  entityConstructors.forEach(con => {
+  //  Add this newEntity type to every other known entities
+  reegisteredChildren.forEach(con => {
     const arr = []
     arr.push(newEntity)
     type(arr)(con.prototype, `children${newEntity.name}`)
@@ -47,10 +49,13 @@ export interface IParent extends IIdentity {
 
 export function ParentConstructor(entity: IParent) {
   entity._childrenPointers = []
+  reegisteredChildren.forEach(con => {
+    entity[`children${con.name}`] = []
+  })
 }
 
 const getKnownConstructor = (entity: IEntity | IParent) =>
-  entityConstructors.find(con => entity instanceof con)
+  reegisteredChildren.find(con => entity instanceof con)
 
 const updateChildrenIdx = (parent: IParent, from: number = 0) => {
   const max = countChildren(parent)
@@ -64,7 +69,7 @@ const updateChildrenIdx = (parent: IParent, from: number = 0) => {
 
 const updatePointers = (parent: IParent) => {
   getChildren(parent).forEach(child => {
-    const con = entityConstructors.find(con => child instanceof con)
+    const con = reegisteredChildren.find(con => child instanceof con)
     parent._childrenPointers[child.idx] = con.name
   })
 }
@@ -88,7 +93,7 @@ export function addChild(parent: IParent, child: IEntity, idx?: number) {
 
   // const added = entity._children.add(child)
 
-  const con = getKnownConstructor(parent)
+  const con = getKnownConstructor(child)
   if (!con) {
     throw new Error(
       `addChild(), this type of child is unknown to me: ${child.type}.`
@@ -216,6 +221,7 @@ export function moveChildTo(parent: IParent, from: number, to: number) {
 }
 
 export function restyleChildren(parent: IParent) {
+  if (!parent.restyleChild) return
   getChildren(parent).forEach(
     (child: IEntity, idx: number, array: IEntity[]) => {
       const data = parent.restyleChild(child, idx, array)
@@ -247,7 +253,9 @@ export function getChildren<T extends IEntity | IParent>(
   parent: IParent | IEntity
 ): (T & IEntity)[] {
   if (parent.isParent()) {
-    return parent._childrenPointers.map(name => parent["children" + name])
+    return parent._childrenPointers.map((name, idx) =>
+      parent["children" + name].find((e: IEntity) => e.idx === idx)
+    )
   }
   return []
 }
