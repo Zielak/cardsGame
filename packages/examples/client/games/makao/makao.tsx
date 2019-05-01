@@ -1,12 +1,13 @@
 import React, { FunctionComponent, useState, useEffect } from "react"
 import { Game } from "@cardsgame/client"
-import { RankPicker } from "./rankPicker"
-import { Button } from "../components/button"
-import { SuitPicker } from "./suitPicker"
+import { RankPicker } from "../rankPicker"
+import { Button } from "../../components/button"
+import { SuitPicker } from "../suitPicker"
+import { IGameState } from "../../app"
 
 interface MakaoGameUIProps {
   gameRef: Game
-  gameState: MakaoGameState
+  gameState: IMakaoGameState
 }
 
 export const MakaoGameUI: FunctionComponent<MakaoGameUIProps> = props => {
@@ -71,9 +72,7 @@ export const MakaoGameUI: FunctionComponent<MakaoGameUIProps> = props => {
   return <>{...children}</>
 }
 
-interface MakaoGameState {
-  currentPlayerIdx?: number
-  isGameStarted?: boolean
+export interface IMakaoGameState extends IGameState {
   atackPoints?: number
   skipPoints?: number
   requestedSuit?: string
@@ -82,7 +81,8 @@ interface MakaoGameState {
     [key: string]: number
   }
   ui?: {
-    suitPicker: string
-    rankPicker: string
+    [key: string]: string
+    suitPicker?: string
+    rankPicker?: string
   }
 }

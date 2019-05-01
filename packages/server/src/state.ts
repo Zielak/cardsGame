@@ -8,13 +8,15 @@ import {
   getChild,
   countChildren,
   getChildren,
-  getDescendants
+  getDescendants,
+  containsChildren
 } from "./entities/traits/parent"
 import { Player } from "./player"
 
+@containsChildren
 export class State extends Schema implements IParent {
   // IParent
-  id = 0
+  id = -1
   _childrenPointers: string[]
   hijacksInteractionTarget = false
   isParent(): this is IParent {
@@ -106,7 +108,9 @@ export class State extends Schema implements IParent {
       }
       return travel(this, [...idOrPath])
     }
-    return this._allEntities.get(idOrPath)
+    if (idOrPath >= 0) {
+      return this._allEntities.get(idOrPath)
+    }
   }
 
   /**
@@ -186,8 +190,9 @@ export class State extends Schema implements IParent {
     if (!startingPoint) {
       logs.log(
         `┍━ROOT`,
-        countChildren(this) + "direct children",
-        getDescendants(this).length + "in total)"
+        "(" + countChildren(this) + " direct children,",
+        getDescendants(this).length,
+        " in total)"
       )
     } else {
       logs.log(

@@ -6,27 +6,39 @@ import chalk from "chalk"
 import { Player } from "../../player"
 import { IIdentity } from "./identity"
 
-const reegisteredChildren: Function[] = []
+const registeredParents: Function[] = []
+const registeredChildren: Function[] = []
 
-export function containsChildren(newEntity: Function) {
-  // Add all known entities to this one
-  reegisteredChildren.forEach(con => {
+const applyRegisteredChildren = (parentCon: Function, childCon?: Function) => {
+  const go = con => {
     const arr = []
     arr.push(con)
-    type(arr)(newEntity.prototype, `children${con.name}`)
-  })
+    logs.log(`applying "children${con.name}" to ${parentCon.name}`)
+    type(arr)(parentCon.prototype, `children${con.name}`)
+  }
+  if (childCon) {
+    go(childCon)
+  } else {
+    registeredChildren.forEach(go)
+  }
 }
 
-export function canBeChild(newEntity: Function) {
-  // Remember this entity type for future classes
-  reegisteredChildren.push(newEntity)
+export function canBeChild(childCon: Function) {
+  // Remember this child type for future classes
+  registeredChildren.push(childCon)
 
-  //  Add this newEntity type to every other known entities
-  reegisteredChildren.forEach(con => {
-    const arr = []
-    arr.push(newEntity)
-    type(arr)(con.prototype, `children${newEntity.name}`)
-  })
+  // Add this child type to every other known parents
+  registeredParents.forEach(parentCon =>
+    applyRegisteredChildren(parentCon, childCon)
+  )
+}
+
+export function containsChildren(parentCon: Function) {
+  // Remember this parent
+  registeredParents.push(parentCon)
+
+  // Add all known children kinds to this one
+  applyRegisteredChildren(parentCon)
 }
 
 // ====================
@@ -49,27 +61,27 @@ export interface IParent extends IIdentity {
 
 export function ParentConstructor(entity: IParent) {
   entity._childrenPointers = []
-  reegisteredChildren.forEach(con => {
-    entity[`children${con.name}`] = []
+  registeredChildren.forEach(con => {
+    entity[`children${con.name}`] = new ArraySchema()
   })
 }
 
 const getKnownConstructor = (entity: IEntity | IParent) =>
-  reegisteredChildren.find(con => entity instanceof con)
+  registeredChildren.find(con => entity instanceof con)
 
-const updateChildrenIdx = (parent: IParent, from: number = 0) => {
-  const max = countChildren(parent)
-  for (let i = from + 1; i <= max; i++) {
-    const array = parent[parent._childrenPointers[i]] as ArraySchema<IEntity>
-    const child = array.find(el => el.idx === i)
-    child.idx = i - 1
-  }
-  updatePointers(parent)
-}
+// const updateChildrenIdx = (parent: IParent, from: number = 0) => {
+//   const max = countChildren(parent)
+//   for (let i = from + 1; i <= max; i++) {
+//     const array = parent[parent._childrenPointers[i]] as ArraySchema<IEntity>
+//     const child = array.find(el => el.idx === i)
+//     child.idx = i - 1
+//   }
+//   updatePointers(parent)
+// }
 
 const updatePointers = (parent: IParent) => {
   getChildren(parent).forEach(child => {
-    const con = reegisteredChildren.find(con => child instanceof con)
+    const con = registeredChildren.find(con => child instanceof con)
     parent._childrenPointers[child.idx] = con.name
   })
 }
@@ -156,14 +168,21 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
   // ------ remove
 
   const targetArrayName = "children" + parent._childrenPointers[idx]
-  const targetArray: IEntity[] = parent[targetArrayName]
-  parent[targetArrayName] = targetArray.filter(el => el !== child)
-  parent._childrenPointers[idx] = undefined
+  const targetArray: ArraySchema = parent[targetArrayName]
+  // FIXME: after colyseus/schema geets fixed:
+  // https://discordapp.com/channels/525739117951320081/526083188108296202/573204615290683392
+  // parent[targetArrayName] = targetArray.filter(el => el !== child)
+
+  const childIdx = targetArray.findIndex(el => el === child)
+  parent[targetArrayName].splice(childIdx, 1)
+  parent._childrenPointers = parent._childrenPointers.filter(
+    (_, i) => i !== idx
+  )
   child.parent = 0
 
   // ------ update
 
-  updateChildrenIdx(parent, idx)
+  // updateChildrenIdx(parent, idx)
 
   // Reset last parent's stylings
   resetWorldTransform(child)
@@ -173,16 +192,14 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
 }
 
 export function moveChildTo(parent: IParent, from: number, to: number) {
+  // 1. pluck out the FROM
   const child = getChild(parent, from)
 
-  // 1. pluck out the FROM
   // 2. keep moving from 3->2, to->3
-  // 3. plop entry at empty TO
-
   if (from < to) {
     //  0  1  2  3  4  5  6
     // [x, x, _, x, x, x, x]
-    //   from-^     ^-to
+    //   FROM-^     ^-TO
 
     //  0   1
     // [Fr, To]
@@ -209,14 +226,16 @@ export function moveChildTo(parent: IParent, from: number, to: number) {
       "=>",
       to
     )
+    return
   }
-  // Plop entry to desired target place
+
+  // 3. plop entry to desired target place
   child.idx = to
 
-  const entries = getChildren(parent).map(child => chalk.yellow(child.name))
+  // const entries = getChildren(parent).map(child => chalk.yellow(child.name))
 
-  logs.verbose(`moveChildTo, [`, entries.join(", "), `]`)
-  logs.verbose(`moveChildTo, done, now updatePointers()`)
+  // logs.verbose(`moveChildTo, [`, entries.join(", "), `]`)
+  // logs.verbose(`moveChildTo, done, now updatePointers()`)
   updatePointers(parent)
 }
 
@@ -263,7 +282,7 @@ export function getChildren<T extends IEntity | IParent>(
 /**
  * Get one direct child of `parent`
  */
-export function getChild<T extends IEntity>(
+export function getChild<T extends IEntity | IParent>(
   parent: IParent,
   idx: number
 ): T & IEntity {
@@ -276,16 +295,14 @@ export function getChild<T extends IEntity>(
  * Get the element with highest 'idx' value
  */
 export function getTop<T extends IEntity | IParent>(parent: IParent): T {
-  return parent[
-    "children" + parent._childrenPointers[parent._childrenPointers.length - 1]
-  ]
+  return getChild<T>(parent, parent._childrenPointers.length - 1)
 }
 
 /**
  * Get the element with the lowest 'idx' value
  */
 export function getBottom<T extends IEntity | IParent>(parent: IParent): T {
-  return parent["children" + parent._childrenPointers[0]]
+  return getChild<T>(parent, 0)
 }
 
 /**

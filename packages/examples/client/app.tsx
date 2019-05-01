@@ -2,7 +2,7 @@ import { Game, Room } from "@cardsgame/client"
 import React, { FunctionComponent, useState, useEffect } from "react"
 import * as ReactDOM from "react-dom"
 import { GamesList } from "./components/gamesList"
-import { MakaoGameUI } from "./games/makao"
+import { MakaoGameUI } from "./games/makao/makao"
 import { Renderer } from "./renderer"
 import { StateView } from "./components/stateView"
 
@@ -12,15 +12,17 @@ const game = new Game({
 })
 game.room
 
-interface AppProps {
+interface IAppProps {
   gameRef: Game
 }
-interface AppState {
-  gameState: any
+export interface IGameState {
+  currentPlayerIdx?: number
+  isGameStarted?: boolean
+  ui?: { [key: string]: string }
 }
 
-export const App: FunctionComponent<AppProps> = props => {
-  const [gameState, setGameState] = useState({})
+export const App: FunctionComponent<IAppProps> = props => {
+  const [gameState, setGameState] = useState<IGameState>({})
   const [room, setRoom] = useState(undefined)
 
   const [currentGame, setCurrentGame] = useState("")

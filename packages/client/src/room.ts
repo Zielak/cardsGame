@@ -22,15 +22,6 @@ export class Room extends EventEmitter {
           case "game.error":
             logs.error("Server:", message.data)
             break
-          case EntityEvents.privateAttributeChange:
-            room.onStateChange.addOnce(() => {
-              logs.verbose(
-                `after state update -> privateAttributeUpdate`,
-                message.data
-              )
-              this.updatePrivateAttribute(message.data)
-            })
-            break
         }
       } else {
         // Any other silly type of message:
@@ -38,7 +29,7 @@ export class Room extends EventEmitter {
       }
       this.emit(Room.events.message, message)
     })
-    room.onStateChange.addOnce(state => {
+    room.onStateChange.add(state => {
       logs.notice("ROOM, state been updated:", state)
       this.emit(Room.events.stateChange, state)
 
@@ -84,58 +75,6 @@ export class Room extends EventEmitter {
       logs.notice("player removed", player.name)
       this.emit(Room.events.playerRemoved, player)
     }
-  }
-
-  // TODO: What the fuck is this?
-  // entitiesListeners() {
-  //   // on every new entity, add listeners in its children
-
-  //   // this.room.state.entities.onAdd = (entity: EntityData, key) => {}
-  //   // this.room.state.entities.onRemove = (entity: EntityData, key) => {}
-
-  //   const addListeners = path => {
-  //     this.room.listen(path, this.childrenHandler.bind(this))
-  //     this.room.listen(
-  //       path + "/:attribute",
-  //       this.attributeChangeHandler.bind(this)
-  //     )
-  //   }
-  //   let path = "entities/children/:idx"
-  //   addListeners(path)
-
-  //   path += "/children/:idx"
-  //   addListeners(path)
-
-  //   path += "/children/:idx"
-  //   addListeners(path)
-
-  //   path += "/children/:idx"
-  //   addListeners(path)
-  // }
-
-  // childrenHandler(change: colyseus.DataChange) {
-  //   if (change.operation === "add") {
-  //     this.emit(EntityEvents.childAdded, change)
-  //   } else if (change.operation === "remove") {
-  //     this.emit(EntityEvents.childRemoved, change)
-  //   } else {
-  //     logs.error("Woah, you forgot about something")
-  //   }
-  // }
-
-  // attributeChangeHandler(change: colyseus.DataChange) {
-  //   // log.verbose(`[${change.path.idx}] child.attribute.${change.path['attribute']}:`, change)
-  //   this.emit("child.attribute." + change.path["attribute"], change)
-  // }
-
-  updatePrivateAttribute(data: PrivateAttributeChangeData) {
-    this.emit(`visibility.${data.attribute}`, {
-      rawPath: data.path,
-      path: {
-        attribute: data.attribute
-      },
-      value: data.value
-    })
   }
 
   send(message: PlayerEvent) {

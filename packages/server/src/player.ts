@@ -17,6 +17,7 @@ export class Player extends Schema {
   @type("number")
   timeLeft: number = -1
 
+  // FIXME: why do I need it?
   _state: State
 
   // _selectedEntities = new Set<IEntity>()
@@ -35,7 +36,7 @@ export class Player extends Schema {
 export interface IPlayerOptions {
   state: State
   clientID: string
-  name: string
+  name?: string
 }
 
 // Event from client, with stuff auto filled when comming to server

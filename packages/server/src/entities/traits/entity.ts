@@ -98,7 +98,7 @@ export interface IEntityOptions {
  */
 export function getParentEntity(entity: IEntity): IEntity & IParent {
   const parent = entity._state.getEntity(entity.parent)
-  if (parent.isParent()) {
+  if (parent && parent.isParent()) {
     return parent
   }
 }

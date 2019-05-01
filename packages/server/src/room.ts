@@ -50,6 +50,12 @@ export class Room<S extends State> extends colRoom<S> {
 
   onMessage(client: Client, event: PlayerEvent) {
     if (event.data === "start" && !this.state.isGameStarted) {
+      Object.keys(this.state.clients).forEach((key, idx) => {
+        this.state.players[idx] = new Player({
+          state: this.state,
+          clientID: this.state.clients[key]
+        })
+      })
       this.onStartGame(this.state)
       return
     } else if (event.data === "start" && this.state.isGameStarted) {

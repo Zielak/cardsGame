@@ -7,7 +7,8 @@ import {
   restyleChildren,
   getChild,
   removeChildAt,
-  addChild
+  addChild,
+  moveChildTo
 } from "../entities/traits/parent"
 
 export class ShuffleChildren implements ICommand {
@@ -16,18 +17,22 @@ export class ShuffleChildren implements ICommand {
   execute(state: State) {
     logs.log(`${this.constructor.name}`, "executing")
 
-    let fromIdx = countChildren(this.container)
-    if (fromIdx === 0) return
-    while (--fromIdx) {
-      const toIdx = Math.floor(Math.random() * (fromIdx + 1))
-      const childi = getChild(this.container, fromIdx)
-      const childj = getChild(this.container, toIdx)
+    let idxA = countChildren(this.container)
+    if (idxA === 0) return
+    while (--idxA) {
+      const idxB = Math.floor(Math.random() * (idxA + 1))
+      // const childi = getChild(this.container, idxA)
+      // const childj = getChild(this.container, idxB)
 
-      removeChildAt(this.container, fromIdx)
-      addChild(this.container, childj, fromIdx)
-
-      removeChildAt(this.container, toIdx + 1)
-      addChild(this.container, childi, toIdx + 1)
+      if (idxA > idxB) {
+        moveChildTo(this.container, idxA, idxB)
+        moveChildTo(this.container, idxB + 1, idxA)
+      }
+      // FIXME: remove? this condition will never launch
+      // else if (idxB > idxA) {
+      //   moveChildTo(this.container, idxA, idxB)
+      //   moveChildTo(this.container, idxB + 1, idxA)
+      // }
 
       restyleChildren(this.container)
     }

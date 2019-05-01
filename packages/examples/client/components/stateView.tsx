@@ -1,7 +1,8 @@
 import * as React from "react"
+import { IGameState } from "../app"
 
 export interface StateViewProps {
-  state: any
+  state: IGameState
 }
 export class StateView extends React.Component<StateViewProps, {}> {
   render() {

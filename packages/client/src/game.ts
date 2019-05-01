@@ -4,7 +4,7 @@ import { logs } from "./logs"
 import { EventEmitter } from "eventemitter3"
 import { RoomAvailable } from "colyseus.js/lib/Room"
 
-interface GameOptions {
+interface IGameOptions {
   viewElement: HTMLElement
   gameNames?: string[]
 }
@@ -21,7 +21,7 @@ export class Game extends EventEmitter {
   gameNames: string[]
   viewElement: HTMLElement
 
-  constructor({ gameNames, viewElement }: GameOptions) {
+  constructor({ gameNames, viewElement }: IGameOptions) {
     super()
 
     this.gameNames = gameNames
