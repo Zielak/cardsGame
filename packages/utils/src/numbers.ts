@@ -26,3 +26,9 @@ export const deg2rad = angle => {
 
 export const cm2px = (value: number) => value * 11.5
 export const px2cm = (value: number) => value / 11.5
+
+export const decimal = (value: number, maxZeroes: number = 2) => {
+  const pow = Math.pow(maxZeroes, 10)
+
+  return Math.floor(value * pow) / pow
+}

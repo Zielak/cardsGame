@@ -1,7 +1,7 @@
-import React, { FunctionComponent, useState, useEffect } from "react"
+import React, { FunctionComponent, useState, useEffect, Fragment } from "react"
 import { Game } from "@cardsgame/client"
 import { RankPicker } from "../rankPicker"
-import { Button } from "../../components/button"
+import { Button } from "../../components/button/button"
 import { SuitPicker } from "../suitPicker"
 import { IGameState } from "../../app"
 
@@ -69,7 +69,12 @@ export const MakaoGameUI: FunctionComponent<MakaoGameUIProps> = props => {
       )
     }
   }
-  return <>{...children}</>
+  return (
+    <Fragment>
+      <p>MakaoUI</p>
+      {...children}
+    </Fragment>
+  )
 }
 
 export interface IMakaoGameState extends IGameState {

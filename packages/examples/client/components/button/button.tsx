@@ -6,6 +6,8 @@ interface ButtonProps {
   noPadding?: boolean
   square?: boolean
   fontSize?: string
+  className?: string
+  style?: React.CSSProperties
 }
 
 export const Button: FunctionComponent<ButtonProps> = props => {
@@ -16,7 +18,7 @@ export const Button: FunctionComponent<ButtonProps> = props => {
   if (props.square) {
     classes.push("square")
   }
-  const styles: React.CSSProperties = {}
+  const styles: React.CSSProperties = { ...props.style }
   if (props.fontSize) {
     styles.fontSize = props.fontSize
   }

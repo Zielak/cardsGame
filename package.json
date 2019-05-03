@@ -13,6 +13,7 @@
     "build:client": "lerna run --stream --concurrency 1 --scope '*/client' build:dev",
     "build:client-w": "lerna run --stream --concurrency 1 --scope '*/client' build:watch",
     "build:examples": "lerna run --stream --concurrency 1 --scope '*/examples' build",
+    "build:utils": "lerna run --stream --concurrency 1 --scope '*/utils' build",
     "build:examples:client": "lerna run --stream --concurrency 1 --scope '*/examples' build:client:dev",
     "build:examples:client-w": "lerna run --stream --concurrency 1 --scope '*/examples' build:client:dev -- --watch",
     "build:examples:server": "lerna run --stream --concurrency 1 --scope '*/examples' build:server",

@@ -1,0 +1,11 @@
+aside.sidePanel {
+  position: absolute;
+  top: 2em;
+  width: 40vw;
+  right: 0;
+  transition: right 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  &.--collapsed {
+    right: -40vw;
+  }
+}

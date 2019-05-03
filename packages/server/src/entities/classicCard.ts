@@ -1,4 +1,4 @@
-import { Schema, type } from "@colyseus/schema"
+import { Schema, type, filter } from "@colyseus/schema"
 import { logs } from "../logs"
 import {
   IEntity,
@@ -16,6 +16,26 @@ import { IParent, canBeChild } from "./traits/parent"
 
 interface IClassicCard extends IEntity, ITwoSided {}
 
+/**
+ * Visibility filter
+ * @param my
+ * @param client
+ */
+export function faceDownOnlyOwner(
+  this: Schema & IClassicCard,
+  client: any,
+  value: any
+): boolean {
+  logs.log("faceDownOnlyOwner", this.name, ":", value)
+  // 1. To everyone only if it's faceUp
+  // 2. To owner, only if it's in his hands
+  return (
+    this.faceUp ||
+    (getOwner(this).clientID === (client as Client).id &&
+      getParentEntity(this).type === "hand")
+  )
+}
+
 @canBeChild
 export class ClassicCard extends Schema implements IClassicCard {
   // IEntity
@@ -30,8 +50,10 @@ export class ClassicCard extends Schema implements IClassicCard {
   @type("uint16")
   idx: number
 
+  @filter(faceDownOnlyOwner)
   @type("string")
   type = "classicCard"
+  @filter(faceDownOnlyOwner)
   @type("string")
   name: string
 
@@ -52,9 +74,11 @@ export class ClassicCard extends Schema implements IClassicCard {
   faceUp: boolean
 
   // My own props
+  @filter(faceDownOnlyOwner)
   @type("string")
   suit: string
 
+  @filter(faceDownOnlyOwner)
   @type("string")
   rank: string
 
@@ -74,21 +98,6 @@ export interface IClassicCardOptions extends IEntityOptions {
   suit: string
   rank: string
   faceUp: boolean
-}
-
-/**
- * Visibility filter
- * @param my
- * @param client
- */
-export const faceDownOnlyOwner = (my: IClassicCard, client: any): boolean => {
-  // 1. To everyone only if it's faceUp
-  // 2. To owner, only if it's in his hands
-  return (
-    my.faceUp ||
-    (getOwner(my).clientID === (client as Client).id &&
-      getParentEntity(my).type === "hand")
-  )
 }
 
 export const standardDeckFactory = (

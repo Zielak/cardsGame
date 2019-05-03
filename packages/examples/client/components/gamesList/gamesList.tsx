@@ -74,16 +74,14 @@ const GameSection = (props: GameSectionProps) => {
   ))
   return (
     <section>
-      <header>
-        {props.title}
-        <button
-          type="button"
-          className="join"
-          onClick={() => props.joinRoom(props.title)}
-        >
-          Join
-        </button>
-      </header>
+      <header>{props.title}</header>
+      <button
+        type="button"
+        className="join"
+        onClick={() => props.joinRoom(props.title)}
+      >
+        Join
+      </button>
       <ol>{rooms}</ol>
     </section>
   )
