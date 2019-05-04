@@ -1,5 +1,7 @@
-pre > .stateView {
-  max-height: 400px;
-  overflow: auto;
+.stateView {
   background: #f3f3f3;
+  &.stateView---root {
+    max-height: 400px;
+    overflow: auto;
+  }
 }

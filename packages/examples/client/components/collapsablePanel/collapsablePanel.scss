@@ -1,0 +1,17 @@
+.collapsablePanel {
+  margin: 0.5rem 0;
+  & > header {
+    h3 {
+      margin: 0.5rem;
+    }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #f5f5f5;
+  }
+
+  &.collapsablePanel--collapsed .collapsablePanel__content {
+    display: none;
+  }
+}

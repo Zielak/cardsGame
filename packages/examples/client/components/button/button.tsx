@@ -3,6 +3,7 @@ import "./button.scss"
 
 interface ButtonProps {
   onClick: () => void
+  disabled?: boolean
   noPadding?: boolean
   square?: boolean
   fontSize?: string
@@ -26,6 +27,7 @@ export const Button: FunctionComponent<ButtonProps> = props => {
   return (
     <button
       type="button"
+      disabled={props.disabled}
       onClick={() => props.onClick()}
       className={classes.join(" ")}
       style={styles}

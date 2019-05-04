@@ -7,6 +7,7 @@ import { StateView } from "./components/stateView/stateView"
 import { SidePanel } from "./components/sidePanel/sidePanel"
 import { GameView } from "./components/gameView/gameView"
 import { Button } from "./components/button/button"
+import { CollapsablePanel } from "./components/collapsablePanel/collapsablePanel"
 
 const game = new Game({
   viewElement: document.getElementById("view"),
@@ -66,20 +67,25 @@ export const App: FunctionComponent<IAppProps> = props => {
           <>
             <div>Commands:</div>
             <section className="flex">
-              <Button onClick={() => game.send({ data: "start" })}>
+              <Button
+                disabled={gameState.isGameStarted}
+                onClick={() => game.send({ data: "start" })}
+              >
                 Start game
               </Button>
             </section>
-            <pre>
-              <StateView data={gameState} />
-            </pre>
+            <CollapsablePanel name="State">
+              <StateView data={gameState} root />
+            </CollapsablePanel>
           </>
         )}
-        <GamesList
-          getAvailableRooms={game.getAvailableRooms.bind(game)}
-          joinRoom={game.joinRoom.bind(game)}
-          gameNames={game.gameNames}
-        />
+        <CollapsablePanel name="Games list" expandedDefault>
+          <GamesList
+            getAvailableRooms={game.getAvailableRooms.bind(game)}
+            joinRoom={game.joinRoom.bind(game)}
+            gameNames={game.gameNames}
+          />
+        </CollapsablePanel>
       </SidePanel>
     </>
   )

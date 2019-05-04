@@ -70,10 +70,10 @@ export const MakaoGameUI: FunctionComponent<MakaoGameUIProps> = props => {
     }
   }
   return (
-    <Fragment>
+    <div className="gameUI">
       <p>MakaoUI</p>
       {...children}
-    </Fragment>
+    </div>
   )
 }
 

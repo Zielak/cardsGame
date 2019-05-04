@@ -12,7 +12,7 @@ export const SidePanel: FunctionComponent = props => {
       <Button
         style={{
           lineHeight: 0.4,
-          position: "relative",
+          position: "absolute",
           left: "-1em"
         }}
         square={true}

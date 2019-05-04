@@ -46,7 +46,6 @@ export const GamesList: FunctionComponent<GamesListProps> = props => {
 
   return (
     <aside className="GamesList">
-      <h2>Games list</h2>
       {props.gameNames.map((gameName, idx) => {
         return (
           <GameSection
@@ -74,14 +73,16 @@ const GameSection = (props: GameSectionProps) => {
   ))
   return (
     <section>
-      <header>{props.title}</header>
-      <button
-        type="button"
-        className="join"
-        onClick={() => props.joinRoom(props.title)}
-      >
-        Join
-      </button>
+      <header>
+        <h3>{props.title}</h3>
+        <button
+          type="button"
+          className="join"
+          onClick={() => props.joinRoom(props.title)}
+        >
+          Join
+        </button>
+      </header>
       <ol>{rooms}</ol>
     </section>
   )

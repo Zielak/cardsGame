@@ -1,11 +1,71 @@
 .classicCard {
-  position: relative;
-}
-.classicCard__paper {
-  background: white;
-  border: 1px #b7b7b7 solid;
-  border-radius: 8px;
+  position: absolute;
 
-  width: 100%;
-  height: 100%;
+  &__paper {
+    background: white;
+    border: 1px #b7b7b7 solid;
+    border-radius: 0.3em;
+    box-sizing: border-box;
+
+    width: 100%;
+    height: 100%;
+  }
+
+  &__symbols {
+    box-sizing: border-box;
+    padding: 0.3em;
+
+    position: absolute;
+    top: 0;
+    width: 100%;
+
+    &--inverted {
+      position: absolute;
+      top: auto;
+      bottom: 0;
+      transform: rotate(180deg);
+    }
+  }
+
+  &__rank {
+    color: black;
+  }
+
+  &__suit {
+    font-size: 1.3em;
+    line-height: 0.5;
+    &--H {
+      background: -webkit-linear-gradient(#ff6666, #ff0000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    &--D {
+      background: -webkit-linear-gradient(#66ccff, #0066ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    &--C {
+      background: -webkit-linear-gradient(#33dd33, #00aa00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    &--S {
+      background: -webkit-linear-gradient(#666666, #000000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    // -webkit-background-clip: text;
+    // -webkit-text-fill-color: transparent;
+  }
+
+  &__back {
+    position: absolute;
+    top: 0.4em;
+    left: 0.4em;
+    bottom: 0.4em;
+    right: 0.4em;
+    background: #b0342f;
+    border-radius: 6px;
+  }
 }

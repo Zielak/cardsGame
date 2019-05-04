@@ -4,8 +4,13 @@
   }
 
   header {
-    font-size: 1.2rem;
-    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+      margin: 0;
+    }
     button.join {
       margin-left: 0.5em;
     }

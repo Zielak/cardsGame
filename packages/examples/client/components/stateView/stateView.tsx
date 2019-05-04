@@ -6,6 +6,7 @@ export interface StateViewProps {
   data: { [key: string]: any }
   indent?: boolean
   collapsable?: boolean
+  root?: boolean
 }
 export const StateView: FunctionComponent<StateViewProps> = props => {
   console.log("new StateView with data:", props.data)
@@ -25,8 +26,10 @@ export const StateView: FunctionComponent<StateViewProps> = props => {
     paddingLeft: props.indent ? "1em" : ""
   }
 
+  const classNames = ["stateView", props.root && "stateView---root"]
+
   return (
-    <div style={mainStyles} className="stateView">
+    <div style={mainStyles} className={classNames.join(" ")}>
       {entries.map(el => (
         <StateEntry
           indent={props.indent}
