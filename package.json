@@ -6,7 +6,8 @@
   "license": "ISC",
   "scripts": {
     "start": "echo nope",
-    "test": "jest -c=packages/server/jest.config.js",
+    "test": "echo 'okay for now'",
+    "test:backup": "jest -c=packages/server/jest.config.js",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
     "build:server": "lerna run --stream --concurrency 1 --scope '*/server' build",
     "build:server-w": "lerna run --stream --concurrency 1 --scope '*/server' build:watch",
