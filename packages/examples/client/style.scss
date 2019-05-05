@@ -1,7 +1,6 @@
 html,
 body {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
   height: 100%;
 }
 
@@ -20,6 +19,7 @@ section.flex {
 }
 
 .gameUI {
+  font-size: 16px;
   position: absolute;
   top: 0;
 }

@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState, CSSProperties } from "react"
 import "./classicCard.scss"
 import { cm2px } from "@cardsgame/utils"
-import { EntityViewProps, EntityWrapper } from "../entityWrapper"
+import { EntityViewProps, EntityWrapper } from "../entityWrapper/entityWrapper"
 
 interface ClassicCardProps extends EntityViewProps {
   faceUp: boolean

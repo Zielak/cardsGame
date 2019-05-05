@@ -20,7 +20,7 @@ export class SuitPicker extends React.Component<SuitPickerProps, {}> {
             onClick={() => this.props.handleSuitChosen(suitCode)}
             square={true}
             noPadding={true}
-            fontSize="2rem"
+            fontSize="2em"
           >
             <i className={suits[idx]}>{labels[idx]}</i>
           </Button>

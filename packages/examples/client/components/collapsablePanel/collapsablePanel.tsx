@@ -26,7 +26,7 @@ export const CollapsablePanel: FunctionComponent<
             lineHeight: 0.4
           }}
           square={true}
-          fontSize="1.4rem"
+          fontSize="1.4em"
           onClick={() => setExpanded(!expanded)}
         >
           {expanded ? "v" : "^"}

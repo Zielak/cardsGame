@@ -1,11 +1,12 @@
 import React, { FunctionComponent, useState } from "react"
+import "./parentWrapper.scss"
 import {
   CARD_WIDTH,
   CARD_HEIGHT,
   ClassicCardView
-} from "./classicCard/classicCard"
-import { Deck } from "./deck/deck"
-import "./parentWrapper.scss"
+} from "../classicCard/classicCard"
+import { Deck } from "../deck/deck"
+import { Hand } from "../hand/hand"
 
 interface ParentProps {
   parentData: { [key: string]: any }
@@ -22,6 +23,8 @@ const getChildren = state =>
           return <ClassicCardView key={"card" + childData.idx} {...childData} />
         case "deck":
           return <Deck key={"deck" + childData.idx} {...childData} />
+        case "hand":
+          return <Hand key={"hand" + childData.idx} {...childData} />
       }
     })
 

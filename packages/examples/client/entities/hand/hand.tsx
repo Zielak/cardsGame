@@ -3,11 +3,11 @@ import "./deck.scss"
 import { EntityWrapper, EntityViewProps } from "../entityWrapper/entityWrapper"
 import { ParentWrapper } from "../parentWrapper/parentWrapper"
 
-interface DeckProps extends EntityViewProps {}
+interface HandProps extends EntityViewProps {}
 
-export const Deck: FunctionComponent<DeckProps> = props => {
+export const Hand: FunctionComponent<HandProps> = props => {
   return (
-    <EntityWrapper className="deck" {...props}>
+    <EntityWrapper className="hand" {...props}>
       <ParentWrapper parentData={props} />
     </EntityWrapper>
   )

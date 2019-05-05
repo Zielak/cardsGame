@@ -1,13 +1,14 @@
 import React, { FunctionComponent, useState } from "react"
 import "./gameView.scss"
-import { ClassicCardView } from "../../entities/classicCard/classicCard"
-import { ParentWrapper } from "../../entities/parentWrapper"
+import { ParentWrapper } from "../../entities/parentWrapper/parentWrapper"
 
 interface GameViewProps {
   state: { [key: string]: any }
 }
 
 export const GameView: FunctionComponent<GameViewProps> = props => {
+  document.documentElement.style.setProperty("font-size", "1px")
+
   return (
     <section className="gameView">
       <ParentWrapper parentData={props.state}>

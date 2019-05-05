@@ -13,10 +13,10 @@ export const SidePanel: FunctionComponent = props => {
         style={{
           lineHeight: 0.4,
           position: "absolute",
-          left: "-1em"
+          left: "-1.5em"
         }}
         square={true}
-        fontSize="1.4rem"
+        fontSize="1.4em"
         onClick={() => setCollapsed(!collapsed)}
       >
         {collapsed ? "+" : "-"}

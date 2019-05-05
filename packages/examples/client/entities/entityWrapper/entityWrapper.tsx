@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react"
-import { CARD_WIDTH, CARD_HEIGHT } from "./classicCard/classicCard"
+import { CARD_WIDTH, CARD_HEIGHT } from "../classicCard/classicCard"
 
 export interface EntityViewProps {
   type?: string
@@ -16,18 +16,18 @@ interface EntityProps extends EntityViewProps {
 }
 
 export const EntityWrapper: FunctionComponent<EntityProps> = props => {
-  const translate = `translate(${props.x || 0}px, ${props.x || 0}px)`
+  const translate = `translate(${props.x || 0}rem, ${props.y || 0}rem)`
   const rotate = props.angle ? `rotate(${props.angle}deg)` : ""
 
   return (
     <div
       className={props.className}
       style={{
-        left: props.x + "px",
-        top: props.y + "px",
+        left: `${props.x}rem`,
+        top: `${props.y}rem`,
         transform: `${rotate}`,
-        width: props.width + "px",
-        height: props.height + "px"
+        width: `${props.width}rem`,
+        height: `${props.height}rem`
       }}
     >
       {props.children}
