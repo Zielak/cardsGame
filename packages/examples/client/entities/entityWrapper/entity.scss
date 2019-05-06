@@ -1,0 +1,24 @@
+.entity {
+  position: absolute;
+  &.entity--container {
+    &::before,
+    &::after {
+      background: black;
+      content: "";
+      position: absolute;
+    }
+
+    &::before {
+      top: 0;
+      left: -20rem;
+      width: 40rem;
+      height: 1px;
+    }
+    &::after {
+      left: 0;
+      top: -20rem;
+      height: 40rem;
+      width: 1px;
+    }
+  }
+}

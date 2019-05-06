@@ -7,7 +7,7 @@ interface DeckProps extends EntityViewProps {}
 
 export const Deck: FunctionComponent<DeckProps> = props => {
   return (
-    <EntityWrapper className="deck" {...props}>
+    <EntityWrapper className="deck entity--container" {...props}>
       <ParentWrapper parentData={props} />
     </EntityWrapper>
   )

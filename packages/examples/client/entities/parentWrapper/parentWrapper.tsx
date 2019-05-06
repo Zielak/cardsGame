@@ -29,5 +29,10 @@ const getChildren = state =>
     })
 
 export const ParentWrapper: FunctionComponent<ParentProps> = props => {
-  return <div className="parentWrapper">{...getChildren(props.parentData)}</div>
+  return (
+    <div className="parentWrapper">
+      {props.children}
+      {...getChildren(props.parentData)}
+    </div>
+  )
 }

@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useState } from "react"
-import { CARD_WIDTH, CARD_HEIGHT } from "../classicCard/classicCard"
+import React, { FunctionComponent } from "react"
+import "./entity.scss"
 
 export interface EntityViewProps {
   type?: string
@@ -21,7 +21,7 @@ export const EntityWrapper: FunctionComponent<EntityProps> = props => {
 
   return (
     <div
-      className={props.className}
+      className={`entity ${props.className}`}
       style={{
         left: `${props.x}rem`,
         top: `${props.y}rem`,
