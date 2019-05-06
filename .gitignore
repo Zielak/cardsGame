@@ -2,6 +2,7 @@ node_modules
 dist
 lib
 .cache
+coverage
 
 # TMP files
 .DS_Store
