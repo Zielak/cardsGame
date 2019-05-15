@@ -28,7 +28,7 @@ export const cm2px = (value: number) => value * 11.5
 export const px2cm = (value: number) => value / 11.5
 
 export const decimal = (value: number, maxZeroes: number = 2) => {
-  const pow = Math.pow(maxZeroes, 10)
+  const pow = Math.pow(10, maxZeroes)
 
   return Math.floor(value * pow) / pow
 }

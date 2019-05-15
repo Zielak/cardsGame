@@ -12,6 +12,7 @@ import {
   containsChildren
 } from "./entities/traits/parent"
 import { Player } from "./player"
+import { PlayerViewPosition } from "./playerViewPosition"
 
 @containsChildren
 export class State extends Schema implements IParent {
@@ -54,6 +55,9 @@ export class State extends Schema implements IParent {
 
   @type({ map: "string" })
   ui: StateUI = new MapSchema<string>()
+
+  @type(PlayerViewPosition)
+  playerViewPosition = new PlayerViewPosition()
 
   _lastID = -1
   _allEntities = new Map<number, IEntity>()

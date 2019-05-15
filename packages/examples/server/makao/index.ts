@@ -131,27 +131,25 @@ export class MakaoRoom extends Room<MakaoState> {
     }
 
     // Temp container for picking/ordering cards.
-    map2Array<Player>(state.players)
+    const hands = map2Array<Player>(state.players)
       // .map(data => state.getEntity(data.entityID))
-      .forEach((player: Player) => {
-        new Hand({
-          state,
-          y: -80,
-          name: "chosenCards"
-          // parent: player.id
-        })
-      })
-
-    // Hands of each player
-    const playersHands = map2Array<Player>(state.players).map(
-      (player: Player) =>
+      .map((player: Player) => [
         new Hand({
           state,
           autoSort: handSorting,
-          name: "playersHand"
-          // parent: player.id
+          name: "playersHand",
+          isInOwnersView: true
+        }),
+        new Hand({
+          state,
+          y: -80,
+          name: "chosenCards",
+          isInOwnersView: true
         })
-    )
+      ])
+
+    // Hands of each player
+    const playersHands = hands.map(e => e[0])
 
     new commands.ShuffleChildren(state.deck).execute(state)
     new commands.DealCards(state.deck, playersHands, 3).execute(state)

@@ -19,6 +19,7 @@ export class Pile extends Schema implements IEntity, IParent {
   id: EntityID
   parent: EntityID
   owner: Player
+  isInOwnersView: boolean
   isParent(): this is IParent {
     return true
   }

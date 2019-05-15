@@ -43,6 +43,7 @@ export class ClassicCard extends Schema implements IClassicCard {
   id: EntityID
   parent: EntityID
   owner: Player
+  isInOwnersView: boolean
   isParent(): this is IParent {
     return false
   }
@@ -50,10 +51,10 @@ export class ClassicCard extends Schema implements IClassicCard {
   @type("uint16")
   idx: number
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("string")
   type = "classicCard"
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("string")
   name: string
 

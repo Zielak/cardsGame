@@ -3,6 +3,7 @@ import { Player } from "../../player"
 import { EntityTransform } from "../../transform"
 import { IParent, addChild } from "./parent"
 import { IIdentity } from "./identity"
+import { def } from "@cardsgame/utils"
 
 export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
   // state && id
@@ -21,7 +22,7 @@ export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
   entity._worldTransform.on("update", () => updateTransform(entity))
   updateTransform(entity)
 
-  // parent
+  // Parent
   if (!options.parent) {
     // no parent = root as parent
     // entity.parent = 0
@@ -40,6 +41,10 @@ export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
     }
     addChild(newParent, entity)
   }
+
+  // Owner
+  entity.owner = def(options.owner, undefined)
+  entity.isInOwnersView = def(options.isInOwnersView, false)
 }
 
 export interface IEntity extends IIdentity {
@@ -49,6 +54,7 @@ export interface IEntity extends IIdentity {
   idx: number
   parent: EntityID
   owner: Player
+  isInOwnersView: boolean
 
   type: string
   name: string
@@ -90,6 +96,7 @@ export interface IEntityOptions {
   parent?: EntityID | IEntity
   idx?: number
   owner?: Player
+  isInOwnersView?: boolean
 }
 
 /**
