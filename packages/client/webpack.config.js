@@ -16,7 +16,7 @@ module.exports = env => {
       libraryTarget: "umd"
     },
     mode: env && env.development ? "development" : "production",
-    devtool: "source-map",
+    devtool: "inline-source-map",
     module: {
       rules: [
         {
