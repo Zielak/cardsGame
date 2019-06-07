@@ -7,3 +7,4 @@ export const isCardPicked: conditions.ICondition = (
 ) => {
   return state.cardPicked
 }
+isCardPicked._name = "isCardPicked"

@@ -17,9 +17,7 @@ export const isPlayersTurn: ICondition = (
   }
   logs.warn(
     "isPlayersTurn",
-    `It's not players ${event.player.clientID} turn. State says: ${
-      state.currentPlayerIdx
-    }`
+    `It's not players ${event.player.clientID} turn. State says: ${state.currentPlayerIdx}`
   )
   return false
 }

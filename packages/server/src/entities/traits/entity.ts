@@ -37,9 +37,7 @@ export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
         : options.parent
     if (!newParent.isParent()) {
       throw new Error(
-        `${
-          options.type
-        } constructor: given 'parent' is not really IParent (no 'children' property)`
+        `${options.type} constructor: given 'parent' is not really IParent (no 'children' property)`
       )
     }
     addChild(newParent, entity)
