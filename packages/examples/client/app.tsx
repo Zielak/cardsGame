@@ -1,99 +1,133 @@
 import { Game, Room } from "@cardsgame/client"
-import React, { FunctionComponent, useState, useEffect } from "react"
+import React, {
+  FunctionComponent,
+  useState,
+  useEffect,
+  createContext
+} from "react"
 import * as ReactDOM from "react-dom"
 import { GamesList } from "./components/gamesList/gamesList"
 import { MakaoGameUI } from "./games/makao/makao"
-import { StateView } from "./components/stateView/stateView"
 import { SidePanel } from "./components/sidePanel/sidePanel"
 import { GameView } from "./components/gameView/gameView"
 import { Button } from "./components/button/button"
 import { CollapsablePanel } from "./components/collapsablePanel/collapsablePanel"
+import { stateToJSON } from "./services/stateService"
 
-const game = new Game({
-  viewElement: document.getElementById("view"),
-  gameNames: ["Makao", "ContainerTest", "Splendor"]
-})
-game.room
+export const InteractionContext = createContext(
+  (event: any, idxPath: number[]) => {}
+)
 
 interface IAppProps {
-  gameRef: Game
+  // gameRef: Game
 }
 export interface IGameState {
+  childrenData?: any[]
+
   currentPlayerIdx?: number
   isGameStarted?: boolean
+
+  tableWidth?: number
+  tableHeight?: number
+
   ui?: { [key: string]: string }
 }
 
-export const App: FunctionComponent<IAppProps> = props => {
-  const [gameState, setGameState] = useState<IGameState>({})
-  const [room, setRoom] = useState(undefined)
-
-  const [currentGame, setCurrentGame] = useState("")
-
+const App: FunctionComponent<IAppProps> = props => {
+  const [game, setGame] = useState<Game>()
+  const [clientConnected, setClientConnected] = useState(false)
   useEffect(() => {
-    const joinedRoomHandler = (gameName: string) => {
-      console.info("joinedRoom")
-      setCurrentGame(gameName)
+    const game = new Game({
+      viewElement: document.getElementById("view"),
+      gameNames: ["ShuffleTest", "Makao", "ContainersTest", "Splendor"]
+    })
 
-      const room = props.gameRef.room
+    game.on(Game.events.clientOpen, () => {
+      console.log("Client connected.")
+      setClientConnected(true)
+      window["game"] = game
+    })
 
-      room.on(Room.events.stateChange, newState => {
-        setGameState({ ...newState })
-      })
-      room.on(Room.events.message, message => {})
-    }
-    props.gameRef.on(Game.events.joinedRoom, joinedRoomHandler)
-
-    setRoom(room)
-
-    return () => {
-      props.gameRef.off(Game.events.joinedRoom, joinedRoomHandler)
-    }
+    setGame(game)
   }, [])
 
-  const game = props.gameRef
+  const [currentGameName, setCurrentGameName] = useState("")
+
+  const [gameState, setGameState] = useState(undefined)
+
+  const handleStateChange = newState => {
+    const copy = stateToJSON(newState)
+
+    console.log("handleStateChange, copy:", copy)
+    setGameState(copy)
+  }
+
+  const handleMessage = message => {}
+
+  const requestJoinRoom = gameName => {
+    if (!clientConnected) {
+      console.warn(`You're not yet connected...`)
+      return
+    }
+    const room = game.joinRoom(gameName)
+
+    room.onJoin.addOnce(() => {
+      console.info("handleJoinedRoom")
+
+      room.onStateChange.add(handleStateChange)
+      room.onMessage.add(handleMessage)
+
+      setCurrentGameName(gameName)
+    })
+  }
+
+  const handleInteraction = (event, idxPath) => {
+    game.sendInteraction(event, idxPath)
+  }
 
   return (
     <>
-      <GameView state={gameState} />
+      {console.log("render")}
+      {gameState && (
+        <InteractionContext.Provider value={handleInteraction}>
+          <GameView gameState={gameState} />
+        </InteractionContext.Provider>
+      )}
 
-      {currentGame === "Makao" && (
+      {currentGameName === "Makao" && (
         <MakaoGameUI gameRef={game} gameState={gameState} />
       )}
 
-      <SidePanel>
-        {!currentGame && <h3>Join some game!</h3>}
-        {currentGame && (
-          <>
-            <div>Commands:</div>
-            <section className="flex">
-              <Button
-                disabled={gameState.isGameStarted}
-                onClick={() => game.send({ data: "start" })}
-              >
-                Start game
-              </Button>
-            </section>
-            <CollapsablePanel name="State">
-              <StateView data={gameState} root />
-            </CollapsablePanel>
-          </>
-        )}
-        <CollapsablePanel name="Games list" expandedDefault>
-          <GamesList
-            getAvailableRooms={game.getAvailableRooms.bind(game)}
-            joinRoom={game.joinRoom.bind(game)}
-            gameNames={game.gameNames}
-          />
-        </CollapsablePanel>
-      </SidePanel>
+      {clientConnected && (
+        <SidePanel>
+          {!currentGameName && <h3>Join some game!</h3>}
+          {gameState && (
+            <>
+              <div>Commands:</div>
+              <section className="flex">
+                <Button
+                  disabled={gameState.isGameStarted}
+                  onClick={() => game.send({ data: "start" })}
+                >
+                  Start game
+                </Button>
+              </section>
+              {/* <CollapsablePanel name="State">
+                <StateView data={gameState} root />
+              </CollapsablePanel> */}
+            </>
+          )}
+          <CollapsablePanel name="Games list" expandedDefault>
+            <GamesList
+              getAvailableRooms={game.getAvailableRooms.bind(game)}
+              joinRoom={requestJoinRoom}
+              gameNames={game.gameNames}
+            />
+          </CollapsablePanel>
+        </SidePanel>
+      )}
     </>
   )
 }
 
-game.on(Game.events.clientOpen, () => {
-  const element = <App gameRef={game} />
-  ReactDOM.render(element, document.getElementById("root"))
-})
-
-window["game"] = game
+ReactDOM.render(<App />, document.getElementById("root"))

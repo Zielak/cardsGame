@@ -3,7 +3,11 @@ import {
   ServerPlayerEvent,
   State,
   commands as cmd,
-  logs
+  find,
+  getTop,
+  IParent,
+  IEntity,
+  getParentEntity
 } from "@cardsgame/server"
 
 import { isCardPicked } from "../conditions/isCardPicked"
@@ -13,11 +17,13 @@ export const MoveCards: ActionTemplate = {
   name: "MoveCard",
   getCommands: (state: State, event: ServerPlayerEvent) => {
     // Get container from targets
-    const targetContainer = event.entities.find(el => el.isContainer)
-    const entity = state.entities.findByName("middle").top
+    const targetContainer = event.entity.isParent()
+      ? event.entity
+      : getParentEntity(event.entity)
+    const entity = getTop<IEntity>(find<IParent>(state, { name: "middle" }))
 
     return new cmd.CompositeCommand([
-      new cmd.ChangeParent(entity, entity.parentEntity, targetContainer),
+      new cmd.ChangeParent(entity, getParentEntity(entity), targetContainer),
       new ChangeCardPickedState(false)
     ])
   },

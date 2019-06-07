@@ -8,35 +8,35 @@ import {
 export class Card extends BaseCard {
   type = "card"
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("uint8")
   level: number
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("uint8")
   costD: number // White
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("uint8")
   costS: number // Blue
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("uint8")
   costE: number // Green
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("uint8")
   costR: number // Red
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("uint8")
   costO: number // Black
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("uint8")
   gem: Gems
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("uint8")
   vp: number
 

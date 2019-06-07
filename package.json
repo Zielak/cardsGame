@@ -18,7 +18,7 @@
     "build:examples:client": "lerna run --stream --concurrency 1 --scope '*/examples' build:client:dev",
     "build:examples:client-w": "lerna run --stream --concurrency 1 --scope '*/examples' build:client:dev -- --watch",
     "build:examples:server": "lerna run --stream --concurrency 1 --scope '*/examples' build:server",
-    "build:examples:server-w": "lerna run --stream --concurrency 1 --scope '*/examples' build:server -- -- --watch",
+    "build:examples:server-w": "lerna run --stream --concurrency 1 --scope '*/examples' build:server-w",
     "examples:client": "lerna run --stream --concurrency 1 --scope '*/examples' client",
     "examples:server": "lerna run --stream --concurrency 1 --scope '*/examples' server",
     "preversion": "npm ci && npm run test"

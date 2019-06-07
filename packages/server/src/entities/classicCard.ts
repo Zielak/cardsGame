@@ -75,11 +75,11 @@ export class ClassicCard extends Schema implements IClassicCard {
   faceUp: boolean
 
   // My own props
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("string")
   suit: string
 
-  @filter(faceDownOnlyOwner)
+  // @filter(faceDownOnlyOwner)
   @type("string")
   rank: string
 

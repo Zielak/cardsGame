@@ -13,6 +13,7 @@ import {
 } from "./entities/traits/parent"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
+import { hasChildren } from "./conditions"
 
 @containsChildren
 export class State extends Schema implements IParent {
@@ -134,7 +135,7 @@ export class State extends Schema implements IParent {
           `getEntitiesAlongPath: This entity doesn't have such child.`
         )
       }
-      if (remainingPath.length > 0 && !newChild["_children"]) {
+      if (remainingPath.length > 0 && !hasChildren(newChild)) {
         throw new Error(
           `getEntitiesAlongPath: Path inaccessible, entity doesn't have any children. Stopped at [${path}].`
         )
@@ -159,8 +160,8 @@ export class State extends Schema implements IParent {
       getChildren(parent).map((child, idx, entities) => {
         if (
           // getParentEntity(child).isContainer && // Parent HAS to be a container...
-          entities.length > 5 &&
-          idx < entities.length - 5
+          entities.length > 60 &&
+          idx < entities.length - 60
         ) {
           // That's too much, man!
           if (idx === 0) {

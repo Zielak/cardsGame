@@ -1,5 +1,4 @@
 import * as colyseus from "colyseus.js"
-import { Room } from "./room"
 import { logs } from "./logs"
 import { EventEmitter } from "eventemitter3"
 import { RoomAvailable } from "colyseus.js/lib/Room"
@@ -16,7 +15,7 @@ interface IGameOptions {
  */
 export class Game extends EventEmitter {
   client: colyseus.Client
-  room: Room
+  room: colyseus.Room
 
   gameNames: string[]
   viewElement: HTMLElement
@@ -50,60 +49,12 @@ export class Game extends EventEmitter {
 
   joinRoom(gameName: string) {
     if (this.room) {
-      this.room.destroy()
+      this.room.leave()
     }
     // this.app.destroy()
 
-    const gameRoom = this.client.join(gameName)
-    this.room = new Room(gameRoom)
-
-    this.room.once(Room.events.join, () =>
-      this.emit(Game.events.joinedRoom, gameName)
-    )
-  }
-
-  /**
-   * @deprecated
-   */
-  prepareRenderingApp() {
-    // this.gameRoom.on(Room.events.clientJoined, (data: string) => {})
-    // this.gameRoom.on(Room.events.clientLeft, (data: string) => {})
-    // this.room.on(Room.events.playerAdded, (data: PlayerData) => {
-    //   this.app.emit(Room.events.playerAdded, data)
-    // })
-    // this.room.on(Room.events.playerRemoved, (data: PlayerData) => {
-    //   this.app.emit(Room.events.playerRemoved, data)
-    // })
-    // this.room.on(EntityEvents.childRemoved, this.app.removeChild.bind(this.app))
-    // this.room.on(EntityEvents.childAdded, this.app.addChild.bind(this.app))
-    // publicAttributes.forEach(propName => {
-    //   this.room.on(
-    //     `child.attribute.${propName}`,
-    //     this.app.attributeChange.bind(this.app)
-    //   )
-    // })
-    // const privateAttributes = [
-    //   "visibleToClient",
-    //   "selected",
-    //   "suit",
-    //   "rank",
-    //   "name"
-    // ]
-    // privateAttributes.forEach(propName => {
-    //   this.room.on(
-    //     `visibility.${propName}`,
-    //     this.app.visibilityChange.bind(this.app)
-    //   )
-    // })
-    // -------
-    // this.on("click", (event: app.ClickEvent) => {
-    //   const playerEvent: PlayerEvent = {
-    //     command: "EntityInteraction",
-    //     event: event.type,
-    //     entityPath: event.targetEntity.idxPath
-    //   }
-    //   this.room.send(playerEvent)
-    // })
+    this.room = this.client.join(gameName)
+    return this.room
   }
 
   getAvailableRooms(gameName: string): Promise<RoomAvailable[]> {
@@ -114,6 +65,15 @@ export class Game extends EventEmitter {
     })
   }
 
+  sendInteraction(event, entityIdxPath: number[]) {
+    const playerEvent: PlayerEvent = {
+      command: "EntityInteraction",
+      event: event.type,
+      entityPath: entityIdxPath
+    }
+    this.room.send(playerEvent)
+  }
+
   send(event: PlayerEvent) {
     this.room.send(event)
   }
@@ -122,7 +82,7 @@ export class Game extends EventEmitter {
     this.client.close()
 
     if (this.room) {
-      this.room.destroy()
+      this.room.leave()
       this.room = null
     }
   }

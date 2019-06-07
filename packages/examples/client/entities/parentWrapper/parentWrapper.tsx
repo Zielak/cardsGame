@@ -1,23 +1,42 @@
-import React, { FunctionComponent, useState } from "react"
+import React, { FunctionComponent } from "react"
 import "./parentWrapper.scss"
-import {
-  CARD_WIDTH,
-  CARD_HEIGHT,
-  ClassicCardView
-} from "../classicCard/classicCard"
+import { ClassicCardView } from "../classicCard/classicCard"
 import { Deck } from "../deck/deck"
 import { Hand } from "../hand/hand"
+import { Pile } from "../pile/pile"
 
-interface ParentProps {
-  parentData: { [key: string]: any }
+export interface ParentWrapperProps {
+  data: any
 }
 
-const getChildren = state =>
-  ["childrenClassicCard", "childrenPile", "childrenDeck", "childrenHand"]
-    .filter(key => state[key] && state[key].length > 0)
-    .reduce((prev, key) => prev.concat(state[key]), [])
+export const containersParents = [
+  "childrenPile",
+  "childrenDeck",
+  "childrenHand"
+]
+export const containersChildren = ["childrenClassicCard"]
+
+const ParentWrapper: FunctionComponent<ParentWrapperProps> = props => {
+  return (
+    <div className="parentWrapper">
+      {props.children}
+      {...getChildren(props.data.children, props.data.idxPath, "")}
+    </div>
+  )
+}
+
+export { ParentWrapper }
+
+const getChildren = (children = [], idxPath = [], thisName = "") => {
+  console.log(`\t\t${thisName}.RENDER()`, children)
+
+  return [...children]
     .sort((a, b) => a.idx - b.idx)
     .map(childData => {
+      childData.idxPath = [...idxPath, childData.idx]
+      return childData
+    })
+    .map((childData, idx) => {
       switch (childData.type) {
         case "classicCard":
           return <ClassicCardView key={"card" + childData.idx} {...childData} />
@@ -25,14 +44,12 @@ const getChildren = state =>
           return <Deck key={"deck" + childData.idx} {...childData} />
         case "hand":
           return <Hand key={"hand" + childData.idx} {...childData} />
+        case "pile":
+          return <Pile key={"pile" + childData.idx} {...childData} />
+        default:
+          return (
+            <p key={"default" + idx}>Whoops: {JSON.stringify(childData)}</p>
+          )
       }
     })
-
-export const ParentWrapper: FunctionComponent<ParentProps> = props => {
-  return (
-    <div className="parentWrapper">
-      {props.children}
-      {...getChildren(props.parentData)}
-    </div>
-  )
 }

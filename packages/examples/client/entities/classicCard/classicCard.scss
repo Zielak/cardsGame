@@ -1,6 +1,4 @@
 .classicCard {
-  position: absolute;
-
   &__paper {
     background: white;
     border: 1px #b7b7b7 solid;
@@ -14,6 +12,7 @@
   &__symbols {
     box-sizing: border-box;
     padding: 6rem;
+    font-size: 20px;
 
     position: absolute;
     top: 0;
@@ -32,7 +31,7 @@
   }
 
   &__suit {
-    font-size: 8rem;
+    font-size: 1.3em;
     line-height: 0.5;
     &--H {
       background: -webkit-linear-gradient(#ff6666, #ff0000);
@@ -54,9 +53,6 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
-    // -webkit-background-clip: text;
-    // -webkit-text-fill-color: transparent;
   }
 
   &__back {

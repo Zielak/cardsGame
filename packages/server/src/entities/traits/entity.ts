@@ -9,6 +9,9 @@ export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
   // state && id
   entity._state = options.state
   entity.id = entity._state.registerEntity(entity)
+  if (options.name) {
+    entity.name = options.name
+  }
 
   // Transforms
   entity._localTransform = new EntityTransform(
@@ -130,7 +133,7 @@ export function getIdxPath(entity: IEntity): number[] {
  * target of any interaction
  */
 export function isInteractive(entity: IEntity) {
-  const parent = getParentEntity(entity)
+  const parent = getParentEntity(entity) || entity._state
   if (parent.hijacksInteractionTarget) {
     return false
   }

@@ -1,7 +1,7 @@
 import { ContainersTestState } from "../state"
-import { ICondition, ServerPlayerEvent } from "@cardsgame/server"
+import { ServerPlayerEvent, conditions } from "@cardsgame/server"
 
-export const isCardPicked: ICondition = (
+export const isCardPicked: conditions.ICondition = (
   state: ContainersTestState,
   event: ServerPlayerEvent
 ) => {

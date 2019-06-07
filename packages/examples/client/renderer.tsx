@@ -1,3 +1,5 @@
+// TODO: This is PIXI thing, remove it
+
 import * as pixi from "pixi.js"
 import React, {
   FunctionComponent,

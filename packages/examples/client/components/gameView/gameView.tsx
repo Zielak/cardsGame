@@ -1,23 +1,25 @@
-import React, { FunctionComponent, useState } from "react"
+import React, { FunctionComponent } from "react"
+
 import "./gameView.scss"
 import { ParentWrapper } from "../../entities/parentWrapper/parentWrapper"
 import { Table } from "../../entities/table/table"
+import { IGameState } from "../../app"
 
 interface GameViewProps {
-  state: { [key: string]: any }
+  gameState: IGameState
 }
 
-export const GameView: FunctionComponent<GameViewProps> = props => {
-  document.documentElement.style.setProperty("font-size", "1px")
-
+const GameView: FunctionComponent<GameViewProps> = props => {
   return (
     <section className="gameView">
-      <ParentWrapper parentData={props.state}>
+      <ParentWrapper data={props.gameState}>
         <Table
-          width={props.state.tableWidth}
-          height={props.state.tableHeight}
+          width={props.gameState.tableWidth}
+          height={props.gameState.tableHeight}
         />
       </ParentWrapper>
     </section>
   )
 }
+
+export { GameView }

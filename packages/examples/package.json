@@ -18,7 +18,8 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "parcel build client/index.html --detailed-report --out-dir dist/client",
     "build:client:dev": "parcel build client/index.html --detailed-report --no-minify --out-dir dist/client",
-    "build:server": "tsc -b server"
+    "build:server": "tsc -b server",
+    "build:server-w": "tsc -b server --watch"
   },
   "dependencies": {
     "@cardsgame/client": "file:../client",

@@ -1,5 +1,6 @@
 .entity {
   position: absolute;
+
   &.entity--container {
     &::before,
     &::after {
@@ -13,12 +14,14 @@
       left: -20rem;
       width: 40rem;
       height: 1px;
+      z-index: 1;
     }
     &::after {
       left: 0;
       top: -20rem;
       height: 40rem;
       width: 1px;
+      z-index: 1;
     }
   }
 }

@@ -4,7 +4,10 @@ import {
   commands as cmd,
   ServerPlayerEvent,
   State,
-  logs
+  getTop,
+  IEntity,
+  getParentEntity,
+  find
 } from "@cardsgame/server"
 
 import { isCardPicked } from "../conditions/isCardPicked"
@@ -19,15 +22,15 @@ export const PickCard: ActionTemplate = {
   ],
   getConditions: () => [con.NOT(isCardPicked)],
   getCommands: (state: State, event: ServerPlayerEvent) => {
-    const targetEntity = event.entity.isContainer
-      ? event.entity.top
+    const targetEntity = event.entity.isParent()
+      ? getTop<IEntity>(event.entity)
       : event.entity
 
     return new cmd.CompositeCommand([
       new cmd.ChangeParent(
         targetEntity,
-        targetEntity.parentEntity,
-        state.entities.findByName("middle")
+        getParentEntity(targetEntity),
+        find(state, { name: "middle" })
       ),
       new ChangeCardPickedState(true)
     ])

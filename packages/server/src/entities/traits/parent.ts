@@ -1,8 +1,7 @@
+import { type, ArraySchema } from "@colyseus/schema"
 import { IEntity, getParentEntity, resetWorldTransform } from "./entity"
 import { logs } from "../../logs"
 import { EntityTransformData } from "../../transform"
-import { type, ArraySchema } from "@colyseus/schema"
-import chalk from "chalk"
 import { Player } from "../../player"
 import { IIdentity } from "./identity"
 
@@ -336,8 +335,8 @@ const queryRunner = (props: QuerableProps) => (entity: IEntity | IParent) => {
 }
 
 interface QueryOptions {
-  deep: boolean
-  one: boolean
+  deep?: boolean
+  one?: boolean
 }
 
 interface QuerableProps {
@@ -356,7 +355,7 @@ interface QuerableProps {
 export function findAll<T extends IEntity>(
   parent: IParent,
   props: QuerableProps,
-  options?: QueryOptions
+  options: QueryOptions = {}
 ): T[] {
   const result = (options.deep
     ? getDescendants<T>(parent)
@@ -373,7 +372,7 @@ export function findAll<T extends IEntity>(
 export function find<T extends IEntity | IParent>(
   parent: IParent,
   props: QuerableProps,
-  options?: QueryOptions
+  options: QueryOptions = {}
 ): T {
   const result = (options.deep
     ? getDescendants<T>(parent)

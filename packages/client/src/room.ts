@@ -6,7 +6,7 @@ import { EntityData } from "./types"
 export class Room extends EventEmitter {
   childrenListeners = []
 
-  constructor(private room: colyseus.Room) {
+  constructor(public room: colyseus.Room) {
     super()
 
     room.onMessage.add((message: ServerMessage) => {

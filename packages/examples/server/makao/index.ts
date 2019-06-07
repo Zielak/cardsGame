@@ -152,7 +152,7 @@ export class MakaoRoom extends Room<MakaoState> {
     const playersHands = hands.map(e => e[0])
 
     new commands.ShuffleChildren(state.deck).execute(state)
-    new commands.DealCards(state.deck, playersHands, 3).execute(state)
+    new commands.DealCards(state.deck, playersHands, 5).execute(state)
     new commands.ChangeParent(
       getTop<IEntity>(state.deck),
       state.deck,

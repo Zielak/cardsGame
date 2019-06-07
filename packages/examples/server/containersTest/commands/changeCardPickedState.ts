@@ -1,7 +1,7 @@
-import { ICommand } from "@cardsgame/server"
+import { commands } from "@cardsgame/server"
 import { ContainersTestState } from "../state"
 
-export class ChangeCardPickedState implements ICommand {
+export class ChangeCardPickedState implements commands.ICommand {
   lastValue: boolean
 
   constructor(private value: boolean) {}

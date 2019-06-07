@@ -1,9 +1,9 @@
-import React, { FunctionComponent, useState, CSSProperties } from "react"
+import React, { FunctionComponent } from "react"
 import "./classicCard.scss"
 import { cm2px } from "@cardsgame/utils"
-import { EntityViewProps, EntityWrapper } from "../entityWrapper/entityWrapper"
+import { EntityProps, EntityWrapper } from "../entityWrapper/entityWrapper"
 
-interface ClassicCardProps extends EntityViewProps {
+export interface ClassicCardProps extends EntityProps {
   faceUp: boolean
   suit: string
   rank: string
@@ -12,10 +12,10 @@ interface ClassicCardProps extends EntityViewProps {
 export const CARD_WIDTH = cm2px(6.35)
 export const CARD_HEIGHT = cm2px(8.89)
 
-export const ClassicCardView: FunctionComponent<ClassicCardProps> = props => {
+const ClassicCardView: FunctionComponent<ClassicCardProps> = props => {
   return (
     <EntityWrapper
-      className="classicCard"
+      className="classicCard entity--object"
       {...{
         ...props,
         width: CARD_WIDTH,
@@ -53,6 +53,8 @@ export const ClassicCardView: FunctionComponent<ClassicCardProps> = props => {
     </EntityWrapper>
   )
 }
+
+export { ClassicCardView }
 
 const getRankText = (rank: string): string => {
   return rank

@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState, useEffect, Fragment } from "react"
 import { Button } from "../button/button"
-import { def, decimal } from "@cardsgame/utils"
+import { decimal } from "@cardsgame/utils"
 import { StateView } from "./stateView"
 
 export interface IStateEntryProps {
@@ -47,19 +47,21 @@ export const StateEntry: FunctionComponent<IStateEntryProps> = props => {
     if (typeof obj === "number") return printAsNumber(obj)
     if (typeof obj === "object" && Array.isArray(obj)) return printAsArray(obj)
 
-    // Eentity-like element?
+    // Entity-like element?
     if (obj.type && obj.name) {
       data[`[${obj.idx}]`] = `${obj.name}:${obj.type}`
     }
 
     if (obj.type === "classicCard") {
+      data.name = obj.name
       data.faceUp = obj.faceUp
-      // data.rank = obj.rank
-      // data.suit = obj.suit
     }
     // Position
     if ("x" in obj) {
-      data.pos = `${decimal(obj.x)}, ${decimal(obj.y)}, ${decimal(obj.angle)}°`
+      data.pos = `${decimal(obj.x, 1)}, ${decimal(obj.y, 1)}, ${decimal(
+        obj.angle,
+        0
+      )}°`
     }
 
     // Player

@@ -6,7 +6,7 @@ interface TableProps {
   height: number
 }
 
-export const Table: FunctionComponent<TableProps> = props => {
+const Table: FunctionComponent<TableProps> = props => {
   const styles: CSSProperties = {
     width: props.width + "rem",
     height: props.height + "rem",
@@ -15,3 +15,5 @@ export const Table: FunctionComponent<TableProps> = props => {
   }
   return <div className="table" style={styles} />
 }
+
+export { Table }

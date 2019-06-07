@@ -36,6 +36,6 @@ export class ShuffleChildren implements ICommand {
 
       restyleChildren(this.container)
     }
-    state.logTreeState()
+    // state.logTreeState()
   }
 }

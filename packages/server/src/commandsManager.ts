@@ -178,7 +178,8 @@ export class CommandsManager {
       this.actionPending = false
       logs.error(
         "parseAction",
-        `command "${this.currentCommand.constructor.name}" FAILED to execute`,
+        `command "${this.currentCommand &&
+          this.currentCommand.constructor.name}" FAILED to execute`,
         error
       )
     }

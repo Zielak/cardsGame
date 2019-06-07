@@ -2,7 +2,6 @@ import {
   Room,
   Hand,
   State,
-  Container,
   Pile,
   Deck,
   ClassicCard,
@@ -21,15 +20,22 @@ export class ContainersTest extends Room<ContainersTestState> {
   possibleActions = new Set<ActionTemplate>([PickCard, MoveCards])
 
   // Some aliases for main game containers
-  container: Container
+  middle: Hand
   pile: Pile
   deck: Deck
   hand: Hand
 
-  onSetupGame(state: ContainersTestState) {
-    state.cardPicked = false
+  onSetupGame(options: any = {}) {
+    this.setState(
+      new ContainersTestState({
+        minClients: options.minClients || 1,
+        maxClients: options.maxClients || 4,
+        hostID: options.hostID
+      })
+    )
+    const { state } = this
 
-    this.container = new Container({
+    this.middle = new Hand({
       state,
       name: "middle"
     })
