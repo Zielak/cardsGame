@@ -93,6 +93,27 @@ export class ClassicCard extends Schema implements IClassicCard {
 
     EntityConstructor(this, options)
   }
+
+  clone() {
+    return new ClassicCard({
+      state: this._state,
+      type: this.type,
+      name: this.name,
+      width: this.width,
+      height: this.height,
+      x: this.x,
+      y: this.y,
+      angle: this.angle,
+      parent: this.parent,
+      idx: this.idx,
+      owner: this.owner,
+      isInOwnersView: this.isInOwnersView,
+
+      suit: this.suit,
+      rank: this.rank,
+      faceUp: this.faceUp
+    })
+  }
 }
 
 export interface IClassicCardOptions extends IEntityOptions {

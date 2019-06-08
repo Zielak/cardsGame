@@ -1,6 +1,6 @@
-import { float } from "@cardsgame/utils"
-import { IEntityOptions, IEntity, EntityConstructor } from "./traits/entity"
+import { randomFloat } from "@cardsgame/utils"
 import { Schema, type } from "@colyseus/schema"
+import { IEntityOptions, IEntity, EntityConstructor } from "./traits/entity"
 import {
   IParent,
   containsChildren,
@@ -8,7 +8,7 @@ import {
   canBeChild
 } from "./traits/parent"
 import { State } from "../state"
-import { EntityTransformData } from "../transform"
+import { EntityTransform } from "../transform"
 import { Player } from "../player"
 
 @canBeChild
@@ -49,7 +49,7 @@ export class Pile extends Schema implements IEntity, IParent {
   hijacksInteractionTarget = true
 
   // Pile's own props
-  cardsData = new Array<EntityTransformData>()
+  cardsData = new Array<EntityTransform>()
   limits: PileVisualLimits
 
   constructor(options: IPileOptions) {
@@ -72,8 +72,7 @@ export class Pile extends Schema implements IEntity, IParent {
   }
 
   restyleChild(child: IEntity) {
-    const { x, y, angle } = this.cardsData[child.idx] || DEFAULT_CARDS_DATA
-    return { x, y, angle, test: "a" }
+    return this.cardsData[child.idx] || new EntityTransform()
   }
 
   onChildAdded() {
@@ -82,25 +81,41 @@ export class Pile extends Schema implements IEntity, IParent {
   onChildRemoved(idx: number) {
     this.cardsData = this.cardsData.filter((_, i) => i !== idx)
   }
+
+  clone() {
+    const clone = new Pile({
+      state: this._state,
+      type: this.type,
+      name: this.name,
+      width: this.width,
+      height: this.height,
+      x: this.x,
+      y: this.y,
+      angle: this.angle,
+      parent: this.parent,
+      idx: this.idx,
+      owner: this.owner,
+      isInOwnersView: this.isInOwnersView
+    })
+
+    clone.cardsData = [...this.cardsData.map(e => e.clone())]
+
+    return clone
+  }
 }
 
 export interface IPileOptions extends IEntityOptions {
   limits?: PileVisualLimits
 }
 
-const cardsDataFactory = (limits): EntityTransformData => {
-  return {
-    x: float(limits.minX, limits.maxX),
-    y: float(limits.minY, limits.maxY),
-    angle: float(limits.minAngle, limits.maxAngle)
-  }
-}
+const cardsDataFactory = (limits): EntityTransform =>
+  new EntityTransform(
+    randomFloat(limits.minX, limits.maxX),
+    randomFloat(limits.minY, limits.maxY),
+    randomFloat(limits.minAngle, limits.maxAngle)
+  )
 
-const DEFAULT_CARDS_DATA: EntityTransformData = {
-  x: 0,
-  y: 0,
-  angle: 0
-}
+// const DEFAULT_CARDS_DATA = Object.freeze(new EntityTransform())
 
 interface PileVisualLimits {
   minAngle: number

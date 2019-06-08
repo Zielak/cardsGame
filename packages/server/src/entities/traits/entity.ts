@@ -66,6 +66,8 @@ export interface IEntity extends IIdentity {
   width?: number
   height?: number
 
+  clone: () => IEntity
+
   // Private stuff, author shouldn't be care about these,
   // entityConstructor() should take care of initing them
 

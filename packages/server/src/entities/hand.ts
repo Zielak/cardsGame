@@ -13,7 +13,7 @@ import {
   canBeChild
 } from "./traits/parent"
 import { State } from "../state"
-import { EntityTransformData } from "../transform"
+import { EntityTransform } from "../transform"
 import { Player } from "../player"
 
 @canBeChild
@@ -64,6 +64,25 @@ export class Hand extends Schema implements IEntity, IParent {
     this.autoSort = def(options.autoSort, () => -1)
   }
 
+  clone() {
+    return new Hand({
+      state: this._state,
+      type: this.type,
+      name: this.name,
+      width: this.width,
+      height: this.height,
+      x: this.x,
+      y: this.y,
+      angle: this.angle,
+      parent: this.parent,
+      idx: this.idx,
+      owner: this.owner,
+      isInOwnersView: this.isInOwnersView,
+
+      autoSort: this.autoSort
+    })
+  }
+
   onChildAdded(child: IEntity) {
     const count = countChildren(this)
     logs.info(`Hand.autoSort`, `0..${count}`)
@@ -85,7 +104,7 @@ export class Hand extends Schema implements IEntity, IParent {
     child: IEntity,
     idx: number,
     children: IEntity[]
-  ): EntityTransformData {
+  ): EntityTransform {
     const max = children.length
     const maxSpread = 8
 
@@ -120,11 +139,11 @@ export class Hand extends Schema implements IEntity, IParent {
     const point = b.get(perc)
     const n = b.normal(perc)
 
-    return {
-      x: point.x * 10,
-      y: point.y * 10,
-      angle: (Math.atan2(n.y, n.x) * 180) / Math.PI + 270
-    }
+    return new EntityTransform(
+      point.x * 10,
+      point.y * 10,
+      (Math.atan2(n.y, n.x) * 180) / Math.PI + 270
+    )
   }
 }
 

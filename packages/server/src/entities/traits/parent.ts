@@ -1,7 +1,7 @@
 import { type, ArraySchema } from "@colyseus/schema"
 import { IEntity, getParentEntity, resetWorldTransform } from "./entity"
 import { logs } from "../../logs"
-import { EntityTransformData } from "../../transform"
+import { EntityTransform } from "../../transform"
 import { Player } from "../../player"
 import { IIdentity } from "./identity"
 
@@ -47,12 +47,11 @@ export interface IParent extends IIdentity {
   hijacksInteractionTarget: boolean
   isParent(): this is IParent
 
-  // FIXME: TS doesn't enforce return type of EntityTransformData
   restyleChild?: (
     child: IEntity,
     idx: number,
     array: IEntity[]
-  ) => EntityTransformData
+  ) => EntityTransform
 
   onChildAdded?(child: IEntity): void
   onChildRemoved?(idx: number): void
@@ -239,6 +238,11 @@ export function moveChildTo(parent: IParent, from: number, to: number) {
 }
 
 export function restyleChildren(parent: IParent) {
+  /**
+   * TODO: Maybe instead of re-creating EntityTransform for each child
+   * I could create EntityTransform ONCE, keep updating x/y/angle
+   * and then push the values to Entities.
+   */
   if (!parent.restyleChild) return
   getChildren(parent).forEach(
     (child: IEntity, idx: number, array: IEntity[]) => {

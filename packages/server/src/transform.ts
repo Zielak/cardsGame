@@ -1,11 +1,5 @@
 import { EventEmitter } from "eventemitter3"
 
-export type EntityTransformData = {
-  x: number
-  y: number
-  angle: number
-}
-
 export class EntityTransform extends EventEmitter {
   private _x: number
   private _y: number
@@ -16,6 +10,10 @@ export class EntityTransform extends EventEmitter {
     this._x = x
     this._y = y
     this._angle = angle
+  }
+
+  clone() {
+    return new EntityTransform(this.x, this.y, this.angle)
   }
 
   get x() {

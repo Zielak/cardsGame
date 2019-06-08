@@ -9,7 +9,6 @@ interface IGameOptions {
 }
 
 /**
- * Renderer
  * Get events from the game and put everything on the screen.
  * Provide an interface for the players: play area, settings and others
  */

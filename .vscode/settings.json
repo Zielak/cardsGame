@@ -6,7 +6,6 @@
   },
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.exclude": {
-    ".vscode": true,
     "**/.cache": true,
     "**/dist": true,
     "**/lib": true,

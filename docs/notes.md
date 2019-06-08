@@ -1,23 +1,9 @@
 # notes
 
-- ♥ kier - hearts
-- ♠ pik - spades
-- ♦ karo - diamonds
-- ♣ trefl - clubs
-
-## Installing
-
-```
-lerna exec npm install
-lerna bootstrap
-```
-
-And then run some code watchers:
-
-```
-lerna run --stream --scope '*/server' build
-lerna run --stream --scope '*/utils' build:watch
-```
+- ♥ kier - Hearts
+- ♠ pik - Spades
+- ♦ karo - Diamonds
+- ♣ trefl - Clubs
 
 ## Interaction
 
@@ -93,8 +79,6 @@ send to room:
 
 [ ] - Merge ActionTemplate `interaction` and `conditions`...?
 
-[ ] - Entity parent in constructor - allow EntityID OR Entity reference? addChild anywhere accepts object reference
-
 # Visibility status journey
 
 An entity can be visible:
@@ -140,9 +124,3 @@ but maybe I should be doing it on the server.
 
 - there are no cards, so I probably want to put
 - there are some cards, but I could pick one or place one there
-
-# Units
-
-All dimensional units are in milimeters, to be as close to reality as possible.
-
-The clinent-side would have to decide how to scale it and present on any devices. Sometimes it would be needed to ignore some units, for example: table size on small mobile devices.

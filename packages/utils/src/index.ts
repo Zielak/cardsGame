@@ -1,5 +1,6 @@
 export * from "./events"
 export * from "./mapSchema"
 export * from "./numbers"
+export * from "./random"
 export * from "./strings"
 export * from "./utils"

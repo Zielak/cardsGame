@@ -3,7 +3,7 @@ import { IEntity } from "./traits/entity"
 import { IParent } from "./traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
-import { EntityTransformData } from "../transform"
+import { EntityTransform } from "../transform"
 
 /**
  * TODO: finish it for SUPERHOT, but only once I'm almost done with everything
@@ -46,19 +46,32 @@ export class Line extends Schema implements IEntity, IParent {
   _childrenPointers: string[]
   hijacksInteractionTarget = true
 
+  clone() {
+    return new Line({
+      state: this._state,
+      type: this.type,
+      name: this.name,
+      width: this.width,
+      height: this.height,
+      x: this.x,
+      y: this.y,
+      angle: this.angle,
+      parent: this.parent,
+      idx: this.idx,
+      owner: this.owner,
+      isInOwnersView: this.isInOwnersView
+    })
+  }
+
   restyleChild(
     child: IEntity,
     idx: number,
     children: IEntity[]
-  ): EntityTransformData {
+  ): EntityTransform {
     let spaceOuter = 0
     let spaceBetween = 0
     // [ 0 0 0     ]
     // [ ]
-    return {
-      x: idx,
-      y: -idx,
-      angle: 0
-    }
+    return new EntityTransform(idx, -idx, 0)
   }
 }

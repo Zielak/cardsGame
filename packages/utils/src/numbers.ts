@@ -1,6 +1,3 @@
-export const float = (min = 0, max = 1) =>
-  Math.floor(Math.random() * (max - min + 1) + min)
-
 export const limit = (val, min = 0, max = 1) =>
   val < min ? min : val > max ? max : val
 
