@@ -188,7 +188,12 @@ export class CommandsManager {
 
   async execute(state: State, command: ICommand): Promise<void> {
     this.currentCommand = command
+    const commandName = command.constructor.name
+
+    logs.log("┍━" + commandName, "executing")
     await this.currentCommand.execute(state)
+    logs.log("┕━" + commandName, `done`)
+
     this.history.push(command)
   }
 }

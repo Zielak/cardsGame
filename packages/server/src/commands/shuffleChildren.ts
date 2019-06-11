@@ -15,8 +15,6 @@ export class ShuffleChildren implements ICommand {
   constructor(private container: IParent) {}
 
   execute(state: State) {
-    logs.log(`${this.constructor.name}`, "executing")
-
     let idxA = countChildren(this.container)
     if (idxA === 0) return
     while (--idxA) {

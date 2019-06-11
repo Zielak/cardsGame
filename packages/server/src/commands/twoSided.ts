@@ -15,7 +15,6 @@ export class FaceUp implements ICommand {
     this.entities = Array.isArray(_entities) ? _entities : [_entities]
   }
   execute(state: State) {
-    logs.log(`${this.constructor.name}`, "executing")
     this.entities.forEach(faceUp)
     state.logTreeState()
   }
@@ -36,7 +35,6 @@ export class FaceDown implements ICommand {
   }
 
   execute(state: State) {
-    logs.log(`${this.constructor.name}`, "executing")
     this.entities.forEach(faceDown)
     state.logTreeState()
   }
@@ -58,7 +56,6 @@ export class Flip implements ICommand {
   }
 
   execute(state: State) {
-    logs.log(`${this.constructor.name}`, "executing")
     this.entities.forEach(faceDown)
     state.logTreeState()
   }

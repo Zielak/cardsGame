@@ -1,7 +1,7 @@
 import { IParent } from "./parent"
 import { IEntityOptions, IEntity } from "./entity"
 import { def } from "@cardsgame/utils"
-import { EntityTransformData } from "../../transform"
+import { EntityTransform } from "../../transform"
 
 export interface IFlexyContainer extends IParent {
   alignItems: "start" | "end" | "center"
@@ -40,12 +40,9 @@ export function flexyContainerRestyleChild(
   child: IEntity,
   idx: number,
   children: IEntity[]
-): EntityTransformData {
+): EntityTransform {
+  // TODO: finish me when needed
   let spaceOuter = 0
   let spaceBetween = 0
-  return {
-    x: idx,
-    y: -idx,
-    angle: 0
-  }
+  return new EntityTransform(idx, -idx, 0)
 }

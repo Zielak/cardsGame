@@ -23,7 +23,6 @@ export class ChangeParent implements ICommand {
 
   execute(state: State) {
     const _ = this.constructor.name
-    logs.log("┍━" + _, "executing")
     if (this.entities.length < 1) {
       logs.error("ChangeParent command", `I don't have an entity to move!`)
       return
@@ -40,7 +39,6 @@ export class ChangeParent implements ICommand {
 
     this.entities.forEach(entity => addChild(this.target, entity))
 
-    logs.log("┕━" + _, `done`)
     // state.logTreeState()
   }
 
