@@ -27,10 +27,6 @@ module.exports = env => {
       ]
     },
     plugins: [
-      new DeclarationBundler({
-        moduleName: "@cardsgame/client",
-        out: "index.d.ts"
-      }),
       new BundleAnalyzerPlugin({
         analyzerMode: "static",
         openAnalyzer: false

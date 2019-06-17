@@ -1,4 +1,4 @@
-import { Game, Room } from "@cardsgame/client"
+import { Game } from "@cardsgame/client"
 import React, {
   FunctionComponent,
   useState,
@@ -6,6 +6,7 @@ import React, {
   createContext
 } from "react"
 import * as ReactDOM from "react-dom"
+
 import { GamesList } from "./components/gamesList/gamesList"
 import { MakaoGameUI } from "./games/makao/makao"
 import { SidePanel } from "./components/sidePanel/sidePanel"
@@ -13,6 +14,8 @@ import { GameView } from "./components/gameView/gameView"
 import { Button } from "./components/button/button"
 import { CollapsablePanel } from "./components/collapsablePanel/collapsablePanel"
 import { stateToJSON } from "./services/stateService"
+
+import "./style.scss"
 
 export const InteractionContext = createContext(
   (event: any, idxPath: number[]) => {}

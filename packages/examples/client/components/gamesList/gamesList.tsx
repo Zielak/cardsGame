@@ -17,7 +17,7 @@ export const GamesList: FunctionComponent<GamesListProps> = props => {
   )
 
   useEffect(() => {
-    let timerID: NodeJS.Timeout
+    let timerID
 
     const scheduleFetchRooms = () => {
       timerID = setTimeout(() => {

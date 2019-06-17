@@ -17,8 +17,9 @@ export class RankPicker extends React.Component<RankPickerProps, {}> {
           <Button
             key={`rankPickBtn${el}`}
             onClick={() => this.props.handleRankChosen(el)}
-            label={el === null ? "nothing" : el}
-          />
+          >
+            {el === null ? "nothing" : el}
+          </Button>
         ))}
       </div>
     )

@@ -1,13 +1,9 @@
-import { logs } from "../logs"
 import { State } from "../state"
 import { ICommand } from "."
 import {
   IParent,
   countChildren,
   restyleChildren,
-  getChild,
-  removeChildAt,
-  addChild,
   moveChildTo
 } from "../entities/traits/parent"
 

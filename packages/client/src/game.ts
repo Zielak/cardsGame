@@ -1,4 +1,4 @@
-import * as colyseus from "colyseus.js"
+import * as colyseus from "colyseus.js/lib/index"
 import { logs } from "./logs"
 import { EventEmitter } from "eventemitter3"
 import { RoomAvailable } from "colyseus.js/lib/Room"
