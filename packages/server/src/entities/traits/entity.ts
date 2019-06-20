@@ -20,6 +20,9 @@ export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
   if (options.name) {
     entity.name = options.name
   }
+  if (options.type) {
+    entity.type = options.type
+  }
 
   // Transforms
   entity._localTransform = new EntityTransform(

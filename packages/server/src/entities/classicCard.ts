@@ -98,7 +98,7 @@ export class ClassicCard extends Schema implements IClassicCard {
 export interface IClassicCardOptions extends IEntityOptions {
   suit: string
   rank: string
-  faceUp: boolean
+  faceUp?: boolean
 }
 
 export const standardDeckFactory = (

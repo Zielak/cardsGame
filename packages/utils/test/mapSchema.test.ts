@@ -1,7 +1,7 @@
-import { map2Array, remove } from "../src/mapSchema"
+import { map2Array, mapRemoveIdx } from "../src/mapSchema"
 import { MapSchema } from "@colyseus/schema"
 
-describe("remove", () => {
+describe("mapRemoveIdx", () => {
   let map
   describe(`4 elements`, () => {
     beforeEach(() => {
@@ -18,7 +18,7 @@ describe("remove", () => {
       expect(map[2]).toBe("two")
       expect(map[3]).toBe("three")
 
-      remove(map, 0)
+      mapRemoveIdx(map, 0)
 
       expect(Object.keys(map)).toEqual(["0", "1", "2"])
       expect(Object.keys(map).length).toBe(3)
@@ -29,7 +29,7 @@ describe("remove", () => {
     })
 
     test(`remove in the middle`, () => {
-      remove(map, 2)
+      mapRemoveIdx(map, 2)
 
       expect(Object.keys(map)).toEqual(["0", "1", "2"])
       expect(Object.keys(map).length).toBe(3)
@@ -40,7 +40,7 @@ describe("remove", () => {
     })
 
     test(`remove last`, () => {
-      remove(map, 3)
+      mapRemoveIdx(map, 3)
 
       expect(Object.keys(map)).toEqual(["0", "1", "2"])
       expect(Object.keys(map).length).toBe(3)
@@ -56,7 +56,7 @@ describe("remove", () => {
       map[0] = "zero"
     })
     test(`remove the only one`, () => {
-      remove(map, 0)
+      mapRemoveIdx(map, 0)
 
       expect(Object.keys(map)).toEqual([])
       expect(Object.keys(map).length).toBe(0)
@@ -64,13 +64,13 @@ describe("remove", () => {
     })
     test(`doesn't throw`, () => {
       expect(() => {
-        remove(map, -4)
+        mapRemoveIdx(map, -4)
       }).not.toThrow()
       expect(() => {
-        remove(map, 42)
+        mapRemoveIdx(map, 42)
       }).not.toThrow()
       expect(() => {
-        remove(map, undefined)
+        mapRemoveIdx(map, undefined)
       }).not.toThrow()
     })
   })
@@ -79,23 +79,23 @@ describe("remove", () => {
       map = new MapSchema<string>()
     })
     test(`does nothing`, () => {
-      remove(map, 0)
+      mapRemoveIdx(map, 0)
 
       expect(Object.keys(map)).toEqual([])
       expect(Object.keys(map).length).toBe(0)
     })
     test(`doesn't throw`, () => {
       expect(() => {
-        remove(map, 0)
+        mapRemoveIdx(map, 0)
       }).not.toThrow()
       expect(() => {
-        remove(map, -4)
+        mapRemoveIdx(map, -4)
       }).not.toThrow()
       expect(() => {
-        remove(map, 42)
+        mapRemoveIdx(map, 42)
       }).not.toThrow()
       expect(() => {
-        remove(map, Infinity)
+        mapRemoveIdx(map, Infinity)
       }).not.toThrow()
     })
   })

@@ -1,11 +1,13 @@
 import { State } from "../src/state"
-import { IEntity } from "../src/entity"
+import { EntityConstructor } from "../src/entities"
+import { DumbEntity } from "./helpers/dumbEntity"
 
 describe(`Entity`, () => {
-  let entity: Entity
+  let entity: DumbEntity
   let state: State
 
   beforeEach(() => {
+    entity = new DumbEntity()
     state = new State({
       minClients: 1,
       maxClients: 4,
@@ -13,31 +15,21 @@ describe(`Entity`, () => {
     })
   })
 
-  afterEach(() => {
-    entity = null
-  })
-
-  describe(`#constructor`, () => {
+  describe(`EntityConstructor`, () => {
     test(`doesn't throw up`, () => {
-      expect(() => new Entity({ state })).not.toThrow()
+      expect(() => EntityConstructor(entity, { state })).not.toThrow()
     })
     test(`remembers the state`, () => {
-      entity = new Entity({ state })
+      EntityConstructor(entity, { state })
       expect(entity._state).toBe(state)
     })
     test(`gets new ID from state`, () => {
-      entity = new Entity({ state })
+      EntityConstructor(entity, { state })
       expect(entity.id).toBeDefined()
       expect(entity.id).toBe(state._lastID)
     })
-
-    test(`sets default name and type`, () => {
-      entity = new Entity({ state })
-      expect(entity.name).toBe(Entity.DEFAULT_NAME)
-      expect(entity.type).toBe(Entity.DEFAULT_TYPE)
-    })
     test(`sets desired name and type`, () => {
-      entity = new Entity({
+      EntityConstructor(entity, {
         state,
         name: "beautiful",
         type: "almostEntity"
@@ -49,69 +41,24 @@ describe(`Entity`, () => {
     describe(`.parent`, () => {
       // Parent should never be `null`!
       test(`default - state's entites`, () => {
-        entity = new Entity({ state })
-        expect(entity.parent).toBe(state.entities.id)
-      })
-      test(`remembers desired parent`, () => {
-        const parent = new Entity({ state })
-        entity = new Entity({ state, parent })
-        expect(entity.parent).toBe(parent.id)
+        EntityConstructor(entity, { state })
+        expect(entity.parent).toBe(state.id)
       })
     })
   })
-  describe(`sendAllPrivateAttributes`, () => {})
-  describe(`sendPrivateAttributeUpdate`, () => {})
-  describe(`addChild`, () => {
-    test(`adds new child to empty parent`, () => {
-      const parent = new Entity({ state })
-      entity = new Entity({ state })
+  describe(`getParentEntity`, () => {})
+  describe.skip(`setParent`, () => {
+    test.todo(`adds new child to empty parent`)
+    test.todo(`adds new child to parent with children`)
+    test.todo(`emits "parentUpdate" on child`)
+    test.todo(`emits "childAdded" on itself`)
 
-      expect(parent.length).toBe(0)
-      parent.addChild(entity)
-      expect(parent.length).toBe(1)
-    })
-    test(`adds new child to parent with children`, () => {})
-    test(`emits "parentUpdate" on child`, () => {})
-    test(`emits "childAdded" on itself`, () => {})
-
-    test(`adding entity to itself throws error`, () => {
-      entity = new Entity({ state })
-      expect(() => entity.addChild(entity)).toThrow()
-    })
+    test.todo(`adding entity to itself throws error`)
   })
-  describe(`addChildAt`, () => {})
-  describe(`removeChild`, () => {})
-  describe(`removeChildAt`, () => {})
+  describe(`getIdxPath`, () => {})
+  describe(`isInteractive`, () => {})
+  describe(`getOwner`, () => {})
 
-  describe(`restyleChildren`, () => {})
-  describe(`restyleChild`, () => {})
   describe(`updateTransform`, () => {})
   describe(`resetWorldTransform`, () => {})
-
-  describe(`filterByName`, () => {})
-  describe(`findByName`, () => {})
-  describe(`filterByType`, () => {})
-  describe(`findByType`, () => {})
-
-  describe(`top/bottom/length`, () => {
-    beforeEach(() => {
-      entity = new Entity({ state })
-      for (let idx = 0; idx < 10; idx++) {
-        entity.addChild(new Entity({ state, name: `entity${idx}` }))
-      }
-    })
-    test(`length`, () => {
-      expect(entity.length).toBe(10)
-    })
-    test(`top`, () => {
-      expect(entity.length).toBe(10)
-    })
-  })
-  describe(`interactive`, () => {})
-  describe(`getChildren`, () => {})
-  describe(`parentEntity`, () => {})
-  describe(`currentOwner`, () => {
-    // test()
-  })
-  describe(`idxPath`, () => {})
 })
