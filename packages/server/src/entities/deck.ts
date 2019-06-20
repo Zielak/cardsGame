@@ -24,7 +24,7 @@ export class Deck extends Schema implements IEntity, IParent {
     return true
   }
 
-  @type("uint16")
+  @type("uint8")
   idx: number
 
   @type("string")
@@ -50,25 +50,8 @@ export class Deck extends Schema implements IEntity, IParent {
 
   constructor(options: IEntityOptions) {
     super()
-    EntityConstructor(this, options)
     ParentConstructor(this)
-  }
-
-  clone() {
-    return new Deck({
-      state: this._state,
-      type: this.type,
-      name: this.name,
-      width: this.width,
-      height: this.height,
-      x: this.x,
-      y: this.y,
-      angle: this.angle,
-      parent: this.parent,
-      idx: this.idx,
-      owner: this.owner,
-      isInOwnersView: this.isInOwnersView
-    })
+    EntityConstructor(this, options)
   }
 
   restyleChild(

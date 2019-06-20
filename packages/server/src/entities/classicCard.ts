@@ -1,4 +1,4 @@
-import { Schema, type, filter } from "@colyseus/schema"
+import { Schema, type } from "@colyseus/schema"
 import { logs } from "../logs"
 import {
   IEntity,
@@ -48,7 +48,7 @@ export class ClassicCard extends Schema implements IClassicCard {
     return false
   }
 
-  @type("uint16")
+  @type("uint8")
   idx: number
 
   // @filter(faceDownOnlyOwner)
@@ -92,27 +92,6 @@ export class ClassicCard extends Schema implements IClassicCard {
     this.faceUp = def(options.faceUp, false)
 
     EntityConstructor(this, options)
-  }
-
-  clone() {
-    return new ClassicCard({
-      state: this._state,
-      type: this.type,
-      name: this.name,
-      width: this.width,
-      height: this.height,
-      x: this.x,
-      y: this.y,
-      angle: this.angle,
-      parent: this.parent,
-      idx: this.idx,
-      owner: this.owner,
-      isInOwnersView: this.isInOwnersView,
-
-      suit: this.suit,
-      rank: this.rank,
-      faceUp: this.faceUp
-    })
   }
 }
 

@@ -24,7 +24,7 @@ export class Pile extends Schema implements IEntity, IParent {
     return true
   }
 
-  @type("uint16")
+  @type("uint8")
   idx: number
 
   @type("string")
@@ -54,8 +54,8 @@ export class Pile extends Schema implements IEntity, IParent {
 
   constructor(options: IPileOptions) {
     super()
-    EntityConstructor(this, options)
     ParentConstructor(this)
+    EntityConstructor(this, options)
 
     this.limits = Object.assign(
       {},
@@ -80,27 +80,6 @@ export class Pile extends Schema implements IEntity, IParent {
   }
   onChildRemoved(idx: number) {
     this.cardsData = this.cardsData.filter((_, i) => i !== idx)
-  }
-
-  clone() {
-    const clone = new Pile({
-      state: this._state,
-      type: this.type,
-      name: this.name,
-      width: this.width,
-      height: this.height,
-      x: this.x,
-      y: this.y,
-      angle: this.angle,
-      parent: this.parent,
-      idx: this.idx,
-      owner: this.owner,
-      isInOwnersView: this.isInOwnersView
-    })
-
-    clone.cardsData = [...this.cardsData.map(e => e.clone())]
-
-    return clone
   }
 }
 

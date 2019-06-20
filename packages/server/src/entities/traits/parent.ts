@@ -1,5 +1,5 @@
 import { type, ArraySchema } from "@colyseus/schema"
-import { IEntity, getParentEntity, resetWorldTransform } from "./entity"
+import { IEntity, resetWorldTransform } from "./entity"
 import { logs } from "../../logs"
 import { EntityTransform } from "../../transform"
 import { Player } from "../../player"
@@ -64,79 +64,19 @@ export function ParentConstructor(entity: IParent) {
   })
 }
 
-const getKnownConstructor = (entity: IEntity | IParent) =>
+export const getKnownConstructor = (entity: IEntity | IParent) =>
   registeredChildren.find(con => entity instanceof con)
 
-// const updateChildrenIdx = (parent: IParent, from: number = 0) => {
-//   const max = countChildren(parent)
-//   for (let i = from + 1; i <= max; i++) {
-//     const array = parent[parent._childrenPointers[i]] as ArraySchema<IEntity>
-//     const child = array.find(el => el.idx === i)
-//     child.idx = i - 1
-//   }
-//   updatePointers(parent)
-// }
-
 const updatePointers = (parent: IParent) => {
+  parent._childrenPointers = []
   getChildren(parent).forEach(child => {
     const con = registeredChildren.find(con => child instanceof con)
     parent._childrenPointers[child.idx] = con.name
   })
 }
 
-export function addChild(parent: IParent, child: IEntity, idx?: number) {
-  // ----- check
-
-  if (child === (parent as IParent & IEntity)) {
-    throw new Error(`adding itself as a child makes no sense.`)
-  }
-
-  const lastParent =
-    typeof child.parent !== "number" ? undefined : getParentEntity(child)
-
-  if (lastParent) {
-    // Remember to remove myself from first parent
-    removeChild(lastParent, child.id)
-  }
-
-  // ----- add
-
-  // const added = entity._children.add(child)
-
-  const con = getKnownConstructor(child)
-  if (!con) {
-    throw new Error(
-      `addChild(), this type of child is unknown to me: ${child.type}.`
-    )
-  }
-
-  const targetArray = parent["children" + con.name]
-
-  // Check if it's already in
-  if (targetArray.includes(child)) {
-    logs.warn("addChild()", `Child is already here`)
-    return
-  }
-
-  const newIdx = countChildren(parent)
-  targetArray.push(child)
-  child.idx = newIdx
-  parent._childrenPointers.push(con.name)
-
-  // Lazy solution, is it enough?
-  if (typeof idx == "number") {
-    moveChildTo(parent, newIdx, idx)
-  }
-
-  child.parent = parent.id
-
-  if (parent.onChildAdded) parent.onChildAdded(child)
-  restyleChildren(parent)
-}
-
-export function addChildren(parent: IParent & IEntity, children: IEntity[]) {
-  children.forEach(newChild => addChild(parent, newChild))
-}
+const pickByIdx = (idx: number) => (child: IEntity) => child.idx === idx
+const sortByIdx = (a: IEntity, b: IEntity) => a.idx - b.idx
 
 export const removeChild = (parent: IParent, id: EntityID): boolean => {
   const idx = getChildren(parent).findIndex(child => child.id === id)
@@ -173,14 +113,10 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
 
   const childIdx = targetArray.findIndex(el => el === child)
   parent[targetArrayName].splice(childIdx, 1)
-  parent._childrenPointers = parent._childrenPointers.filter(
-    (_, i) => i !== idx
-  )
+  updatePointers(parent)
   child.parent = 0
 
   // ------ update
-
-  // updateChildrenIdx(parent, idx)
 
   // Reset last parent's stylings
   resetWorldTransform(child)
@@ -274,12 +210,16 @@ export function countChildren(parent: IParent | IEntity): number {
 export function getChildren<T extends IEntity | IParent>(
   parent: IParent | IEntity
 ): (T & IEntity)[] {
-  if (parent.isParent()) {
-    return parent._childrenPointers.map((name, idx) =>
-      parent["children" + name].find((e: IEntity) => e.idx === idx)
-    )
+  if (!parent.isParent()) {
+    return []
   }
-  return []
+
+  return registeredChildren
+    .reduce((prev, con) => {
+      prev.push(...parent[`children${con.name}`])
+      return prev
+    }, [])
+    .sort(sortByIdx)
 }
 
 /**
@@ -289,9 +229,7 @@ export function getChild<T extends IEntity | IParent>(
   parent: IParent,
   idx: number
 ): T & IEntity {
-  return parent["children" + parent._childrenPointers[idx]].find(
-    (child: IEntity) => child.idx === idx
-  )
+  return parent["children" + parent._childrenPointers[idx]].find(pickByIdx(idx))
 }
 
 /**

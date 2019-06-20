@@ -1,8 +1,8 @@
-import { IEntity } from "../entities/traits/entity"
+import { IEntity, setParent } from "../entities/traits/entity"
 import { State } from "../state"
 import { logs } from "../logs"
 import { ICommand } from "."
-import { IParent, addChild } from "../entities/traits/parent"
+import { IParent } from "../entities/traits/parent"
 
 export class ChangeParent implements ICommand {
   private entities: IEntity[]
@@ -37,12 +37,12 @@ export class ChangeParent implements ICommand {
       this.target["name"] || "ROOT"
     )
 
-    this.entities.forEach(entity => addChild(this.target, entity))
+    this.entities.forEach(entity => setParent(entity, this.target))
 
     // state.logTreeState()
   }
 
   undo(state: State) {
-    this.entities.forEach(entity => addChild(this.source, entity))
+    this.entities.forEach(entity => setParent(entity, this.source))
   }
 }

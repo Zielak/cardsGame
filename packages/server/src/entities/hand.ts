@@ -29,7 +29,7 @@ export class Hand extends Schema implements IEntity, IParent {
     return true
   }
 
-  @type("uint16")
+  @type("uint8")
   idx: number
 
   @type("string")
@@ -58,29 +58,10 @@ export class Hand extends Schema implements IEntity, IParent {
 
   constructor(options: IHandOptions) {
     super()
-    EntityConstructor(this, options)
     ParentConstructor(this)
+    EntityConstructor(this, options)
 
     this.autoSort = def(options.autoSort, () => -1)
-  }
-
-  clone() {
-    return new Hand({
-      state: this._state,
-      type: this.type,
-      name: this.name,
-      width: this.width,
-      height: this.height,
-      x: this.x,
-      y: this.y,
-      angle: this.angle,
-      parent: this.parent,
-      idx: this.idx,
-      owner: this.owner,
-      isInOwnersView: this.isInOwnersView,
-
-      autoSort: this.autoSort
-    })
   }
 
   onChildAdded(child: IEntity) {

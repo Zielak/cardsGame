@@ -22,7 +22,7 @@ export class Line extends Schema implements IEntity, IParent {
     return true
   }
 
-  @type("uint16")
+  @type("uint8")
   idx: number
 
   @type("string")
@@ -45,23 +45,6 @@ export class Line extends Schema implements IEntity, IParent {
   // IParent
   _childrenPointers: string[]
   hijacksInteractionTarget = true
-
-  clone() {
-    return new Line({
-      state: this._state,
-      type: this.type,
-      name: this.name,
-      width: this.width,
-      height: this.height,
-      x: this.x,
-      y: this.y,
-      angle: this.angle,
-      parent: this.parent,
-      idx: this.idx,
-      owner: this.owner,
-      isInOwnersView: this.isInOwnersView
-    })
-  }
 
   restyleChild(
     child: IEntity,

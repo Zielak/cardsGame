@@ -1,9 +1,17 @@
 import { State } from "../../state"
 import { Player } from "../../player"
 import { EntityTransform } from "../../transform"
-import { IParent, addChild } from "./parent"
+import {
+  IParent,
+  getKnownConstructor,
+  countChildren,
+  moveChildTo,
+  restyleChildren,
+  removeChildAt
+} from "./parent"
 import { IIdentity } from "./identity"
 import { def } from "@cardsgame/utils"
+import { ArraySchema } from "@colyseus/schema"
 
 export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
   // state && id
@@ -25,27 +33,28 @@ export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
   entity._worldTransform.on("update", () => updateTransform(entity))
   updateTransform(entity)
 
-  // Parent
-  if (!options.parent) {
-    // no parent = root as parent
-    // entity.parent = 0
-    addChild(entity._state, entity)
-  } else {
-    const newParent =
-      typeof options.parent === "number"
-        ? entity._state.getEntity(options.parent)
-        : options.parent
-    if (!newParent.isParent()) {
-      throw new Error(
-        `${options.type} constructor: given 'parent' is not really IParent (no 'children' property)`
-      )
-    }
-    addChild(newParent, entity)
-  }
-
   // Owner
   entity.owner = def(options.owner, undefined)
   entity.isInOwnersView = def(options.isInOwnersView, false)
+
+  // Parent
+  const optParent = def(options.parent, -1)
+  const newParentID = typeof optParent !== "number" ? optParent.id : optParent
+
+  const newParent =
+    newParentID >= 0 ? entity._state.getEntity(newParentID) : options.state
+
+  if (!newParent.isParent()) {
+    throw new Error(
+      `${options.type} constructor: given 'parent' is not really IParent and can't accept any children.`
+    )
+  }
+
+  setParent(entity, newParent)
+
+  if (typeof options.idx === "number") {
+    moveChildTo(newParent, entity.idx, options.idx)
+  }
 }
 
 export interface IEntity extends IIdentity {
@@ -65,8 +74,6 @@ export interface IEntity extends IIdentity {
   angle?: number
   width?: number
   height?: number
-
-  clone: () => IEntity
 
   // Private stuff, author shouldn't be care about these,
   // entityConstructor() should take care of initing them
@@ -111,6 +118,25 @@ export function getParentEntity(entity: IEntity): IEntity & IParent {
   if (parent && parent.isParent()) {
     return parent
   }
+}
+
+export function setParent(entity: IEntity, parent: IParent) {
+  if (entity.parent) {
+    removeChildAt(getParentEntity(entity), entity.idx)
+  }
+
+  const con = getKnownConstructor(entity)
+  const targetArray = parent["children" + con.name] as ArraySchema<IEntity>
+  entity.idx = countChildren(parent)
+
+  targetArray.push(entity)
+  entity.parent = parent.id
+  parent._childrenPointers.push(con.name)
+
+  if (parent.onChildAdded) {
+    parent.onChildAdded(entity)
+  }
+  restyleChildren(parent)
 }
 
 export function getIdxPath(entity: IEntity): number[] {

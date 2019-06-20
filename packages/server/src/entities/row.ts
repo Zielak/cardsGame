@@ -21,7 +21,7 @@ export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
     return true
   }
 
-  @type("uint16")
+  @type("uint8")
   idx: number
 
   @type("string")
@@ -58,30 +58,9 @@ export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
 
   constructor(options: IRowOptions) {
     super()
-    EntityConstructor(this, options)
     ParentConstructor(this)
+    EntityConstructor(this, options)
     FlexyContainerConstructor(this, options)
-  }
-
-  clone() {
-    return new Row({
-      state: this._state,
-      type: this.type,
-      name: this.name,
-      width: this.width,
-      height: this.height,
-      x: this.x,
-      y: this.y,
-      angle: this.angle,
-      parent: this.parent,
-      idx: this.idx,
-      owner: this.owner,
-      isInOwnersView: this.isInOwnersView,
-
-      alignItems: this.alignItems,
-      directionReverse: this.directionReverse,
-      justifyContent: this.justifyContent
-    })
   }
 
   restyleChild = flexyContainerRestyleChild
