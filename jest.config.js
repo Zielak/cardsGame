@@ -1,5 +1,4 @@
 module.exports = {
-  collectCoverage: true,
-  collectCoverageFrom: ["packages/**/*.{ts}", "!**/node_modules/**"],
+  collectCoverageFrom: ["**/*.{ts,tsx}", "!**/*.d.ts", "!**/node_modules/**"],
   projects: ["<rootDir>/packages/*"]
 }

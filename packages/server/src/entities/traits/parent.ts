@@ -67,11 +67,12 @@ export function ParentConstructor(entity: IParent) {
 export const getKnownConstructor = (entity: IEntity | IParent) =>
   registeredChildren.find(con => entity instanceof con)
 
-const updatePointers = (parent: IParent) => {
+const updateIndexes = (parent: IParent) => {
   parent._childrenPointers = []
-  getChildren(parent).forEach(child => {
+  getChildren(parent).forEach((child, newIdx) => {
     const con = registeredChildren.find(con => child instanceof con)
-    parent._childrenPointers[child.idx] = con.name
+    parent._childrenPointers[newIdx] = con.name
+    child.idx = newIdx
   })
 }
 
@@ -89,12 +90,9 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
   if (idx < 0)
     throw new Error(`removeChildAt(): idx must be >= 0, but is ${idx}`)
   if (idx > parent._childrenPointers.length - 1) {
-    logs.warn(
-      "removeChildAt()",
-      `Tried to remove idx out of bounds:`,
-      idx,
-      "/",
-      parent._childrenPointers.length
+    throw new Error(
+      `removeChildAt(): Tried to remove idx out of bounds: 
+      ${idx}/${parent._childrenPointers.length}`
     )
   }
   const child: IEntity = getChild(parent, idx)
@@ -107,13 +105,16 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
 
   const targetArrayName = "children" + parent._childrenPointers[idx]
   const targetArray: ArraySchema = parent[targetArrayName]
-  // FIXME: after colyseus/schema geets fixed:
-  // https://discordapp.com/channels/525739117951320081/526083188108296202/573204615290683392
-  // parent[targetArrayName] = targetArray.filter(el => el !== child)
 
   const childIdx = targetArray.findIndex(el => el === child)
+
+  // FIXME: after colyseus/schema geets fixed:
+  // https://github.com/colyseus/schema/issues/17
+  // https://discordapp.com/channels/525739117951320081/526083188108296202/573204615290683392
+  // parent[targetArrayName] = targetArray.filter(el => el !== child)
   parent[targetArrayName].splice(childIdx, 1)
-  updatePointers(parent)
+  updateIndexes(parent)
+
   child.parent = 0
 
   // ------ update
@@ -170,7 +171,7 @@ export function moveChildTo(parent: IParent, from: number, to: number) {
 
   // logs.verbose(`moveChildTo, [`, entries.join(", "), `]`)
   // logs.verbose(`moveChildTo, done, now updatePointers()`)
-  updatePointers(parent)
+  updateIndexes(parent)
 }
 
 export function restyleChildren(parent: IParent) {

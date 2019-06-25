@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#getChildren couple of children 1`] = `
+Array [
+  Object {
+    "angle": 0,
+    "height": undefined,
+    "idx": 0,
+    "name": "Dummie",
+    "type": "dumb",
+    "width": undefined,
+    "x": 0,
+    "y": 0,
+  },
+  Object {
+    "angle": 0,
+    "height": undefined,
+    "idx": 1,
+    "name": "Dummie",
+    "type": "dumb",
+    "width": undefined,
+    "x": 0,
+    "y": 0,
+  },
+  Object {
+    "angle": 0,
+    "height": undefined,
+    "idx": 2,
+    "name": "Dummie",
+    "type": "dumb",
+    "width": undefined,
+    "x": 0,
+    "y": 0,
+  },
+  Object {
+    "angle": 0,
+    "height": undefined,
+    "idx": 3,
+    "name": "Dummie",
+    "type": "dumb",
+    "width": undefined,
+    "x": 0,
+    "y": 0,
+  },
+  Object {
+    "angle": 0,
+    "height": undefined,
+    "idx": 4,
+    "name": "Dummie",
+    "type": "dumb",
+    "width": undefined,
+    "x": 0,
+    "y": 0,
+  },
+]
+`;
+
+exports[`#getChildren empty parent 1`] = `Array []`;

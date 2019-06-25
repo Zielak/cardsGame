@@ -86,4 +86,9 @@ describe(`State`, () => {
       expect(state.getEntity([1, 0, 2])).toBe(c)
     })
   })
+
+  test.todo("#get currentPlayer")
+  test.todo("#get playersCount")
+
+  test.todo("#getEntitiesAlongPath")
 })

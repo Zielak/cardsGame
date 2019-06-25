@@ -100,7 +100,7 @@ export class State extends Schema implements IParent {
             `getEntity/path: This entity doesn't have such child.`
           )
         }
-        if (remainingPath.length > 0 && !newChild["_children"]) {
+        if (remainingPath.length > 0 && !newChild["_childrenPointers"]) {
           throw new Error(
             `getEntity/path: Path inaccessible, entity doesn't have any children. Stopped at [${remainingPath}].`
           )

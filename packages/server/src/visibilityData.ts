@@ -1,3 +1,4 @@
+// Deprecated
 export class VisibilityData {
   private data: {
     [key: string]: VisibilityEntry
