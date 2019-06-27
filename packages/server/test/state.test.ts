@@ -1,5 +1,5 @@
 import { State } from "../src/state"
-import { IEntity } from "../src/entities"
+import { IEntity } from "../src/entities/traits/entity"
 import { ConstructedEntity } from "./helpers/dumbEntity"
 import { ConstructedParent } from "./helpers/dumbParent"
 

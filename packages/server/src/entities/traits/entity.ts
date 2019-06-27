@@ -114,7 +114,7 @@ export interface IEntityOptions {
 
 /**
  * Gets a reference to this entity's parent.
- * There must be any parent, so any undefined will fallback to state's `entities`
+ * Root elements won't return state, but `undefined` instead.
  */
 export function getParentEntity(entity: IEntity): IEntity & IParent {
   const parent = entity._state.getEntity(entity.parent)
@@ -123,34 +123,37 @@ export function getParentEntity(entity: IEntity): IEntity & IParent {
   }
 }
 
-export function setParent(entity: IEntity, parent: IParent) {
-  if (entity.parent) {
+export function setParent(entity: IEntity, newParent: IParent) {
+  if (entity.parent !== undefined && entity.parent !== -1) {
     removeChildAt(getParentEntity(entity), entity.idx)
   }
 
   const con = getKnownConstructor(entity)
-  const targetArray = parent["children" + con.name] as ArraySchema<IEntity>
-  entity.idx = countChildren(parent)
+  const targetArray = newParent["children" + con.name] as ArraySchema<IEntity>
+  entity.idx = countChildren(newParent)
 
   targetArray.push(entity)
-  entity.parent = parent.id
-  parent._childrenPointers.push(con.name)
+  entity.parent = newParent.id
+  newParent._childrenPointers.push(con.name)
 
-  if (parent.onChildAdded) {
-    parent.onChildAdded(entity)
+  if (newParent.onChildAdded) {
+    newParent.onChildAdded(entity)
   }
-  restyleChildren(parent)
+  restyleChildren(newParent)
 }
 
+/**
+ * @deprecated unused anywhere
+ */
 export function getIdxPath(entity: IEntity): number[] {
   const path: number[] = [entity.idx]
   const getNext = (entity: IEntity) => {
-    const parent = getParentEntity(entity)
-    const parentsIdx = parent.idx
-    if (typeof parentsIdx === "number") {
-      path.unshift(parentsIdx)
-      getNext(parent)
-    }
+    // const parent = getParentEntity(entity)
+    // const parentsIdx = parent.idx
+    // if (typeof parentsIdx === "number") {
+    //   path.unshift(parentsIdx)
+    //   getNext(parent)
+    // }
   }
   getNext(entity)
 

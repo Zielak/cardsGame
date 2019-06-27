@@ -3,7 +3,7 @@ import {
   ClassicCard
 } from "../../src/entities/classicCard"
 import { State } from "../../src/state"
-import { flip, faceUp, faceDown } from "../../src/entities"
+import { flip, faceUp, faceDown } from "../../src/entities/traits/twoSided"
 
 let card: ClassicCard
 let state: State
