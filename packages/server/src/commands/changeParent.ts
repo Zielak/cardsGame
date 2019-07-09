@@ -1,8 +1,8 @@
-import { IEntity, setParent } from "../entities/traits/entity"
+import { IEntity, setParent } from "../traits/entity"
 import { State } from "../state"
 import { logs } from "../logs"
 import { ICommand } from "."
-import { IParent } from "../entities/traits/parent"
+import { IParent } from "../traits/parent"
 
 export class ChangeParent implements ICommand {
   private entities: IEntity[]

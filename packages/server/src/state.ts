@@ -1,6 +1,6 @@
 import { Schema, type, MapSchema } from "@colyseus/schema"
 import { logs } from "./logs"
-import { IEntity, getOwner } from "./entities/traits/entity"
+import { IEntity, getOwner } from "./traits/entity"
 import { cm2px, mapCount } from "@cardsgame/utils"
 import {
   IParent,
@@ -10,7 +10,7 @@ import {
   getChildren,
   getDescendants,
   containsChildren
-} from "./entities/traits/parent"
+} from "./traits/parent"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
 import { hasChildren } from "./conditions"

@@ -1,6 +1,6 @@
-import { EntityConstructor, IEntity } from "./traits/entity"
+import { EntityConstructor, IEntity } from "../traits/entity"
 import { Schema, type } from "@colyseus/schema"
-import { IParent, ParentConstructor } from "./traits/parent"
+import { IParent, ParentConstructor } from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
 import {
@@ -8,7 +8,7 @@ import {
   FlexyContainerConstructor,
   IFlexyContainerOptions,
   flexyContainerRestyleChild
-} from "./traits/flexyContainer"
+} from "../traits/flexyContainer"
 
 export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
   // IEntity

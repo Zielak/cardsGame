@@ -1,7 +1,7 @@
 import { ICondition } from "."
 import { ServerPlayerEvent } from "../player"
 import { EntityProps } from "../room"
-import { getParentEntity } from "../entities/traits/entity"
+import { getParentEntity } from "../traits/entity"
 
 /**
  * Entity's parent needs to match description with `props`

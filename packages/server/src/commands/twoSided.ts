@@ -1,7 +1,6 @@
 import { State } from "../state"
-import { logs } from "../logs"
 import { ICommand } from "."
-import { ITwoSided, faceUp, faceDown } from "../entities/traits/twoSided"
+import { ITwoSided, faceUp, faceDown } from "../traits/twoSided"
 
 /**
  * Reveal the front side (overse) of an element

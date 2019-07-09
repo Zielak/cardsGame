@@ -3,7 +3,7 @@ import { ICondition } from "."
 import { ServerPlayerEvent } from "../player"
 import { logs } from "../logs"
 import { sentenceCase } from "@cardsgame/utils"
-import { IEntity } from "../entities/traits/entity"
+import { IEntity } from "../traits/entity"
 
 /**
  * Interacted entity's prop needs to match with other specified entity/ies

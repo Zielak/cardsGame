@@ -3,8 +3,8 @@ import {
   IEntity,
   EntityConstructor,
   IEntityOptions
-} from "../../src/entities/traits/entity"
-import { IParent, canBeChild } from "../../src/entities/traits/parent"
+} from "../../src/traits/entity"
+import { IParent, canBeChild } from "../../src/traits/parent"
 import { State } from "../../src/state"
 import { Player } from "../../src/player"
 

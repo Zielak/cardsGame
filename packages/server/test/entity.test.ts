@@ -4,7 +4,7 @@ import {
   getParentEntity,
   getOwner,
   setParent
-} from "../src/entities/traits/entity"
+} from "../src/traits/entity"
 import { Player } from "../src/player"
 import { DumbEntity, ConstructedEntity } from "./helpers/dumbEntity"
 import { ConstructedParent } from "./helpers/dumbParent"

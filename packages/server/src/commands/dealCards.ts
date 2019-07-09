@@ -2,7 +2,7 @@ import { State } from "../state"
 import { logs } from "../logs"
 import { ICommand } from "."
 import { ChangeParent } from "./changeParent"
-import { IParent, countChildren, getTop } from "../entities/traits/parent"
+import { IParent, countChildren, getTop } from "../traits/parent"
 
 export class DealCards implements ICommand {
   targets: IParent[]

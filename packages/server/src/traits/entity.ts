@@ -1,6 +1,6 @@
-import { State } from "../../state"
-import { Player } from "../../player"
-import { EntityTransform } from "../../transform"
+import { State } from "../state"
+import { Player } from "../player"
+import { EntityTransform } from "../transform"
 import {
   IParent,
   getKnownConstructor,

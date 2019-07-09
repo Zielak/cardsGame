@@ -1,12 +1,12 @@
 import { randomFloat } from "@cardsgame/utils"
 import { Schema, type } from "@colyseus/schema"
-import { IEntityOptions, IEntity, EntityConstructor } from "./traits/entity"
+import { IEntityOptions, IEntity, EntityConstructor } from "../traits/entity"
 import {
   IParent,
   containsChildren,
   ParentConstructor,
   canBeChild
-} from "./traits/parent"
+} from "../traits/parent"
 import { State } from "../state"
 import { EntityTransform } from "../transform"
 import { Player } from "../player"

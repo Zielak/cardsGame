@@ -1,14 +1,11 @@
 import { Schema, type } from "@colyseus/schema"
-import {
-  EntityConstructor,
-  IEntityOptions
-} from "../../src/entities/traits/entity"
+import { EntityConstructor, IEntityOptions } from "../../src/traits/entity"
 import {
   IParent,
   containsChildren,
   ParentConstructor,
   canBeChild
-} from "../../src/entities/traits/parent"
+} from "../../src/traits/parent"
 import { State } from "../../src/state"
 import { Player } from "../../src/player"
 

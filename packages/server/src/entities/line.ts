@@ -1,6 +1,6 @@
 import { Schema, type } from "@colyseus/schema"
-import { IEntity } from "./traits/entity"
-import { IParent } from "./traits/parent"
+import { IEntity } from "../traits/entity"
+import { IParent } from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
 import { EntityTransform } from "../transform"

@@ -2,7 +2,7 @@ import Bezier from "bezier-js"
 import { Schema, type } from "@colyseus/schema"
 import { def } from "@cardsgame/utils"
 import { logs } from "../logs"
-import { IEntityOptions, IEntity, EntityConstructor } from "./traits/entity"
+import { IEntityOptions, IEntity, EntityConstructor } from "../traits/entity"
 import {
   IParent,
   containsChildren,
@@ -11,7 +11,7 @@ import {
   getChild,
   moveChildTo,
   canBeChild
-} from "./traits/parent"
+} from "../traits/parent"
 import { State } from "../state"
 import { EntityTransform } from "../transform"
 import { Player } from "../player"

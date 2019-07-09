@@ -6,13 +6,13 @@ import {
   getParentEntity,
   IEntityOptions,
   EntityConstructor
-} from "./traits/entity"
+} from "../traits/entity"
 import { State } from "../state"
 import { Client } from "colyseus"
-import { ITwoSided } from "./traits/twoSided"
+import { ITwoSided } from "../traits/twoSided"
 import { def } from "@cardsgame/utils"
 import { Player } from "../player"
-import { IParent, canBeChild } from "./traits/parent"
+import { IParent, canBeChild } from "../traits/parent"
 
 interface IClassicCard extends IEntity, ITwoSided {}
 

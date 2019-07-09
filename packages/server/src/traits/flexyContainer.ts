@@ -1,7 +1,7 @@
 import { IParent } from "./parent"
 import { IEntityOptions, IEntity } from "./entity"
 import { def } from "@cardsgame/utils"
-import { EntityTransform } from "../../transform"
+import { EntityTransform } from "../transform"
 
 export interface IFlexyContainer extends IParent {
   alignItems: "start" | "end" | "center"

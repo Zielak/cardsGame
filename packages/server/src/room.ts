@@ -2,7 +2,7 @@ import { Client, Room as colRoom } from "colyseus"
 import { logs } from "./logs"
 import { CommandsManager } from "./commandsManager"
 import { State } from "./state"
-import { IEntity, isInteractive } from "./entities/traits/entity"
+import { IEntity, isInteractive } from "./traits/entity"
 import { map2Array, mapAdd, mapRemoveEntry } from "@cardsgame/utils"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
@@ -78,7 +78,7 @@ export class Room<S extends State> extends colRoom<S> {
       p => p.clientID === client.id
     )
     if (!player) {
-      logs.error("onMessage", `You're no a player, get out!`)
+      logs.error("onMessage", `You're not a player, get out!`)
       return
     }
     newEvent.player = player

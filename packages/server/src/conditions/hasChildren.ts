@@ -1,8 +1,8 @@
 import { ServerPlayerEvent } from "../player"
 import { ICondition } from "."
 import { State } from "../state"
-import { IParent, countChildren } from "../entities/traits/parent"
-import { IEntity } from "../entities/traits/entity"
+import { IParent, countChildren } from "../traits/parent"
+import { IEntity } from "../traits/entity"
 
 function hasChildren(entity: IParent | IEntity): ICondition
 function hasChildren(state: State, event: ServerPlayerEvent): boolean

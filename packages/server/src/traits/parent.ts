@@ -1,8 +1,8 @@
 import { type, ArraySchema } from "@colyseus/schema"
 import { IEntity, resetWorldTransform } from "./entity"
-import { logs } from "../../logs"
-import { EntityTransform } from "../../transform"
-import { Player } from "../../player"
+import { logs } from "../logs"
+import { EntityTransform } from "../transform"
+import { Player } from "../player"
 import { IIdentity } from "./identity"
 
 const registeredParents: Function[] = []
@@ -154,7 +154,7 @@ export function moveChildTo(parent: IParent, from: number, to: number) {
       getChild(parent, idx).idx = newIdx
     }
   } else {
-    logs.warn(
+    logs.verbose(
       `moveChildTo()`,
       `you were trying to move to the same index:`,
       from,
@@ -193,8 +193,7 @@ export function restyleChildren(parent: IParent) {
       if (data.angle) {
         child._worldTransform.angle = data.angle
       }
-    },
-    this
+    }
   )
 }
 

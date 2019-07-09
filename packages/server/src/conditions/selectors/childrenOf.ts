@@ -2,7 +2,7 @@ import { ServerPlayerEvent } from "../../player"
 import { propsMatch } from "./helpers"
 import { logs } from "../../logs"
 import { ICondition } from ".."
-import { IParent, getChildren } from "../../entities/traits/parent"
+import { IParent, getChildren } from "../../traits/parent"
 
 export const childrenOf = (entity: IParent) => {
   return {

@@ -5,7 +5,7 @@ import {
   countChildren,
   restyleChildren,
   moveChildTo
-} from "../entities/traits/parent"
+} from "../traits/parent"
 
 export class ShuffleChildren implements ICommand {
   constructor(private container: IParent) {}

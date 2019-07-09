@@ -5,7 +5,7 @@ import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
 import chalk from "chalk"
-import { isInteractive } from "./entities/traits/entity"
+import { isInteractive } from "./traits/entity"
 import { ICommand } from "./commands"
 
 export class CommandsManager {

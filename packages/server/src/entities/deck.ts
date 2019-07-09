@@ -1,12 +1,12 @@
 import { cm2px, limit } from "@cardsgame/utils"
-import { IEntity, IEntityOptions, EntityConstructor } from "./traits/entity"
+import { IEntity, IEntityOptions, EntityConstructor } from "../traits/entity"
 import { Schema, type } from "@colyseus/schema"
 import {
   IParent,
   containsChildren,
   ParentConstructor,
   canBeChild
-} from "./traits/parent"
+} from "../traits/parent"
 import { EntityTransform } from "../transform"
 import { State } from "../state"
 import { Player } from "../player"
