@@ -3,6 +3,7 @@ import { Server, logs } from "@cardsgame/server"
 
 import { MakaoRoom } from "./makao"
 import { ShuffleTest } from "./shuffleTest"
+import { SplendorRoom } from "./splendor"
 import { ContainersTest } from "./containersTest"
 
 const WS_PORT = 2657
@@ -12,6 +13,7 @@ const gameServer = new Server({
 })
 
 gameServer.register("Makao", MakaoRoom)
+gameServer.register("Splendor", SplendorRoom)
 gameServer.register("ShuffleTest", ShuffleTest)
 gameServer.register("ContainersTest", ContainersTest)
 logs.info("GAME", "registered all games")

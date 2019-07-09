@@ -8,5 +8,5 @@
     "types": [],
     "outDir": "../dist/server"
   },
-  "exclude": ["splendor", "containersTest", "superhot"]
+  "exclude": ["containersTest", "superhot"]
 }

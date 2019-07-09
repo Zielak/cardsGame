@@ -13,10 +13,20 @@ export class SplendorRoom extends Room<SplendorState> {
 
   possibleActions = new Set<ActionTemplate>([])
 
-  onSetupGame(state: SplendorState) {
+  onSetupGame(options: any = {}) {
+    this.setState(
+      new SplendorState({
+        minClients: options.minClients || 1,
+        maxClients: options.maxClients || 4,
+        hostID: options.hostID
+      })
+    )
+    const { state } = this
+
     const deckLevel1 = new Deck({
       state,
-      name: "level1"
+      name: "level1",
+      x: -100
     })
     const deckLevel2 = new Deck({
       state,
@@ -24,19 +34,25 @@ export class SplendorRoom extends Room<SplendorState> {
     })
     const deckLevel3 = new Deck({
       state,
-      name: "level3"
+      name: "level3",
+      x: 100
     })
 
-    deckLevel1.addChildren(cardsFactory(state, cardsDataLevel1))
-    deckLevel2.addChildren(cardsFactory(state, cardsDataLevel2))
-    deckLevel3.addChildren(cardsFactory(state, cardsDataLevel3))
+    cardsFactory(state, cardsDataLevel1, { level: 1, parent: deckLevel1 })
+    cardsFactory(state, cardsDataLevel2, { level: 2, parent: deckLevel2 })
+    cardsFactory(state, cardsDataLevel3, { level: 3, parent: deckLevel3 })
   }
 
   onStartGame(state: SplendorState) {}
 }
 
-const cardsFactory = (state: SplendorState, data: number[][]): Card[] => {
+const cardsFactory = (
+  state: SplendorState,
+  data: number[][],
+  { level, parent }: { level: number; parent: Deck }
+): Card[] => {
   return data.map(data => {
+    const [costD, costS, costE, costR, costO, vp] = data
     let gem: Gems
     if (data[6]) gem = Gems.Diamond
     else if (data[7]) gem = Gems.Sapphire
@@ -46,13 +62,15 @@ const cardsFactory = (state: SplendorState, data: number[][]): Card[] => {
 
     return new Card({
       state,
-      costD: data[0],
-      costS: data[1],
-      costE: data[2],
-      costR: data[3],
-      costO: data[4],
-      vp: data[5],
-      gem
+      costD,
+      costS,
+      costE,
+      costR,
+      costO,
+      vp,
+      gem,
+      level,
+      parent
     })
   })
 }

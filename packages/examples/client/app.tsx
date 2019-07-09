@@ -84,6 +84,10 @@ const App: FunctionComponent<IAppProps> = props => {
     })
   }
 
+  useEffect(() => {
+    requestJoinRoom("Splendor")
+  }, [clientConnected])
+
   const handleInteraction = (event, idxPath) => {
     game.sendInteraction(event, idxPath)
   }

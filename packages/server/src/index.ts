@@ -13,6 +13,7 @@ export * from "./actionTemplate"
 export * from "./player"
 
 export * from "./transform"
-// export * from "./entities"
+export * from "./traits"
+export * from "./entities"
 
 export * from "./logs"

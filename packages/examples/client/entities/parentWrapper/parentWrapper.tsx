@@ -4,6 +4,7 @@ import { ClassicCardView } from "../classicCard/classicCard"
 import { Deck } from "../deck/deck"
 import { Hand } from "../hand/hand"
 import { Pile } from "../pile/pile"
+import { SplendorCardView } from "../splendorCard/splendorCard"
 
 export interface ParentWrapperProps {
   data: any
@@ -46,6 +47,14 @@ const getChildren = (children = [], idxPath = [], thisName = "") => {
           return <Hand key={"hand" + childData.idx} {...childData} />
         case "pile":
           return <Pile key={"pile" + childData.idx} {...childData} />
+        // TODO: probably inherit from the game types automatically
+        case "splendorCard":
+          return (
+            <SplendorCardView
+              key={"splendorCard" + childData.idx}
+              {...childData}
+            />
+          )
         default:
           return (
             <p key={"default" + idx}>Whoops: {JSON.stringify(childData)}</p>

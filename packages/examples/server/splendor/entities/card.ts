@@ -1,12 +1,55 @@
-import { type, filter } from "@colyseus/schema"
+import { type, Schema } from "@colyseus/schema"
 import {
-  BaseCard,
-  IBaseCardOptions,
-  faceDownOnlyOwner
+  IEntityOptions,
+  IEntity,
+  ITwoSided,
+  State,
+  Player,
+  IParent,
+  EntityConstructor,
+  canBeChild
 } from "@cardsgame/server"
+import { def } from "@cardsgame/utils"
 
-export class Card extends BaseCard {
-  type = "card"
+interface ICard extends IEntity, ITwoSided {}
+
+@canBeChild
+export class Card extends Schema implements ICard {
+  // IEntity
+  _state: State
+  id: EntityID
+  parent: EntityID
+  owner: Player
+  isInOwnersView: boolean
+  isParent(): this is IParent {
+    return false
+  }
+
+  @type("uint8")
+  idx: number
+
+  // @filter(faceDownOnlyOwner)
+  @type("string")
+  type = "splendorCard"
+  // @filter(faceDownOnlyOwner)
+  @type("string")
+  name: string
+
+  @type("number")
+  x: number
+  @type("number")
+  y: number
+  @type("number")
+  angle: number
+
+  @type("number")
+  width: number
+  @type("number")
+  height: number
+
+  // ITwoSided
+  @type("boolean")
+  faceUp: boolean
 
   // @filter(faceDownOnlyOwner)
   @type("uint8")
@@ -41,18 +84,46 @@ export class Card extends BaseCard {
   vp: number
 
   constructor(options: ICardOptions) {
-    super(options)
+    super()
+    this.level = options.level
+    this.gem = options.gem
+
+    this.costD = def(options.costD, 0)
+    this.costS = def(options.costS, 0)
+    this.costE = def(options.costE, 0)
+    this.costR = def(options.costR, 0)
+    this.costO = def(options.costO, 0)
+    this.vp = def(options.vp, 0)
+
+    this.name =
+      "splendor" +
+      [
+        this.level,
+        this.gem,
+        this.costD,
+        this.costS,
+        this.costE,
+        this.costR,
+        this.costO,
+        this.vp
+      ].join("")
+
+    this.faceUp = def(options.faceUp, false)
+
+    EntityConstructor(this, options)
   }
 }
 
-export interface ICardOptions extends IBaseCardOptions {
-  costD: number
-  costS: number
-  costE: number
-  costR: number
-  costO: number
+interface ICardOptions extends IEntityOptions {
+  level: number
   gem: Gems
-  vp: number
+  costD?: number
+  costS?: number
+  costE?: number
+  costR?: number
+  costO?: number
+  vp?: number
+  faceUp?: boolean
 }
 
 export enum Gems {
