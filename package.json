@@ -7,7 +7,7 @@
   "scripts": {
     "bootstrap": "lerna exec npm install",
     "start": "echo nope",
-    "test": "jest --silent",
+    "test": "jest",
     "test:cover": "jest --silent --coverage",
     "test:backup": "jest -c=packages/server/jest.config.js",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
