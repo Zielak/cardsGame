@@ -28,12 +28,13 @@ jobs:
 
       - run: npm install
       - run: npm run lerna:install
-      - run: npm run lerna:bootstrap
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+
+      - run: npm run lerna:bootstrap
 
       # run tests!
       - run: npm test
