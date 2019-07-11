@@ -17,8 +17,6 @@ jobs:
     working_directory: ~/repo
 
     steps:
-      - run: echo "hello!"
-
       - checkout
 
       # Download and cache dependencies
