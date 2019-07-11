@@ -5,6 +5,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
+    "installall": "lerna exec npm install && lerna bootstrap",
     "start": "echo nope",
     "test": "jest --silent --coverage",
     "test:backup": "jest -c=packages/server/jest.config.js",
