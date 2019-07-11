@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/Zielak/cardsGame/tree/master.svg?style=svg&circle-token=0731ea14fca235ad0b3aaaa4484137faa81d8b47)](https://circleci.com/gh/Zielak/cardsGame/tree/master)
+
 # `@cardsgame`
 
 Library for creating card games in general.

@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  prepare:
+  test:
     docker:
       # specify the version you desire here
       - image: circleci/node:10.16
@@ -36,20 +36,5 @@ jobs:
             # - node_modules
             - /root/.npm
 
-  test:
-    docker:
-      - image: circleci/node:10.16
-    working_directory: ~/repo
-
-    steps:
       # run tests!
       - run: npm test
-
-workflows:
-  version: 2
-  test:
-    jobs:
-      - prepare
-      - test:
-          requires:
-            - prepare
