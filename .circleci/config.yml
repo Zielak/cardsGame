@@ -26,15 +26,15 @@ jobs:
       #       # fallback to using the latest cache if no exact match is found
       #       - v1-dependencies-
 
-      - run: |
-        npm install
-        npm run bootstrap
-        npm test
-
+      - run:
+        name: install and test
+        command: |
+          npm install
+          npm run bootstrap
+          npm test
       # - save_cache:
       #     paths:
       #       - node_modules
       #     key: v1-dependencies-{{ checksum "package.json" }}
-
       # run tests!
       # - run: npm test
