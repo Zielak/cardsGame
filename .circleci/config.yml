@@ -26,8 +26,10 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
+      - run: npm install -g lerna
       - run: npm install
-      - run: npm run lerna:prepare
+      - run: lerna exec npm install
+      - run: lerna bootstrap
 
       - save_cache:
           paths:
