@@ -5,7 +5,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "bootstrap": "lerna exec --concurrency 1 npm ci && lerna bootstrap",
+    "bootstrap": "lerna exec --concurrency 1 npm install && lerna bootstrap",
     "start": "echo nope",
     "test": "jest --silent --coverage",
     "test:backup": "jest -c=packages/server/jest.config.js",
