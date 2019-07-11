@@ -27,7 +27,7 @@ jobs:
             - v1-dependencies-
 
       - run: npm install
-      - run: npm lerna:prepare
+      - run: npm run lerna:prepare
 
       - save_cache:
           paths:
