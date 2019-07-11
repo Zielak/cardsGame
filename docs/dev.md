@@ -19,5 +19,3 @@ npm run build:server-w
 All dimensional units are in milimeters, to be as close to reality as possible.
 
 The clinent-side would have to decide how to scale it and present on any devices. Sometimes it would be needed to ignore some units, for example: table size on small mobile devices.
-
-test
