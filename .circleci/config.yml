@@ -36,11 +36,11 @@ jobs:
 
       - run: npm run lerna:bootstrap
       - run: |
-          eecho "/client/node_modules/@cardsgame"
+          echo "/client/node_modules/@cardsgame"
           ls -la ./packages/client/node_modules/@cardsgame | grep "\->"
-          eecho "/examples/node_modules/@cardsgame"
+          echo "/examples/node_modules/@cardsgame"
           ls -la ./packages/examples/node_modules/@cardsgame | grep "\->"
-          eecho "/server/node_modules/@cardsgame"
+          echo "/server/node_modules/@cardsgame"
           ls -la ./packages/server/node_modules/@cardsgame | grep "\->"
 
       # run tests!
