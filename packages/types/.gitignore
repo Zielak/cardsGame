@@ -1,0 +1,11 @@
+node_modules
+dist
+lib
+.cache
+coverage
+
+# TMP files
+.DS_Store
+Thumbs.db
+npm-debug.log
+lerna-debug.log
