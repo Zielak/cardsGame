@@ -28,19 +28,19 @@ jobs:
 
       - run: npm install
       - run: npm run lerna:install
+      - run: npm run lerna:bootstrap
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      - run: npm run lerna:bootstrap
       - run: |
-          echo "/client/node_modules/@cardsgame"
+          echo "| client"
           ls -la ./packages/client/node_modules/@cardsgame | grep "\->"
-          echo "/examples/node_modules/@cardsgame"
+          echo "| examples"
           ls -la ./packages/examples/node_modules/@cardsgame | grep "\->"
-          echo "/server/node_modules/@cardsgame"
+          echo "| server"
           ls -la ./packages/server/node_modules/@cardsgame | grep "\->"
 
       # run tests!
