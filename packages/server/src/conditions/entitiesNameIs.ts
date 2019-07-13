@@ -1,8 +1,8 @@
 import { State } from "../state"
 import { ServerPlayerEvent } from "../player"
-import { ICondition, IConditionFactory } from "."
+import { ICondition } from "."
 
-export const entitiesNameIs: IConditionFactory = (name: string) => {
+export const entitiesNameIs = (name: string) => {
   const cond: ICondition = (
     state: State,
     event: ServerPlayerEvent

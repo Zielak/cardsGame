@@ -3,7 +3,11 @@ import {
   getChild,
   getChildren,
   removeChildAt,
-  countChildren
+  countChildren,
+  removeChild,
+  getTop,
+  getBottom,
+  moveChildTo
 } from "../src/traits/parent"
 import { DumbParent, ConstructedParent } from "./helpers/dumbParent"
 import { State } from "../src/state"
@@ -58,8 +62,65 @@ describe("#removeChildAt", () => {
     expect(countChildren(parent)).toBe(2)
   })
 })
-test.todo("#removeChild")
-test.todo("#moveChildTo")
+
+describe("#removeChild", () => {
+  let parent
+  it("calls removeChildAt", () => {
+    parent = new ConstructedParent({ state })
+    const entity = new ConstructedEntity({ state, parent })
+
+    expect(countChildren(parent)).toBe(1)
+    removeChild(parent, entity.id)
+    expect(countChildren(parent)).toBe(0)
+  })
+
+  it("finds proper child", () => {
+    parent = new ConstructedParent({ state })
+    new ConstructedEntity({ state, parent })
+    const entity = new ConstructedEntity({ state, parent })
+    new ConstructedEntity({ state, parent })
+
+    removeChild(parent, entity.id)
+    expect(getChildren(parent).map(e => e.id)).toMatchSnapshot()
+  })
+})
+describe("#moveChildTo", () => {
+  let parent
+  const mapChildren = parent => getChildren(parent).map(e => e.id)
+  beforeEach(() => {
+    parent = new ConstructedParent({ state })
+    new ConstructedEntity({ state, parent })
+    new ConstructedEntity({ state, parent })
+    new ConstructedEntity({ state, parent })
+    new ConstructedEntity({ state, parent })
+    new ConstructedEntity({ state, parent })
+  })
+  it("moves item down 1 position", () => {
+    moveChildTo(parent, 2, 1)
+    expect(mapChildren(parent)).toMatchSnapshot()
+  })
+  it("moves item up 1 position", () => {
+    moveChildTo(parent, 2, 3)
+    expect(mapChildren(parent)).toMatchSnapshot()
+  })
+  it("moves item to bottom", () => {
+    moveChildTo(parent, 2, 0)
+    expect(mapChildren(parent)).toMatchSnapshot()
+  })
+  it("moves item to top", () => {
+    moveChildTo(parent, 2, countChildren(parent) - 1)
+    expect(mapChildren(parent)).toMatchSnapshot()
+  })
+  it("doesn't move anything", () => {
+    moveChildTo(parent, 2, 2)
+    expect(mapChildren(parent)).toMatchSnapshot()
+  })
+
+  it("throws on out of range idx", () => {
+    expect(() => moveChildTo(parent, 2, 10)).toThrow()
+    expect(() => moveChildTo(parent, -2, 3)).toThrow()
+  })
+})
 
 test.todo("#restyleChildren")
 
@@ -82,9 +143,37 @@ describe("#getChildren", () => {
     expect(getChildren(parent)).toMatchSnapshot()
   })
 })
-test.todo("#getChild")
-test.todo("#getTop")
-test.todo("#getBottom")
+
+describe("#getChild", () => {
+  let parent
+  let entity
+  it("gets child", () => {
+    parent = new ConstructedParent({ state })
+    new ConstructedEntity({ state, parent })
+    entity = new ConstructedEntity({ state, parent })
+
+    expect(getChild(parent, 1)).toBe(entity)
+  })
+  it.todo("throws if idx out of range")
+})
+
+test("#getTop", () => {
+  const parent = new ConstructedParent({ state })
+  new ConstructedEntity({ state, parent })
+  new ConstructedEntity({ state, parent })
+  const entity = new ConstructedEntity({ state, parent })
+
+  expect(getTop(parent)).toBe(entity)
+})
+test("#getBottom", () => {
+  const parent = new ConstructedParent({ state })
+  const entity = new ConstructedEntity({ state, parent })
+  new ConstructedEntity({ state, parent })
+  new ConstructedEntity({ state, parent })
+
+  expect(getBottom(parent)).toBe(entity)
+})
+// getDescendants is now only used for debugging?
 test.todo("#getDescendants")
 
 describe("queryRunner functions", () => {

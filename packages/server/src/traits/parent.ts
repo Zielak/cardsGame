@@ -129,6 +129,9 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
 export function moveChildTo(parent: IParent, from: number, to: number) {
   // 1. pluck out the FROM
   const child = getChild(parent, from)
+  if (!child) {
+    throw new Error(`There's no child at index ${from}`)
+  }
 
   // 2. keep moving from 3->2, to->3
   if (from < to) {
@@ -223,7 +226,7 @@ export function getChildren<T extends IEntity | IParent>(
 }
 
 /**
- * Get one direct child of `parent`
+ * Get one direct child of `parent` by its `idx`
  */
 export function getChild<T extends IEntity | IParent>(
   parent: IParent,

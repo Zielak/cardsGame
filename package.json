@@ -8,6 +8,7 @@
     "bootstrap": "lerna exec --concurrency 1 npm install && lerna bootstrap",
     "start": "echo nope",
     "test": "jest --silent",
+    "test:watch": "jest --silent --watch",
     "test:cover": "jest --silent --coverage",
     "test:backup": "jest -c=packages/server/jest.config.js",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",

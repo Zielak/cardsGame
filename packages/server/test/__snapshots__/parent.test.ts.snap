@@ -56,3 +56,60 @@ Array [
 `;
 
 exports[`#getChildren empty parent 1`] = `Array []`;
+
+exports[`#moveChildTo doesn't move anything 1`] = `
+Array [
+  1,
+  2,
+  3,
+  4,
+  5,
+]
+`;
+
+exports[`#moveChildTo moves item down 1 position 1`] = `
+Array [
+  1,
+  3,
+  2,
+  4,
+  5,
+]
+`;
+
+exports[`#moveChildTo moves item to bottom 1`] = `
+Array [
+  3,
+  1,
+  2,
+  4,
+  5,
+]
+`;
+
+exports[`#moveChildTo moves item to top 1`] = `
+Array [
+  1,
+  2,
+  4,
+  5,
+  3,
+]
+`;
+
+exports[`#moveChildTo moves item up 1 position 1`] = `
+Array [
+  1,
+  2,
+  4,
+  3,
+  5,
+]
+`;
+
+exports[`#removeChild finds proper child 1`] = `
+Array [
+  1,
+  3,
+]
+`;
