@@ -70,6 +70,7 @@ export class Game extends EventEmitter {
       event: event.type,
       entityPath: entityIdxPath
     }
+    logs.notice("sendInteraction", playerEvent)
     this.room.send(playerEvent)
   }
 

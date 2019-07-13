@@ -5,6 +5,7 @@ import { Deck } from "../deck/deck"
 import { Hand } from "../hand/hand"
 import { Pile } from "../pile/pile"
 import { SplendorCardView } from "../splendorCard/splendorCard"
+import { logs } from "@cardsgame/client"
 
 export interface ParentWrapperProps {
   data: any
@@ -29,7 +30,7 @@ const ParentWrapper: FunctionComponent<ParentWrapperProps> = props => {
 export { ParentWrapper }
 
 const getChildren = (children = [], idxPath = [], thisName = "") => {
-  console.log(`\t\t${thisName}.RENDER()`, children)
+  logs.verbose(`\t\t${thisName}.RENDER()`, children)
 
   return [...children]
     .sort((a, b) => a.idx - b.idx)

@@ -1,4 +1,4 @@
-import { Game } from "@cardsgame/client"
+import { Game, logs } from "@cardsgame/client"
 import React, {
   FunctionComponent,
   useState,
@@ -46,7 +46,7 @@ const App: FunctionComponent<IAppProps> = props => {
     })
 
     game.on(Game.events.clientOpen, () => {
-      console.log("Client connected.")
+      logs.info("Client connected.")
       setClientConnected(true)
       window["game"] = game
     })
@@ -61,7 +61,7 @@ const App: FunctionComponent<IAppProps> = props => {
   const handleStateChange = newState => {
     const copy = stateToJSON(newState)
 
-    console.log("handleStateChange, copy:", copy)
+    logs.verbose("handleStateChange, copy:", copy)
     setGameState(copy)
   }
 
@@ -69,13 +69,13 @@ const App: FunctionComponent<IAppProps> = props => {
 
   const requestJoinRoom = gameName => {
     if (!clientConnected) {
-      console.warn(`You're not yet connected...`)
+      logs.warn(`You're not yet connected...`)
       return
     }
     const room = game.joinRoom(gameName)
 
     room.onJoin.addOnce(() => {
-      console.info("handleJoinedRoom")
+      logs.info("handleJoinedRoom > ContainersTest")
 
       room.onStateChange.add(handleStateChange)
       room.onMessage.add(handleMessage)
@@ -85,7 +85,7 @@ const App: FunctionComponent<IAppProps> = props => {
   }
 
   useEffect(() => {
-    requestJoinRoom("Splendor")
+    requestJoinRoom("ContainersTest")
   }, [clientConnected])
 
   const handleInteraction = (event, idxPath) => {
@@ -94,7 +94,7 @@ const App: FunctionComponent<IAppProps> = props => {
 
   return (
     <>
-      {console.log("render")}
+      {logs.verbose("render")}
       {gameState && (
         <InteractionContext.Provider value={handleInteraction}>
           <GameView gameState={gameState} />

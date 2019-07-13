@@ -7,6 +7,7 @@ module.exports = env => {
   if (env === undefined) {
     env = { development: true }
   }
+  console.log("env:", env)
   return {
     entry: "./src/index.ts",
     output: {

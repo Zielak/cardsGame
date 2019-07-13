@@ -5,6 +5,7 @@ module.exports = env => {
   if (env === undefined) {
     env = { development: true }
   }
+  console.log("env:", env)
   return {
     context: path.join(__dirname, "client"),
     entry: "./app.tsx",
