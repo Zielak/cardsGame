@@ -64,6 +64,7 @@ export class Hand extends Schema implements IEntity, IParent {
     this.autoSort = def(options.autoSort, () => -1)
   }
 
+  /* Disable AutoSort for now
   onChildAdded(child: IEntity) {
     const count = countChildren(this)
     logs.info(`Hand.autoSort`, `0..${count}`)
@@ -80,6 +81,7 @@ export class Hand extends Schema implements IEntity, IParent {
       break
     }
   }
+  */
 
   restyleChild(
     child: IEntity,

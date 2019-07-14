@@ -1,12 +1,11 @@
-import * as colyseus from "colyseus.js"
+import { Room as colyseusRoom } from "colyseus.js/lib/Room"
 import { EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
-import { EntityData } from "./types"
 
 export class Room extends EventEmitter {
   childrenListeners = []
 
-  constructor(public room: colyseus.Room) {
+  constructor(public room: colyseusRoom) {
     super()
 
     room.onMessage.add((message: ServerMessage) => {
@@ -66,11 +65,11 @@ export class Room extends EventEmitter {
       this.emit(Room.events.clientLeft, client)
     }
 
-    this.room.state.players.onAdd = (player: EntityData, key) => {
+    this.room.state.players.onAdd = (player, key) => {
       logs.notice("player created", key, player.name)
       this.emit(Room.events.playerAdded, player)
     }
-    this.room.state.players.onRemove = (player: EntityData, key) => {
+    this.room.state.players.onRemove = (player, key) => {
       logs.notice("player removed", player.name)
       this.emit(Room.events.playerRemoved, player)
     }
@@ -101,9 +100,4 @@ export class Room extends EventEmitter {
     playerAdded: Symbol("playerAdded"),
     playerRemoved: Symbol("playerRemoved")
   }
-}
-
-export type PlayerData = {
-  clientID: string
-  entityData: EntityData
 }

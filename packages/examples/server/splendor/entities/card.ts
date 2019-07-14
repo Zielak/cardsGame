@@ -1,4 +1,3 @@
-import { type, Schema } from "@colyseus/schema"
 import {
   IEntityOptions,
   IEntity,
@@ -7,7 +6,9 @@ import {
   Player,
   IParent,
   EntityConstructor,
-  canBeChild
+  canBeChild,
+  type,
+  Schema
 } from "@cardsgame/server"
 import { def } from "@cardsgame/utils"
 

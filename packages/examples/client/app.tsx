@@ -5,7 +5,7 @@ import React, {
   useEffect,
   createContext
 } from "react"
-import * as ReactDOM from "react-dom"
+import { render } from "react-dom"
 
 import { GamesList } from "./components/gamesList/gamesList"
 import { MakaoGameUI } from "./games/makao/makao"
@@ -137,4 +137,4 @@ const App: FunctionComponent<IAppProps> = props => {
   )
 }
 
-ReactDOM.render(<App />, document.getElementById("root"))
+render(<App />, document.getElementById("root"))

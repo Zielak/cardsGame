@@ -1,4 +1,5 @@
 export { Server } from "colyseus"
+export { type, Schema, MapSchema } from "@colyseus/schema"
 
 import * as commands from "./commands"
 export { commands }

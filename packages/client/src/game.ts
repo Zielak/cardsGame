@@ -1,7 +1,7 @@
-import * as colyseus from "colyseus.js/lib/index"
-import { logs } from "./logs"
+import { Client } from "colyseus.js/lib/Client"
+import { RoomAvailable, Room } from "colyseus.js/lib/Room"
 import { EventEmitter } from "eventemitter3"
-import { RoomAvailable } from "colyseus.js/lib/Room"
+import { logs } from "./logs"
 
 interface IGameOptions {
   viewElement: HTMLElement
@@ -13,8 +13,8 @@ interface IGameOptions {
  * Provide an interface for the players: play area, settings and others
  */
 export class Game extends EventEmitter {
-  client: colyseus.Client
-  room: colyseus.Room
+  client: Client
+  room: Room
 
   gameNames: string[]
   viewElement: HTMLElement
@@ -27,7 +27,8 @@ export class Game extends EventEmitter {
 
     const host = window.document.location.hostname
     const port = window.document.location.port ? ":" + 2657 : ""
-    this.client = new colyseus.Client("ws://" + host + port)
+
+    this.client = new Client("ws://" + host + port)
 
     this.client.onOpen.add(data => {
       logs.info("CLIENT open", data)
@@ -40,10 +41,11 @@ export class Game extends EventEmitter {
     })
 
     // Hot module replacement - there can be only one app on page plz
-    document.dispatchEvent(new Event("destroy"))
-    document.addEventListener("destroy", () => {
-      this.destroy()
-    })
+    // TODO: I'm not using HMR? Remove the code.
+    // document.dispatchEvent(new Event("destroy"))
+    // document.addEventListener("destroy", () => {
+    //   this.destroy()
+    // })
   }
 
   joinRoom(gameName: string) {

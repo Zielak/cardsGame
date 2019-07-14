@@ -11,31 +11,40 @@
     "server"
   ],
   "scripts": {
-    "start": "echo 'http://localhost:1234' && webpack-dev-server | npm run server",
-    "client": "webpack-dev-server",
-    "server": "npm run build:server && nodemon dist/server/index.js --delay 250ms --watch server --watch ../server/lib/",
+    "start": "echo 'http://localhost:1234' && webpack-dev-server | npm run server:dev",
+    "start:prod": "npm run client | npm run server",
+    "client": "node clientServer.js",
+    "client:dev": "webpack-dev-server",
+    "server": "npm run build:server && node dist/server/index.js",
+    "server:dev": "npm run build:server && nodemon dist/server/index.js --delay 250ms --watch server --watch ../server/lib/",
     "server:ts": "nodemon --delay 250ms --watch server --watch ../server/src/ -x ts-node --project server/tsconfig.json --files server/index.ts",
     "build": "npm run build:client && npm run build:server",
-    "build:client": "webpack",
+    "build:client": "webpack --env.production",
     "build:server": "tsc -b server",
     "build:server-w": "tsc -b server --watch"
   },
   "dependencies": {
-    "@cardsgame/client": "file:../client",
-    "@cardsgame/server": "file:../server",
-    "@cardsgame/types": "file:../types",
-    "@cardsgame/utils": "file:../utils",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
-  },
-  "devDependencies": {
+    "@cardsgame/client": "^0.1.8",
+    "@cardsgame/server": "^0.1.8",
+    "@cardsgame/types": "^0.1.8",
+    "@cardsgame/utils": "^0.1.8",
     "css-loader": "^3.0.0",
     "html-webpack-plugin": "^3.2.0",
+    "http-cache-middleware": "^1.2.1",
+    "node-sass": "^4.12.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "restana": "^3.2.3",
     "sass-loader": "^7.1.0",
+    "serve-static": "^1.14.1",
     "style-loader": "^0.23.1",
     "ts-loader": "^6.0.4",
+    "typescript": "^3.5.3",
     "webpack": "^4.35.3",
-    "webpack-cli": "^3.3.5",
+    "webpack-cli": "^3.3.5"
+  },
+  "devDependencies": {
+    "webpack-bundle-analyzer": "^3.3.2",
     "webpack-dev-server": "^3.7.2"
   }
 }

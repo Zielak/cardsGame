@@ -1,0 +1,7 @@
+version: "3.7"
+services:
+  game:
+    build: .
+    ports:
+      - "443:443"
+      - "2657:2657"

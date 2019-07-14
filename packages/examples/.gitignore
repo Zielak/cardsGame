@@ -1,7 +1,7 @@
 node_modules
+certs
 dist
 lib
-.cache
 coverage
 
 # TMP files

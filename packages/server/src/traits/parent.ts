@@ -106,13 +106,15 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
   const targetArrayName = "children" + parent._childrenPointers[idx]
   const targetArray: ArraySchema = parent[targetArrayName]
 
-  const childIdx = targetArray.findIndex(el => el === child)
+  const childIdx = targetArray.findIndex(el => el.idx === idx)
 
   // FIXME: after colyseus/schema geets fixed:
   // https://github.com/colyseus/schema/issues/17
   // https://discordapp.com/channels/525739117951320081/526083188108296202/573204615290683392
   // parent[targetArrayName] = targetArray.filter(el => el !== child)
+  logs.info("before", parent[targetArrayName].$changes)
   parent[targetArrayName].splice(childIdx, 1)
+  logs.info("after ", parent[targetArrayName].$changes)
   updateIndexes(parent)
 
   child.parent = 0

@@ -14,7 +14,7 @@
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
     "build:server": "lerna run --stream --concurrency 1 --scope '*/server' build",
     "build:server-w": "lerna run --stream --concurrency 1 --scope '*/server' build:watch",
-    "build:client": "lerna run --stream --concurrency 1 --scope '*/client' build:dev",
+    "build:client": "lerna run --stream --concurrency 1 --scope '*/client' build",
     "build:client-w": "lerna run --stream --concurrency 1 --scope '*/client' build:watch",
     "build:examples": "lerna run --stream --concurrency 1 --scope '*/examples' build",
     "build:examples:client": "lerna run --stream --concurrency 1 --scope '*/examples' build:client",
@@ -22,8 +22,8 @@
     "build:examples:server": "lerna run --stream --concurrency 1 --scope '*/examples' build:server",
     "build:examples:server-w": "lerna run --stream --concurrency 1 --scope '*/examples' build:server-w",
     "build:utils": "lerna run --stream --concurrency 1 --scope '*/utils' build",
-    "examples:client": "lerna run --stream --concurrency 1 --scope '*/examples' client",
-    "examples:server": "lerna run --stream --concurrency 1 --scope '*/examples' server",
+    "examples:client": "lerna run --stream --concurrency 1 --scope '*/examples' client:dev",
+    "examples:server": "lerna run --stream --concurrency 1 --scope '*/examples' server:dev",
     "preversion": "npm ci && npm run test"
   },
   "husky": {

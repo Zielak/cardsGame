@@ -1,5 +1,7 @@
 const path = require("path")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin
 
 module.exports = env => {
   if (env === undefined) {
@@ -11,7 +13,7 @@ module.exports = env => {
     entry: "./app.tsx",
     output: {
       filename: "index.js",
-      path: path.resolve(__dirname, "dist")
+      path: path.resolve(__dirname, "dist/client")
     },
     mode: env && env.development ? "development" : "production",
     devtool: "inline-source-map",
@@ -45,6 +47,10 @@ module.exports = env => {
     plugins: [
       new HtmlWebpackPlugin({
         template: "index.html"
+      }),
+      new BundleAnalyzerPlugin({
+        analyzerMode: "static",
+        openAnalyzer: false
       })
     ],
     resolve: {

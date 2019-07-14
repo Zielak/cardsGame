@@ -11,7 +11,8 @@ import {
   logs,
   getTop,
   standardDeckFactory,
-  IEntity
+  IEntity,
+  MapSchema
 } from "@cardsgame/server"
 
 import { MakaoState } from "./state"
@@ -26,7 +27,6 @@ import {
   PlayAce,
   RequestSuit
 } from "./actions"
-import { MapSchema } from "@colyseus/schema"
 import { map2Array } from "@cardsgame/utils"
 
 export class MakaoRoom extends Room<MakaoState> {
