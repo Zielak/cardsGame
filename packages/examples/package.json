@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/examples",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -24,7 +24,7 @@
     "build:server-w": "tsc -b server --watch"
   },
   "dependencies": {
-    "@cardsgame/client": "^0.1.10",
+    "@cardsgame/client": "^0.1.11",
     "@cardsgame/server": "^0.1.10",
     "@cardsgame/types": "^0.1.10",
     "@cardsgame/utils": "^0.1.10",
