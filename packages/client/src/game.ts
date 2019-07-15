@@ -26,9 +26,9 @@ export class Game extends EventEmitter {
     this.viewElement = viewElement
 
     const host = window.document.location.hostname
-    const port = window.document.location.port ? ":" + 2657 : ""
+    const port = window.document.location.port
 
-    this.client = new Client("ws://" + host + port)
+    this.client = new Client("wss://" + host + port)
 
     this.client.onOpen.add(data => {
       logs.info("CLIENT open", data)
