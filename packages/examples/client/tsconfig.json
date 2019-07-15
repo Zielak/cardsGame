@@ -5,7 +5,6 @@
     "jsx": "react",
     "sourceMap": true,
     "lib": ["dom", "es6", "es2016"],
-    "target": "es5",
-    "outDir": "../distClient"
+    "target": "es5"
   }
 }

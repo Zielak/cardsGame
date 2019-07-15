@@ -25,8 +25,11 @@ module.exports = env => {
       rules: [
         {
           test: /\.tsx?$/,
-          use: "ts-loader",
-          exclude: /node_modules\/(?!colyseus\.js)/
+          loader: "ts-loader",
+          exclude: /node_modules\/(?!colyseus\.js)/,
+          options: {
+            configFile: "client/tsconfig.json"
+          }
         },
         {
           test: /\.scss$/,
