@@ -26,11 +26,6 @@ jobs:
             - v3-dependencies-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
             - v3-dependencies-
-      - restore_cache:
-          name: Restore cache for packages/examples dependencies
-          keys:
-            - v3-dependencies-examples-{{ checksum "packages/examples/package.json" }}
-            - v3-dependencies-examples-
 
       - run: npm install
       - run: npm run bootstrap
@@ -41,11 +36,6 @@ jobs:
           key: v3-dependencies-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - save_cache:
-          name: Save cache for packages/examples dependencies
-          key: v3-dependencies-examples-{{ checksum "packages/examples/package.json" }}
-          paths:
-            - packages/examples/node_modules
 
       # run tests!
       - run: npm test

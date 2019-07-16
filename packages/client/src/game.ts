@@ -6,6 +6,10 @@ import { logs } from "./logs"
 interface IGameOptions {
   viewElement: HTMLElement
   gameNames?: string[]
+  wss?: {
+    host: string
+    port: number
+  }
 }
 
 /**
@@ -19,14 +23,14 @@ export class Game extends EventEmitter {
   gameNames: string[]
   viewElement: HTMLElement
 
-  constructor({ gameNames, viewElement }: IGameOptions) {
+  constructor({ gameNames, viewElement, wss }: IGameOptions) {
     super()
 
     this.gameNames = gameNames
     this.viewElement = viewElement
 
-    const host = window.document.location.hostname
-    const port = window.document.location.port
+    const host = (wss && wss.host) || window.document.location.hostname
+    const port = wss && wss.port ? `:${wss.port}` : ":2657"
 
     this.client = new Client("wss://" + host + port)
 

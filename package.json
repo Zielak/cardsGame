@@ -6,7 +6,8 @@
   "license": "ISC",
   "scripts": {
     "bootstrap": "lerna exec --concurrency 1 npm install && lerna bootstrap",
-    "start": "echo nope",
+    "linkup": "sripts/linkup.sh",
+    "start": "npm run build:examples:server-w | npm run build:examples:client-w",
     "test": "jest --silent",
     "test:watch": "jest --silent --watch",
     "test:cover": "jest --silent --coverage",
@@ -18,12 +19,10 @@
     "build:client-w": "lerna run --stream --concurrency 1 --scope '*/client' build:watch",
     "build:examples": "lerna run --stream --concurrency 1 --scope '*/examples' build",
     "build:examples:client": "lerna run --stream --concurrency 1 --scope '*/examples' build:client",
-    "build:examples:client-w": "lerna run --stream --concurrency 1 --scope '*/examples' build:client -- --watch",
+    "build:examples:client-w": "lerna run --stream --concurrency 1 --scope '*/examples' build:client-w",
     "build:examples:server": "lerna run --stream --concurrency 1 --scope '*/examples' build:server",
     "build:examples:server-w": "lerna run --stream --concurrency 1 --scope '*/examples' build:server-w",
     "build:utils": "lerna run --stream --concurrency 1 --scope '*/utils' build",
-    "examples:client": "lerna run --stream --concurrency 1 --scope '*/examples' client:dev",
-    "examples:server": "lerna run --stream --concurrency 1 --scope '*/examples' server:dev",
     "preversion": "npm ci && npm run test"
   },
   "husky": {

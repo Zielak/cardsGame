@@ -41,16 +41,6 @@
         "reveal": "never"
       },
       "problemMatcher": "$tsc"
-    },
-    {
-      "label": "Validate Examples",
-      "command": "tsc",
-      "type": "shell",
-      "args": ["--noEmit", "--jsx", "react", "-p", "packages/examples/server"],
-      "presentation": {
-        "reveal": "never"
-      },
-      "problemMatcher": "$tsc"
     }
   ]
 }

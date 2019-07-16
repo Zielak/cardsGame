@@ -1,12 +1,9 @@
 {
   "search.exclude": {
-    "**/.cache": true,
     "**/dist": true,
     "**/lib": true
   },
-  "typescript.tsdk": "node_modules/typescript/lib",
   "files.exclude": {
-    "**/.cache": true,
     "**/dist": true,
     "**/lib": true,
     "**/node_modules": true
