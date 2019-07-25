@@ -130,9 +130,9 @@ export function setParent(entity: IEntity, newParent: IParent) {
 
   const con = getKnownConstructor(entity)
   const targetArray = newParent["children" + con.name] as ArraySchema<IEntity>
-  entity.idx = countChildren(newParent)
-
   targetArray.push(entity)
+
+  entity.idx = countChildren(newParent)
   entity.parent = newParent.id
   newParent._childrenPointers.push(con.name)
 

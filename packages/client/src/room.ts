@@ -1,11 +1,18 @@
-import { Room as colyseusRoom } from "colyseus.js/lib/Room"
+// import { Room as colyseusRoom } from "colyseus.js/lib/Room"
 import { EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
+
+/**
+ * @typedef {import('colyseus.js').Room} colRoom
+ */
 
 export class Room extends EventEmitter {
   childrenListeners = []
 
-  constructor(public room: colyseusRoom) {
+  /**
+   * @param {colRoom} room
+   */
+  constructor(public room) {
     super()
 
     room.onMessage.add((message: ServerMessage) => {

@@ -50,7 +50,7 @@ export class CommandsManager {
     if (actions.length === 0) {
       logs.info("performAction", `no actions, ignoring.`)
       throw new Error(
-        `Client ${client.id}: No actions found for that ${event.event}, ignoring...`
+        `Client ${client.id}: No actions found for that "${event.event}" event, ignoring...`
       )
     }
 

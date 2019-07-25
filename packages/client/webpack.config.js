@@ -1,7 +1,25 @@
 const path = require("path")
+const { SourceMapDevToolPlugin } = require("webpack")
 const DeclarationBundler = require("webpack-plugin-typescript-declaration-bundler")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin
+
+const getPlugins = env => {
+  const plugins = [
+    new BundleAnalyzerPlugin({
+      analyzerMode: "static",
+      openAnalyzer: false
+    })
+  ]
+  if (env.development) {
+    plugins.push(
+      new SourceMapDevToolPlugin({
+        filename: "[file].map"
+      })
+    )
+  }
+  return plugins
+}
 
 module.exports = env => {
   if (env === undefined) {
@@ -9,15 +27,17 @@ module.exports = env => {
   }
   console.log("env:", env)
   return {
-    entry: "./src/index.ts",
+    entry: {
+      index: "./src/index.ts"
+    },
     output: {
-      filename: "index.js",
+      filename: "[name].js",
+      chunkFilename: "cardsGame.[name].js",
       path: path.resolve(__dirname, "lib"),
       library: "cardsgameClient",
       libraryTarget: "umd"
     },
     mode: env && env.development ? "development" : "production",
-    devtool: "inline-source-map",
     module: {
       rules: [
         {
@@ -27,12 +47,12 @@ module.exports = env => {
         }
       ]
     },
-    plugins: [
-      new BundleAnalyzerPlugin({
-        analyzerMode: "static",
-        openAnalyzer: false
-      })
-    ],
+    // optimization: {
+    //   splitChunks: {
+    //     chunks: "all"
+    //   }
+    // },
+    plugins: getPlugins(env),
     resolve: {
       extensions: [".ts", ".js"]
     }

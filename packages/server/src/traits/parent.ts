@@ -112,17 +112,19 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
   // https://github.com/colyseus/schema/issues/17
   // https://discordapp.com/channels/525739117951320081/526083188108296202/573204615290683392
   // parent[targetArrayName] = targetArray.filter(el => el !== child)
-  logs.info("before", parent[targetArrayName].$changes)
-  parent[targetArrayName].splice(childIdx, 1)
-  logs.info("after ", parent[targetArrayName].$changes)
+  const [removedChild] = parent[targetArrayName].splice(childIdx, 1)
   updateIndexes(parent)
 
-  child.parent = 0
+  if (removedChild !== child) {
+    throw new Error("How the fuck did that happen?")
+  }
+
+  removedChild.parent = 0
 
   // ------ update
 
   // Reset last parent's stylings
-  resetWorldTransform(child)
+  resetWorldTransform(removedChild)
   restyleChildren(parent)
 
   return true

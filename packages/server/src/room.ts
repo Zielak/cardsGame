@@ -6,6 +6,7 @@ import { IEntity, isInteractive } from "./traits/entity"
 import { map2Array, mapAdd, mapRemoveEntry } from "@cardsgame/utils"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
+import chalk from "chalk"
 
 export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
@@ -16,6 +17,11 @@ export class Room<S extends State> extends colRoom<S> {
 
   onInit(options: any) {
     logs.info(`Room:${this.name}`, "creating new room")
+
+    if (!this.possibleActions) {
+      logs.warn(`Room:${this.name}`, "You didn't define any `possibleActions`!")
+      this.possibleActions = new Set([])
+    }
 
     this.commandsManager = new CommandsManager(this.possibleActions)
 
@@ -83,21 +89,7 @@ export class Room<S extends State> extends colRoom<S> {
     }
     newEvent.player = player
 
-    const minifyTarget = (e: IEntity) => {
-      return `${e.type}:${e.name}`
-    }
-    const minifyPlayer = (p: Player) => {
-      return `${p.name}[${p.clientID}]`
-    }
-    const logObj = Object.assign(
-      { ...newEvent },
-      newEvent.entity ? { entity: minifyTarget(newEvent.entity) } : {},
-      newEvent.entities
-        ? { entities: newEvent.entities.map(minifyTarget) }
-        : {},
-      newEvent.player ? { player: minifyPlayer(newEvent.player) } : {}
-    )
-    logs.info("onMessage", JSON.stringify(logObj))
+    debugLogMessage(newEvent)
 
     this.commandsManager
       .action(this.state, client, newEvent)
@@ -122,6 +114,38 @@ export class Room<S extends State> extends colRoom<S> {
   onStartGame(state: State) {
     logs.error("Room", `onStartGame is not implemented!`)
   }
+}
+
+const debugLogMessage = newEvent => {
+  const minifyTarget = (e: IEntity) => {
+    return `${e.type}:${e.name}`
+  }
+  const minifyPlayer = (p: Player) => {
+    return `${p.name}[${p.clientID}]`
+  }
+  const logObj = Object.assign(
+    { ...newEvent },
+    newEvent.entity ? { entity: minifyTarget(newEvent.entity) } : {},
+    newEvent.entities ? { entities: newEvent.entities.map(minifyTarget) } : {}
+  )
+
+  const entity = minifyTarget(newEvent.entity)
+  const entities = newEvent.entities.map(minifyTarget).join(", ")
+  const entityPath = chalk.green(newEvent.entityPath.join(", "))
+
+  const { command, event } = newEvent
+
+  logs.info(
+    "onMessage",
+    [
+      `Player: ${minifyPlayer(newEvent.player)} | `,
+      chalk.white.bold(command),
+      ` "${chalk.yellow(event)}"`,
+      `\n\tpath: [${entityPath}], `,
+      entity ? ` entity:"${entity}"` : "",
+      entities ? ` (${entities})` : ""
+    ].join("")
+  )
 }
 
 export type EntityProps = {

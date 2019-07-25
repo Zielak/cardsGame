@@ -1,15 +1,16 @@
-import { Client } from "colyseus.js/lib/Client"
-import { RoomAvailable, Room } from "colyseus.js/lib/Room"
 import { EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
 
 interface IGameOptions {
   viewElement: HTMLElement
   gameNames?: string[]
-  wss?: {
-    host: string
-    port: number
-  }
+}
+// It's a copy straight from colyseus.js...
+interface RoomAvailable {
+  roomId: string
+  clients: number
+  maxClients: number
+  metadata?: any
 }
 
 /**
@@ -17,39 +18,42 @@ interface IGameOptions {
  * Provide an interface for the players: play area, settings and others
  */
 export class Game extends EventEmitter {
-  client: Client
-  room: Room
+  client
+  room
 
   gameNames: string[]
   viewElement: HTMLElement
 
-  constructor({ gameNames, viewElement, wss }: IGameOptions) {
+  constructor({ gameNames, viewElement }: IGameOptions) {
     super()
 
     this.gameNames = gameNames
     this.viewElement = viewElement
 
-    const host = (wss && wss.host) || window.document.location.hostname
-    const port = wss && wss.port ? `:${wss.port}` : ":2657"
+    this.openClient()
+  }
 
-    this.client = new Client("wss://" + host + port)
+  openClient() {
+    import(/* webpackChunkName: 'colyseus.js' */ "colyseus.js")
+      .then(({ Client }) => {
+        const host = window.document.location.hostname
+        const port = ":2657"
 
-    this.client.onOpen.add(data => {
-      logs.info("CLIENT open", data)
-      this.emit(Game.events.clientOpen)
-    })
+        this.client = new Client("wss://" + host + port)
 
-    this.client.onClose.add(() => {
-      this.emit(Game.events.clientClose)
-      this.destroy()
-    })
+        this.client.onOpen.add(data => {
+          logs.info("CLIENT open", data)
+          this.emit(Game.events.clientOpen)
+        })
 
-    // Hot module replacement - there can be only one app on page plz
-    // TODO: I'm not using HMR? Remove the code.
-    // document.dispatchEvent(new Event("destroy"))
-    // document.addEventListener("destroy", () => {
-    //   this.destroy()
-    // })
+        this.client.onClose.add(() => {
+          this.emit(Game.events.clientClose)
+          this.destroy()
+        })
+      })
+      .catch(err => {
+        logs.error("Game", "couldn't load Client from `colyseus.js`", err)
+      })
   }
 
   joinRoom(gameName: string) {

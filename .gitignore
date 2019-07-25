@@ -4,6 +4,8 @@ lib
 .cache
 coverage
 
+devLogs
+
 # TMP files
 .DS_Store
 Thumbs.db
