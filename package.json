@@ -18,7 +18,8 @@
     "build:client": "lerna run --stream --concurrency 1 --scope '*/client' build",
     "build:client-w": "lerna run --stream --concurrency 1 --scope '*/client' build:watch",
     "build:utils": "lerna run --stream --concurrency 1 --scope '*/utils' build",
-    "preversion": "npm ci && npm run test"
+    "preversion": "npm ci && npm run test",
+    "ci:publish": "lerna publish from-git --yes"
   },
   "husky": {
     "hooks": {
