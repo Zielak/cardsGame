@@ -3,18 +3,15 @@
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
 version: 2
+executors:
+  my-executor:
+    docker:
+      - image: circleci/node:10.16
+    working_directory: ~/repo
+
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:10.16
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/repo
+    executor: my-executor
 
     steps:
       - checkout
@@ -23,28 +20,86 @@ jobs:
       - restore_cache:
           name: Restore cache for root dependencies
           keys:
-            - v3-dependencies-{{ checksum "package.json" }}
+            - v3-dependencies-{{ checksum "package-lock.json" }}
             # fallback to using the latest cache if no exact match is found
             - v3-dependencies-
+      - restore_cache:
+          name: Restore cache for server dependencies
+          keys:
+            - v1-serverDeps-{{ checksum "packages/server/package-lock.json" }}
+            - v1-serverDeps-
+      - restore_cache:
+          name: Restore cache for client dependencies
+          keys:
+            - v1-clientDeps-{{ checksum "packages/client/package-lock.json" }}
+            - v1-clientDeps-
+      - restore_cache:
+          name: Restore cache for utils dependencies
+          keys:
+            - v1-utilsDeps-{{ checksum "packages/utils/package-lock.json" }}
+            - v1-utilsDeps-
 
       - run: npm install
       - run: npm run bootstrap
-      - run: npm run build:utils
 
       - save_cache:
           name: Save cache for root dependencies
-          key: v3-dependencies-{{ checksum "package.json" }}
+          key: v3-dependencies-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
+      - save_cache:
+          name: Cache server dependencies
+          key: v1-serverDeps-{{ checksum "packages/server/package-lock.json" }}
+          paths:
+            - packages/server/node_modules
+      - save_cache:
+          name: Cache client dependencies
+          key: v1-clientDeps-{{ checksum "packages/client/package-lock.json" }}
+          paths:
+            - packages/client/node_modules
+      - save_cache:
+          name: Cache utils dependencies
+          key: v1-utilsDeps-{{ checksum "packages/utils/package-lock.json" }}
+          paths:
+            - packages/utils/node_modules
 
-      # run tests!
-      - run: npm test
+      - run:
+          name: Build everything
+          command: |
+            npm run build:utils
+            npm run build:server
+            npm run build:client
 
-  publish:
-    docker:
-      - image: circleci/node:10.16
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: ~/repo
+          # Must be relative path from root
+          paths:
+            - node_modules
+            - packages/*/lib
+            - packages/*/node_modules
+
+  test:
+    executor: my-executor
+
     steps:
       - checkout
+      # hopefully, if server requires utils, i'll be there in /lib/
+      - attach_workspace:
+          at: ~/repo
+
+      - run:
+          name: Test
+          command: npm run test
+
+  publish:
+    executor: my-executor
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
       - run:
           name: Publish to NPM
           command: |
@@ -53,9 +108,15 @@ jobs:
 
 workflows:
   version: 2
-  tagged-build:
+  build-test-and-publish:
     jobs:
+      - build
+      - test:
+          requires:
+            - build
       - publish:
+          requires:
+            - test
           filters:
             tags:
               only: /v[0-9]+(\.[0-9]+)*/
