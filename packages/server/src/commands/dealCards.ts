@@ -3,6 +3,7 @@ import { logs } from "../logs"
 import { ICommand } from "."
 import { ChangeParent } from "./changeParent"
 import { IParent, countChildren, getTop } from "../traits/parent"
+import { timeout } from "@cardsgame/utils"
 
 export class DealCards implements ICommand {
   targets: IParent[]
@@ -25,14 +26,14 @@ export class DealCards implements ICommand {
     this.targets = Array.isArray(targets) ? targets : [targets]
   }
 
-  execute(state: State) {
+  async execute(state: State) {
     const _ = this.constructor.name
     logs.log(_, "executing", "count:", this.count, ", step:", this.step)
     let targetI = 0
     let stepI = 0
 
     const maxDeals = this.count * this.targets.length
-    const next = () => {
+    const next = async () => {
       const top = getTop(this.source)
       if (top.isParent()) {
         logs.warn(
@@ -51,13 +52,14 @@ export class DealCards implements ICommand {
         targetI++
       }
       if (countChildren(this.source) > 0 && targetI < maxDeals) {
-        // setTimeout(next, 500)
-        next()
+        await timeout(50)
+        await next()
+        // next()
       } else {
         logs.log(_, `Done dealing cards.`)
       }
     }
-    next()
-    state.logTreeState()
+    return await next()
+    // state.logTreeState()
   }
 }

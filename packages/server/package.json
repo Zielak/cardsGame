@@ -18,7 +18,7 @@
     "@cardsgame/types": "file:../types",
     "@cardsgame/utils": "file:../utils",
     "bezier-js": "^2.4.0",
-    "colyseus": "^0.10.8"
+    "colyseus": "^0.10.9"
   },
   "devDependencies": {
     "@types/bezier-js": "0.0.8"

@@ -27,9 +27,9 @@ export class ShuffleChildren implements ICommand {
       //   moveChildTo(this.container, idxA, idxB)
       //   moveChildTo(this.container, idxB + 1, idxA)
       // }
-
-      restyleChildren(this.container)
     }
+
+    restyleChildren(this.container)
     // state.logTreeState()
   }
 }

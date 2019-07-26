@@ -43,10 +43,12 @@ export class ClassicCard extends Schema implements IClassicCard {
   id: EntityID
   parent: EntityID
   owner: Player
-  isInOwnersView: boolean
   isParent(): this is IParent {
     return false
   }
+
+  @type("boolean")
+  isInOwnersView: boolean
 
   @type("uint8")
   idx: number
@@ -116,7 +118,7 @@ export const standardDeckFactory = (
     []
   )
 
-  logs.verbose(`created a deck of ${cards.length} cards`)
+  logs.log(`created a deck of ${cards.length} cards`)
 
   return cards
 }

@@ -9,12 +9,19 @@ export const def = <T>(value: T, def: T): T =>
 export const noop = () => {}
 
 /**
- * Executed function multiple times
+ * Executes function multiple times
  * @param length number of times function will be exetuced
  * @param func a function
  */
 export const times = (length: number, func: () => any) =>
   Array.from({ length }, func)
+
+/**
+ * Simple delay of execution. Use like this: `await timeout(50)`
+ * @param ms mili seconds
+ */
+export const timeout = (ms: number) =>
+  new Promise(resolve => setTimeout(resolve, ms))
 
 /**
  * Check if a `thing` is just a literal object (using typeof), and not Array or anything else.

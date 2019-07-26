@@ -69,7 +69,6 @@ export class State extends Schema implements IParent {
   }
 
   /**
-   * @deprecated? instead of this, provide users with factory functions, which would register entities automatically
    * Registers new entity to the gamestate
    * @param entity
    * @returns new ID to be assigned to that entity

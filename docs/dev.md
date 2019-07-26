@@ -1,13 +1,12 @@
 # Installing
 
-Install external dependencies in all packages (mainly root and `packages/examples`), and link the rest together with lerna.
+Install external dependencies in all packages (root and all packages), and link the rest together with lerna.
 
 ```
-lerna exec npm install
-lerna bootstrap
+npm run bootstrap
 ```
 
-And then run some code watchers:
+And then run some code watchers for continuous development:
 
 ```
 npm run build:client-w

@@ -93,6 +93,10 @@ An entity can be visible:
 - changing `@privateAttribute` goes through that decorator's setter
 - which in turn emits `"privateAttributeUpdate"` event on itself with propName
 
+---
+
+> Archival notes. Keeping just for fun
+
 ### Server side
 
 - `room` gets inited -> setupPrivatePropsSync()
