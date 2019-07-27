@@ -1,4 +1,3 @@
-import { cm2px, limit } from "@cardsgame/utils"
 import { IEntity, IEntityOptions, EntityConstructor } from "../traits/entity"
 import { Schema, type } from "@colyseus/schema"
 import {
@@ -7,7 +6,6 @@ import {
   ParentConstructor,
   canBeChild
 } from "../traits/parent"
-import { EntityTransform } from "../transform"
 import { State } from "../state"
 import { Player } from "../player"
 
@@ -17,11 +15,14 @@ export class Deck extends Schema implements IEntity, IParent {
   // IEntity
   _state: State
   id: EntityID
-  parent: EntityID
   owner: Player
+  parent: EntityID
   isParent(): this is IParent {
     return true
   }
+
+  @type("string")
+  ownerID: string
 
   @type("boolean")
   isInOwnersView: boolean

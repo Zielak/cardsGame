@@ -47,16 +47,24 @@ export type ServerPlayerEvent = PlayerEvent & {
 }
 
 const randomPlayerNames = [
-  "Bob",
   "Alicja",
+  "Bob",
+  "Celine",
   "Darek",
-  "Pablo",
-  "Witeck",
-  "Pauline",
+  "Eddy",
+  "Franek",
+  "Gordon",
+  "Hu",
+  "Ione",
+  "Jerry",
   "Karen",
-  "Sandra",
+  "Lukas",
   "Mat",
-  "Gordon"
+  "Natalie",
+  "Pauline",
+  "Rupert",
+  "Sandra",
+  "Witeck"
 ]
 const getRandomName = (): string => {
   randomPlayerNames.sort(() => {

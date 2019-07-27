@@ -37,6 +37,7 @@ export function EntityConstructor(entity: IEntity, options: IEntityOptions) {
 
   // Owner
   entity.owner = def(options.owner, undefined)
+  entity.ownerID = def(entity.owner && entity.owner.clientID, undefined)
   entity.isInOwnersView = def(options.isInOwnersView, false)
 
   // Parent
@@ -66,6 +67,7 @@ export interface IEntity extends IIdentity {
   idx: number
   parent: EntityID
   owner: Player
+  ownerID: string
   isInOwnersView: boolean
 
   type: string

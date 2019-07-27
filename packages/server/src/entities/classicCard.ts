@@ -42,11 +42,14 @@ export class ClassicCard extends Schema implements IClassicCard {
   // IEntity
   _state: State
   id: EntityID
-  parent: EntityID
   owner: Player
+  parent: EntityID
   isParent(): this is IParent {
     return false
   }
+
+  @type("string")
+  ownerID: string
 
   @type("boolean")
   isInOwnersView: boolean

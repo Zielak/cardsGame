@@ -1,5 +1,6 @@
 import { EventEmitter } from "eventemitter3"
 import { logs } from "./logs"
+import { Client, Room } from "colyseus.js"
 
 interface IGameOptions {
   viewElement: HTMLElement
@@ -18,8 +19,8 @@ interface RoomAvailable {
  * Provide an interface for the players: play area, settings and others
  */
 export class Game extends EventEmitter {
-  client
-  room
+  client: Client
+  room: Room
 
   gameNames: string[]
   viewElement: HTMLElement

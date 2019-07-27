@@ -13,11 +13,14 @@ export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
   // IEntity
   _state: State
   id: EntityID
-  parent: EntityID
   owner: Player
+  parent: EntityID
   isParent(): this is IParent {
     return true
   }
+
+  @type("string")
+  ownerID: string
 
   @type("boolean")
   isInOwnersView: boolean

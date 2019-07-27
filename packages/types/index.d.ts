@@ -47,3 +47,10 @@ type PlayerEvent = {
  * Type of the element which player interacted with
  */
 // type PlayerEventTargetType = "Entity" | "UIElement"
+
+interface IPlayerViewPosition {
+  alignX?: "left" | "center" | "right"
+  alignY?: "top" | "middle" | "bottom"
+  paddingX?: number
+  paddingY?: number
+}

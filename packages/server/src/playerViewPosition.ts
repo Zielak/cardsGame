@@ -1,13 +1,6 @@
 import { Schema, type } from "@colyseus/schema"
 import { def, limit } from "@cardsgame/utils"
 
-export interface IPlayerViewPosition {
-  alignX?: "left" | "center" | "right"
-  alignY?: "top" | "middle" | "bottom"
-  paddingX?: number
-  paddingY?: number
-}
-
 export class PlayerViewPosition extends Schema implements IPlayerViewPosition {
   @type("string")
   alignX: "left" | "center" | "right"
