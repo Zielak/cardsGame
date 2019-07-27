@@ -85,10 +85,6 @@ jobs:
             - packages/*/node_modules
 
   publish:
-    branches:
-      only:
-        - master
-
     executor: my-executor
 
     steps:
