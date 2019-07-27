@@ -12,7 +12,7 @@ const syntaxHighlight = (arg: any) => {
     return chalk.green.bold(arg.toString())
   }
   // It must be some Entity
-  if (arg._state) {
+  if (arg && arg._state) {
     return chalk.yellow(minifyEntity(arg))
   }
   return arg

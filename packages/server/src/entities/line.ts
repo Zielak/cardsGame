@@ -3,7 +3,7 @@ import { IEntity } from "../traits/entity"
 import { IParent } from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
-import { EntityTransform } from "../transform"
+import { IBoxModel } from "../traits/boxModel"
 
 /**
  * TODO: finish it for SUPERHOT, but only once I'm almost done with everything
@@ -11,7 +11,7 @@ import { EntityTransform } from "../transform"
  * It contains maximum number of spots for cards.
  * A spot can be empty.
  */
-export class Line extends Schema implements IEntity, IParent {
+export class Line extends Schema implements IEntity, IParent, IBoxModel {
   // IEntity
   _state: State
   id: EntityID
@@ -47,16 +47,4 @@ export class Line extends Schema implements IEntity, IParent {
   // IParent
   _childrenPointers: string[]
   hijacksInteractionTarget = true
-
-  restyleChild(
-    child: IEntity,
-    idx: number,
-    children: IEntity[]
-  ): EntityTransform {
-    let spaceOuter = 0
-    let spaceBetween = 0
-    // [ 0 0 0     ]
-    // [ ]
-    return new EntityTransform(idx, -idx, 0)
-  }
 }

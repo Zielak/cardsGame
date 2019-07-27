@@ -41,11 +41,6 @@ export class Deck extends Schema implements IEntity, IParent {
   @type("number")
   angle: number
 
-  @type("number")
-  width: number
-  @type("number")
-  height: number
-
   // IParent
   _childrenPointers: string[]
   hijacksInteractionTarget = true
@@ -54,17 +49,5 @@ export class Deck extends Schema implements IEntity, IParent {
     super()
     ParentConstructor(this)
     EntityConstructor(this, options)
-  }
-
-  restyleChild(
-    child: IEntity,
-    idx: number,
-    children: IEntity[]
-  ): EntityTransform {
-    const MAX_HEIGHT = cm2px(2.5)
-    const MIN_SPACE = cm2px(0.1)
-    const SPACE = limit(MAX_HEIGHT / children.length, 0, MIN_SPACE)
-
-    return new EntityTransform(idx * SPACE, -idx * SPACE, 0)
   }
 }

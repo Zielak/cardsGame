@@ -1,11 +1,6 @@
 import { State } from "../state"
 import { ICommand } from "."
-import {
-  IParent,
-  countChildren,
-  restyleChildren,
-  moveChildTo
-} from "../traits/parent"
+import { IParent, countChildren, moveChildTo } from "../traits/parent"
 
 export class ShuffleChildren implements ICommand {
   constructor(private container: IParent) {}
@@ -28,8 +23,5 @@ export class ShuffleChildren implements ICommand {
       //   moveChildTo(this.container, idxB + 1, idxA)
       // }
     }
-
-    restyleChildren(this.container)
-    // state.logTreeState()
   }
 }

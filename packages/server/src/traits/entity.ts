@@ -6,7 +6,6 @@ import {
   getKnownConstructor,
   countChildren,
   moveChildTo,
-  restyleChildren,
   removeChildAt
 } from "./parent"
 import { IIdentity } from "./identity"
@@ -75,8 +74,6 @@ export interface IEntity extends IIdentity {
   x?: number
   y?: number
   angle?: number
-  width?: number
-  height?: number
 
   // Private stuff, author shouldn't care about these,
   // entityConstructor() should take care of initing them
@@ -139,7 +136,6 @@ export function setParent(entity: IEntity, newParent: IParent) {
   if (newParent.onChildAdded) {
     newParent.onChildAdded(entity)
   }
-  restyleChildren(newParent)
 }
 
 /**

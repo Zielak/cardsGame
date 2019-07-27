@@ -122,8 +122,6 @@ describe("#moveChildTo", () => {
   })
 })
 
-test.todo("#restyleChildren")
-
 test.todo("#countChildren")
 describe("#getChildren", () => {
   let parent

@@ -6,8 +6,7 @@ import { Player } from "../player"
 import {
   IFlexyContainer,
   FlexyContainerConstructor,
-  IFlexyContainerOptions,
-  flexyContainerRestyleChild
+  IFlexyContainerOptions
 } from "../traits/flexyContainer"
 
 export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
@@ -64,8 +63,6 @@ export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
     EntityConstructor(this, options)
     FlexyContainerConstructor(this, options)
   }
-
-  restyleChild = flexyContainerRestyleChild
 }
 
 interface IRowOptions extends IFlexyContainerOptions {}

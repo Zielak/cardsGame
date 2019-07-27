@@ -13,8 +13,9 @@ import { ITwoSided } from "../traits/twoSided"
 import { def } from "@cardsgame/utils"
 import { Player } from "../player"
 import { IParent, canBeChild } from "../traits/parent"
+import { IBoxModel } from "../traits/boxModel"
 
-interface IClassicCard extends IEntity, ITwoSided {}
+interface IClassicCard extends IEntity, ITwoSided, IBoxModel {}
 
 /**
  * Visibility filter
