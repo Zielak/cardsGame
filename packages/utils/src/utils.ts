@@ -9,6 +9,24 @@ export const def = <T>(value: T, def: T): T =>
 export const noop = () => {}
 
 /**
+ * Call each function with the current argument and the result is use for the next call
+ * @param initial value to be passed through the pipeline
+ */
+export const compose = (value: any, ...functions: ((...args) => any)[]) => {
+  return functions.reduce((arg, fn) => {
+    if (typeof fn === "function") {
+      return fn(arg)
+    } else if (typeof fn === "undefined") {
+      return arg
+    } else {
+      throw new Error(
+        `utils/compose, I expected a function here, got "${typeof fn}" instead...`
+      )
+    }
+  }, value)
+}
+
+/**
  * Executes function multiple times
  * @param length number of times function will be exetuced
  * @param func a function

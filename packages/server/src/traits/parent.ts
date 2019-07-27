@@ -47,12 +47,6 @@ export interface IParent extends IIdentity {
   hijacksInteractionTarget: boolean
   isParent(): this is IParent
 
-  restyleChild?: (
-    child: IEntity,
-    idx: number,
-    array: IEntity[]
-  ) => EntityTransform
-
   onChildAdded?(child: IEntity): void
   onChildRemoved?(idx: number): void
 }
@@ -125,7 +119,6 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
 
   // Reset last parent's stylings
   resetWorldTransform(removedChild)
-  restyleChildren(parent)
 
   return true
 }
@@ -181,29 +174,6 @@ export function moveChildTo(parent: IParent, from: number, to: number) {
   updateIndexes(parent)
 }
 
-export function restyleChildren(parent: IParent) {
-  /**
-   * TODO: Maybe instead of re-creating EntityTransform for each child
-   * I could create EntityTransform ONCE, keep updating x/y/angle
-   * and then push the values to Entities.
-   */
-  if (!parent.restyleChild) return
-  getChildren(parent).forEach(
-    (child: IEntity, idx: number, array: IEntity[]) => {
-      const data = parent.restyleChild(child, idx, array)
-      if (data.x) {
-        child._worldTransform.x = data.x
-      }
-      if (data.y) {
-        child._worldTransform.y = data.y
-      }
-      if (data.angle) {
-        child._worldTransform.angle = data.angle
-      }
-    }
-  )
-}
-
 /**
  * Number of child elements
  */
@@ -243,7 +213,7 @@ export function getChild<T extends IEntity | IParent>(
  * Get the element with highest 'idx' value
  */
 export function getTop<T extends IEntity | IParent>(parent: IParent): T {
-  return getChild<T>(parent, parent._childrenPointers.length - 1)
+  return getChild<T>(parent, Math.max(0, parent._childrenPointers.length - 1))
 }
 
 /**

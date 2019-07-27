@@ -1,6 +1,6 @@
 import { State } from "../state"
 import { ICommand } from "."
-import { ITwoSided, faceUp, faceDown } from "../traits/twoSided"
+import { ITwoSided, faceUp, faceDown, flip } from "../traits/twoSided"
 
 /**
  * Reveal the front side (overse) of an element
@@ -55,11 +55,11 @@ export class Flip implements ICommand {
   }
 
   execute(state: State) {
-    this.entities.forEach(faceDown)
+    this.entities.forEach(flip)
     state.logTreeState()
   }
 
   undo(state: State) {
-    this.entities.forEach(faceUp)
+    this.entities.forEach(flip)
   }
 }

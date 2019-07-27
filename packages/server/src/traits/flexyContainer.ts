@@ -1,9 +1,9 @@
 import { IParent } from "./parent"
-import { IEntityOptions, IEntity } from "./entity"
+import { IEntityOptions } from "./entity"
 import { def } from "@cardsgame/utils"
-import { EntityTransform } from "../transform"
+import { IBoxModel } from "./boxModel"
 
-export interface IFlexyContainer extends IParent {
+export interface IFlexyContainer extends IParent, IBoxModel {
   alignItems: "start" | "end" | "center"
   directionReverse: boolean
   justifyContent:
@@ -34,15 +34,4 @@ export function FlexyContainerConstructor(
   entity.alignItems = def(options.alignItems, "center")
   entity.directionReverse = def(options.directionReverse, false)
   entity.justifyContent = def(options.justifyContent, "start")
-}
-
-export function flexyContainerRestyleChild(
-  child: IEntity,
-  idx: number,
-  children: IEntity[]
-): EntityTransform {
-  // TODO: finish me when needed
-  let spaceOuter = 0
-  let spaceBetween = 0
-  return new EntityTransform(idx, -idx, 0)
 }
