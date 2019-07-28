@@ -62,6 +62,7 @@ export class Room<S extends State> extends colRoom<S> {
           clientID: this.state.clients[key]
         })
       })
+      this.state.currentPlayerIdx = 0
       this.onStartGame(this.state)
       return
     } else if (event.data === "start" && this.state.isGameStarted) {

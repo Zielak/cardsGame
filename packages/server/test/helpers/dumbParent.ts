@@ -1,5 +1,9 @@
 import { Schema, type } from "@colyseus/schema"
-import { EntityConstructor, IEntityOptions } from "../../src/traits/entity"
+import {
+  EntityConstructor,
+  IEntityOptions,
+  IEntity
+} from "../../src/traits/entity"
 import {
   IParent,
   containsChildren,
@@ -11,16 +15,19 @@ import { Player } from "../../src/player"
 
 @canBeChild
 @containsChildren
-export class DumbParent extends Schema implements IParent {
+export class DumbParent extends Schema implements IEntity, IParent {
   // IEntity
   _state: State
   id: EntityID
-  parent: EntityID
   owner: Player
+  parent: EntityID
   isInOwnersView: boolean
   isParent(): this is IParent {
     return true
   }
+
+  @type("string")
+  ownerID: string
 
   @type("uint8")
   idx: number
@@ -49,16 +56,19 @@ export class DumbParent extends Schema implements IParent {
 
 @canBeChild
 @containsChildren
-export class ConstructedParent extends Schema implements IParent {
+export class ConstructedParent extends Schema implements IEntity, IParent {
   // IEntity
   _state: State
   id: EntityID
-  parent: EntityID
   owner: Player
+  parent: EntityID
   isInOwnersView: boolean
   isParent(): this is IParent {
     return true
   }
+
+  @type("string")
+  ownerID: string
 
   @type("uint8")
   idx: number

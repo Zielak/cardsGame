@@ -52,9 +52,7 @@ export class DealCards implements ICommand {
         targetI++
       }
       if (countChildren(this.source) > 0 && targetI < maxDeals) {
-        await timeout(50)
         await next()
-        // next()
       } else {
         logs.log(_, `Done dealing cards.`)
       }

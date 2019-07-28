@@ -5,10 +5,14 @@ import {
   IParent,
   containsChildren,
   ParentConstructor,
-  canBeChild
+  canBeChild,
+  countChildren,
+  getChild,
+  moveChildTo
 } from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
+import { logs } from "../logs"
 
 @canBeChild
 @containsChildren
@@ -58,7 +62,6 @@ export class Hand extends Schema implements IEntity, IParent {
     this.autoSort = def(options.autoSort, () => -1)
   }
 
-  /* Disable AutoSort for now
   onChildAdded(child: IEntity) {
     const count = countChildren(this)
     logs.info(`Hand.autoSort`, `0..${count}`)
@@ -75,7 +78,6 @@ export class Hand extends Schema implements IEntity, IParent {
       break
     }
   }
-  */
 }
 
 export interface IHandOptions extends IEntityOptions {

@@ -238,26 +238,6 @@ export function getDescendants<T extends IEntity | IParent>(
   }, [])
 }
 
-// /**
-//  * Function to be used in sorting.
-//  */
-// export function byIdx<T extends IEntity>(a: T, b: T): number {
-//   return a.idx - b.idx
-// }
-
-const queryRunner = (props: QuerableProps) => (entity: IEntity | IParent) => {
-  const propKeys = Object.keys(props)
-
-  return propKeys.every(propName => {
-    return entity[propName] === props[propName]
-  })
-}
-
-interface QueryOptions {
-  deep?: boolean
-  one?: boolean
-}
-
 interface QuerableProps {
   id?: EntityID
 
@@ -271,15 +251,28 @@ interface QuerableProps {
   [key: string]: any
 }
 
-export function findAll<T extends IEntity>(
+const queryRunner = (props: QuerableProps) => (entity: IEntity | IParent) => {
+  const propKeys = Object.keys(props)
+
+  return propKeys.every(propName => {
+    return entity[propName] === props[propName]
+  })
+}
+
+// TODO: TEST IT
+export function findAll<T extends IEntity | IParent>(
   parent: IParent,
-  props: QuerableProps,
-  options: QueryOptions = {}
+  ...props: QuerableProps[]
 ): T[] {
-  const result = (options.deep
-    ? getDescendants<T>(parent)
-    : getChildren<T>(parent)
-  ).filter(queryRunner(props))
+  const result = props.reduce<T[]>(
+    (_parents, _props) => {
+      return _parents.reduce((children, _parent) => {
+        const newMatches = getChildren<T>(_parent).filter(queryRunner(_props))
+        return children.concat(newMatches)
+      }, [])
+    },
+    [parent as T]
+  )
   if (result.length === 0) {
     throw new Error(
       `findAll: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
@@ -288,18 +281,43 @@ export function findAll<T extends IEntity>(
   return result
 }
 
+export function findAllDeep<T extends IEntity | IParent>(
+  parent: IParent,
+  ...props: QuerableProps[]
+): T[] {
+  const result = getDescendants<T>(parent).filter(queryRunner(props))
+  if (result.length === 0) {
+    throw new Error(
+      `findAllDeep: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
+    )
+  }
+  return result
+}
+
 export function find<T extends IEntity | IParent>(
   parent: IParent,
-  props: QuerableProps,
-  options: QueryOptions = {}
+  ...props: QuerableProps[]
 ): T {
-  const result = (options.deep
-    ? getDescendants<T>(parent)
-    : getChildren<T>(parent)
-  ).find(queryRunner(props))
+  const result = props.reduce<T>(
+    (_parent, _props) => getChildren<T>(_parent).find(queryRunner(_props)),
+    parent as T
+  )
   if (!result) {
     throw new Error(
       `find: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
+    )
+  }
+  return result
+}
+
+export function findDeep<T extends IEntity | IParent>(
+  parent: IParent,
+  props: QuerableProps[]
+): T {
+  const result = getDescendants<T>(parent).find(queryRunner(props))
+  if (!result) {
+    throw new Error(
+      `findDeep: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
     )
   }
   return result
