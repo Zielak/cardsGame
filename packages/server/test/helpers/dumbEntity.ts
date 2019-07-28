@@ -13,12 +13,15 @@ export class DumbEntity extends Schema implements IEntity {
   // IEntity
   _state: State
   id: EntityID
-  parent: EntityID
   owner: Player
+  parent: EntityID
   isInOwnersView: boolean
   isParent(): this is IParent {
     return true
   }
+
+  @type("string")
+  ownerID: string
 
   @type("uint8")
   idx: number
@@ -46,12 +49,15 @@ export class ConstructedEntity extends Schema implements IEntity {
   // IEntity
   _state: State
   id: EntityID
-  parent: EntityID
   owner: Player
+  parent: EntityID
   isInOwnersView: boolean
   isParent(): this is IParent {
     return true
   }
+
+  @type("string")
+  ownerID: string
 
   @type("uint8")
   idx: number
