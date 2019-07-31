@@ -3,6 +3,7 @@ import { State } from "../state"
 import { logs } from "../logs"
 import { ICommand } from "."
 import { IParent } from "../traits/parent"
+import chalk from "chalk"
 
 export class ChangeParent implements ICommand {
   private entities: IEntity[]
@@ -32,9 +33,9 @@ export class ChangeParent implements ICommand {
       "starting, moving",
       this.entities.map(e => e.name),
       "entities from",
-      this.source["name"] || "ROOT",
+      chalk.yellow(this.source["name"] || "ROOT"),
       "to",
-      this.target["name"] || "ROOT"
+      chalk.yellow(this.target["name"] || "ROOT")
     )
 
     this.entities.forEach(entity => setParent(entity, this.target))

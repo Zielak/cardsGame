@@ -14,7 +14,7 @@ import { State } from "../state"
 import { Player } from "../player"
 
 @canBeChild
-@containsChildren
+@containsChildren()
 export class Hand extends Schema implements IEntity, IParent {
   // IEntity
   _state: State
@@ -58,10 +58,11 @@ export class Hand extends Schema implements IEntity, IParent {
     ParentConstructor(this)
     EntityConstructor(this, options)
 
-    this.autoSort = def(options.autoSort, () => -1)
+    this.autoSort = options.autoSort
   }
 
   onChildAdded(child: IEntity) {
+    if (!this.autoSort) return
     const count = countChildren(this)
     for (let idx = 0; idx < count; idx++) {
       if (this.autoSort(child, getChild(this, idx)) > 0) {

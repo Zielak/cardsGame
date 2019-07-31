@@ -12,5 +12,5 @@ export const mapCompose = (
         `utils/compose, I expected a function here, got "${typeof fn}" instead...`
       )
     }
-  }, array)
+  }, array || [])
 }

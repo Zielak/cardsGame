@@ -14,7 +14,7 @@ import { State } from "../../src/state"
 import { Player } from "../../src/player"
 
 @canBeChild
-@containsChildren
+@containsChildren()
 export class DumbParent extends Schema implements IEntity, IParent {
   // IEntity
   _state: State
@@ -55,7 +55,7 @@ export class DumbParent extends Schema implements IEntity, IParent {
 }
 
 @canBeChild
-@containsChildren
+@containsChildren()
 export class ConstructedParent extends Schema implements IEntity, IParent {
   // IEntity
   _state: State

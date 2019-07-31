@@ -1,43 +1,69 @@
 import { type, ArraySchema } from "@colyseus/schema"
 import { IEntity, resetWorldTransform } from "./entity"
 import { logs } from "../logs"
-import { EntityTransform } from "../transform"
 import { Player } from "../player"
 import { IIdentity } from "./identity"
 
-const registeredParents: Function[] = []
+const registeredParents: {
+  con: Function
+  childrenSynced: boolean
+}[] = []
 const registeredChildren: Function[] = []
 
-const applyRegisteredChildren = (parentCon: Function, childCon?: Function) => {
-  const go = con => {
-    const arr = []
-    arr.push(con)
-    logs.log(`applying "children${con.name}" to ${parentCon.name}`)
-    type(arr)(parentCon.prototype, `children${con.name}`)
-  }
-  if (childCon) {
-    go(childCon)
-  } else {
-    registeredChildren.forEach(go)
-  }
-}
-
-export function canBeChild(childCon: Function) {
-  // Remember this child type for future classes
-  registeredChildren.push(childCon)
-
-  // Add this child type to every other known parents
-  registeredParents.forEach(parentCon =>
-    applyRegisteredChildren(parentCon, childCon)
+const synchChildrenArray = (
+  parentConstructor: Function,
+  childrenConstructor: Function
+) => {
+  // TODO: check if already exists?
+  const arr = []
+  arr.push(childrenConstructor)
+  logs.log(
+    `applying "children${childrenConstructor.name}" to ${parentConstructor.name}`
   )
+  type(arr)(parentConstructor.prototype, `children${childrenConstructor.name}`)
 }
 
-export function containsChildren(parentCon: Function) {
-  // Remember this parent
-  registeredParents.push(parentCon)
+/**
+ * Register as possible child for any other parent enttities
+ */
+export function canBeChild(childConstructor: Function) {
+  // Remember this child type for future classes
+  registeredChildren.push(childConstructor)
 
-  // Add all known children kinds to this one
-  applyRegisteredChildren(parentCon)
+  // Add this child type to other parents,
+  // which wish their children to be synced to client
+  registeredParents
+    .filter(({ childrenSynced }) => childrenSynced)
+    .map(({ con }) => con)
+    .forEach(parentConstructor =>
+      synchChildrenArray(parentConstructor, childConstructor)
+    )
+}
+
+/**
+ * Remember as possible parent to any kinds of children entities
+ * Also enables syncing any previously remembered children kind on this constructor
+ * @param childrenSynced set `false` to disable syncing children to clients
+ */
+export function containsChildren(childrenSynced = true) {
+  return function containsChildren(parentConstructor: Function) {
+    // Remember this parent
+    registeredParents.push({
+      con: parentConstructor,
+      childrenSynced
+    })
+
+    Object.defineProperty(parentConstructor.prototype, "__syncChildren", {
+      value: childrenSynced
+    })
+
+    // Add all known children kinds to this one
+    if (childrenSynced) {
+      registeredChildren.forEach(childConstructor =>
+        synchChildrenArray(parentConstructor, childConstructor)
+      )
+    }
+  }
 }
 
 // ====================
@@ -54,7 +80,11 @@ export interface IParent extends IIdentity {
 export function ParentConstructor(entity: IParent) {
   entity._childrenPointers = []
   registeredChildren.forEach(con => {
-    entity[`children${con.name}`] = new ArraySchema()
+    if ((entity as any).__syncChildren === false) {
+      entity[`children${con.name}`] = new Array()
+    } else {
+      entity[`children${con.name}`] = new ArraySchema()
+    }
   })
 }
 
@@ -206,6 +236,9 @@ export function getChild<T extends IEntity | IParent>(
   parent: IParent,
   idx: number
 ): T & IEntity {
+  if (!parent._childrenPointers[idx]) {
+    throw new Error(`This parent doesn't have "${idx}" children?`)
+  }
   return parent["children" + parent._childrenPointers[idx]].find(pickByIdx(idx))
 }
 

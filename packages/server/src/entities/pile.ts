@@ -10,7 +10,7 @@ import { State } from "../state"
 import { Player } from "../player"
 
 @canBeChild
-@containsChildren
+@containsChildren()
 export class Pile extends Schema implements IEntity, IParent {
   // IEntity
   _state: State
