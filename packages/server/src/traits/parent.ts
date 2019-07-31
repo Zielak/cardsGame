@@ -137,6 +137,7 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
   // https://discordapp.com/channels/525739117951320081/526083188108296202/573204615290683392
   // parent[targetArrayName] = targetArray.filter(el => el !== child)
   const [removedChild] = parent[targetArrayName].splice(childIdx, 1)
+  parent.onChildRemoved && parent.onChildRemoved(idx)
   updateIndexes(parent)
 
   if (removedChild !== child) {

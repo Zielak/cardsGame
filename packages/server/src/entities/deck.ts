@@ -46,6 +46,18 @@ export class Deck extends Schema implements IEntity, IParent {
   _childrenPointers: string[]
   hijacksInteractionTarget = true
 
+  // ================
+
+  @type("uint16")
+  childCount: number = 0
+
+  onChildAdded(child: IEntity) {
+    this.childCount++
+  }
+  onChildRemoved(idx: number) {
+    this.childCount--
+  }
+
   constructor(options: IEntityOptions) {
     super()
     ParentConstructor(this)
