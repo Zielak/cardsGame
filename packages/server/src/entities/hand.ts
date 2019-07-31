@@ -12,7 +12,6 @@ import {
 } from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
-import { logs } from "../logs"
 
 @canBeChild
 @containsChildren
@@ -64,17 +63,12 @@ export class Hand extends Schema implements IEntity, IParent {
 
   onChildAdded(child: IEntity) {
     const count = countChildren(this)
-    logs.info(`Hand.autoSort`, `0..${count}`)
     for (let idx = 0; idx < count; idx++) {
       if (this.autoSort(child, getChild(this, idx)) > 0) {
         continue
       }
       // I shall drop incomming child right here
-      logs.info(`Hand.autoSort`, `children.moveChildTo(${child.idx}, ${idx})`)
       moveChildTo(this, child.idx, idx)
-
-      logs.info(`Hand.autoSort`, `AFTER:`)
-      this._state.logTreeState(this)
       break
     }
   }

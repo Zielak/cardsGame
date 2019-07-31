@@ -2,6 +2,7 @@ import { IEntity } from "./traits/entity"
 import { def } from "@cardsgame/utils"
 import { type, Schema } from "@colyseus/schema"
 import { State } from "./state"
+import { logs } from "./logs"
 
 // TODO: Player shouldn't be on the scene, he's not an object of play
 //       Player's pawns could be placed on the board, outside of his domain...
@@ -30,6 +31,7 @@ export class Player extends Schema {
     this._state = options.state
     this.clientID = options.clientID
     this.name = def(options.name, getRandomName())
+    logs.log("Player()", `"${this.clientID}", "${this.name}"`)
   }
 }
 

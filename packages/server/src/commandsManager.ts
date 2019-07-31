@@ -34,7 +34,7 @@ export class CommandsManager {
         )
         const result = action.getConditions(state, event).every(condition => {
           const result = condition(state, event)
-          logs.verbose(`│\tcondition: ${condition._name} =`, result)
+          logs.verbose(`│ condition: ${condition._name} =`, result)
           return result
         })
 
@@ -85,7 +85,7 @@ export class CommandsManager {
     logs.info(`getActionsByInteraction()`)
     const actions = Array.from(this.possibleActions.values()).filter(action => {
       const interactions = action.getInteractions(state)
-      logs.log(
+      logs.verbose(
         action.name,
         `got`,
         interactions.length,
@@ -93,7 +93,7 @@ export class CommandsManager {
       )
 
       return interactions.some(definition => {
-        logs.verbose(`\tInteraction:\n\t`, JSON.stringify(definition))
+        logs.verbose(`\tInteraction:`, JSON.stringify(definition))
         if (
           event.entities &&
           (!definition.command || definition.command === "EntityInteraction")

@@ -6,7 +6,7 @@ export const propsMatch = (propName: string, values: any[]) => (
 ) => {
   const result = values.some(value => entity[propName] === value)
   if (!result) {
-    logs.warn(
+    logs.verbose(
       `propsMatch ${propName}`,
       `entity[${propName}] doesn't match any accepted values:`,
       values

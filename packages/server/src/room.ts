@@ -63,6 +63,7 @@ export class Room<S extends State> extends colRoom<S> {
         })
       })
       this.state.currentPlayerIdx = 0
+      this.state.isGameStarted = true
       this.onStartGame(this.state)
       return
     } else if (event.data === "start" && this.state.isGameStarted) {
@@ -117,22 +118,19 @@ export class Room<S extends State> extends colRoom<S> {
   }
 }
 
-const debugLogMessage = newEvent => {
+const debugLogMessage = (newEvent: ServerPlayerEvent) => {
   const minifyTarget = (e: IEntity) => {
     return `${e.type}:${e.name}`
   }
   const minifyPlayer = (p: Player) => {
     return `${p.name}[${p.clientID}]`
   }
-  const logObj = Object.assign(
-    { ...newEvent },
-    newEvent.entity ? { entity: minifyTarget(newEvent.entity) } : {},
-    newEvent.entities ? { entities: newEvent.entities.map(minifyTarget) } : {}
-  )
 
-  const entity = minifyTarget(newEvent.entity)
-  const entities = newEvent.entities.map(minifyTarget).join(", ")
-  const entityPath = chalk.green(newEvent.entityPath.join(", "))
+  const entity = newEvent.entity && minifyTarget(newEvent.entity)
+  const entities =
+    newEvent.entities && newEvent.entities.map(minifyTarget).join(", ")
+  const entityPath =
+    newEvent.entityPath && chalk.green(newEvent.entityPath.join(", "))
 
   const { command, event } = newEvent
 
@@ -142,9 +140,9 @@ const debugLogMessage = newEvent => {
       `Player: ${minifyPlayer(newEvent.player)} | `,
       chalk.white.bold(command),
       ` "${chalk.yellow(event)}"`,
-      `\n\tpath: [${entityPath}], `,
+      entityPath ? `\n\tpath: [${entityPath}], ` : "",
       entity ? ` entity:"${entity}"` : "",
-      entities ? ` (${entities})` : ""
+      entities ? `\n\tentities: [${entities}]` : ""
     ].join("")
   )
 }
