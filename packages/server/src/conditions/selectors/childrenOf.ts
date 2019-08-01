@@ -1,6 +1,6 @@
 import { ServerPlayerEvent } from "../../player"
 import { propsMatch } from "./helpers"
-import { logs } from "../../logs"
+import { logs } from "@cardsgame/utils"
 import { ICondition } from ".."
 import { IParent, getChildren } from "../../traits/parent"
 

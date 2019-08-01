@@ -51,6 +51,8 @@ export class Deck extends Schema implements IEntity, IParent {
   @type("uint16")
   childCount: number = 0
 
+  // TODO: deck may display its topmost card, if it's `faceUp`
+
   onChildAdded(child: IEntity) {
     this.childCount++
   }

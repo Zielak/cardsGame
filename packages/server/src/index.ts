@@ -16,5 +16,3 @@ export * from "./player"
 export * from "./transform"
 export * from "./traits"
 export * from "./entities"
-
-export * from "./logs"

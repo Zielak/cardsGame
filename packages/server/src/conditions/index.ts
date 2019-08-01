@@ -1,6 +1,6 @@
 import { State } from "../state"
 import { ServerPlayerEvent } from "../player"
-import { logs } from "../logs"
+import { logs } from "@cardsgame/utils"
 import chalk from "chalk"
 
 export interface ICondition {

@@ -1,6 +1,6 @@
 import { IEntity, setParent } from "../traits/entity"
 import { State } from "../state"
-import { logs } from "../logs"
+import { logs } from "@cardsgame/utils"
 import { ICommand } from "."
 import { IParent } from "../traits/parent"
 import chalk from "chalk"
@@ -28,7 +28,7 @@ export class ChangeParent implements ICommand {
       logs.error("ChangeParent command", `I don't have an entity to move!`)
       return
     }
-    logs.log(
+    logs.notice(
       "│ " + _,
       "starting, moving",
       this.entities.map(e => e.name),

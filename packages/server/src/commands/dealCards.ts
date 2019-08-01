@@ -1,5 +1,5 @@
 import { State } from "../state"
-import { logs } from "../logs"
+import { logs } from "@cardsgame/utils"
 import { ICommand } from "."
 import { ChangeParent } from "./changeParent"
 import { IParent, countChildren, getTop } from "../traits/parent"
@@ -28,7 +28,7 @@ export class DealCards implements ICommand {
 
   async execute(state: State) {
     const _ = this.constructor.name
-    logs.log(_, "executing", "count:", this.count, ", step:", this.step)
+    logs.notice(_, "executing", "count:", this.count, ", step:", this.step)
     let targetI = 0
     let stepI = 0
 
@@ -54,7 +54,7 @@ export class DealCards implements ICommand {
       if (countChildren(this.source) > 0 && targetI < maxDeals) {
         await next()
       } else {
-        logs.log(_, `Done dealing cards.`)
+        logs.notice(_, `Done dealing cards.`)
       }
     }
     return await next()

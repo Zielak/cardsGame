@@ -1,5 +1,5 @@
 import { Schema, type, MapSchema } from "@colyseus/schema"
-import { logs } from "./logs"
+import { logs } from "@cardsgame/utils"
 import { IEntity, getOwner } from "./traits/entity"
 import { cm2px, mapCount } from "@cardsgame/utils"
 import {
@@ -151,7 +151,7 @@ export class State extends Schema implements IParent {
   }
 
   logTreeState(startingPoint?: IParent & IEntity) {
-    logs.log("")
+    logs.notice("")
     const indent = (level: number) => {
       return "│ ".repeat(level)
     }
@@ -164,7 +164,7 @@ export class State extends Schema implements IParent {
         ) {
           // That's too much, man!
           if (idx === 0) {
-            logs.log(`${indent(level)}`, "...")
+            logs.notice(`${indent(level)}`, "...")
           }
           return
         }
@@ -179,7 +179,7 @@ export class State extends Schema implements IParent {
         const sOwner = owner ? `(${owner.name} ${owner.clientID})` : ""
         const branchSymbol = lastChild ? "┕━" : "┝━"
 
-        logs.log(
+        logs.notice(
           `${indent(level)}${branchSymbol}[${sIdx}]`,
           `${child.type}:${child.name}-[${child.idx}]`,
           sChildren,
@@ -192,14 +192,14 @@ export class State extends Schema implements IParent {
     }
 
     if (!startingPoint) {
-      logs.log(
+      logs.notice(
         `┍━ROOT`,
         "(" + countChildren(this) + " direct children,",
         getDescendants(this).length,
         " in total)"
       )
     } else {
-      logs.log(
+      logs.notice(
         `┍━[${startingPoint.idx}]`,
         `${startingPoint.type}:${startingPoint.name}`,
         countChildren(startingPoint) + "children"

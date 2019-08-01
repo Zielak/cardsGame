@@ -1,5 +1,5 @@
 import { EventEmitter } from "eventemitter3"
-import { logs } from "./logs"
+import { logs } from "@cardsgame/utils"
 import { Client, Room } from "colyseus.js"
 
 interface IGameOptions {

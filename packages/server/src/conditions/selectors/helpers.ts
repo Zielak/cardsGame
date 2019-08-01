@@ -1,5 +1,5 @@
 import { IEntity } from "../../traits/entity"
-import { logs } from "../../logs"
+import { logs } from "@cardsgame/utils"
 
 export const propsMatch = (propName: string, values: any[]) => (
   entity: IEntity

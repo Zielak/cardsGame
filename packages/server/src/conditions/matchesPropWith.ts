@@ -1,7 +1,7 @@
 import { State } from "../state"
 import { ICondition } from "."
 import { ServerPlayerEvent } from "../player"
-import { logs } from "../logs"
+import { logs } from "@cardsgame/utils"
 import { sentenceCase } from "@cardsgame/utils"
 import { IEntity } from "../traits/entity"
 

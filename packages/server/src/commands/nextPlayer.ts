@@ -1,5 +1,5 @@
 import { State } from "../state"
-import { logs } from "../logs"
+import { logs } from "@cardsgame/utils"
 import { ICommand } from "."
 
 export class NextPlayer implements ICommand {
@@ -9,6 +9,6 @@ export class NextPlayer implements ICommand {
     const next: number = current + 1 === state.playersCount ? 0 : current + 1
 
     state.currentPlayerIdx = next
-    logs.log(_, `now it's ${state.currentPlayer.clientID} player turn`)
+    logs.notice(_, `now it's ${state.currentPlayer.clientID} player turn`)
   }
 }

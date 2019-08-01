@@ -1,5 +1,5 @@
 import { Client } from "colyseus"
-import { logs } from "./logs"
+import { logs } from "@cardsgame/utils"
 import { CompositeCommand } from "./commands/compositeCommand"
 import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
@@ -191,9 +191,9 @@ export class CommandsManager {
     this.currentCommand = command
     const commandName = command.constructor.name
 
-    logs.log("┍━" + commandName, "executing")
+    logs.notice("┍━" + commandName, "executing")
     await this.currentCommand.execute(state)
-    logs.log("┕━" + commandName, `done`)
+    logs.notice("┕━" + commandName, `done`)
 
     this.history.push(command)
   }

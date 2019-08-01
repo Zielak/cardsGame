@@ -1,6 +1,6 @@
 import { type, ArraySchema } from "@colyseus/schema"
 import { IEntity, resetWorldTransform } from "./entity"
-import { logs } from "../logs"
+import { logs } from "@cardsgame/utils"
 import { Player } from "../player"
 import { IIdentity } from "./identity"
 
@@ -14,11 +14,10 @@ const synchChildrenArray = (
   parentConstructor: Function,
   childrenConstructor: Function
 ) => {
-  // TODO: check if already exists?
   const arr = []
   arr.push(childrenConstructor)
-  logs.log(
-    `applying "children${childrenConstructor.name}" to ${parentConstructor.name}`
+  logs.verbose(
+    `syncing "children${childrenConstructor.name}" in ${parentConstructor.name}`
   )
   type(arr)(parentConstructor.prototype, `children${childrenConstructor.name}`)
 }

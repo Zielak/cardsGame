@@ -1,5 +1,5 @@
 import { Client, Room as colRoom } from "colyseus"
-import { logs } from "./logs"
+import { logs } from "@cardsgame/utils"
 import { CommandsManager } from "./commandsManager"
 import { State } from "./state"
 import { IEntity, isInteractive } from "./traits/entity"
@@ -42,15 +42,18 @@ export class Room<S extends State> extends colRoom<S> {
     ) {
       mapAdd(this.state.clients, newClient.id)
     }
-    logs.log("onJoin", `client "${newClient.id}" joined`)
+    logs.notice("onJoin", `client "${newClient.id}" joined`)
   }
 
   onLeave(client: Client, consented: boolean) {
     if (consented) {
       mapRemoveEntry(this.state.clients, client.id)
-      logs.log("onLeave", `client "${client.id}" left permamently`)
+      logs.notice("onLeave", `client "${client.id}" left permamently`)
     } else {
-      logs.log("onLeave", `client "${client.id}" disconnected, might be back`)
+      logs.notice(
+        "onLeave",
+        `client "${client.id}" disconnected, might be back`
+      )
     }
   }
 
@@ -67,7 +70,7 @@ export class Room<S extends State> extends colRoom<S> {
       this.onStartGame(this.state)
       return
     } else if (event.data === "start" && this.state.isGameStarted) {
-      logs.log("onMessage", `Game is already started, ignoring...`)
+      logs.notice("onMessage", `Game is already started, ignoring...`)
       return
     }
 
@@ -95,7 +98,7 @@ export class Room<S extends State> extends colRoom<S> {
 
     this.commandsManager
       .action(this.state, client, newEvent)
-      .then(data => logs.log(`action() completed`, data))
+      .then(data => logs.notice(`action() completed`, data))
       .catch(error => logs.error(`action() failed`, error))
   }
 

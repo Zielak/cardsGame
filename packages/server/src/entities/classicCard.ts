@@ -1,5 +1,5 @@
 import { Schema, type } from "@colyseus/schema"
-import { logs } from "../logs"
+import { logs } from "@cardsgame/utils"
 import {
   IEntity,
   getOwner,
@@ -27,7 +27,7 @@ export function faceDownOnlyOwner(
   client: any,
   value: any
 ): boolean {
-  logs.log("faceDownOnlyOwner", this.name, ":", value)
+  logs.notice("faceDownOnlyOwner", this.name, ":", value)
   // 1. To everyone only if it's faceUp
   // 2. To owner, only if it's in his hands
   return (
@@ -122,7 +122,7 @@ export const standardDeckFactory = (
     []
   )
 
-  logs.log(`created a deck of ${cards.length} cards`)
+  logs.notice(`created a deck of ${cards.length} cards`)
 
   return cards
 }
