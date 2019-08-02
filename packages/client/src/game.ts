@@ -1,11 +1,18 @@
 import { EventEmitter } from "eventemitter3"
-import { logs } from "@cardsgame/utils"
+import { logs, def } from "@cardsgame/utils"
 import { Client, Room } from "colyseus.js"
 
 interface IGameOptions {
   viewElement: HTMLElement
-  gameNames?: string[]
+  gameNames: string[]
+  wss?: WSSOptions
 }
+
+interface WSSOptions {
+  host?: string
+  port?: number
+}
+
 // It's a copy straight from colyseus.js...
 interface RoomAvailable {
   roomId: string
@@ -24,12 +31,21 @@ export class Game extends EventEmitter {
 
   gameNames: string[]
   viewElement: HTMLElement
+  wss: WSSOptions
 
-  constructor({ gameNames, viewElement }: IGameOptions) {
+  constructor(options: IGameOptions) {
     super()
+    const { gameNames, viewElement } = options
 
     this.gameNames = gameNames
     this.viewElement = viewElement
+    this.wss = {
+      host: def(
+        options.wss && options.wss.host,
+        window.document.location.hostname
+      ),
+      port: def(options.wss && options.wss.port, 2657)
+    }
 
     this.openClient()
   }
@@ -37,10 +53,9 @@ export class Game extends EventEmitter {
   openClient() {
     import(/* webpackChunkName: 'colyseus.js' */ "colyseus.js")
       .then(({ Client }) => {
-        const host = window.document.location.hostname
-        const port = ":2657"
-
-        this.client = new Client("wss://" + host + port)
+        this.client = new Client(
+          `wss://${this.wss.host}${this.wss.port ? ":" + this.wss.port : ""}`
+        )
 
         this.client.onOpen.add(data => {
           logs.info("CLIENT open", data)
