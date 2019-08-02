@@ -16,7 +16,7 @@ export enum LogLevels {
 
 let logLevel = LogLevels.silent
 
-const setLogLevel = (val: string) => {
+export const setLogLevel = (val: string) => {
   switch (val) {
     case "silent":
       logLevel = LogLevels.silent
