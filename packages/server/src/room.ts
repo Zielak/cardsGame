@@ -31,8 +31,7 @@ export class Room<S extends State> extends colRoom<S> {
   requestJoin(options: any, isRoomNew?: boolean): boolean | number {
     // TODO: private rooms?
     // TODO: reject on maxClients reached?
-    // TODO: this.state.isGameStarted
-    return true
+    return this.state.isGameStarted ? false : true
   }
 
   onJoin(newClient: Client) {
