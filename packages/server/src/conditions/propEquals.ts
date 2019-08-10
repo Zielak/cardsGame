@@ -8,9 +8,9 @@ import { ServerPlayerEvent } from "../player"
  * @param expectedValue
  */
 export const propEquals = (property: string, expectedValue: any) => {
-  const cond: ICondition = (state: State, event: ServerPlayerEvent) =>
+  const propEquals: ICondition = (state: State, event: ServerPlayerEvent) =>
     event.entity[property] === expectedValue
 
-  cond._name = `"${property}" === "${expectedValue}"`
-  return cond
+  // cond.name = `"${property}" === "${expectedValue}"`
+  return propEquals
 }

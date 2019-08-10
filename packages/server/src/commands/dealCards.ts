@@ -28,7 +28,7 @@ export class DealCards implements ICommand {
 
   async execute(state: State) {
     const _ = this.constructor.name
-    logs.notice(_, "executing", "count:", this.count, ", step:", this.step)
+    logs.notice(_, "count:", this.count, ", step:", this.step)
     let targetI = 0
     let stepI = 0
 

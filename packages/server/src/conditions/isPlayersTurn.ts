@@ -8,7 +8,7 @@ import { logs } from "@cardsgame/utils"
  * @param state
  * @param event
  */
-export const isPlayersTurn: ICondition = (
+const isPlayersTurn: ICondition = (
   state: State,
   event: ServerPlayerEvent
 ): boolean => {
@@ -21,4 +21,5 @@ export const isPlayersTurn: ICondition = (
   )
   return false
 }
-isPlayersTurn._name = "isPlayersTurn"
+
+export { isPlayersTurn }

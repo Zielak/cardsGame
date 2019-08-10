@@ -8,11 +8,11 @@ import { getParentEntity } from "../traits/entity"
  * @param props
  */
 export const parentMatches = (props: EntityProps): ICondition => {
-  const cond: ICondition = (_, event: ServerPlayerEvent) => {
+  const parentMatches: ICondition = (_, event: ServerPlayerEvent) => {
     return Object.keys(props).every(
       key => getParentEntity(event.entity)[key] === props[key]
     )
   }
-  cond._name = "parentMatches"
-  return cond
+
+  return parentMatches
 }

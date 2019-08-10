@@ -1,19 +1,39 @@
-import { Client, Room as colRoom } from "colyseus"
-import { logs } from "@cardsgame/utils"
+import { EventEmitter } from "events"
+import { Client, Room as colRoom, Presence } from "colyseus"
+import {
+  logs,
+  chalk,
+  map2Array,
+  mapAdd,
+  mapRemoveEntry
+} from "@cardsgame/utils"
 import { CommandsManager } from "./commandsManager"
 import { State } from "./state"
 import { IEntity, isInteractive } from "./traits/entity"
-import { map2Array, mapAdd, mapRemoveEntry } from "@cardsgame/utils"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
-import chalk from "chalk"
 
 export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
+  patchRate = 100 // ms = 10FPS
 
   commandsManager: CommandsManager
+  emitter = new EventEmitter()
+  on: (event: string | symbol, listener: (...args: any[]) => void) => this
+  once: (event: string | symbol, listener: (...args: any[]) => void) => this
+  off: (event: string | symbol, listener: (...args: any[]) => void) => this
+  emit: (event: string | symbol, ...args: any[]) => boolean
 
   possibleActions: ActionsSet
+
+  constructor(presence?: Presence) {
+    super(presence)
+
+    this.on = this.emitter.on.bind(this)
+    this.once = this.emitter.once.bind(this)
+    this.off = this.emitter.off.bind(this)
+    this.emit = this.emitter.emit
+  }
 
   onInit(options: any) {
     logs.info(`Room:${this.name}`, "creating new room")
@@ -23,9 +43,9 @@ export class Room<S extends State> extends colRoom<S> {
       this.possibleActions = new Set([])
     }
 
-    this.commandsManager = new CommandsManager(this.possibleActions)
+    this.commandsManager = new CommandsManager(this)
 
-    this.onSetupGame(options)
+    this.onInitGame(options)
   }
 
   requestJoin(options: any, isRoomNew?: boolean): boolean | number {
@@ -67,6 +87,7 @@ export class Room<S extends State> extends colRoom<S> {
       this.state.currentPlayerIdx = 0
       this.state.isGameStarted = true
       this.onStartGame(this.state)
+      this.emit(State.events.playerTurnStarted)
       return
     } else if (event.data === "start" && this.state.isGameStarted) {
       logs.notice("onMessage", `Game is already started, ignoring...`)
@@ -76,7 +97,6 @@ export class Room<S extends State> extends colRoom<S> {
     // Populate event with server-side known data
     const newEvent: ServerPlayerEvent = { ...event }
     if (newEvent.entityPath) {
-      // Make sure
       newEvent.entities = this.state
         .getEntitiesAlongPath(newEvent.entityPath)
         .reverse()
@@ -96,7 +116,7 @@ export class Room<S extends State> extends colRoom<S> {
     debugLogMessage(newEvent)
 
     this.commandsManager
-      .action(this.state, client, newEvent)
+      .action(client, newEvent)
       .then(data => logs.notice(`action() completed`, data))
       .catch(error => logs.error(`action() failed`, error))
   }
@@ -106,8 +126,8 @@ export class Room<S extends State> extends colRoom<S> {
    * Prepare your play area now.
    * @param state
    */
-  onSetupGame(options: any = {}) {
-    logs.error("Room", `onSetupGame is not implemented!`)
+  onInitGame(options: any = {}) {
+    logs.error("Room", `onInitGame is not implemented!`)
   }
 
   /**
@@ -136,17 +156,32 @@ const debugLogMessage = (newEvent: ServerPlayerEvent) => {
 
   const { command, event } = newEvent
 
-  logs.info(
-    "onMessage",
-    [
+  if (process.env.LOGS_CHROME) {
+    logs.info(
+      "onMessage",
       `Player: ${minifyPlayer(newEvent.player)} | `,
-      chalk.white.bold(command),
-      ` "${chalk.yellow(event)}"`,
-      entityPath ? `\n\tpath: [${entityPath}], ` : "",
-      entity ? ` entity:"${entity}"` : "",
-      entities ? `\n\tentities: [${entities}]` : ""
-    ].join("")
-  )
+      `${command} "${event}"`,
+      `\n\tpath: `,
+      entityPath,
+      ", ",
+      ` entity:`,
+      entity,
+      `\n\tentities: `,
+      entities
+    )
+  } else {
+    logs.info(
+      "onMessage",
+      [
+        `Player: ${minifyPlayer(newEvent.player)} | `,
+        chalk.white.bold(command),
+        ` "${chalk.yellow(event)}"`,
+        entityPath ? `\n\tpath: [${entityPath}], ` : "",
+        entity ? ` entity:"${entity}"` : "",
+        entities ? `\n\tentities: [${entities}]` : ""
+      ].join("")
+    )
+  }
 }
 
 export type EntityProps = {

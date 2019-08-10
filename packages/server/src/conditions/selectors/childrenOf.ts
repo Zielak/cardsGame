@@ -9,24 +9,22 @@ export const childrenOf = (entity: IParent) => {
     matchRank: (_ranks: string | string[]) => {
       const ranks = Array.isArray(_ranks) ? _ranks : [_ranks]
 
-      const cond: ICondition = (_, event: ServerPlayerEvent) => {
+      const childrenOfMatchRank: ICondition = (_, event: ServerPlayerEvent) => {
         const result = getChildren(entity).every(propsMatch("rank", ranks))
-        logs.verbose(`│\t\tmatchRank:`, result)
+        // logs.verbose(`│\t\tmatchRank:`, result)
         return result
       }
-      cond._name = `childrenOf.matchRank`
-      return cond
+      return childrenOfMatchRank
     },
     matchSuit: (_suits: string | string[]) => {
       const suits = Array.isArray(_suits) ? _suits : [_suits]
 
-      const cond = (_, event: ServerPlayerEvent) => {
+      const childrenOfMatchSuit = (_, event: ServerPlayerEvent) => {
         const result = getChildren(entity).every(propsMatch("suit", suits))
-        logs.verbose(`│\t\tmatchSuit:`, result)
+        // logs.verbose(`│\t\tmatchSuit:`, result)
         return result
       }
-      cond._name = `childrenOf.matchSuit`
-      return cond
+      return childrenOfMatchSuit
     }
   }
 }

@@ -8,7 +8,8 @@ import { getOwner } from "../traits"
  * @param state
  * @param event
  */
-export const isOwner: ICondition = (state: State, event: ServerPlayerEvent) => {
+const isOwner: ICondition = (state: State, event: ServerPlayerEvent) => {
   return getOwner(event.entity) === event.player
 }
-isOwner._name = "isOwner"
+
+export { isOwner }

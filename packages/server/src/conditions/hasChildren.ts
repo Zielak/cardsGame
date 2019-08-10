@@ -16,11 +16,11 @@ function hasChildren(
   event?: ServerPlayerEvent
 ): ICondition | boolean {
   if (!(stantity instanceof State)) {
-    const cond: ICondition = (state: State, event: ServerPlayerEvent) =>
-      stantity.isParent() ? countChildren(stantity) > 0 : false
+    const entity: IEntity = stantity
+    const entityHasChildren: ICondition = () =>
+      entity.isParent() ? countChildren(entity) > 0 : false
 
-    cond._name = `hasChildren{entity}`
-    return cond
+    return entityHasChildren
   } else {
     if (event.entity.isParent()) {
       return countChildren(event.entity) > 0
@@ -28,6 +28,5 @@ function hasChildren(
     return false
   }
 }
-hasChildren._name = `hasChildren`
 
 export { hasChildren }

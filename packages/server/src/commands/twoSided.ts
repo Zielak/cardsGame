@@ -15,7 +15,6 @@ export class FaceUp implements ICommand {
   }
   execute(state: State) {
     this.entities.forEach(faceUp)
-    state.logTreeState()
   }
   undo(state: State) {
     this.entities.forEach(faceDown)
@@ -35,7 +34,6 @@ export class FaceDown implements ICommand {
 
   execute(state: State) {
     this.entities.forEach(faceDown)
-    state.logTreeState()
   }
 
   undo(state: State) {
@@ -56,7 +54,6 @@ export class Flip implements ICommand {
 
   execute(state: State) {
     this.entities.forEach(flip)
-    state.logTreeState()
   }
 
   undo(state: State) {

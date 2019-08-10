@@ -1,9 +1,8 @@
 import { IEntity, setParent } from "../traits/entity"
 import { State } from "../state"
-import { logs } from "@cardsgame/utils"
+import { logs, chalk } from "@cardsgame/utils"
 import { ICommand } from "."
 import { IParent } from "../traits/parent"
-import chalk from "chalk"
 
 export class ChangeParent implements ICommand {
   private entities: IEntity[]
@@ -29,7 +28,7 @@ export class ChangeParent implements ICommand {
       return
     }
     logs.notice(
-      "│ " + _,
+      _,
       "starting, moving",
       this.entities.map(e => e.name),
       "entities from",

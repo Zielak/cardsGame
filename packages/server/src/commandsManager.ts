@@ -1,12 +1,36 @@
 import { Client } from "colyseus"
-import { logs } from "@cardsgame/utils"
+import { logs, chalk, def } from "@cardsgame/utils"
 import { CompositeCommand } from "./commands/compositeCommand"
 import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
-import chalk from "chalk"
 import { isInteractive } from "./traits/entity"
 import { ICommand } from "./commands"
+import { Room } from "./room"
+import { ConditionResult, ICondition, AND } from "./conditions"
+
+const styleForResult = (value: boolean | undefined) => {
+  switch (value) {
+    case true:
+      return "color: #0F6"
+    case false:
+      return "color: #F66"
+    default:
+      return "font-style: italic"
+  }
+}
+
+const logConditionResults = (results: ConditionResult[]) => {
+  results.forEach(res => {
+    if (Array.isArray(res.subResults)) {
+      logs.group(`%c${res.name}`, styleForResult(res.result))
+      logConditionResults(res.subResults)
+      logs.groupEnd()
+    } else {
+      logs.verbose(`%c${res.name}`, styleForResult(res.result))
+    }
+  })
+}
 
 export class CommandsManager {
   history: ICommand[] = []
@@ -17,35 +41,59 @@ export class CommandsManager {
 
   possibleActions: ActionsSet
 
-  constructor(possibleActions: ActionsSet) {
-    this.possibleActions = possibleActions
+  constructor(private room: Room<any>) {
+    this.possibleActions = room.possibleActions
   }
 
-  async action(state: State, client: Client, event: ServerPlayerEvent) {
+  async action(client: Client, event: ServerPlayerEvent) {
+    const { state } = this.room
+
     // Current action is still on-going, and may be a complex one.
     if (this.actionPending) {
     }
 
+    logs.groupCollapsed(`Filter out actions by CONDITIONS`)
+
+    const extractConditionInfo = (
+      condition: ICondition,
+      result?: boolean
+    ): ConditionResult => {
+      const out: ConditionResult = {
+        name: condition.name,
+        result: def(condition.result, result)
+      }
+
+      if (condition.description) {
+        out.description = condition.description
+      }
+      if (condition.subResults) {
+        out.subResults = condition.subResults
+      }
+
+      return out
+    }
+
     const actions = this.getActionsByInteraction(state, event).filter(
       action => {
-        logs.verbose(`\tFilter out actions by CONDITIONS`)
-        logs.verbose(
-          `┌─ action: ${chalk.white(action.name)} ───────────────────────────`
-        )
+        const logsResults: ConditionResult[] = []
+
+        logs.group(`action: ${chalk.white(action.name)}`)
+
         const result = action.getConditions(state, event).every(condition => {
           const result = condition(state, event)
-          logs.verbose(`│ condition: ${condition._name} =`, result)
+
+          logsResults.push(extractConditionInfo(condition, result))
+
           return result
         })
 
-        logs.verbose(
-          `└─ result:`,
-          chalk[result ? "green" : "red"](String(result))
-        )
+        logConditionResults(logsResults)
+        logs.groupEnd()
 
         return result
       }
     )
+    logs.groupEnd()
 
     if (actions.length === 0) {
       logs.error(
@@ -62,7 +110,7 @@ export class CommandsManager {
       )
     }
 
-    return this.parseAction(actions[0], state, event)
+    return this.parseAction(state, actions[0], event)
       .then(result => {
         if (!result) {
           throw new Error(`Client "${client.id}" failed to perform action.`)
@@ -89,11 +137,11 @@ export class CommandsManager {
         action.name,
         `got`,
         interactions.length,
-        `interaction${interactions.length > 1 ? "s" : ""}`
+        `interaction${interactions.length > 1 ? "s" : ""}`,
+        interactions.map(def => JSON.stringify(def))
       )
 
       return interactions.some(definition => {
-        logs.verbose(`\tInteraction:`, JSON.stringify(definition))
         if (
           event.entities &&
           (!definition.command || definition.command === "EntityInteraction")
@@ -148,8 +196,8 @@ export class CommandsManager {
    * @param event incomming user's event
    */
   async parseAction(
-    action: ActionTemplate,
     state: State,
+    action: ActionTemplate,
     event: ServerPlayerEvent
   ): Promise<boolean> {
     // Someone is taking a while, tell current player to wait!
@@ -162,7 +210,7 @@ export class CommandsManager {
     let result = false
     this.actionPending = true
     this.currentAction = action
-    logs.info("parseAction", "current action:", chalk.white(action.name))
+    logs.info("parseAction", "current action:", action.name)
 
     try {
       let cmd = action.getCommands(state, event)
@@ -191,9 +239,9 @@ export class CommandsManager {
     this.currentCommand = command
     const commandName = command.constructor.name
 
-    logs.notice("┍━" + commandName, "executing")
-    await this.currentCommand.execute(state)
-    logs.notice("┕━" + commandName, `done`)
+    logs.group(commandName, "executing")
+    await this.currentCommand.execute(state, this.room)
+    logs.groupEnd(commandName, "done")
 
     this.history.push(command)
   }

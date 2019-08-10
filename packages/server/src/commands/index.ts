@@ -1,4 +1,5 @@
 import { State } from "../state"
+import { Room } from "../room"
 
 export * from "./changeParent"
 export * from "./compositeCommand"
@@ -10,6 +11,6 @@ export * from "./shuffleChildren"
 export * from "./twoSided"
 
 export interface ICommand {
-  execute(state: State): Promise<void> | void
-  undo?(state: State)
+  execute(state: State, room: Room<any>): Promise<void> | void
+  undo?(state: State, room: Room<any>)
 }

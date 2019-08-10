@@ -14,21 +14,19 @@ export const matchesPropWith = (
   propName: string,
   entities: IEntity | IEntity[]
 ) => {
-  const cond: ICondition = (state: State, event: ServerPlayerEvent) => {
-    const ents = Array.isArray(entities) ? entities : [entities]
+  const ents = Array.isArray(entities) ? entities : [entities]
+
+  const matchesPropWith: ICondition = (
+    state: State,
+    event: ServerPlayerEvent
+  ) => {
     const target = event.entity
     const matches = ents.every(entity => entity[propName] === target[propName])
-    if (!matches) {
-      logs.warn(
-        "matchesPropWith",
-        `${sentenceCase(target.type)}'s "${
-          target.name
-        }" property "${propName}" doesn't match other selected entities:`,
-        ents.map(el => `${el.name}.${propName}:${el[propName]}`)
-      )
-    }
+
     return matches
   }
-  cond._name = "matchesPropWith"
-  return cond
+  // cond.name = `matchesProp(${propName})With(${
+  //   ents.length > 5 ? ents.length + " entities" : ents.map(e => e.name)
+  // })`
+  return matchesPropWith
 }

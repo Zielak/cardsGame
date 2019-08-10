@@ -151,11 +151,7 @@ export class State extends Schema implements IParent {
   }
 
   logTreeState(startingPoint?: IParent & IEntity) {
-    logs.notice("")
-    const indent = (level: number) => {
-      return "│ ".repeat(level)
-    }
-    const travel = (parent: IParent, level: number = 0) => {
+    const travel = (parent: IParent) => {
       getChildren(parent).map((child, idx, entities) => {
         if (
           // getParentEntity(child).isContainer && // Parent HAS to be a container...
@@ -164,48 +160,51 @@ export class State extends Schema implements IParent {
         ) {
           // That's too much, man!
           if (idx === 0) {
-            logs.notice(`${indent(level)}`, "...")
+            logs.notice("...")
           }
           return
         }
 
         const owner = getOwner(child)
 
-        const lastChild = entities.length - 1 === idx
+        // const lastChild = entities.length - 1 === idx
         const sIdx = idx === child.idx ? `${idx}` : `e${child.idx}:s${idx}`
 
         const childrenCount = countChildren(child as IParent & IEntity)
         const sChildren = childrenCount > 0 ? childrenCount : ""
         const sOwner = owner ? `(${owner.name} ${owner.clientID})` : ""
-        const branchSymbol = lastChild ? "┕━" : "┝━"
+        // const branchSymbol = lastChild ? "┕━" : "┝━"
 
-        logs.notice(
-          `${indent(level)}${branchSymbol}[${sIdx}]`,
+        const hasChildren = child.isParent() && childrenCount > 0
+
+        logs[hasChildren ? "groupCollapsed" : "notice"](
+          `[${sIdx}]`,
           `${child.type}:${child.name}-[${child.idx}]`,
           sChildren,
           sOwner
         )
         if (child.isParent() && childrenCount > 0) {
-          travel(child, level + 1)
+          travel(child)
+          logs.groupEnd()
         }
       })
     }
 
     if (!startingPoint) {
-      logs.notice(
-        `┍━ROOT`,
+      logs.groupCollapsed(
+        "ROOT",
         "(" + countChildren(this) + " direct children,",
         getDescendants(this).length,
-        " in total)"
+        "in total)"
       )
     } else {
-      logs.notice(
-        `┍━[${startingPoint.idx}]`,
-        `${startingPoint.type}:${startingPoint.name}`,
+      logs.groupCollapsed(
+        `[${startingPoint.idx}] ${startingPoint.type}:${startingPoint.name}`,
         countChildren(startingPoint) + "children"
       )
     }
-    travel(startingPoint || this, 1)
+    travel(startingPoint || this)
+    logs.groupEnd()
   }
 
   static events = {

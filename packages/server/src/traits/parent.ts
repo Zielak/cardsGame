@@ -16,9 +16,9 @@ const synchChildrenArray = (
 ) => {
   const arr = []
   arr.push(childrenConstructor)
-  logs.verbose(
-    `syncing "children${childrenConstructor.name}" in ${parentConstructor.name}`
-  )
+  // logs.verbose(
+  //   `syncing "children${childrenConstructor.name}" in ${parentConstructor.name}`
+  // )
   type(arr)(parentConstructor.prototype, `children${childrenConstructor.name}`)
 }
 
