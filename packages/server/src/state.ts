@@ -55,7 +55,7 @@ export class State extends Schema implements IParent {
   isGameStarted = false
 
   @type({ map: "string" })
-  ui: StateUI = new MapSchema<string>()
+  ui: StateUI = new MapSchema<string | string[]>()
 
   @type(PlayerViewPosition)
   playerViewPosition = new PlayerViewPosition()
@@ -208,7 +208,8 @@ export class State extends Schema implements IParent {
   }
 
   static events = {
-    playerTurnStarted: Symbol("playerTurnStarted")
+    playerTurnStarted: Symbol("playerTurnStarted"),
+    playerTurnEnded: Symbol("playerTurnEnded")
   }
 }
 

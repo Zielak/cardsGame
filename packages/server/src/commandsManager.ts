@@ -4,7 +4,7 @@ import { CompositeCommand } from "./commands/compositeCommand"
 import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
-import { isInteractive } from "./traits/entity"
+import { isInteractive, getParentEntity } from "./traits/entity"
 import { ICommand } from "./commands"
 import { Room } from "./room"
 import { ConditionResult, ICondition, AND } from "./conditions"
@@ -131,8 +131,10 @@ export class CommandsManager {
     event: ServerPlayerEvent
   ): ActionTemplate[] {
     logs.info(`getActionsByInteraction()`)
+
     const actions = Array.from(this.possibleActions.values()).filter(action => {
-      const interactions = action.getInteractions(state)
+      const interactions = action.getInteractions()
+
       logs.verbose(
         action.name,
         `got`,
@@ -140,6 +142,30 @@ export class CommandsManager {
         `interaction${interactions.length > 1 ? "s" : ""}`,
         interactions.map(def => JSON.stringify(def))
       )
+
+      const interactionMatchesEntity = definition => currentTarget => {
+        // Every KEY in definition should be present
+        // in the Entity and be of eqaul value
+        // or either of values if its an array
+        return Object.keys(definition).every((prop: string) => {
+          const value = definition[prop]
+
+          // Is simple type or array of these, NOT an {object}
+          if (Array.isArray(value) || typeof value !== "object") {
+            const values = Array.isArray(value) ? value : [value]
+            return values.some(testValue => currentTarget[prop] === testValue)
+          }
+          if (prop === "parent") {
+            const parentOfCurrent = getParentEntity(currentTarget)
+
+            return parentOfCurrent
+              ? interactionMatchesEntity(value)(parentOfCurrent)
+              : // You game me some definition of "parent"
+                // But I don't have a parent...
+                false
+          }
+        })
+      }
 
       return interactions.some(definition => {
         if (
@@ -149,22 +175,7 @@ export class CommandsManager {
           // Check props for every interactive entity in `targets` array
           return event.entities
             .filter(currentTarget => isInteractive(currentTarget))
-            .some(currentTarget =>
-              // Every KEY in definition should be present
-              // in the Entity and be of eqaul value
-              // or either of values if its an array
-              Object.keys(definition).every((prop: string) => {
-                const value = definition[prop]
-                // is simple type or array of these, NOT an {object}
-                if (Array.isArray(value) || typeof value !== "object") {
-                  const values = Array.isArray(value) ? value : [value]
-                  return values.some(
-                    testValue => currentTarget[prop] === testValue
-                  )
-                }
-                // TODO: handle `parent`
-              })
-            )
+            .some(interactionMatchesEntity(definition))
         } else if (definition.command) {
           // TODO: react on button click or anything else
           logs.verbose(
