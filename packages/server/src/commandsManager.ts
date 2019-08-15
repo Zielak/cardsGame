@@ -1,5 +1,5 @@
 import { Client } from "colyseus"
-import { logs, chalk, def } from "@cardsgame/utils"
+import { logs, chalk } from "@cardsgame/utils"
 import { CompositeCommand } from "./commands/compositeCommand"
 import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
@@ -7,42 +7,48 @@ import { ActionTemplate, ActionsSet } from "./actionTemplate"
 import { isInteractive, getParentEntity } from "./traits/entity"
 import { ICommand } from "./commands"
 import { Room } from "./room"
-import { ConditionResult, ICondition, AND } from "./conditions"
+import { Conditions, ConditionsConstructor } from "./conditions"
 
-const styleForResult = (value: boolean | undefined) => {
-  switch (value) {
-    case true:
-      return "color: #0F6"
-    case false:
-      return "color: #F66"
-    default:
-      return "font-style: italic"
-  }
-}
+// const styleForResult = (value: boolean | undefined) => {
+//   switch (value) {
+//     case true:
+//       return "color: #0F6"
+//     case false:
+//       return "color: #F66"
+//     default:
+//       return "font-style: italic"
+//   }
+// }
 
-const logConditionResults = (results: ConditionResult[]) => {
-  results.forEach(res => {
-    if (Array.isArray(res.subResults)) {
-      logs.group(`%c${res.name}`, styleForResult(res.result))
-      logConditionResults(res.subResults)
-      logs.groupEnd()
-    } else {
-      logs.verbose(`%c${res.name}`, styleForResult(res.result))
-    }
-  })
-}
+// const logConditionResults = (results: ConditionResult[]) => {
+//   results.forEach(res => {
+//     if (Array.isArray(res.subResults)) {
+//       logs.group(`%c${res.name}`, styleForResult(res.result))
+//       logConditionResults(res.subResults)
+//       logs.groupEnd()
+//     } else {
+//       logs.verbose(`%c${res.name}`, styleForResult(res.result))
+//     }
+//   })
+// }
 
-export class CommandsManager {
+export class CommandsManager<
+  S extends State,
+  C extends Conditions<S>,
+  CC extends ConditionsConstructor<S, C>
+> {
   history: ICommand[] = []
 
   currentCommand: ICommand
   actionPending: boolean = false
-  currentAction: ActionTemplate
+  currentAction: ActionTemplate<C>
 
-  possibleActions: ActionsSet
+  possibleActions: ActionsSet<C>
+  conditions: CC
 
-  constructor(private room: Room<any>) {
+  constructor(private room: Room<S, C, CC>) {
     this.possibleActions = room.possibleActions
+    this.conditions = room.conditions
   }
 
   async action(client: Client, event: ServerPlayerEvent) {
@@ -54,45 +60,45 @@ export class CommandsManager {
 
     logs.groupCollapsed(`Filter out actions by CONDITIONS`)
 
-    const extractConditionInfo = (
-      condition: ICondition,
-      result?: boolean
-    ): ConditionResult => {
-      const out: ConditionResult = {
-        name: condition.name,
-        result: def(condition.result, result)
+    // const extractConditionInfo = (
+    //   condition: ICondition,
+    //   result?: boolean
+    // ): ConditionResult => {
+    //   const out: ConditionResult = {
+    //     name: condition.name,
+    //     result: def(condition.result, result)
+    //   }
+
+    //   if (condition.description) {
+    //     out.description = condition.description
+    //   }
+    //   if (condition.subResults) {
+    //     out.subResults = condition.subResults
+    //   }
+
+    //   return out
+    // }
+
+    const actions = this.getActionsByInteraction(event).filter(action => {
+      // const logsResults: ConditionResult[] = []
+
+      logs.group(`action: ${chalk.white(action.name)}`)
+
+      const conditionsChecker = new this.conditions(state, event)
+
+      let result = true
+      try {
+        action.getConditions(conditionsChecker)
+      } catch (e) {
+        result = false
+        logs.error("Conditions", e)
       }
 
-      if (condition.description) {
-        out.description = condition.description
-      }
-      if (condition.subResults) {
-        out.subResults = condition.subResults
-      }
+      // logConditionResults(logsResults)
+      logs.groupEnd()
 
-      return out
-    }
-
-    const actions = this.getActionsByInteraction(state, event).filter(
-      action => {
-        const logsResults: ConditionResult[] = []
-
-        logs.group(`action: ${chalk.white(action.name)}`)
-
-        const result = action.getConditions(state, event).every(condition => {
-          const result = condition(state, event)
-
-          logsResults.push(extractConditionInfo(condition, result))
-
-          return result
-        })
-
-        logConditionResults(logsResults)
-        logs.groupEnd()
-
-        return result
-      }
-    )
+      return result
+    })
     logs.groupEnd()
 
     if (actions.length === 0) {
@@ -126,10 +132,7 @@ export class CommandsManager {
    * Gets you a list of all possible game actions
    * that match with player's interaction
    */
-  getActionsByInteraction(
-    state: State,
-    event: ServerPlayerEvent
-  ): ActionTemplate[] {
+  getActionsByInteraction(event: ServerPlayerEvent): ActionTemplate<C>[] {
     logs.info(`getActionsByInteraction()`)
 
     const actions = Array.from(this.possibleActions.values()).filter(action => {
@@ -189,7 +192,7 @@ export class CommandsManager {
       })
     })
 
-    const logActions = actions.map(el => el.name)
+    // const logActions = actions.map(el => el.name)
     logs.info(
       "performAction",
       actions.length,
@@ -208,7 +211,7 @@ export class CommandsManager {
    */
   async parseAction(
     state: State,
-    action: ActionTemplate,
+    action: ActionTemplate<C>,
     event: ServerPlayerEvent
   ): Promise<boolean> {
     // Someone is taking a while, tell current player to wait!

@@ -7,5 +7,6 @@
     "outDir": "../lib",
     "target": "esnext",
     "types": ["@cardsgame/types", "bezier-js", "colyseus"]
-  }
+  },
+  "exclude": ["conditions/experiment.ts"]
 }

@@ -13,7 +13,9 @@ import {
 } from "./traits/parent"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
-import { hasChildren } from "./conditions"
+
+const hasChildren = (entity: IEntity | IParent) =>
+  entity.isParent() ? countChildren(entity) > 0 : false
 
 @containsChildren()
 export class State extends Schema implements IParent {
