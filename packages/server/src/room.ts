@@ -14,22 +14,18 @@ import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
 import { Conditions, ConditionsConstructor } from "./conditions"
 
-export class Room<
-  S extends State,
-  C extends Conditions<S>,
-  CC extends ConditionsConstructor<S, C>
-> extends colRoom<S> {
+export class Room<S extends State, C extends Conditions<S>> extends colRoom<S> {
   name = "CardsGame test"
   patchRate = 100 // ms = 10FPS
 
-  commandsManager: CommandsManager<S, C, CC>
+  commandsManager: CommandsManager<S, C>
   emitter = new EventEmitter()
   on: (event: string | symbol, listener: (...args: any[]) => void) => this
   once: (event: string | symbol, listener: (...args: any[]) => void) => this
   off: (event: string | symbol, listener: (...args: any[]) => void) => this
   emit: (event: string | symbol, ...args: any[]) => boolean
 
-  conditions: CC
+  conditions: ConditionsConstructor<S, C>
   possibleActions: ActionsSet<C>
 
   constructor(presence?: Presence) {
@@ -49,7 +45,7 @@ export class Room<
       this.possibleActions = new Set([])
     }
 
-    this.commandsManager = new CommandsManager<S, C, CC>(this)
+    this.commandsManager = new CommandsManager<S, C>(this)
 
     this.onInitGame(options)
   }

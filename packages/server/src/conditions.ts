@@ -1,6 +1,12 @@
 import { State } from "./state"
 import { ServerPlayerEvent, Player } from "./player"
-import { QuerableProps, find, getChildren } from "./traits"
+import {
+  QuerableProps,
+  find,
+  getChildren,
+  getOwner,
+  countChildren
+} from "./traits"
 
 // export interface ExpandableConditions<S extends State> {
 //   [key: string]: (this: Conditions<S>) => Conditions<S>
@@ -11,24 +17,24 @@ export type ConditionsConstructor<
   R extends Conditions<S>
 > = new (state: S, event: ServerPlayerEvent) => R
 
-class Conditions<S extends State> /* implements IConditions<S> */ {
-  private _state: S
-  private _event: ServerPlayerEvent
-  private get _player() {
+class Conditions<S extends State> {
+  _state: S
+  _event: ServerPlayerEvent
+  get _player() {
     return this._event.player
   }
 
-  private _subject: any
-  private _propParent: any
-  private _propName: any
-  private _refs = new Map<string | Symbol, any>()
-  private _not = false
+  _subject: any
+  _propParent: any
+  _propName: any
+  _refs = new Map<string | Symbol, any>()
+  _not = false
 
   constructor(state: S, event: ServerPlayerEvent) {
     this._state = state
     this._event = event
 
-    this._subject = this.state
+    this._subject = state
 
     // for (const key in more) {
     //   if (more.hasOwnProperty(key)) {
@@ -37,13 +43,13 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
     // }
   }
 
-  private _check = {
+  _check = {
     // These shouldn't care about `_not`!
     // Don't make it negate multiple times in one assertion
     /**
      * Compare without coercion, one value to another.
      */
-    equal(actual, expected) {
+    equal: (actual, expected) => {
       const not = this._not
 
       if (not ? actual === expected : actual !== expected) {
@@ -60,7 +66,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
     //   }
     // },
 
-    truthy(actual) {
+    truthy: actual => {
       const not = this._not
 
       if (!not && !Boolean(actual)) {
@@ -72,7 +78,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
         )
       }
     },
-    falsy(actual) {
+    falsy: actual => {
       const not = this._not
 
       if (!not && Boolean(actual)) {
@@ -91,7 +97,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
     // (5).not.above(0)
     // (5).not.above(5)
     // (5).not.above(10)
-    above(actual, expected) {
+    above: (actual, expected) => {
       const not = this._not
 
       if (!not && actual < expected) {
@@ -110,7 +116,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
     // (5).not.below(0)
     // (5).not.below(5)
     // (5).not.below(10)
-    below(actual, expected) {
+    below: (actual, expected) => {
       const not = this._not
 
       if (!not && actual > expected) {
@@ -124,7 +130,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
     }
   }
 
-  private _wrapError(callback: Function, message: string) {
+  _wrapError(callback: Function, message: string) {
     try {
       callback()
     } catch (i) {
@@ -132,7 +138,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
     }
   }
 
-  private postAssertion() {
+  _postAssertion() {
     this._not = false
 
     if (this._propParent) {
@@ -143,7 +149,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
       this._propName = undefined
     }
   }
-  private resetPropDig() {
+  _resetPropDig() {
     this._propParent = undefined
     this._propName = undefined
   }
@@ -171,7 +177,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
    */
   get state(): this {
     this._subject = this._state
-    this.resetPropDig()
+    this._resetPropDig()
 
     return this
   }
@@ -180,7 +186,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
    */
   get player(): this {
     this._subject = this._player
-    this.resetPropDig()
+    this._resetPropDig()
 
     return this
   }
@@ -189,7 +195,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
    */
   get entity(): this {
     this._subject = this._event.entity
-    this.resetPropDig()
+    this._resetPropDig()
 
     return this
   }
@@ -210,9 +216,9 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
         this._subject = this._refs.get(alias)
       }
     } else {
-      this._subject = find(this._state, [alias, ...args])
+      this._subject = find(this._state, alias, ...args)
     }
-    this.resetPropDig()
+    this._resetPropDig()
 
     return this
   }
@@ -236,13 +242,15 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
    */
   as(ref: string | Symbol): void {
     this._refs.set(ref, this._subject)
+
+    this._subject = this._state
   }
 
   /**
    * @yields children of current subject
    */
   get children(): this {
-    this._subject = getChildren(this._subject)
+    this._subject = [...getChildren(this._subject)]
 
     return this
   }
@@ -269,6 +277,14 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
     this._subject = this._subject.length
     return this
   }
+  /**
+   * @yields children count if `subject` is a `Parent`
+   */
+  get childrenCount(): this {
+    this._subject = countChildren(this._subject)
+
+    return this
+  }
 
   /**
    * Loops through every item in subject's collection.
@@ -285,15 +301,15 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
     predicate: (item: any, index: number | string, collection: any) => void
   ): this {
     // Remember current subject
-    const subject = this._subject
-    for (const [key, item] of subject) {
+    const subject: any[] = this._subject
+    subject.forEach((item, index) => {
       this._subject = item
-      predicate.call(this, item, key, subject)
-    }
+      predicate.call(this, item, index, subject)
+    })
 
     // Revert subject, and go back to chaining
     this._subject = subject
-    this.postAssertion()
+    this._postAssertion()
 
     return this
   }
@@ -302,19 +318,19 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
   // Throw when assertion doesn't pass
   equals(value: any): this {
     this._check.equal(this._subject, value)
-    this.postAssertion()
+    this._postAssertion()
 
     return this
   }
   above(value: number): this {
     this._check.above(this._subject, value)
-    this.postAssertion()
+    this._postAssertion()
 
     return this
   }
   below(value: number): this {
     this._check.below(this._subject, value)
-    this.postAssertion()
+    this._postAssertion()
 
     return this
   }
@@ -330,7 +346,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
   }
   lengthOf(value: number): this {
     this._check.equal(this._subject.length, value)
-    this.postAssertion()
+    this._postAssertion()
 
     return this
   }
@@ -344,7 +360,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
     const expected = this._refs.get(ref)[this._propName]
     this._check.equal(this._subject, expected)
 
-    this.postAssertion()
+    this._postAssertion()
 
     return this
   }
@@ -378,7 +394,7 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
       return uiValues.some(client => this._player.clientID === client)
     })
 
-    this.postAssertion()
+    this._postAssertion()
     return this
   }
 
@@ -401,14 +417,14 @@ class Conditions<S extends State> /* implements IConditions<S> */ {
     } else {
       throw new Error(`.empty | given non-iterable subject: "${this._subject}"`)
     }
-    this.postAssertion()
+    this._postAssertion()
     return this
   }
   /**
    * Based on `event` instead of `subject`
    */
   get owner(): this {
-    this._check.equal(this._player, this._event.entity.owner)
+    this._check.equal(this._player, getOwner(this._event.entity))
 
     return this
   }

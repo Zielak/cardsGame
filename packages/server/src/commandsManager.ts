@@ -9,34 +9,7 @@ import { ICommand } from "./commands"
 import { Room } from "./room"
 import { Conditions, ConditionsConstructor } from "./conditions"
 
-// const styleForResult = (value: boolean | undefined) => {
-//   switch (value) {
-//     case true:
-//       return "color: #0F6"
-//     case false:
-//       return "color: #F66"
-//     default:
-//       return "font-style: italic"
-//   }
-// }
-
-// const logConditionResults = (results: ConditionResult[]) => {
-//   results.forEach(res => {
-//     if (Array.isArray(res.subResults)) {
-//       logs.group(`%c${res.name}`, styleForResult(res.result))
-//       logConditionResults(res.subResults)
-//       logs.groupEnd()
-//     } else {
-//       logs.verbose(`%c${res.name}`, styleForResult(res.result))
-//     }
-//   })
-// }
-
-export class CommandsManager<
-  S extends State,
-  C extends Conditions<S>,
-  CC extends ConditionsConstructor<S, C>
-> {
+export class CommandsManager<S extends State, C extends Conditions<S>> {
   history: ICommand[] = []
 
   currentCommand: ICommand
@@ -44,9 +17,9 @@ export class CommandsManager<
   currentAction: ActionTemplate<C>
 
   possibleActions: ActionsSet<C>
-  conditions: CC
+  conditions: ConditionsConstructor<S, C>
 
-  constructor(private room: Room<S, C, CC>) {
+  constructor(private room: Room<S, C>) {
     this.possibleActions = room.possibleActions
     this.conditions = room.conditions
   }
@@ -87,11 +60,17 @@ export class CommandsManager<
       const conditionsChecker = new this.conditions(state, event)
 
       let result = true
+      let message = ""
       try {
         action.getConditions(conditionsChecker)
       } catch (e) {
         result = false
-        logs.error("Conditions", e)
+        message = e
+      }
+
+      logs.verbose(`result: ${result}`)
+      if (message) {
+        logs.verbose("\t", message)
       }
 
       // logConditionResults(logsResults)
