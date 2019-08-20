@@ -3,7 +3,6 @@ import { logs } from "@cardsgame/utils"
 import { ICommand } from "."
 import { ChangeParent } from "./changeParent"
 import { IParent, countChildren, getTop } from "../traits/parent"
-import { timeout } from "@cardsgame/utils"
 
 export class DealCards implements ICommand {
   targets: IParent[]

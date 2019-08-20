@@ -1,3 +1,4 @@
+export * from "./emitsEvents"
 export * from "./entity"
 export * from "./flexyContainer"
 export * from "./identity"

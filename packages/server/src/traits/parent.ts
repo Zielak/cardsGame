@@ -271,7 +271,7 @@ export function getDescendants<T extends IEntity | IParent>(
   }, [])
 }
 
-interface QuerableProps {
+export interface QuerableProps {
   id?: EntityID
 
   idx?: number

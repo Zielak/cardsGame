@@ -1,48 +1,27 @@
 import { Client } from "colyseus"
-import { logs, chalk, def } from "@cardsgame/utils"
+import { logs, chalk } from "@cardsgame/utils"
 import { CompositeCommand } from "./commands/compositeCommand"
 import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
-import { isInteractive } from "./traits/entity"
+import { isInteractive, getParentEntity } from "./traits/entity"
 import { ICommand } from "./commands"
 import { Room } from "./room"
-import { ConditionResult, ICondition, AND } from "./conditions"
+import { Conditions, ConditionsConstructor } from "./conditions"
 
-const styleForResult = (value: boolean | undefined) => {
-  switch (value) {
-    case true:
-      return "color: #0F6"
-    case false:
-      return "color: #F66"
-    default:
-      return "font-style: italic"
-  }
-}
-
-const logConditionResults = (results: ConditionResult[]) => {
-  results.forEach(res => {
-    if (Array.isArray(res.subResults)) {
-      logs.group(`%c${res.name}`, styleForResult(res.result))
-      logConditionResults(res.subResults)
-      logs.groupEnd()
-    } else {
-      logs.verbose(`%c${res.name}`, styleForResult(res.result))
-    }
-  })
-}
-
-export class CommandsManager {
+export class CommandsManager<S extends State, C extends Conditions<S>> {
   history: ICommand[] = []
 
   currentCommand: ICommand
   actionPending: boolean = false
-  currentAction: ActionTemplate
+  currentAction: ActionTemplate<C>
 
-  possibleActions: ActionsSet
+  possibleActions: ActionsSet<C>
+  conditions: ConditionsConstructor<S, C>
 
-  constructor(private room: Room<any>) {
+  constructor(private room: Room<S, C>) {
     this.possibleActions = room.possibleActions
+    this.conditions = room.conditions
   }
 
   async action(client: Client, event: ServerPlayerEvent) {
@@ -54,45 +33,52 @@ export class CommandsManager {
 
     logs.groupCollapsed(`Filter out actions by CONDITIONS`)
 
-    const extractConditionInfo = (
-      condition: ICondition,
-      result?: boolean
-    ): ConditionResult => {
-      const out: ConditionResult = {
-        name: condition.name,
-        result: def(condition.result, result)
+    // const extractConditionInfo = (
+    //   condition: ICondition,
+    //   result?: boolean
+    // ): ConditionResult => {
+    //   const out: ConditionResult = {
+    //     name: condition.name,
+    //     result: def(condition.result, result)
+    //   }
+
+    //   if (condition.description) {
+    //     out.description = condition.description
+    //   }
+    //   if (condition.subResults) {
+    //     out.subResults = condition.subResults
+    //   }
+
+    //   return out
+    // }
+
+    const actions = this.getActionsByInteraction(event).filter(action => {
+      // const logsResults: ConditionResult[] = []
+
+      logs.group(`action: ${chalk.white(action.name)}`)
+
+      const conditionsChecker = new this.conditions(state, event)
+
+      let result = true
+      let message = ""
+      try {
+        action.getConditions(conditionsChecker)
+      } catch (e) {
+        result = false
+        message = (e as Error).message
       }
 
-      if (condition.description) {
-        out.description = condition.description
+      if (message) {
+        logs.verbose("\t", message)
       }
-      if (condition.subResults) {
-        out.subResults = condition.subResults
-      }
+      logs.verbose(`result: ${result}`)
 
-      return out
-    }
+      // logConditionResults(logsResults)
+      logs.groupEnd()
 
-    const actions = this.getActionsByInteraction(state, event).filter(
-      action => {
-        const logsResults: ConditionResult[] = []
+      return result
+    })
 
-        logs.group(`action: ${chalk.white(action.name)}`)
-
-        const result = action.getConditions(state, event).every(condition => {
-          const result = condition(state, event)
-
-          logsResults.push(extractConditionInfo(condition, result))
-
-          return result
-        })
-
-        logConditionResults(logsResults)
-        logs.groupEnd()
-
-        return result
-      }
-    )
     logs.groupEnd()
 
     if (actions.length === 0) {
@@ -126,13 +112,12 @@ export class CommandsManager {
    * Gets you a list of all possible game actions
    * that match with player's interaction
    */
-  getActionsByInteraction(
-    state: State,
-    event: ServerPlayerEvent
-  ): ActionTemplate[] {
+  getActionsByInteraction(event: ServerPlayerEvent): ActionTemplate<C>[] {
     logs.info(`getActionsByInteraction()`)
+
     const actions = Array.from(this.possibleActions.values()).filter(action => {
-      const interactions = action.getInteractions(state)
+      const interactions = action.getInteractions()
+
       logs.verbose(
         action.name,
         `got`,
@@ -140,6 +125,30 @@ export class CommandsManager {
         `interaction${interactions.length > 1 ? "s" : ""}`,
         interactions.map(def => JSON.stringify(def))
       )
+
+      const interactionMatchesEntity = definition => currentTarget => {
+        // Every KEY in definition should be present
+        // in the Entity and be of eqaul value
+        // or either of values if its an array
+        return Object.keys(definition).every((prop: string) => {
+          const value = definition[prop]
+
+          // Is simple type or array of these, NOT an {object}
+          if (Array.isArray(value) || typeof value !== "object") {
+            const values = Array.isArray(value) ? value : [value]
+            return values.some(testValue => currentTarget[prop] === testValue)
+          }
+          if (prop === "parent") {
+            const parentOfCurrent = getParentEntity(currentTarget)
+
+            return parentOfCurrent
+              ? interactionMatchesEntity(value)(parentOfCurrent)
+              : // You game me some definition of "parent"
+                // But I don't have a parent...
+                false
+          }
+        })
+      }
 
       return interactions.some(definition => {
         if (
@@ -149,22 +158,7 @@ export class CommandsManager {
           // Check props for every interactive entity in `targets` array
           return event.entities
             .filter(currentTarget => isInteractive(currentTarget))
-            .some(currentTarget =>
-              // Every KEY in definition should be present
-              // in the Entity and be of eqaul value
-              // or either of values if its an array
-              Object.keys(definition).every((prop: string) => {
-                const value = definition[prop]
-                // is simple type or array of these, NOT an {object}
-                if (Array.isArray(value) || typeof value !== "object") {
-                  const values = Array.isArray(value) ? value : [value]
-                  return values.some(
-                    testValue => currentTarget[prop] === testValue
-                  )
-                }
-                // TODO: handle `parent`
-              })
-            )
+            .some(interactionMatchesEntity(definition))
         } else if (definition.command) {
           // TODO: react on button click or anything else
           logs.verbose(
@@ -178,7 +172,7 @@ export class CommandsManager {
       })
     })
 
-    const logActions = actions.map(el => el.name)
+    // const logActions = actions.map(el => el.name)
     logs.info(
       "performAction",
       actions.length,
@@ -197,7 +191,7 @@ export class CommandsManager {
    */
   async parseAction(
     state: State,
-    action: ActionTemplate,
+    action: ActionTemplate<C>,
     event: ServerPlayerEvent
   ): Promise<boolean> {
     // Someone is taking a while, tell current player to wait!

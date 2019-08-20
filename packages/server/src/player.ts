@@ -18,6 +18,8 @@ export class Player extends Schema {
   @type("number")
   timeLeft: number = -1
 
+  finishedPlaying = false
+
   // FIXME: why do I need it?
   _state: State
 
@@ -63,10 +65,17 @@ const randomPlayerNames = [
   "Lukas",
   "Mat",
   "Natalie",
+  "Ollie",
   "Pauline",
   "Rupert",
   "Sandra",
-  "Witeck"
+  "Tammy",
+  "Ulyseus",
+  "Vik",
+  "Witeck",
+  "Xavier",
+  "Yumi",
+  "Zoltan"
 ]
 const getRandomName = (): string => {
   randomPlayerNames.sort(() => {

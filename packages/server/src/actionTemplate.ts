@@ -1,4 +1,3 @@
-import { ICondition } from "./conditions"
 import { InteractionDefinition } from "./room"
 import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
@@ -9,14 +8,14 @@ export type ICommandFactory = (
   event: ServerPlayerEvent
 ) => ICommand | ICommand[]
 
-export type ActionTemplate = {
+export type ActionTemplate<C> = {
   name: string
   description?: string
   parallel?: boolean
 
-  getInteractions(state: State): InteractionDefinition[]
-  getConditions(state: State, event?: ServerPlayerEvent): ICondition[]
+  getInteractions(): InteractionDefinition[]
+  getConditions(con: C): void
   getCommands: ICommandFactory
 }
 
-export type ActionsSet = Set<ActionTemplate>
+export type ActionsSet<C> = Set<ActionTemplate<C>>

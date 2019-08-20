@@ -7,7 +7,7 @@ const isBrowser = new Function(
 
 const logsChrome = process ? Boolean(process.env.LOGS_CHROME) : false
 
-export const chalk = new Chalk.constructor({ enabled: logsChrome })
+export const chalk = new Chalk.constructor({ enabled: !logsChrome })
 
 export enum LogLevels {
   silent,
