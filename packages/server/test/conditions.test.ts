@@ -65,17 +65,60 @@ describe("subject changing", () => {
     expect(subject).toContain(child)
   })
 
-  test.todo(
-    "checking multiple props" /*, () => {
-    con.get("chosenCards").children.each(() => {
-      con
-        .its("rank")
-        .equals("K")
-        .its("suit")
-        .oneOf(["S", "H"])
+  describe("checking multiple props", () => {
+    it("passes", () => {
+      expect(() => {
+        con
+          .set([{ rank: "K", suit: "H" }, { rank: "K", suit: "S" }])
+          .each(() => {
+            con
+              .its("rank")
+              .equals("K")
+              .its("suit")
+              .oneOf(["S", "H"])
+          })
+      }).not.toThrow()
     })
-  }*/
-  )
+
+    it("fails as expected, one non-match", () => {
+      expect(() => {
+        con
+          .set([{ rank: "5", suit: "H" }, { rank: "K", suit: "S" }])
+          .each(() => {
+            con
+              .its("rank")
+              .equals("K")
+              .its("suit")
+              .oneOf(["S", "H"])
+          })
+      }).toThrow()
+
+      expect(() => {
+        con
+          .set([{ rank: "K", suit: "H" }, { rank: "5", suit: "D" }])
+          .each(() => {
+            con
+              .its("rank")
+              .equals("K")
+              .its("suit")
+              .oneOf(["S", "H"])
+          })
+      }).toThrow()
+    })
+    it("fails as expected, all non-match", () => {
+      expect(() => {
+        con
+          .set([{ rank: "5", suit: "D" }, { rank: "K", suit: "D" }])
+          .each(() => {
+            con
+              .its("rank")
+              .equals("K")
+              .its("suit")
+              .oneOf(["S", "H"])
+          })
+      }).toThrow()
+    })
+  })
 })
 
 describe("oneOf", () => {
@@ -188,6 +231,7 @@ describe("empty", () => {
     expect(() => con.set(new Map([["foo", "bar"]])).empty).toThrow()
     expect(() => con.set(new Set(["foo"])).empty).toThrow()
     expect(() => con.set(function foo() {}).empty).toThrow()
+    expect(() => con.set(null).empty).toThrow()
   })
 })
 

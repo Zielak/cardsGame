@@ -317,6 +317,7 @@ class Conditions<S extends State> {
    * Loops through every item in subject's collection.
    * Each item is set as the `subject` with each iteration automatically.
    * After all iterations are done, the `subject` will be reset back to what it originally was.
+   * If one of the items fail any assertions, whole `each` block fails.
    * @param predicate a function in style of native `array.forEach`. Its arguments are optional.
    * @example
    * con.get("chosenCards").children.each(() => {
@@ -334,6 +335,7 @@ class Conditions<S extends State> {
     subject.forEach((item, index) => {
       flag(this, "subject", item)
       resetNegation(this)
+      this._resetPropDig()
       predicate.call(this, item, index, subject)
     })
 
@@ -531,8 +533,9 @@ class Conditions<S extends State> {
     const subject = flag(this, "subject")
 
     ensure(
-      typeof subject === "object" || typeof subject === "string",
-      `.empty | Given an invalid subject: "${subject}"`
+      (typeof subject === "object" && subject !== null) ||
+        typeof subject === "string",
+      `.empty | Given an invalid subject: ${subject}`
     )
 
     if (subject.length !== undefined) {
