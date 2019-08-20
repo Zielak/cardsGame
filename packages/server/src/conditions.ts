@@ -5,8 +5,11 @@ import {
   find,
   getChildren,
   getOwner,
-  countChildren
+  countChildren,
+  getBottom,
+  getTop
 } from "./traits"
+import { logs } from "@cardsgame/utils"
 
 // export interface ExpandableConditions<S extends State> {
 //   [key: string]: (this: Conditions<S>) => Conditions<S>
@@ -17,136 +20,102 @@ export type ConditionsConstructor<
   R extends Conditions<S>
 > = new (state: S, event: ServerPlayerEvent) => R
 
+function flag(target, flagName, value?) {
+  if (!target._flags) {
+    throw new Error(`flag | Incompatible target.`)
+  }
+  if (arguments.length === 3) {
+    target._flags.set(flagName, value)
+  } else {
+    return target._flags.get(flagName)
+  }
+}
+
+export { flag as getConditionFlag }
+
+const ensure = (expression, errorMessage) => {
+  if (!expression) {
+    throw new Error(errorMessage)
+  }
+}
+
+const resetNegation = target => {
+  if (target._flags.get("not")) logs.info("resetNegation")
+  target._flags.set("not", false)
+}
+
+const getMessage = (target, args) => {
+  const not = flag(target, "not")
+  const [result, message, messageNot, expected, actual] = args
+
+  const expT = "#{exp}"
+  const actT = "#{act}"
+
+  if (!not) {
+    return message.replace(expT, expected).replace(actT, actual)
+  } else {
+    return messageNot
+      ? messageNot.replace(expT, expected).replace(actT, actual)
+      : ""
+  }
+}
+
 class Conditions<S extends State> {
+  _flags = new Map<string, any>()
+
   _state: S
   _event: ServerPlayerEvent
   get _player() {
     return this._event.player
   }
 
-  _subject: any
   _propParent: any
   _propName: any
   _refs = new Map<string | Symbol, any>()
-  _not = false
 
   constructor(state: S, event: ServerPlayerEvent) {
     this._state = state
     this._event = event
 
-    this._subject = state
-
-    // for (const key in more) {
-    //   if (more.hasOwnProperty(key)) {
-    //     this[key] = more[key]
-    //   }
-    // }
+    flag(this, "not", false)
+    flag(this, "subject", state)
   }
 
-  _check = {
-    // These shouldn't care about `_not`!
-    // Don't make it negate multiple times in one assertion
-    /**
-     * Compare without coercion, one value to another.
-     */
-    equal: (actual, expected) => {
-      const not = this._not
+  /**
+   *
+   * @param result
+   * @param message use #{exp} and #{act} to inject values in error messages
+   * @param messageNot use #{exp} and #{act} to inject values in error messages
+   * @param expected
+   * @param actual
+   */
+  assert(
+    result: boolean,
+    message: string,
+    messageNot?: string,
+    expected?,
+    actual?
+  ) {
+    const not = flag(this, "not")
+    const ok = not ? !result : result
 
-      if (not ? actual === expected : actual !== expected) {
-        throw new Error(`${actual} ${not ? "===" : "!=="} ${expected}`)
-      }
-    },
+    if (!ok) {
+      const msg = getMessage(this, arguments)
 
-    /**
-     * Loosely compare.
-     */
-    // equal(actual, expected) {
-    //   if (actual != expected) {
-    //     throw new Error(`${actual} != ${expected}`)
-    //   }
-    // },
-
-    truthy: actual => {
-      const not = this._not
-
-      if (!not && !Boolean(actual)) {
-        throw new Error(`${actual} is not truthy`)
-      }
-      if (not && Boolean(actual)) {
-        throw new Error(
-          `${actual} is truthy but shouldn't be (not).\nPS: don't negate truthy 😰, use \`falsy()\` instead.`
-        )
-      }
-    },
-    falsy: actual => {
-      const not = this._not
-
-      if (!not && Boolean(actual)) {
-        throw new Error(`${actual} is not falsy`)
-      }
-      if (not && !Boolean(actual)) {
-        throw new Error(
-          `${actual} is not falsy but shouldn't be (.not).\nPS: don't negate falsy 😰, use \`truthy()\` instead.`
-        )
-      }
-    },
-
-    // (5).above(10)
-    // (5).above(5)
-    // (5).above(0)
-    // (5).not.above(0)
-    // (5).not.above(5)
-    // (5).not.above(10)
-    above: (actual, expected) => {
-      const not = this._not
-
-      if (!not && actual < expected) {
-        throw new Error(`actual ${actual} is NOT above ${expected}`)
-      }
-      if (not && actual > expected) {
-        throw new Error(
-          `actual ${actual} is above ${expected}, but shouldn't (.not)`
-        )
-      }
-    },
-
-    // (5).below(10)
-    // (5).below(5)
-    // (5).below(0)
-    // (5).not.below(0)
-    // (5).not.below(5)
-    // (5).not.below(10)
-    below: (actual, expected) => {
-      const not = this._not
-
-      if (!not && actual > expected) {
-        throw new Error(`actual ${actual} is NOT below ${expected}`)
-      }
-      if (not && actual < expected) {
-        throw new Error(
-          `actual ${actual} is below ${expected} but shouldn't (not)`
-        )
-      }
+      resetNegation(this)
+      this._postAssertion()
+      throw new Error(msg)
     }
-  }
 
-  _wrapError(callback: Function, message: string) {
-    try {
-      callback()
-    } catch (i) {
-      throw new Error(`${message}\n${i}`)
-    }
+    resetNegation(this)
   }
 
   _postAssertion() {
-    this._not = false
-
     if (this._propParent) {
       // Reset subject to the object, if we were
       // just asserting its key value
-      this._subject = this._propParent
-      this._propParent = undefined
-      this._propName = undefined
+      flag(this, "subject", this._propParent)
+      this._resetPropDig()
     }
   }
   _resetPropDig() {
@@ -155,7 +124,8 @@ class Conditions<S extends State> {
   }
 
   get not(): this {
-    this._not = true
+    logs.warn("NOT", "set to true")
+    flag(this, "not", true)
     return this
   }
 
@@ -176,7 +146,7 @@ class Conditions<S extends State> {
    * @yields `state`
    */
   get state(): this {
-    this._subject = this._state
+    flag(this, "subject", this._state)
     this._resetPropDig()
 
     return this
@@ -185,7 +155,7 @@ class Conditions<S extends State> {
    * @yields `player` of current interaction
    */
   get player(): this {
-    this._subject = this._player
+    flag(this, "subject", this._player)
     this._resetPropDig()
 
     return this
@@ -194,8 +164,16 @@ class Conditions<S extends State> {
    * @yields `entity` from players interaction
    */
   get entity(): this {
-    this._subject = this._event.entity
+    flag(this, "subject", this._event.entity)
     this._resetPropDig()
+
+    return this
+  }
+  /**
+   * @yields completely new subject, provided in the argument
+   */
+  set(newSubject): this {
+    flag(this, "subject", newSubject)
 
     return this
   }
@@ -208,16 +186,22 @@ class Conditions<S extends State> {
    * ```
    */
   get(alias: string | Symbol | QuerableProps, ...args: QuerableProps[]): this {
+    let newSubject
     if (typeof alias === "string") {
       if (args.length > 0) {
-        this._subject = find(this._refs.get(alias), args)
+        // find child of subject by alias
+        newSubject = find(this._refs.get(alias), args)
       } else {
         // get subject by alias
-        this._subject = this._refs.get(alias)
+        newSubject = this._refs.get(alias)
       }
     } else {
-      this._subject = find(this._state, alias, ...args)
+      // find subject in State tree
+      newSubject = find(this._state, alias, ...args)
     }
+
+    flag(this, "subject", newSubject)
+
     this._resetPropDig()
 
     return this
@@ -230,9 +214,13 @@ class Conditions<S extends State> {
    *   .and.its('propB').above(5)
    */
   its(key: string): this {
-    this._propParent = this._subject
-    this._propName = key
-    this._subject = this._subject[key]
+    if (this._propParent) {
+      flag(this, "subject", this._propParent[key])
+    } else {
+      this._propParent = flag(this, "subject")
+      this._propName = key
+      flag(this, "subject", this._propParent[key])
+    }
 
     return this
   }
@@ -241,32 +229,56 @@ class Conditions<S extends State> {
    * Remembers the subject with a given alias
    */
   as(ref: string | Symbol): void {
-    this._refs.set(ref, this._subject)
+    this._refs.set(ref, flag(this, "subject"))
 
-    this._subject = this._state
+    flag(this, "subject", this._state)
   }
 
   /**
    * @yields children of current subject
    */
   get children(): this {
-    this._subject = [...getChildren(this._subject)]
+    const children = getChildren(flag(this, "subject"))
+
+    flag(this, "subject", children)
 
     return this
   }
   /**
    * @yields first element in collection
    */
-  get first(): this {
-    this._subject = this._subject[0]
+  get bottom(): this {
+    const subject = flag(this, "subject")
+
+    ensure(
+      typeof subject === "object",
+      `bottom | Can't get the "bottom" of something else than an object`
+    )
+
+    if ("length" in subject) {
+      flag(this, "subject", subject[0])
+    } else {
+      flag(this, "subject", getBottom(subject))
+    }
 
     return this
   }
   /**
    * @yields last element in collection
    */
-  get last(): this {
-    this._subject = this._subject[this._subject.length - 1]
+  get top(): this {
+    const subject = flag(this, "subject")
+
+    ensure(
+      typeof subject === "object",
+      `top | Can't get the "top" of something else than an object`
+    )
+
+    if ("length" in subject) {
+      flag(this, "subject", subject[subject.length - 1])
+    } else {
+      flag(this, "subject", getTop(subject))
+    }
 
     return this
   }
@@ -274,14 +286,29 @@ class Conditions<S extends State> {
    * @yields `length` property of a collection (or string)
    */
   get length(): this {
-    this._subject = this._subject.length
+    const subject = flag(this, "subject")
+
+    ensure(
+      subject.length !== undefined,
+      `length | Subject doesn't have "length" property`
+    )
+
+    flag(this, "subject", subject.length)
     return this
   }
   /**
    * @yields children count if `subject` is a `Parent`
    */
   get childrenCount(): this {
-    this._subject = countChildren(this._subject)
+    const subject = flag(this, "subject")
+
+    ensure(
+      typeof subject === "object",
+      `childrenCount | Expected "subject" to be an object`
+    )
+
+    const count = countChildren(flag(this, "subject"))
+    flag(this, "subject", count)
 
     return this
   }
@@ -300,15 +327,19 @@ class Conditions<S extends State> {
   each(
     predicate: (item: any, index: number | string, collection: any) => void
   ): this {
-    // Remember current subject
-    const subject: any[] = this._subject
+    const subject = flag(this, "subject")
+
+    ensure(Array.isArray(subject), `each | Expected subject to be an array`)
+
     subject.forEach((item, index) => {
-      this._subject = item
+      flag(this, "subject", item)
+      resetNegation(this)
       predicate.call(this, item, index, subject)
     })
 
     // Revert subject, and go back to chaining
-    this._subject = subject
+    flag(this, "subject", subject)
+    resetNegation(this)
     this._postAssertion()
 
     return this
@@ -317,50 +348,138 @@ class Conditions<S extends State> {
   // Commands?
   // Throw when assertion doesn't pass
   equals(value: any): this {
-    this._check.equal(this._subject, value)
-    this._postAssertion()
+    const not = flag(this, "not"),
+      subject = flag(this, "subject")
+
+    this.assert(
+      !not ? subject === value : subject !== value,
+      `expected #{act} to equal #{exp}`,
+      `expected #{act} to NOT equal #{exp}`,
+      value,
+      subject
+    )
 
     return this
   }
+
+  equal = this.equals
+
+  // (5).above(10)
+  // (5).above(5)
+  // (5).above(0)
+  // (5).not.above(0)
+  // (5).not.above(5)
+  // (5).not.above(10)
   above(value: number): this {
-    this._check.above(this._subject, value)
-    this._postAssertion()
+    const subject = flag(this, "subject")
+
+    this.assert(
+      subject > value,
+      `expected #{exp} to be above #{act}`,
+      `expected #{exp} to be below #{act}`,
+      value,
+      subject
+    )
 
     return this
   }
+
+  // (5).below(10)
+  // (5).below(5)
+  // (5).below(0)
+  // (5).not.below(0)
+  // (5).not.below(5)
+  // (5).not.below(10)
   below(value: number): this {
-    this._check.below(this._subject, value)
-    this._postAssertion()
+    const subject = flag(this, "subject")
+
+    this.assert(
+      subject < value,
+      `expected #{exp} to be below #{act}`,
+      `expected #{exp} to be above #{act}`,
+      value,
+      subject
+    )
 
     return this
   }
+  /**
+   * @asserts
+   */
+  childrenCountOf(value: number): this {
+    const subject = flag(this, "subject")
+    const count = countChildren(subject)
+
+    this.assert(
+      count == value,
+      `subject[#{act}] doesn't have exactly #{exp} children`,
+      `subject[#{act}] has exactly #{exp} children, but shouldn't`,
+      value,
+      count
+    )
+
+    return this
+  }
+  /**
+   * @asserts
+   */
   oneOf(values: any[]): this {
-    const result = values.some(val => this._check.equal(this._subject, val))
+    const subject = flag(this, "subject")
 
-    if (!result) {
-      throw new Error(
-        `oneOf | "${this._subject}" didn't match any of [${values.join(", ")}]`
-      )
-    }
+    const result = values.some(val => subject == val)
+
+    this.assert(
+      result,
+      `#{act} didn't match with any of the provided values: #{exp}`,
+      `#{act} is in #{exp}, but it shouldn't`,
+      values,
+      subject
+    )
+
     return this
   }
+  /**
+   * @asserts
+   */
   lengthOf(value: number): this {
-    this._check.equal(this._subject.length, value)
-    this._postAssertion()
+    const subject = flag(this, "subject")
+
+    ensure(
+      typeof subject === "object",
+      `lengthOf | Subject expected to be an object (typeof)`
+    )
+
+    this.assert(
+      subject.length === value,
+      `subject[#{act}] doesn't contain exactly #{exp} items`,
+      `subject[#{act}] contains exactly #{exp}, but shouldn't`,
+      value,
+      subject.length
+    )
 
     return this
   }
+  /**
+   * @asserts
+   */
   matchesPropOf(ref: string | Symbol): this {
     // TODO: accept queryProps?
-    if (!this._propParent) {
-      throw new Error(
-        "matchesPropOf | needs to be preceded with `its` to pick a prop name"
-      )
-    }
-    const expected = this._refs.get(ref)[this._propName]
-    this._check.equal(this._subject, expected)
 
-    this._postAssertion()
+    ensure(
+      this._propParent,
+      `matchesPropOf | Needs to be preceded with ".its" to pick a prop name`
+    )
+
+    const subject = flag(this, "subject")
+    const expected = this._refs.get(ref)[this._propName]
+
+    this.assert(
+      subject === expected,
+      `subject's ${this._propName} doesn't match with the same prop at ${ref}`,
+      `subject's ${this._propName} is equal with prop of ${ref}, but shouldn't`,
+      expected,
+      subject
+    )
 
     return this
   }
@@ -370,7 +489,12 @@ class Conditions<S extends State> {
    */
   get playersTurn(): this {
     const { currentPlayer } = this._state
-    this._check.equal(this._player, currentPlayer)
+
+    this.assert(
+      this._player === currentPlayer,
+      `It's not current players turn`,
+      `It is current players turn, but shouldn't`
+    )
 
     return this
   }
@@ -394,44 +518,62 @@ class Conditions<S extends State> {
       return uiValues.some(client => this._player.clientID === client)
     })
 
+    resetNegation(this)
     this._postAssertion()
     return this
   }
 
-  // Assertions?
   /**
+   * @asserts
    * Subject should be empty
-   * lol, works for strings aswell
    */
   get empty(): this {
-    if ("length" in this._subject) {
-      this._wrapError(
-        () => this._check.equal(this._subject.length, 0),
-        ".empty | subject (iterable) has some items."
+    const subject = flag(this, "subject")
+
+    ensure(
+      typeof subject === "object" || typeof subject === "string",
+      `.empty | Given an invalid subject: "${subject}"`
+    )
+
+    if (subject.length !== undefined) {
+      this.assert(
+        subject.length === 0,
+        "subject (iterable) has some items.",
+        "subject (iterable) is empty, but shouldn't."
       )
-    } else if (typeof this._subject === "object") {
-      this._wrapError(
-        () => this._check.equal(Object.keys(this._subject).length, 0),
-        ".empty | subject (object) has some items"
+    } else if ("size" in subject) {
+      this.assert(
+        subject.size === 0,
+        "subject (map/set) has some items.",
+        "subject (map/set) is empty, but shouldn't."
       )
-    } else {
-      throw new Error(`.empty | given non-iterable subject: "${this._subject}"`)
+    } else if (typeof subject === "object") {
+      this.assert(
+        Object.keys(subject).length === 0,
+        "subject (object) has some items.",
+        "subject (object) is empty, but shouldn't."
+      )
     }
-    this._postAssertion()
+
     return this
   }
+
   /**
    * Based on `event` instead of `subject`
+   * @asserts
    */
   get owner(): this {
-    this._check.equal(this._player, getOwner(this._event.entity))
+    const expected = getOwner(this._event.entity)
+
+    this.assert(
+      this._player === expected,
+      `Player is not an owner`,
+      `Player is an owner, but shouldn't`
+    )
 
     return this
   }
 
-  // getValue() {
-  //   return this._subject
-  // }
   /**
    * @returns `state` reference
    */
@@ -464,7 +606,8 @@ class Conditions<S extends State> {
       let error = null
       let result = true
 
-      this._subject = this._state
+      flag(this, "subject", this._state)
+      resetNegation(this)
 
       try {
         test()

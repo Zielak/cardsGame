@@ -65,19 +65,20 @@ export class CommandsManager<S extends State, C extends Conditions<S>> {
         action.getConditions(conditionsChecker)
       } catch (e) {
         result = false
-        message = e
+        message = (e as Error).message
       }
 
-      logs.verbose(`result: ${result}`)
       if (message) {
         logs.verbose("\t", message)
       }
+      logs.verbose(`result: ${result}`)
 
       // logConditionResults(logsResults)
       logs.groupEnd()
 
       return result
     })
+
     logs.groupEnd()
 
     if (actions.length === 0) {
