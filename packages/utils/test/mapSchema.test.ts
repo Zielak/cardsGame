@@ -1,5 +1,34 @@
 import { map2Array, mapRemoveIdx } from "../src/mapSchema"
-import { MapSchema } from "@colyseus/schema"
+import { MapSchema, Schema, type } from "@colyseus/schema"
+
+class Box extends Schema {
+  name: string
+}
+class State extends Schema {
+  @type({ map: Box })
+  boxes = new MapSchema<Box>()
+}
+
+describe("map2Array", () => {
+  let state: State
+
+  beforeEach(() => {
+    state = new State()
+  })
+
+  test("empty map", () => {
+    expect(map2Array(state.boxes)).toStrictEqual([])
+  })
+
+  test("one item in boxes", () => {
+    state.boxes[0] = new Box()
+    expect(map2Array(state.boxes).length).toBe(1)
+  })
+
+  test("empty map", () => {
+    expect(Object.keys(state.boxes).length).toBe(0)
+  })
+})
 
 describe("mapRemoveIdx", () => {
   let map

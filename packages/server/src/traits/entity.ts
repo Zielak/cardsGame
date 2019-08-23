@@ -141,19 +141,24 @@ export function setParent(entity: IEntity, newParent: IParent) {
 }
 
 /**
- * @deprecated unused anywhere
+ * @returns array of indexes for this entity access
  */
 export function getIdxPath(entity: IEntity): number[] {
   const path: number[] = [entity.idx]
-  const getNext = (entity: IEntity) => {
-    // const parent = getParentEntity(entity)
-    // const parentsIdx = parent.idx
-    // if (typeof parentsIdx === "number") {
-    //   path.unshift(parentsIdx)
-    //   getNext(parent)
-    // }
+
+  const next = (entity: IEntity) => {
+    const parent = getParentEntity(entity)
+    if (!parent) {
+      return
+    }
+
+    const parentsIdx = parent.idx
+    if (parentsIdx !== -1) {
+      path.unshift(parentsIdx)
+      next(parent)
+    }
   }
-  getNext(entity)
+  next(entity)
 
   return path
 }

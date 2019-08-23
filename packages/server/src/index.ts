@@ -14,3 +14,7 @@ export * from "./player"
 export * from "./transform"
 export * from "./traits"
 export * from "./entities"
+
+// Useful for testing
+
+export * from "./utils"

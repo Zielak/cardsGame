@@ -46,6 +46,7 @@ const setLogLevel = (val: string) => {
     default:
       logLevel = LogLevels.silent
   }
+  console.log("setLogLevel", logLevel)
 }
 
 const syntaxHighlight = (arg: any) => {

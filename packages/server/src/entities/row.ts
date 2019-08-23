@@ -1,6 +1,11 @@
 import { EntityConstructor, IEntity } from "../traits/entity"
 import { Schema, type } from "@colyseus/schema"
-import { IParent, ParentConstructor } from "../traits/parent"
+import {
+  IParent,
+  ParentConstructor,
+  canBeChild,
+  containsChildren
+} from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
 import {
@@ -9,6 +14,8 @@ import {
   IFlexyContainerOptions
 } from "../traits/flexyContainer"
 
+@canBeChild
+@containsChildren()
 export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
   // IEntity
   _state: State

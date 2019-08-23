@@ -1,6 +1,6 @@
 import { Schema, type, MapSchema } from "@colyseus/schema"
 import { logs } from "@cardsgame/utils"
-import { IEntity, getOwner } from "./traits/entity"
+import { IEntity, getOwner, getIdxPath } from "./traits/entity"
 import { cm2px, mapCount } from "@cardsgame/utils"
 import {
   IParent,
@@ -138,7 +138,7 @@ export class State extends Schema implements IParent {
       }
       if (remainingPath.length > 0 && !hasChildren(newChild)) {
         throw new Error(
-          `getEntitiesAlongPath: Path inaccessible, entity doesn't have any children. Stopped at [${path}].`
+          `getEntitiesAlongPath: Path inaccessible, entity doesn't have any children. Stopped at [${path}]. Remaining path: [${remainingPath}]`
         )
       }
 
@@ -152,7 +152,7 @@ export class State extends Schema implements IParent {
     return travel(this, [...path])
   }
 
-  logTreeState(startingPoint?: IParent & IEntity) {
+  logTreeState(logger: any = logs, startingPoint?: IParent & IEntity) {
     const travel = (parent: IParent) => {
       getChildren(parent).map((child, idx, entities) => {
         if (
@@ -162,7 +162,7 @@ export class State extends Schema implements IParent {
         ) {
           // That's too much, man!
           if (idx === 0) {
-            logs.notice("...")
+            logger.notice("...")
           }
           return
         }
@@ -171,6 +171,7 @@ export class State extends Schema implements IParent {
 
         // const lastChild = entities.length - 1 === idx
         const sIdx = idx === child.idx ? `${idx}` : `e${child.idx}:s${idx}`
+        const idxPath = getIdxPath(child)
 
         const childrenCount = countChildren(child as IParent & IEntity)
         const sChildren = childrenCount > 0 ? childrenCount : ""
@@ -179,34 +180,34 @@ export class State extends Schema implements IParent {
 
         const hasChildren = child.isParent() && childrenCount > 0
 
-        logs[hasChildren ? "groupCollapsed" : "notice"](
-          `[${sIdx}]`,
+        logger[hasChildren ? "group" : "notice"](
+          `[${idxPath}]`,
           `${child.type}:${child.name}-[${child.idx}]`,
           sChildren,
           sOwner
         )
         if (child.isParent() && childrenCount > 0) {
           travel(child)
-          logs.groupEnd()
+          logger.groupEnd()
         }
       })
     }
 
     if (!startingPoint) {
-      logs.groupCollapsed(
+      logger.group(
         "ROOT",
         "(" + countChildren(this) + " direct children,",
         getDescendants(this).length,
         "in total)"
       )
     } else {
-      logs.groupCollapsed(
+      logger.group(
         `[${startingPoint.idx}] ${startingPoint.type}:${startingPoint.name}`,
         countChildren(startingPoint) + "children"
       )
     }
     travel(startingPoint || this)
-    logs.groupEnd()
+    logger.groupEnd()
   }
 
   static events = {

@@ -1,31 +1,37 @@
-import { def, noop, times } from "../src/utils"
+import { def, noop, times, isObject } from "../src/utils"
+import { MapSchema, ArraySchema } from "@colyseus/schema"
 
 describe("noop", () => {
-  test(`is a function`, () => {
+  it(`is a function`, () => {
     expect(typeof noop).toBe("function")
   })
-  test(`can be called`, () => {
+  it(`can be called`, () => {
     expect(noop).not.toThrow()
   })
-  test(`returns undefined`, () => {
+  it(`returns undefined`, () => {
     expect(noop()).toBe(undefined)
   })
 })
 
-describe("def", () => {})
+describe("def", () => {
+  it(`returns proper values`, () => {
+    expect(def(10, 0)).toBe(10)
+    expect(def(undefined, 0)).toBe(0)
+  })
+})
 
 describe("times", () => {
-  test(`calls function some times`, () => {
+  it(`calls function some times`, () => {
     const spy = jest.fn()
     times(3, spy)
     expect(spy).toHaveBeenCalledTimes(3)
   })
-  test(`calls exactly 1 time`, () => {
+  it(`calls exactly 1 time`, () => {
     const spy = jest.fn()
     times(1, spy)
     expect(spy).toHaveBeenCalledTimes(1)
   })
-  test(`doesn't call on incorrect length`, () => {
+  it(`doesn't call on incorrect length`, () => {
     const spy = jest.fn()
 
     times(0, spy)
@@ -35,5 +41,22 @@ describe("times", () => {
     expect(spy).not.toBeCalled()
 
     expect(() => times(Infinity, noop)).toThrow()
+  })
+})
+
+describe("isObject", () => {
+  it(`verifies {}`, () => {
+    expect(isObject({})).toBe(true)
+    expect(isObject({ a: "", b: "b" })).toBe(true)
+  })
+  it(`verifies the rest`, () => {
+    expect(isObject([])).toBe(false)
+    expect(isObject(() => {})).toBe(false)
+    expect(isObject(function() {})).toBe(false)
+    // I'm not even using this function...
+    // expect(isObject(new Map())).toBe(false)
+    // expect(isObject(new Set())).toBe(false)
+    // expect(isObject(new MapSchema())).toBe(false)
+    // expect(isObject(new ArraySchema())).toBe(false)
   })
 })

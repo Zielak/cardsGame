@@ -9,24 +9,23 @@ import {
 } from "@cardsgame/utils"
 import { CommandsManager } from "./commandsManager"
 import { State } from "./state"
-import { IEntity, isInteractive } from "./traits/entity"
+import { IEntity } from "./traits/entity"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
-import { Conditions, ConditionsConstructor } from "./conditions"
+import { populatePlayerEvent } from "./utils"
 
-export class Room<S extends State, C extends Conditions<S>> extends colRoom<S> {
+export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
   patchRate = 100 // ms = 10FPS
 
-  commandsManager: CommandsManager<S, C>
+  commandsManager: CommandsManager<S>
   emitter = new EventEmitter()
   on: (event: string | symbol, listener: (...args: any[]) => void) => this
   once: (event: string | symbol, listener: (...args: any[]) => void) => this
   off: (event: string | symbol, listener: (...args: any[]) => void) => this
   emit: (event: string | symbol, ...args: any[]) => boolean
 
-  conditions: ConditionsConstructor<S, C>
-  possibleActions: ActionsSet<C>
+  possibleActions: ActionsSet<S>
 
   constructor(presence?: Presence) {
     super(presence)
@@ -45,7 +44,7 @@ export class Room<S extends State, C extends Conditions<S>> extends colRoom<S> {
       this.possibleActions = new Set([])
     }
 
-    this.commandsManager = new CommandsManager<S, C>(this)
+    this.commandsManager = new CommandsManager<S>(this)
 
     this.onInitGame(options)
   }
@@ -96,24 +95,7 @@ export class Room<S extends State, C extends Conditions<S>> extends colRoom<S> {
       return
     }
 
-    // Populate event with server-side known data
-    const newEvent: ServerPlayerEvent = { ...event }
-    if (newEvent.entityPath) {
-      newEvent.entities = this.state
-        .getEntitiesAlongPath(newEvent.entityPath)
-        .reverse()
-        .filter(target => isInteractive(target))
-      newEvent.entity = newEvent.entities[0]
-    }
-
-    const player = map2Array<Player>(this.state.players).find(
-      p => p.clientID === client.id
-    )
-    if (!player) {
-      logs.error("onMessage", `You're not a player, get out!`)
-      return
-    }
-    newEvent.player = player
+    const newEvent = populatePlayerEvent(this.state, event, client)
 
     debugLogMessage(newEvent)
 

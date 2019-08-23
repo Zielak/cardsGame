@@ -70,7 +70,7 @@ describe("subject changing", () => {
       expect(() => {
         con
           .set([{ rank: "K", suit: "H" }, { rank: "K", suit: "S" }])
-          .each(() => {
+          .each(con => {
             con
               .its("rank")
               .equals("K")
@@ -84,7 +84,7 @@ describe("subject changing", () => {
       expect(() => {
         con
           .set([{ rank: "5", suit: "H" }, { rank: "K", suit: "S" }])
-          .each(() => {
+          .each(con => {
             con
               .its("rank")
               .equals("K")
@@ -96,7 +96,7 @@ describe("subject changing", () => {
       expect(() => {
         con
           .set([{ rank: "K", suit: "H" }, { rank: "5", suit: "D" }])
-          .each(() => {
+          .each(con => {
             con
               .its("rank")
               .equals("K")
@@ -109,7 +109,7 @@ describe("subject changing", () => {
       expect(() => {
         con
           .set([{ rank: "5", suit: "D" }, { rank: "K", suit: "D" }])
-          .each(() => {
+          .each(con => {
             con
               .its("rank")
               .equals("K")
@@ -187,13 +187,13 @@ describe("each", () => {
 
     it("tests an array", () => {
       expect(() =>
-        con.set([5, 10, 15]).each(() => {
+        con.set([5, 10, 15]).each(con => {
           con.is.above(3)
         })
       ).not.toThrow()
 
       expect(() =>
-        con.set([15, 10, 5]).each(() => {
+        con.set([15, 10, 5]).each(con => {
           con.is.above(3)
         })
       ).not.toThrow()
@@ -203,13 +203,13 @@ describe("each", () => {
   describe("fail", () => {
     it("tests an array", () => {
       expect(() =>
-        con.set([5, 10, 15]).each(() => {
+        con.set([5, 10, 15]).each(con => {
           con.is.above(6)
         })
       ).toThrow()
 
       expect(() =>
-        con.set([15, 10, 5]).each(() => {
+        con.set([15, 10, 5]).each(con => {
           con.is.above(6)
         })
       ).toThrow()

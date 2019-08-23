@@ -15,10 +15,20 @@ import { logs } from "@cardsgame/utils"
 //   [key: string]: (this: Conditions<S>) => Conditions<S>
 // }
 
-export type ConditionsConstructor<
-  S extends State,
-  R extends Conditions<S>
-> = new (state: S, event: ServerPlayerEvent) => R
+export type ConditionsConstructor<S extends State> = new (
+  state: S,
+  event: ServerPlayerEvent
+) => Conditions<S>
+
+const iconStyle = (bg = "transparent", color = "white") => `background: ${bg};
+color: ${color};
+padding: 0.1em 0.3em;
+border-radius: 50%;
+width: 1.3em;
+height: 1.3em;
+text-align: center;
+width: 1.2em;
+height: 1.2em;`
 
 function flag(target, flagName, value?) {
   if (!target._flags) {
@@ -40,13 +50,19 @@ const ensure = (expression, errorMessage) => {
 }
 
 const resetNegation = target => {
-  if (target._flags.get("not")) logs.info("resetNegation")
+  if (target._flags.get("not")) logs.verbose("resetNegation")
   target._flags.set("not", false)
 }
 
-const getMessage = (target, args) => {
+const getMessage = (
+  target,
+  result: boolean,
+  message: string,
+  messageNot: string,
+  expected?: any,
+  actual?: any
+) => {
   const not = flag(target, "not")
-  const [result, message, messageNot, expected, actual] = args
 
   const expT = "#{exp}"
   const actT = "#{act}"
@@ -79,6 +95,7 @@ class Conditions<S extends State> {
 
     flag(this, "not", false)
     flag(this, "subject", state)
+    flag(this, "eitherLevel", 0)
   }
 
   /**
@@ -89,7 +106,7 @@ class Conditions<S extends State> {
    * @param expected
    * @param actual
    */
-  assert(
+  private assert(
     result: boolean,
     message: string,
     messageNot?: string,
@@ -100,7 +117,14 @@ class Conditions<S extends State> {
     const ok = not ? !result : result
 
     if (!ok) {
-      const msg = getMessage(this, arguments)
+      const msg = getMessage(
+        this,
+        result,
+        message,
+        messageNot,
+        expected,
+        actual
+      )
 
       resetNegation(this)
       this._postAssertion()
@@ -118,13 +142,14 @@ class Conditions<S extends State> {
       this._resetPropDig()
     }
   }
+
   _resetPropDig() {
     this._propParent = undefined
     this._propName = undefined
   }
 
   get not(): this {
-    logs.warn("NOT", "set to true")
+    logs.verbose("NOT", "set to true")
     flag(this, "not", true)
     return this
   }
@@ -318,45 +343,49 @@ class Conditions<S extends State> {
    * Each item is set as the `subject` with each iteration automatically.
    * After all iterations are done, the `subject` will be reset back to what it originally was.
    * If one of the items fail any assertions, whole `each` block fails.
-   * @param predicate a function in style of native `array.forEach`. Its arguments are optional.
+   * @param predicate a function in style of native `array.forEach`, but first argument is new Conditions instance. This `con` will have its own subject set to each item of current subject.
    * @example
-   * con.get("chosenCards").children.each(() => {
+   * con.get("chosenCards").children.each((con, item, index, array) => {
    *   con.its("rank").oneOf(["2", "3"])
    * })
    * @yields anything that was before `.each()` command
    */
   each(
-    predicate: (item: any, index: number | string, collection: any) => void
+    predicate: (
+      con: Conditions<S>,
+      item: any,
+      index: number | string,
+      collection: any
+    ) => void
   ): this {
     const subject = flag(this, "subject")
 
     ensure(Array.isArray(subject), `each | Expected subject to be an array`)
 
     subject.forEach((item, index) => {
-      flag(this, "subject", item)
-      resetNegation(this)
-      this._resetPropDig()
-      predicate.call(this, item, index, subject)
+      const con = new Conditions<S>(this._state, this._event)
+      flag(con, "subject", item)
+      predicate.call(con, con, item, index, subject)
     })
-
-    // Revert subject, and go back to chaining
-    flag(this, "subject", subject)
-    resetNegation(this)
-    this._postAssertion()
 
     return this
   }
 
   // Commands?
   // Throw when assertion doesn't pass
+  /**
+   * @asserts that subject is equal to provided value. No coercion.
+   * @alias equals
+   */
   equals(value: any): this {
     const not = flag(this, "not"),
-      subject = flag(this, "subject")
+      subject = flag(this, "subject"),
+      propName = this._propName ? `'${this._propName}' = ` : ""
 
     this.assert(
       !not ? subject === value : subject !== value,
-      `expected #{act} to equal #{exp}`,
-      `expected #{act} to NOT equal #{exp}`,
+      `expected ${propName}#{act} to equal #{exp}`,
+      `expected ${propName}#{act} to NOT equal #{exp}`,
       value,
       subject
     )
@@ -372,13 +401,18 @@ class Conditions<S extends State> {
   // (5).not.above(0)
   // (5).not.above(5)
   // (5).not.above(10)
+  /**
+   * @asserts that subject is numerically above the provided value.
+   * @alias equals
+   */
   above(value: number): this {
     const subject = flag(this, "subject")
+    const propName = this._propName ? `'${this._propName}' = ` : ""
 
     this.assert(
       subject > value,
-      `expected #{exp} to be above #{act}`,
-      `expected #{exp} to be below #{act}`,
+      `expected ${propName}#{exp} to be above #{act}`,
+      `expected ${propName}#{exp} to be below #{act}`,
       value,
       subject
     )
@@ -392,13 +426,18 @@ class Conditions<S extends State> {
   // (5).not.below(0)
   // (5).not.below(5)
   // (5).not.below(10)
+  /**
+   * @asserts that subject is numerically below the provided value.
+   * @alias equals
+   */
   below(value: number): this {
     const subject = flag(this, "subject")
+    const propName = this._propName ? `'${this._propName}' = ` : ""
 
     this.assert(
       subject < value,
-      `expected #{exp} to be below #{act}`,
-      `expected #{exp} to be above #{act}`,
+      `expected ${propName}#{exp} to be below #{act}`,
+      `expected ${propName}#{exp} to be above #{act}`,
       value,
       subject
     )
@@ -406,7 +445,7 @@ class Conditions<S extends State> {
     return this
   }
   /**
-   * @asserts
+   * @asserts that subject (IParent) has exactly the expected children count.
    */
   childrenCountOf(value: number): this {
     const subject = flag(this, "subject")
@@ -423,7 +462,7 @@ class Conditions<S extends State> {
     return this
   }
   /**
-   * @asserts
+   * @asserts that subject is equal to one of the provided values. Coercion allowed.
    */
   oneOf(values: any[]): this {
     const subject = flag(this, "subject")
@@ -441,7 +480,7 @@ class Conditions<S extends State> {
     return this
   }
   /**
-   * @asserts
+   * @asserts that subject's length is equal to expected.
    */
   lengthOf(value: number): this {
     const subject = flag(this, "subject")
@@ -477,8 +516,8 @@ class Conditions<S extends State> {
 
     this.assert(
       subject === expected,
-      `subject's ${this._propName} doesn't match with the same prop at ${ref}`,
-      `subject's ${this._propName} is equal with prop of ${ref}, but shouldn't`,
+      `subject's '${this._propName}' (#{act}) doesn't match with the same prop at '${ref}' (#{exp})`,
+      `subject's '${this._propName}' (#{act}) is equal with prop of '${ref}', but shouldn't (#{exp})`,
       expected,
       subject
     )
@@ -531,6 +570,7 @@ class Conditions<S extends State> {
    */
   get empty(): this {
     const subject = flag(this, "subject")
+    const propName = this._propName ? `'${this._propName}' = ` : ""
 
     ensure(
       (typeof subject === "object" && subject !== null) ||
@@ -541,20 +581,20 @@ class Conditions<S extends State> {
     if (subject.length !== undefined) {
       this.assert(
         subject.length === 0,
-        "subject (iterable) has some items.",
-        "subject (iterable) is empty, but shouldn't."
+        `subject ${propName}(iterable) has some items.`,
+        `subject ${propName}(iterable) is empty, but shouldn't.`
       )
-    } else if ("size" in subject) {
+    } else if (`size` in subject) {
       this.assert(
         subject.size === 0,
-        "subject (map/set) has some items.",
-        "subject (map/set) is empty, but shouldn't."
+        `subject ${propName}(map/set) has some items.`,
+        `subject ${propName}(map/set) is empty, but shouldn't.`
       )
     } else if (typeof subject === "object") {
       this.assert(
         Object.keys(subject).length === 0,
-        "subject (object) has some items.",
-        "subject (object) is empty, but shouldn't."
+        `subject ${propName}(object) has some items.`,
+        `subject ${propName}(object) is empty, but shouldn't.`
       )
     }
 
@@ -604,18 +644,27 @@ class Conditions<S extends State> {
   either(...args: (() => any)[]): this {
     // TODO: early quit on first passing function.
 
+    flag(this, "eitherLevel", flag(this, "eitherLevel") + 1)
+
     // At least one of these must pass
-    const results = args.map(test => {
+    const results = args.map((test, idx) => {
       let error = null
       let result = true
+      const level = flag(this, "eitherLevel")
 
       flag(this, "subject", this._state)
       resetNegation(this)
 
       try {
+        logs.group(`either [${idx}]`)
         test()
+        logs.verbose(`[${idx}] -> %c✔︎`, iconStyle("green", "white"))
+        logs.groupEnd()
       } catch (i) {
-        error = i
+        logs.verbose(`err:`, i.message)
+        logs.verbose(`[${idx}] -> %c✘`, iconStyle("red", "white"))
+        logs.groupEnd()
+        error = "  ".repeat(level) + i.message
         result = false
       }
       return {
@@ -623,6 +672,8 @@ class Conditions<S extends State> {
         result
       }
     })
+    flag(this, "eitherLevel", flag(this, "eitherLevel") - 1)
+
     if (results.every(({ result }) => result === false)) {
       throw new Error(
         [

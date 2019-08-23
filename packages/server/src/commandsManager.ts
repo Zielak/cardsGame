@@ -7,21 +7,19 @@ import { ActionTemplate, ActionsSet } from "./actionTemplate"
 import { isInteractive, getParentEntity } from "./traits/entity"
 import { ICommand } from "./commands"
 import { Room } from "./room"
-import { Conditions, ConditionsConstructor } from "./conditions"
+import { Conditions } from "./conditions"
 
-export class CommandsManager<S extends State, C extends Conditions<S>> {
+export class CommandsManager<S extends State> {
   history: ICommand[] = []
 
   currentCommand: ICommand
   actionPending: boolean = false
-  currentAction: ActionTemplate<C>
+  currentAction: ActionTemplate<S>
 
-  possibleActions: ActionsSet<C>
-  conditions: ConditionsConstructor<S, C>
+  possibleActions: ActionsSet<S>
 
-  constructor(private room: Room<S, C>) {
+  constructor(private room: Room<S>) {
     this.possibleActions = room.possibleActions
-    this.conditions = room.conditions
   }
 
   async action(client: Client, event: ServerPlayerEvent) {
@@ -31,58 +29,12 @@ export class CommandsManager<S extends State, C extends Conditions<S>> {
     if (this.actionPending) {
     }
 
-    logs.groupCollapsed(`Filter out actions by CONDITIONS`)
+    let actions = this.filterActionsByInteraction(event)
 
-    // const extractConditionInfo = (
-    //   condition: ICondition,
-    //   result?: boolean
-    // ): ConditionResult => {
-    //   const out: ConditionResult = {
-    //     name: condition.name,
-    //     result: def(condition.result, result)
-    //   }
-
-    //   if (condition.description) {
-    //     out.description = condition.description
-    //   }
-    //   if (condition.subResults) {
-    //     out.subResults = condition.subResults
-    //   }
-
-    //   return out
-    // }
-
-    const actions = this.getActionsByInteraction(event).filter(action => {
-      // const logsResults: ConditionResult[] = []
-
-      logs.group(`action: ${chalk.white(action.name)}`)
-
-      const conditionsChecker = new this.conditions(state, event)
-
-      let result = true
-      let message = ""
-      try {
-        action.getConditions(conditionsChecker)
-      } catch (e) {
-        result = false
-        message = (e as Error).message
-      }
-
-      if (message) {
-        logs.verbose("\t", message)
-      }
-      logs.verbose(`result: ${result}`)
-
-      // logConditionResults(logsResults)
-      logs.groupEnd()
-
-      return result
-    })
-
-    logs.groupEnd()
+    actions = this.filterActionsByConditions(actions, state, event)
 
     if (actions.length === 0) {
-      logs.error(
+      logs.warn(
         "performAction",
         `Client ${client.id}. No actions found for that "${event.event}" event, ignoring...`
       )
@@ -112,7 +64,8 @@ export class CommandsManager<S extends State, C extends Conditions<S>> {
    * Gets you a list of all possible game actions
    * that match with player's interaction
    */
-  getActionsByInteraction(event: ServerPlayerEvent): ActionTemplate<C>[] {
+  filterActionsByInteraction(event: ServerPlayerEvent): ActionTemplate<S>[] {
+    logs.groupCollapsed(`Filter out actions by INTERACTIONS`)
     logs.info(`getActionsByInteraction()`)
 
     const actions = Array.from(this.possibleActions.values()).filter(action => {
@@ -150,7 +103,7 @@ export class CommandsManager<S extends State, C extends Conditions<S>> {
         })
       }
 
-      return interactions.some(definition => {
+      const result = interactions.some(definition => {
         if (
           event.entities &&
           (!definition.command || definition.command === "EntityInteraction")
@@ -161,16 +114,24 @@ export class CommandsManager<S extends State, C extends Conditions<S>> {
             .some(interactionMatchesEntity(definition))
         } else if (definition.command) {
           // TODO: react on button click or anything else
-          logs.verbose(
-            `\t\tCommand:\n\t`,
-            definition.command,
-            "===",
-            event.command
-          )
+          // logs.verbose(
+          //   `\t\tCommand:\n\t`,
+          //   definition.command,
+          //   "===",
+          //   event.command
+          // )
           return definition.command === event.command
         }
       })
+
+      if (result) {
+        logs.notice(action.name, "match!")
+      }
+
+      return result
     })
+
+    logs.groupEnd()
 
     // const logActions = actions.map(el => el.name)
     logs.info(
@@ -183,6 +144,39 @@ export class CommandsManager<S extends State, C extends Conditions<S>> {
     return actions
   }
 
+  filterActionsByConditions(actions, state: S, event: ServerPlayerEvent) {
+    logs.group(`Filter out actions by CONDITIONS`)
+
+    const result = actions.filter(action => {
+      logs.group(`action: ${chalk.white(action.name)}`)
+
+      const conditionsChecker = new Conditions(state, event)
+
+      let result = true
+      let message = ""
+      try {
+        action.getConditions(conditionsChecker)
+      } catch (e) {
+        result = false
+        message = (e as Error).message
+      }
+
+      if (message) {
+        logs.verbose("\t", message)
+      }
+      logs.verbose(`result: ${result}`)
+
+      // logConditionResults(logsResults)
+      logs.groupEnd()
+
+      return result
+    })
+
+    logs.groupEnd()
+
+    return result
+  }
+
   /**
    * "Request" because given action may fail (?)
    * @param action
@@ -191,7 +185,7 @@ export class CommandsManager<S extends State, C extends Conditions<S>> {
    */
   async parseAction(
     state: State,
-    action: ActionTemplate<C>,
+    action: ActionTemplate<S>,
     event: ServerPlayerEvent
   ): Promise<boolean> {
     // Someone is taking a while, tell current player to wait!

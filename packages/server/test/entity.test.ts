@@ -3,7 +3,8 @@ import {
   EntityConstructor,
   getParentEntity,
   getOwner,
-  setParent
+  setParent,
+  getIdxPath
 } from "../src/traits/entity"
 import { Player } from "../src/player"
 import { DumbEntity, ConstructedEntity } from "./helpers/dumbEntity"
@@ -102,7 +103,27 @@ describe(`setParent`, () => {
   test.todo(`adding entity to itself throws error`)
 })
 
-// describe(`getIdxPath`, () => {})
+describe(`getIdxPath`, () => {
+  test.todo(`top level entity`)
+  test(`nested entities`, () => {
+    const parentA = new ConstructedParent({ state })
+    new ConstructedEntity({ state, parent: parentA })
+    new ConstructedEntity({ state, parent: parentA })
+
+    const parentB = new ConstructedParent({ state, parent: parentA })
+
+    new ConstructedEntity({ state, parent: parentA })
+    new ConstructedEntity({ state, parent: parentA })
+
+    new ConstructedEntity({ state, parent: parentB })
+    const child = new ConstructedEntity({ state, parent: parentB })
+    new ConstructedEntity({ state, parent: parentB })
+
+    expect(getIdxPath(parentA)).toStrictEqual([0])
+    expect(getIdxPath(parentB)).toStrictEqual([0, 2])
+    expect(getIdxPath(child)).toStrictEqual([0, 2, 1])
+  })
+})
 
 describe(`isInteractive`, () => {})
 
