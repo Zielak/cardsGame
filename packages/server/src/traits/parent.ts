@@ -1,6 +1,6 @@
 import { type, ArraySchema } from "@colyseus/schema"
-import { IEntity, resetWorldTransform, IEntityOptions } from "./entity"
-import { logs } from "@cardsgame/utils"
+import { IEntity, resetWorldTransform } from "./entity"
+import { logs, def } from "@cardsgame/utils"
 import { Player } from "../player"
 import { IIdentity } from "./identity"
 
@@ -87,7 +87,10 @@ export interface IParentOptions {
   onChildRemoved?: ChildRemovedHandler
 }
 
-export function ParentConstructor(entity: IParent, options: IParentOptions) {
+export function ParentConstructor(
+  entity: IParent,
+  options: IParentOptions = {}
+) {
   entity._childrenPointers = []
   registeredChildren.forEach(con => {
     if ((entity as any).__syncChildren === false) {
@@ -96,6 +99,9 @@ export function ParentConstructor(entity: IParent, options: IParentOptions) {
       entity[`children${con.name}`] = new ArraySchema()
     }
   })
+
+  this.onChildAdded = def(options.onChildAdded, undefined)
+  this.onChildRemoved = def(options.onChildRemoved, undefined)
 }
 
 export const getKnownConstructor = (entity: IEntity | IParent) =>
