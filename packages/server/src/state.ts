@@ -9,7 +9,8 @@ import {
   countChildren,
   getChildren,
   getDescendants,
-  containsChildren
+  containsChildren,
+  IParentOptions
 } from "./traits/parent"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
@@ -23,6 +24,10 @@ export class State extends Schema implements IParent {
   id = -1
   _childrenPointers: string[]
   hijacksInteractionTarget = false
+
+  onChildAdded: any
+  onChildRemoved: any
+
   isParent(): this is IParent {
     return true
   }
@@ -67,7 +72,7 @@ export class State extends Schema implements IParent {
 
   constructor(options?: IStateOptions) {
     super()
-    ParentConstructor(this)
+    ParentConstructor(this, options)
   }
 
   /**
@@ -223,7 +228,7 @@ export interface StateUI {
   onChange: (item: any, key: string) => void
 }
 
-export interface IStateOptions {
+export interface IStateOptions extends IParentOptions {
   minClients: number
   maxClients: number
   hostID: string

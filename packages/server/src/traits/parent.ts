@@ -1,5 +1,5 @@
 import { type, ArraySchema } from "@colyseus/schema"
-import { IEntity, resetWorldTransform } from "./entity"
+import { IEntity, resetWorldTransform, IEntityOptions } from "./entity"
 import { logs } from "@cardsgame/utils"
 import { Player } from "../player"
 import { IIdentity } from "./identity"
@@ -67,16 +67,27 @@ export function containsChildren(childrenSynced = true) {
 
 // ====================
 
+export type ChildAddedHandler = (child: IEntity) => void
+export type ChildRemovedHandler = (idx: number) => void
+
 export interface IParent extends IIdentity {
   _childrenPointers: string[]
   hijacksInteractionTarget: boolean
   isParent(): this is IParent
 
-  onChildAdded?(child: IEntity): void
-  onChildRemoved?(idx: number): void
+  onChildAdded: ChildAddedHandler
+  onChildRemoved: ChildRemovedHandler
+
+  childAdded?(child: IEntity): void
+  childRemoved?(idx: number): void
 }
 
-export function ParentConstructor(entity: IParent) {
+export interface IParentOptions {
+  onChildAdded?: ChildAddedHandler
+  onChildRemoved?: ChildRemovedHandler
+}
+
+export function ParentConstructor(entity: IParent, options: IParentOptions) {
   entity._childrenPointers = []
   registeredChildren.forEach(con => {
     if ((entity as any).__syncChildren === false) {
@@ -131,12 +142,14 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
 
   const childIdx = targetArray.findIndex(el => el.idx === idx)
 
+  parent._childrenPointers.splice(idx, 1)
+
   // FIXME: after colyseus/schema geets fixed:
   // https://github.com/colyseus/schema/issues/17
   // https://discordapp.com/channels/525739117951320081/526083188108296202/573204615290683392
   // parent[targetArrayName] = targetArray.filter(el => el !== child)
   const [removedChild] = parent[targetArrayName].splice(childIdx, 1)
-  parent.onChildRemoved && parent.onChildRemoved(idx)
+  parent.childRemoved && parent.childRemoved(idx)
   updateIndexes(parent)
 
   if (removedChild !== child) {

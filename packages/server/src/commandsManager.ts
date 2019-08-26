@@ -22,15 +22,17 @@ export class CommandsManager<S extends State> {
     this.possibleActions = room.possibleActions
   }
 
-  async action(client: Client, event: ServerPlayerEvent) {
+  action(client: Client, event: ServerPlayerEvent) {
     const { state } = this.room
 
-    // Current action is still on-going, and may be a complex one.
     if (this.actionPending) {
+      // Early quit, current action is still on-going.
+      throw new Error(
+        `Action "${this.currentAction.name}" is still in progress, ignoring...`
+      )
     }
 
     let actions = this.filterActionsByInteraction(event)
-
     actions = this.filterActionsByConditions(actions, state, event)
 
     if (actions.length === 0) {
@@ -48,16 +50,16 @@ export class CommandsManager<S extends State> {
       )
     }
 
-    return this.parseAction(state, actions[0], event)
-      .then(result => {
-        if (!result) {
-          throw new Error(`Client "${client.id}" failed to perform action.`)
-        }
-        return result
-      })
-      .catch(error => {
-        throw new Error(`CMD Execution error!, ${error}`)
-      })
+    try {
+      const result = this.parseAction(state, actions[0], event)
+
+      return result
+    } catch (error) {
+      logs.error(
+        "action",
+        `Client "${client.id}" failed to perform action. ${error}`
+      )
+    }
   }
 
   /**
@@ -178,23 +180,15 @@ export class CommandsManager<S extends State> {
   }
 
   /**
-   * "Request" because given action may fail (?)
    * @param action
    * @param state current room's state
    * @param event incomming user's event
    */
-  async parseAction(
+  parseAction(
     state: State,
     action: ActionTemplate<S>,
     event: ServerPlayerEvent
-  ): Promise<boolean> {
-    // Someone is taking a while, tell current player to wait!
-    if (this.actionPending) {
-      throw new Error(
-        `I'm still performing that other action: ${this.currentAction.name}`
-      )
-    }
-
+  ): boolean {
     let result = false
     this.actionPending = true
     this.currentAction = action
@@ -203,9 +197,9 @@ export class CommandsManager<S extends State> {
     try {
       let cmd = action.getCommands(state, event)
       if (Array.isArray(cmd)) {
-        cmd = new CompositeCommand(cmd.filter(cmd => typeof cmd === "object"))
+        cmd = new CompositeCommand(...cmd)
       }
-      await this.execute(state, cmd)
+      this.execute(state, cmd)
       result = true
     } catch (error) {
       this.actionPending = false
@@ -223,12 +217,12 @@ export class CommandsManager<S extends State> {
     return result
   }
 
-  async execute(state: State, command: ICommand): Promise<void> {
+  execute(state: State, command: ICommand): void {
     this.currentCommand = command
     const commandName = command.constructor.name
 
     logs.group(commandName, "executing")
-    await this.currentCommand.execute(state, this.room)
+    this.currentCommand.execute(state, this.room)
     logs.groupEnd(commandName, "done")
 
     this.history.push(command)

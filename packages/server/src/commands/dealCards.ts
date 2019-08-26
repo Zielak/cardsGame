@@ -25,14 +25,14 @@ export class DealCards implements ICommand {
     this.targets = Array.isArray(targets) ? targets : [targets]
   }
 
-  async execute(state: State) {
+  execute(state: State) {
     const _ = this.constructor.name
     logs.notice(_, "count:", this.count, ", step:", this.step)
     let targetI = 0
     let stepI = 0
 
     const maxDeals = this.count * this.targets.length
-    const next = async () => {
+    const next = () => {
       const top = getTop(this.source)
       if (top.isParent()) {
         logs.warn(
@@ -51,12 +51,12 @@ export class DealCards implements ICommand {
         targetI++
       }
       if (countChildren(this.source) > 0 && targetI < maxDeals) {
-        await next()
+        next()
       } else {
         logs.notice(_, `Done dealing cards.`)
       }
     }
-    return await next()
+    return next()
     // state.logTreeState()
   }
 }

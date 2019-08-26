@@ -15,8 +15,6 @@ import { Player } from "../player"
 import { IParent, canBeChild } from "../traits/parent"
 import { IBoxModel } from "../traits/boxModel"
 
-interface IClassicCard extends IEntity, ITwoSided, IBoxModel {}
-
 /**
  * Visibility filter
  * @param my
@@ -36,6 +34,8 @@ export function faceDownOnlyOwner(
       getParentEntity(this).type === "hand")
   )
 }
+
+interface IClassicCard extends IEntity, ITwoSided, IBoxModel {}
 
 @canBeChild
 export class ClassicCard extends Schema implements IClassicCard {

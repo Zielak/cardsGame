@@ -11,6 +11,6 @@ export * from "./shuffleChildren"
 export * from "./twoSided"
 
 export interface ICommand {
-  execute(state: State, room: Room<any>): Promise<void> | void
+  execute(state: State, room: Room<any>): void
   undo?(state: State, room: Room<any>)
 }

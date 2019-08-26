@@ -4,7 +4,8 @@ import {
   IParent,
   ParentConstructor,
   canBeChild,
-  containsChildren
+  containsChildren,
+  IParentOptions
 } from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
@@ -56,6 +57,9 @@ export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
   _childrenPointers: string[]
   hijacksInteractionTarget = true
 
+  onChildAdded: any
+  onChildRemoved: any
+
   // IFlexyContainer
   alignItems: "start" | "end" | "center"
   directionReverse: boolean
@@ -69,10 +73,10 @@ export class Row extends Schema implements IEntity, IParent, IFlexyContainer {
 
   constructor(options: IRowOptions) {
     super()
-    ParentConstructor(this)
+    ParentConstructor(this, options)
     EntityConstructor(this, options)
     FlexyContainerConstructor(this, options)
   }
 }
 
-interface IRowOptions extends IFlexyContainerOptions {}
+interface IRowOptions extends IFlexyContainerOptions, IParentOptions {}

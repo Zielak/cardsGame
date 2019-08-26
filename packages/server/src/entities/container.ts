@@ -1,10 +1,11 @@
-import { IEntity, IEntityOptions, EntityConstructor } from "../traits/entity"
+import { IEntity, EntityConstructor, IEntityOptions } from "../traits/entity"
 import { Schema, type } from "@colyseus/schema"
 import {
   IParent,
   containsChildren,
   ParentConstructor,
-  canBeChild
+  canBeChild,
+  IParentOptions
 } from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
@@ -46,9 +47,14 @@ export class Container extends Schema implements IEntity, IParent {
   _childrenPointers: string[]
   hijacksInteractionTarget = false
 
-  constructor(options: IEntityOptions) {
+  onChildAdded: any
+  onChildRemoved: any
+
+  constructor(options: IContainerOptions) {
     super()
-    ParentConstructor(this)
+    ParentConstructor(this, options)
     EntityConstructor(this, options)
   }
 }
+
+interface IContainerOptions extends IParentOptions, IEntityOptions {}

@@ -9,7 +9,8 @@ import {
   getBottom,
   getTop
 } from "./traits"
-import { logs } from "@cardsgame/utils"
+import { logs, IS_CHROME } from "@cardsgame/utils"
+import chalk from "chalk"
 
 // export interface ExpandableConditions<S extends State> {
 //   [key: string]: (this: Conditions<S>) => Conditions<S>
@@ -647,7 +648,10 @@ class Conditions<S extends State> {
     flag(this, "eitherLevel", flag(this, "eitherLevel") + 1)
 
     // At least one of these must pass
-    const results = args.map((test, idx) => {
+    const results = []
+    let idx = 0
+
+    for (const test of args) {
       let error = null
       let result = true
       const level = flag(this, "eitherLevel")
@@ -657,21 +661,31 @@ class Conditions<S extends State> {
 
       try {
         logs.group(`either [${idx}]`)
+
         test()
-        logs.verbose(`[${idx}] -> %c✔︎`, iconStyle("green", "white"))
+
+        IS_CHROME
+          ? logs.verbose(`[${idx}] -> %c✔︎`, iconStyle("green", "white"))
+          : logs.verbose(`[${idx}] -> ${chalk.bgGreen.white(" ✔︎ ")}`)
         logs.groupEnd()
       } catch (i) {
         logs.verbose(`err:`, i.message)
-        logs.verbose(`[${idx}] -> %c✘`, iconStyle("red", "white"))
+        IS_CHROME
+          ? logs.verbose(`[${idx}] -> %c✘`, iconStyle("red", "white"))
+          : logs.verbose(`[${idx}] -> ${chalk.bgRed.white(" ✘ ")}`)
         logs.groupEnd()
         error = "  ".repeat(level) + i.message
         result = false
       }
-      return {
+      results.push({
         error,
         result
-      }
-    })
+      })
+
+      if (result) break
+
+      idx++
+    }
     flag(this, "eitherLevel", flag(this, "eitherLevel") - 1)
 
     if (results.every(({ result }) => result === false)) {

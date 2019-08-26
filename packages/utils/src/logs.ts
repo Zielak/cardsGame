@@ -5,9 +5,9 @@ const isBrowser = new Function(
   "try {return this===window;}catch(e){ return false;}"
 )()
 
-const logsChrome = process ? Boolean(process.env.LOGS_CHROME) : false
+export const IS_CHROME = process ? Boolean(process.env.LOGS_CHROME) : false
 
-export const chalk = new Chalk.constructor({ enabled: !logsChrome })
+export const chalk = new Chalk.constructor({ enabled: !IS_CHROME })
 
 export enum LogLevels {
   silent,
@@ -50,7 +50,7 @@ const setLogLevel = (val: string) => {
 }
 
 const syntaxHighlight = (arg: any) => {
-  if (logsChrome) return arg
+  if (IS_CHROME) return arg
   if (typeof arg === "string") {
     return chalk.gray(arg)
   }
@@ -102,7 +102,7 @@ if (isBrowser) {
     groupEnd: console.groupEnd.bind(window.console)
   }
 }
-if (!logsChrome) {
+if (!IS_CHROME) {
   logs = {
     verbose: function(...args: any[]) {
       console.debug.apply(console, [

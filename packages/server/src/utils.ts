@@ -23,11 +23,9 @@ export const populatePlayerEvent = (
     p => p.clientID === client.id
   )
 
-  if (!player) {
-    logs.error("onMessage", `You're not a player, get out!`)
-    return
+  if (player) {
+    newEvent.player = player
   }
-  newEvent.player = player
 
   return newEvent
 }

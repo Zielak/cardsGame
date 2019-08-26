@@ -1,11 +1,11 @@
-import { EventEmitter } from "events"
-import { Client, Room as colRoom, Presence } from "colyseus"
+import { Client, Room as colRoom } from "colyseus"
 import {
   logs,
   chalk,
   map2Array,
   mapAdd,
-  mapRemoveEntry
+  mapRemoveEntry,
+  IS_CHROME
 } from "@cardsgame/utils"
 import { CommandsManager } from "./commandsManager"
 import { State } from "./state"
@@ -13,28 +13,15 @@ import { IEntity } from "./traits/entity"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
 import { populatePlayerEvent } from "./utils"
+import { BroadcastOptions } from "colyseus/lib/Room"
 
 export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
   patchRate = 100 // ms = 10FPS
 
   commandsManager: CommandsManager<S>
-  emitter = new EventEmitter()
-  on: (event: string | symbol, listener: (...args: any[]) => void) => this
-  once: (event: string | symbol, listener: (...args: any[]) => void) => this
-  off: (event: string | symbol, listener: (...args: any[]) => void) => this
-  emit: (event: string | symbol, ...args: any[]) => boolean
 
   possibleActions: ActionsSet<S>
-
-  constructor(presence?: Presence) {
-    super(presence)
-
-    this.on = this.emitter.on.bind(this)
-    this.once = this.emitter.once.bind(this)
-    this.off = this.emitter.off.bind(this)
-    this.emit = this.emitter.emit
-  }
 
   onInit(options: any) {
     logs.info(`Room:${this.name}`, "creating new room")
@@ -53,6 +40,12 @@ export class Room<S extends State> extends colRoom<S> {
     // TODO: private rooms?
     // TODO: reject on maxClients reached?
     return this.state.isGameStarted ? false : true
+  }
+
+  broadcast(data: any, options?: BroadcastOptions) {
+    logs.notice("BROADCAST 📢", data)
+
+    return super.broadcast(data, options)
   }
 
   onJoin(newClient: Client) {
@@ -88,7 +81,9 @@ export class Room<S extends State> extends colRoom<S> {
       this.state.currentPlayerIdx = 0
       this.state.isGameStarted = true
       this.onStartGame(this.state)
-      this.emit(State.events.playerTurnStarted)
+
+      // Initial play started "event".
+      this.onPlayerTurnStarted(this.state.currentPlayer)
       return
     } else if (event.data === "start" && this.state.isGameStarted) {
       logs.notice("onMessage", `Game is already started, ignoring...`)
@@ -97,12 +92,19 @@ export class Room<S extends State> extends colRoom<S> {
 
     const newEvent = populatePlayerEvent(this.state, event, client)
 
+    if (!newEvent.player) {
+      logs.error("onMessage", "You're not a player, get out!")
+      return
+    }
+
     debugLogMessage(newEvent)
 
-    this.commandsManager
-      .action(client, newEvent)
-      .then(data => logs.notice(`action() completed`, data))
-      .catch(error => logs.error(`action() failed`, error))
+    const result = this.commandsManager.action(client, newEvent)
+    if (result) {
+      logs.notice("ROOM", "action() completed")
+    } else {
+      logs.error("ROOM", "action() failed")
+    }
   }
 
   /**
@@ -122,6 +124,20 @@ export class Room<S extends State> extends colRoom<S> {
   onStartGame(state: State) {
     logs.error("Room", `onStartGame is not implemented!`)
   }
+
+  /**
+   * Invoked when players turn starts
+   */
+  onPlayerTurnStarted(player: Player) {
+    logs.error("Room", `onPlayerTurnStarted is not implemented!`)
+  }
+
+  /**
+   * Invoked when players turn ends
+   */
+  onPlayerTurnEnded(player: Player) {
+    logs.error("Room", `onPlayerTurnEnded is not implemented!`)
+  }
 }
 
 const debugLogMessage = (newEvent: ServerPlayerEvent) => {
@@ -140,10 +156,14 @@ const debugLogMessage = (newEvent: ServerPlayerEvent) => {
 
   const { command, event } = newEvent
 
-  if (process.env.LOGS_CHROME) {
+  const playerString = newEvent.player
+    ? `Player: ${minifyPlayer(newEvent.player)} | `
+    : ""
+
+  if (IS_CHROME) {
     logs.info(
       "onMessage",
-      `Player: ${minifyPlayer(newEvent.player)} | `,
+      playerString,
       `${command} "${event}"`,
       `\n\tpath: `,
       entityPath,
@@ -157,7 +177,7 @@ const debugLogMessage = (newEvent: ServerPlayerEvent) => {
     logs.info(
       "onMessage",
       [
-        `Player: ${minifyPlayer(newEvent.player)} | `,
+        playerString,
         chalk.white.bold(command),
         ` "${chalk.yellow(event)}"`,
         entityPath ? `\n\tpath: [${entityPath}], ` : "",

@@ -50,4 +50,7 @@ export class Line extends Schema implements IEntity, IParent, IBoxModel {
   // IParent
   _childrenPointers: string[]
   hijacksInteractionTarget = true
+
+  onChildAdded: any
+  onChildRemoved: any
 }

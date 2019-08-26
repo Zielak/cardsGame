@@ -8,7 +8,8 @@ import {
   IParent,
   containsChildren,
   ParentConstructor,
-  canBeChild
+  canBeChild,
+  IParentOptions
 } from "../../src/traits/parent"
 import { State } from "../../src/state"
 import { Player } from "../../src/player"
@@ -52,6 +53,9 @@ export class DumbParent extends Schema implements IEntity, IParent {
   // IParent
   _childrenPointers: string[]
   hijacksInteractionTarget = true
+
+  onChildAdded: any
+  onChildRemoved: any
 }
 
 @canBeChild
@@ -94,9 +98,12 @@ export class ConstructedParent extends Schema implements IEntity, IParent {
   _childrenPointers: string[]
   hijacksInteractionTarget = true
 
-  constructor(options: IEntityOptions) {
+  onChildAdded: any
+  onChildRemoved: any
+
+  constructor(options: IEntityOptions & IParentOptions) {
     super()
-    ParentConstructor(this)
+    ParentConstructor(this, options)
     EntityConstructor(this, options)
   }
 }

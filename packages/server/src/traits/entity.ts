@@ -135,8 +135,8 @@ export function setParent(entity: IEntity, newParent: IParent) {
   entity.parent = newParent.id
   newParent._childrenPointers.push(con.name)
 
-  if (newParent.onChildAdded) {
-    newParent.onChildAdded(entity)
+  if (newParent.childAdded) {
+    newParent.childAdded(entity)
   }
 }
 

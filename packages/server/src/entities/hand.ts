@@ -1,6 +1,5 @@
 import { Schema, type } from "@colyseus/schema"
-import { def } from "@cardsgame/utils"
-import { IEntityOptions, IEntity, EntityConstructor } from "../traits/entity"
+import { IEntity, EntityConstructor, IEntityOptions } from "../traits/entity"
 import {
   IParent,
   containsChildren,
@@ -8,7 +7,8 @@ import {
   canBeChild,
   countChildren,
   getChild,
-  moveChildTo
+  moveChildTo,
+  IParentOptions
 } from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
@@ -50,18 +50,21 @@ export class Hand extends Schema implements IEntity, IParent {
   _childrenPointers: string[]
   hijacksInteractionTarget = false
 
+  onChildAdded: any
+  onChildRemoved: any
+
   // Hand's own stuff
   autoSort: SortingFunction
 
   constructor(options: IHandOptions) {
     super()
-    ParentConstructor(this)
+    ParentConstructor(this, options)
     EntityConstructor(this, options)
 
     this.autoSort = options.autoSort
   }
 
-  onChildAdded(child: IEntity) {
+  childAdded(child: IEntity) {
     if (!this.autoSort) return
     const count = countChildren(this)
     for (let idx = 0; idx < count; idx++) {
@@ -75,7 +78,7 @@ export class Hand extends Schema implements IEntity, IParent {
   }
 }
 
-export interface IHandOptions extends IEntityOptions {
+export interface IHandOptions extends IParentOptions, IEntityOptions {
   autoSort?: SortingFunction
 }
 

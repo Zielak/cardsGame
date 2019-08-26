@@ -1,19 +1,21 @@
-import { IEntity, IEntityOptions, EntityConstructor } from "../traits/entity"
 import { Schema, type } from "@colyseus/schema"
+import { IEntity, EntityConstructor, IEntityOptions } from "../traits/entity"
 import {
   IParent,
   containsChildren,
   ParentConstructor,
-  canBeChild
+  canBeChild,
+  IParentOptions,
+  ChildAddedHandler,
+  ChildRemovedHandler
 } from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
-import { emitsEvents, IEventEmitter, EmitterConstructor } from "../traits"
+import { def } from "@cardsgame/utils"
 
 @canBeChild
 @containsChildren(false)
-@emitsEvents
-export class Deck extends Schema implements IEntity, IParent, IEventEmitter {
+export class Deck extends Schema implements IEntity, IParent {
   // IEntity
   _state: State
   id: EntityID
@@ -48,41 +50,43 @@ export class Deck extends Schema implements IEntity, IParent, IEventEmitter {
   _childrenPointers: string[]
   hijacksInteractionTarget = true
 
-  // IEventEmitter
-  on: (event: string | symbol, listener: (...args: any[]) => void) => this
-  once: (event: string | symbol, listener: (...args: any[]) => void) => this
-  off: (event: string | symbol, listener: (...args: any[]) => void) => this
-  emit: (event: string | symbol, ...args: any[]) => boolean
-
-  static events = {
-    childAdded: Symbol("childAdded"),
-    childRemoved: Symbol("childRemoved"),
-    emptied: Symbol("emptied")
-  }
+  onChildAdded: ChildAddedHandler
+  onChildRemoved: ChildRemovedHandler
 
   // ================
 
   @type("uint16")
   childCount: number = 0
 
+  onEmptied: () => void
+
   // TODO: deck may display its topmost card, if it's `faceUp`
 
-  onChildAdded(child: IEntity) {
+  childAdded(child: IEntity) {
     this.childCount++
-    this.emit(Deck.events.childAdded, child)
+    if (this.onChildAdded) {
+      this.onChildAdded(child)
+    }
   }
-  onChildRemoved(idx: number) {
+  childRemoved(idx: number) {
     this.childCount--
-    this.emit(Deck.events.childRemoved, idx)
-    if (this.childCount === 0) {
-      this.emit(Deck.events.emptied)
+    if (this.onChildAdded) {
+      this.onChildRemoved(idx)
+    }
+    if (this.childCount === 0 && this.onEmptied) {
+      this.onEmptied()
     }
   }
 
-  constructor(options: IEntityOptions) {
+  constructor(options: IDeckOptions) {
     super()
-    EmitterConstructor(this)
-    ParentConstructor(this)
+    ParentConstructor(this, options)
     EntityConstructor(this, options)
+
+    this.onEmptied = def(options.onEmptied, undefined)
   }
+}
+
+interface IDeckOptions extends IParentOptions, IEntityOptions {
+  onEmptied?: () => void
 }

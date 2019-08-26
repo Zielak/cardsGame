@@ -1,10 +1,11 @@
 import { Schema, type } from "@colyseus/schema"
-import { IEntityOptions, IEntity, EntityConstructor } from "../traits/entity"
+import { IEntity, EntityConstructor, IEntityOptions } from "../traits/entity"
 import {
   IParent,
   containsChildren,
   ParentConstructor,
-  canBeChild
+  canBeChild,
+  IParentOptions
 } from "../traits/parent"
 import { State } from "../state"
 import { Player } from "../player"
@@ -46,11 +47,14 @@ export class Pile extends Schema implements IEntity, IParent {
   _childrenPointers: string[]
   hijacksInteractionTarget = true
 
+  onChildAdded: any
+  onChildRemoved: any
+
   constructor(options: IPileOptions) {
     super()
-    ParentConstructor(this)
+    ParentConstructor(this, options)
     EntityConstructor(this, options)
   }
 }
 
-export interface IPileOptions extends IEntityOptions {}
+interface IPileOptions extends IParentOptions, IEntityOptions {}

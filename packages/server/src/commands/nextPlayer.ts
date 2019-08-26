@@ -1,6 +1,6 @@
-import { State } from "../state"
 import { logs } from "@cardsgame/utils"
 import { ICommand } from "."
+import { State } from "../state"
 import { Room } from "../room"
 
 export class NextPlayer implements ICommand {
@@ -11,8 +11,10 @@ export class NextPlayer implements ICommand {
 
     // TODO: ignore the player who already finished playing
 
+    room.onPlayerTurnEnded(state.currentPlayer)
+
     state.currentPlayerIdx = next
     logs.notice(_, `now it's ${state.currentPlayer.clientID} player turn`)
-    room.emit(State.events.playerTurnStarted)
+    room.onPlayerTurnStarted(state.currentPlayer)
   }
 }
