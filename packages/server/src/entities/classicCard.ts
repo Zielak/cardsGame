@@ -107,6 +107,16 @@ export interface IClassicCardOptions extends IEntityOptions {
   faceUp?: boolean
 }
 
+/**
+ * Will generate an array of card options.
+ * Use this array to create actual cards yourself
+ * @example
+ * standardDeckFactory().map(options => {
+ *   new ClassicCard({state, ...options})
+ * })
+ * @param ranks array of desired ranks
+ * @param suits array of desired suits
+ */
 export const standardDeckFactory = (
   // prettier-ignore
   ranks: string[] = [

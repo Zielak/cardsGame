@@ -117,8 +117,9 @@ export class Room<S extends State> extends colRoom<S> {
   }
 
   /**
-   * Will be called when players agree to start the game.
-   * Now is the time to for example deal cards to all players.
+   * Will be called when clients agree to start the game.
+   * `state.players` is already populated with all players.
+   * After this function, the game will give turn to the first player.
    * @param state
    */
   onStartGame(state: State) {
