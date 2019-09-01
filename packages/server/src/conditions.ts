@@ -102,15 +102,15 @@ class Conditions<S extends State> {
   /**
    *
    * @param result
-   * @param message use #{exp} and #{act} to inject values in error messages
-   * @param messageNot use #{exp} and #{act} to inject values in error messages
+   * @param errMessage use #{exp} and #{act} to inject values in error messages
+   * @param errMessageNot use #{exp} and #{act} to inject values in error messages
    * @param expected
    * @param actual
    */
   private assert(
     result: boolean,
-    message: string,
-    messageNot?: string,
+    errMessage: string,
+    errMessageNot?: string,
     expected?,
     actual?
   ) {
@@ -121,8 +121,8 @@ class Conditions<S extends State> {
       const msg = getMessage(
         this,
         result,
-        message,
-        messageNot,
+        errMessage,
+        errMessageNot,
         expected,
         actual
       )
@@ -542,23 +542,47 @@ class Conditions<S extends State> {
   }
   /**
    * Based on `state` instead of `subject`
+   * Current player has a specific UI element presented to him.
+   * If `uiKey` is left empty, function will test if player
+   * has ANY ui interface open.
+   * @asserts
+   * @example
+   * con.revealedUI() // player has ANY UI revealed
+   * con.not.revealedUI() // player doesn't have ANY UI revealed
+   * con.revealedUI("rankChooser") // player has "rankChooser" revealed
+   * con.not.revealedUI("rankChooser") // player doesn't have "rankChooser" revealed
    */
-  revealedUI(UInames: string | string[]): this {
+  revealedUI(uiKey?: string): this {
     const { ui } = this._state
-    const names = Array.isArray(UInames) ? UInames : [UInames]
-    // const uiSubjects = Object.keys(ui).filter(uiKey => names.includes(uiKey))
 
-    // Client needs to be in every UI key
-    names.every(uiKey => {
+    if (uiKey) {
       // 1. uiKey needs to exist
-      if (!(uiKey in ui)) {
-        throw new Error(`revealedUI | this UI doens't have "${uiKey}"`)
-      }
+      ensure(
+        uiKey in ui,
+        `revealedUI | this UI doens't have "${uiKey}" key defined`
+      )
 
       // 2. Current client has to be on the list
       const uiValues = Array.isArray(ui[uiKey]) ? ui[uiKey] : [ui[uiKey]]
-      return uiValues.some(client => this._player.clientID === client)
-    })
+      const result = uiValues.some(client => this._player.clientID === client)
+      this.assert(
+        result,
+        `revealedUI | client doesn't have "${uiKey}" UI presented to him`,
+        `revealedUI | client has "${uiKey}" UI presented to him, but shouldn't`
+      )
+    } else {
+      const uiKeys = Object.keys(ui).filter(
+        // FIXME: StateUI for some reason needs these keys...
+        key => !["clone", "onAdd", "onRemove", "onChange"].includes(key)
+      )
+
+      const result = uiKeys.some(key => ui[key].includes(this._player.clientID))
+      this.assert(
+        result,
+        `revealedUI | client doesn't have any UI revealed`,
+        `revealedUI | client has some UI revealed, but shouldn't`
+      )
+    }
 
     resetNegation(this)
     this._postAssertion()

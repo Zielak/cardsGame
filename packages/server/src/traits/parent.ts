@@ -227,7 +227,9 @@ export function moveChildTo(parent: IParent, from: number, to: number) {
  * Number of child elements
  */
 export function countChildren(parent: IParent | IEntity): number {
-  return parent.isParent() ? parent._childrenPointers.length : 0
+  return parent.isParent && parent.isParent()
+    ? parent._childrenPointers.length
+    : 0
 }
 
 /**
