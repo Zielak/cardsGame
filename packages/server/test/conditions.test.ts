@@ -121,6 +121,20 @@ describe("subject changing", () => {
   })
 })
 
+describe("equals", () => {
+  test("states properties", () => {
+    expect(() => {
+      con.state.its("tableWidth").equals(690)
+      con.state.its("tableWidth").not.equals("any")
+      con.state.its("tableWidth").not.equals(800)
+    }).not.toThrow()
+
+    expect(() => {
+      con.state.its("tableWidth").equals(400)
+    }).toThrow()
+  })
+})
+
 describe("oneOf", () => {
   beforeEach(() => {
     new ConstructedEntity({ state, name: "foo" })

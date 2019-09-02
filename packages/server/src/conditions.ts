@@ -51,7 +51,6 @@ const ensure = (expression, errorMessage) => {
 }
 
 const resetNegation = target => {
-  if (target._flags.get("not")) logs.verbose("resetNegation")
   target._flags.set("not", false)
 }
 
@@ -150,7 +149,6 @@ class Conditions<S extends State> {
   }
 
   get not(): this {
-    logs.verbose("NOT", "set to true")
     flag(this, "not", true)
     return this
   }
@@ -379,12 +377,11 @@ class Conditions<S extends State> {
    * @alias equals
    */
   equals(value: any): this {
-    const not = flag(this, "not"),
-      subject = flag(this, "subject"),
+    const subject = flag(this, "subject"),
       propName = this._propName ? `'${this._propName}' = ` : ""
 
     this.assert(
-      !not ? subject === value : subject !== value,
+      subject === value,
       `expected ${propName}#{act} to equal #{exp}`,
       `expected ${propName}#{act} to NOT equal #{exp}`,
       value,
@@ -666,7 +663,9 @@ class Conditions<S extends State> {
    * Checks if at least on of the functions pass.
    * Resets `subject` back to `state` before each iteration
    */
-  either(...args: (() => any)[]): this {
+  either(...args: (() => any)[]): this
+  either(name: string, ...args: (() => any)[]): this
+  either(nameOrFunc: string | (() => any), ...args: (() => any)[]): this {
     // TODO: early quit on first passing function.
 
     flag(this, "eitherLevel", flag(this, "eitherLevel") + 1)
@@ -675,7 +674,13 @@ class Conditions<S extends State> {
     const results = []
     let idx = 0
 
-    for (const test of args) {
+    const funcs = [...args]
+    if (typeof nameOrFunc !== "string") {
+      funcs.unshift(nameOrFunc)
+    }
+    const name = typeof nameOrFunc === "string" ? nameOrFunc : ""
+
+    for (const test of funcs) {
       let error = null
       let result = true
       const level = flag(this, "eitherLevel")
@@ -684,7 +689,7 @@ class Conditions<S extends State> {
       resetNegation(this)
 
       try {
-        logs.group(`either [${idx}]`)
+        logs.group(`either [${idx}] ${name}`)
 
         test()
 
@@ -715,7 +720,7 @@ class Conditions<S extends State> {
     if (results.every(({ result }) => result === false)) {
       throw new Error(
         [
-          "either | none of the tests passed:",
+          `either${name && ` '${name}'`} | none of the tests passed:`,
           ...results.map(({ error }) => error)
         ].join(`\n`)
       )
