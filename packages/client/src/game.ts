@@ -1,10 +1,10 @@
-import { EventEmitter } from "eventemitter3"
 import { logs, def } from "@cardsgame/utils"
-import { Client, Room } from "colyseus.js"
+import { Client } from "colyseus.js"
+import { Room } from "./room"
 
 interface IGameOptions {
   viewElement: HTMLElement
-  gameNames: string[]
+  roomNames: string[]
   wss?: WSSOptions
 }
 
@@ -25,19 +25,19 @@ interface RoomAvailable {
  * Get events from the game and put everything on the screen.
  * Provide an interface for the players: play area, settings and others
  */
-export class Game extends EventEmitter {
+export class Game {
   client: Client
   room: Room
 
-  gameNames: string[]
+  roomNames: string[]
   viewElement: HTMLElement
   wss: WSSOptions
 
   constructor(options: IGameOptions) {
-    super()
-    const { gameNames, viewElement } = options
+    logs.verbose("GAME", "constructor")
+    const { roomNames, viewElement } = options
 
-    this.gameNames = gameNames
+    this.roomNames = roomNames
     this.viewElement = viewElement
     this.wss = {
       host: def(
@@ -47,47 +47,67 @@ export class Game extends EventEmitter {
       port: def(options.wss && options.wss.port, 2657)
     }
 
-    this.openClient()
+    this.init()
   }
 
-  openClient() {
+  init() {
     import(/* webpackChunkName: 'colyseus.js' */ "colyseus.js")
       .then(({ Client }) => {
         this.client = new Client(
           `wss://${this.wss.host}${this.wss.port ? ":" + this.wss.port : ""}`
         )
-
-        this.client.onOpen.add(data => {
-          logs.info("CLIENT open", data)
-          this.emit(Game.events.clientOpen)
-        })
-
-        this.client.onClose.add(() => {
-          this.emit(Game.events.clientClose)
-          this.destroy()
-        })
       })
       .catch(err => {
         logs.error("Game", "couldn't load Client from `colyseus.js`", err)
       })
   }
 
-  joinRoom(gameName: string) {
-    if (this.room) {
-      this.room.leave()
-    }
-    // this.app.destroy()
+  get sessionID() {
+    return this.room ? this.room.sessionID : undefined
+  }
 
-    this.room = this.client.join(gameName)
-    return this.room
+  joinOrCreate(roomName: string, options?: any) {
+    this.room && this.room.leave()
+
+    return this.client.joinOrCreate(roomName, options).then(room => {
+      this.room = new Room(room)
+      return this.room
+    })
+  }
+
+  create(roomName: string, options?: any) {
+    this.room && this.room.leave()
+
+    return this.client.create(roomName, options).then(room => {
+      this.room = new Room(room)
+      return this.room
+    })
+  }
+
+  /**
+   * This one is probably useless for game rooms.
+   * Use `joinOrCreate` instead.
+   */
+  join(roomName: string, options?: any) {
+    this.room && this.room.leave()
+
+    return this.client.join(roomName, options).then(room => {
+      this.room = new Room(room)
+      return this.room
+    })
+  }
+
+  joinById(roomId: string, options?: any) {
+    this.room && this.room.leave()
+
+    return this.client.joinById(roomId, options).then(room => {
+      this.room = new Room(room)
+      return this.room
+    })
   }
 
   getAvailableRooms(gameName: string): Promise<RoomAvailable[]> {
-    return new Promise((resolve, reject) => {
-      this.client.getAvailableRooms(gameName, (rooms, err) =>
-        err ? reject(err) : resolve(rooms)
-      )
-    })
+    return this.client.getAvailableRooms(gameName)
   }
 
   sendInteraction(event, entityIdxPath: number[]) {
@@ -104,9 +124,9 @@ export class Game extends EventEmitter {
     this.room.send(event)
   }
 
+  // TODO: reconsider it, maybe this method is useless?
   destroy() {
-    this.client.close()
-
+    logs.verbose("GAME", "destroy()")
     if (this.room) {
       this.room.leave()
       this.room = null

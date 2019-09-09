@@ -23,7 +23,7 @@ export class Room<S extends State> extends colRoom<S> {
 
   possibleActions: ActionsSet<S>
 
-  onInit(options: any) {
+  onCreate(options: any) {
     logs.info(`Room:${this.name}`, "creating new room")
 
     if (!this.possibleActions) {
@@ -34,12 +34,6 @@ export class Room<S extends State> extends colRoom<S> {
     this.commandsManager = new CommandsManager<S>(this)
 
     this.onInitGame(options)
-  }
-
-  requestJoin(options: any, isRoomNew?: boolean): boolean | number {
-    // TODO: private rooms?
-    // TODO: reject on maxClients reached?
-    return this.state.isGameStarted ? false : true
   }
 
   broadcast(data: any, options?: BroadcastOptions) {

@@ -8,7 +8,7 @@ export class Room extends EventEmitter {
   constructor(public room: colyseusRoom) {
     super()
 
-    room.onMessage.add((message: ServerMessage) => {
+    room.onMessage((message: ServerMessage) => {
       if (message.event && message.data) {
         switch (message.event) {
           case "game.info":
@@ -27,32 +27,21 @@ export class Room extends EventEmitter {
       }
       this.emit(Room.events.message, message)
     })
-    room.onStateChange.add(state => {
+    room.onStateChange(state => {
       logs.notice("ROOM, state been updated:", state)
       this.emit(Room.events.stateChange, state)
-
-      // state.onChange(changes => {
-      //   // this.gameStateListeners()
-      //   // this.emit(Room.events.stateChange, state)
-      //   changes.forEach(change => {
-      //     console.log(change.field)
-      //     console.log(change.value)
-      //     console.log(change.previousValue)
-      //   })
-      // })
     })
-    room.onJoin.add(() => {
-      logs.notice("client joined successfully")
-      this.emit(Room.events.join)
-    })
-    room.onLeave.add(data => {
+    room.onLeave(data => {
       logs.notice("client left the room", data)
       this.emit(Room.events.leave, data)
     })
-    room.onError.add(err => {
+    room.onError(err => {
       logs.error("oops, error ocurred:", err)
       this.emit(Room.events.error, err)
     })
+
+    logs.notice("client joined successfully")
+    this.emit(Room.events.join)
   }
 
   gameStateListeners(state) {
@@ -80,6 +69,10 @@ export class Room extends EventEmitter {
     this.room.send(message)
   }
 
+  leave() {
+    this.room.leave()
+  }
+
   destroy() {
     this.room.removeAllListeners()
     this.room.leave()
@@ -87,6 +80,14 @@ export class Room extends EventEmitter {
 
   get state() {
     return this.room ? this.room.state : undefined
+  }
+
+  get sessionID() {
+    return this.room.sessionId
+  }
+
+  get id() {
+    return this.room.id
   }
 
   static events = {
