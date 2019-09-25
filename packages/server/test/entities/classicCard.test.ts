@@ -22,14 +22,14 @@ afterEach(() => {
 
 describe("constructor", () => {
   test("sets up defaults", () => {
-    card = new ClassicCard({ state, suit: "H", rank: "A" })
+    card = new ClassicCard(state, { suit: "H", rank: "A" })
     expect(card.faceUp).toBe(false)
   })
 })
 
 describe("state changers", () => {
   beforeEach(() => {
-    card = new ClassicCard({ state, suit: "H", rank: "A" })
+    card = new ClassicCard(state, { suit: "H", rank: "A" })
   })
   test("flip", () => {
     expect(card.faceUp).toBe(false)

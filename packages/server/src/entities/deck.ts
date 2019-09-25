@@ -1,60 +1,14 @@
-import { Schema, type } from "@colyseus/schema"
-import { IEntity, EntityConstructor, IEntityOptions } from "../traits/entity"
-import {
-  IParent,
-  containsChildren,
-  ParentConstructor,
-  canBeChild,
-  IParentOptions,
-  ChildAddedHandler,
-  ChildRemovedHandler
-} from "../traits/parent"
-import { State } from "../state"
-import { Player } from "../player"
+import { type } from "@colyseus/schema"
 import { def } from "@cardsgame/utils"
+import { containsChildren, canBeChild } from "../traits/parent"
+import { LocationTrait } from "../traits/location"
+import { ChildTrait } from "../traits/child"
+import { IdentityTrait, ParentTrait, Entity, applyMixins } from "../traits"
+import { State } from "../state"
 
 @canBeChild
 @containsChildren(false)
-export class Deck extends Schema implements IEntity, IParent {
-  // IEntity
-  _state: State
-  id: EntityID
-  owner: Player
-  parent: EntityID
-  isParent(): this is IParent {
-    return true
-  }
-
-  @type("string")
-  ownerID: string
-
-  @type("boolean")
-  isInOwnersView: boolean
-
-  @type("uint8")
-  idx: number
-
-  @type("string")
-  type = "deck"
-  @type("string")
-  name = "Deck"
-
-  @type("number")
-  x: number
-  @type("number")
-  y: number
-  @type("number")
-  angle: number
-
-  // IParent
-  _childrenPointers: string[]
-  hijacksInteractionTarget = true
-
-  onChildAdded: ChildAddedHandler
-  onChildRemoved: ChildRemovedHandler
-
-  // ================
-
+export class Deck extends Entity {
   @type("uint16")
   childCount: number = 0
 
@@ -62,7 +16,7 @@ export class Deck extends Schema implements IEntity, IParent {
 
   // TODO: deck may display its topmost card, if it's `faceUp`
 
-  childAdded(child: IEntity) {
+  childAdded(child: ChildTrait) {
     this.childCount++
     if (this.onChildAdded) {
       this.onChildAdded(child)
@@ -78,15 +32,18 @@ export class Deck extends Schema implements IEntity, IParent {
     }
   }
 
-  constructor(options: IDeckOptions) {
-    super()
-    ParentConstructor(this, options)
-    EntityConstructor(this, options)
-
+  constructor(state: State, options?: Partial<Deck>) {
+    super(state, options)
     this.onEmptied = def(options.onEmptied, undefined)
+    this.name = def(options.name, "Deck")
+    this.type = def(options.type, "deck")
   }
 }
 
-interface IDeckOptions extends IParentOptions, IEntityOptions {
-  onEmptied?: () => void
-}
+export interface Deck
+  extends LocationTrait,
+    ChildTrait,
+    ParentTrait,
+    IdentityTrait {}
+
+applyMixins(Deck, [LocationTrait, ChildTrait, ParentTrait, IdentityTrait])

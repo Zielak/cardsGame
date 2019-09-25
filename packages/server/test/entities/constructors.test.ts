@@ -19,10 +19,10 @@ beforeEach(() => {
 })
 
 test("All constructors", () => {
-  expect(() => new Container({ state })).not.toThrow()
-  expect(() => new Deck({ state })).not.toThrow()
-  expect(() => new Hand({ state })).not.toThrow()
-  expect(() => new Line({ state })).not.toThrow()
-  expect(() => new Pile({ state })).not.toThrow()
-  expect(() => new Row({ state })).not.toThrow()
+  expect(() => new Container(state)).not.toThrow()
+  expect(() => new Deck(state)).not.toThrow()
+  expect(() => new Hand(state)).not.toThrow()
+  expect(() => new Line(state)).not.toThrow()
+  expect(() => new Pile(state)).not.toThrow()
+  expect(() => new Row(state)).not.toThrow()
 })

@@ -1,38 +1,23 @@
-import { Schema, type, MapSchema } from "@colyseus/schema"
+import { type, MapSchema } from "@colyseus/schema"
 import { logs } from "@cardsgame/utils"
-import { IEntity, getOwner, getIdxPath } from "./traits/entity"
 import { cm2px, mapCount } from "@cardsgame/utils"
 import {
-  IParent,
-  ParentConstructor,
   getChild,
   countChildren,
   getChildren,
   getDescendants,
   containsChildren,
-  IParentOptions
+  isParent,
+  ParentTrait
 } from "./traits/parent"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
-
-const hasChildren = (entity: IEntity | IParent) =>
-  entity.isParent() ? countChildren(entity) > 0 : false
+import { Entity, IdentityTrait, hasIdentity, applyMixins } from "./traits"
+import { getOwner } from "./traits/ownership"
+import { getIdxPath, ChildTrait, isChild } from "./traits/child"
 
 @containsChildren()
-export class State extends Schema implements IParent {
-  // IParent
-  id = -1
-  _childrenPointers: string[]
-  hijacksInteractionTarget = false
-
-  onChildAdded: any
-  onChildRemoved: any
-
-  isParent(): this is IParent {
-    return true
-  }
-
-  // State stuff
+export class State extends Entity {
   @type("number")
   tableWidth = cm2px(60) // 60 cm
 
@@ -68,11 +53,13 @@ export class State extends Schema implements IParent {
   playerViewPosition = new PlayerViewPosition()
 
   _lastID = -1
-  _allEntities = new Map<number, IEntity>()
+  _allEntities = new Map<number, Entity>()
 
-  constructor(options?: IStateOptions) {
-    super()
-    ParentConstructor(this, options)
+  constructor(options?: StateOptions) {
+    super(undefined, options)
+
+    this.id = -1
+    this.hijacksInteractionTarget = false
   }
 
   /**
@@ -80,7 +67,7 @@ export class State extends Schema implements IParent {
    * @param entity
    * @returns new ID to be assigned to that entity
    */
-  registerEntity(entity: IEntity) {
+  registerEntity(entity: Entity) {
     const newID = ++this._lastID
     this._allEntities.set(newID, entity)
     return newID
@@ -90,15 +77,15 @@ export class State extends Schema implements IParent {
    * Get an Entity by its ID
    * @param id
    */
-  getEntity(id: EntityID): IEntity
+  getEntity(id: EntityID)
   /**
    * Get an Entity by its idx path
    * @param path
    */
-  getEntity(path: number[]): IEntity
-  getEntity(idOrPath: EntityID | number[]): IEntity {
+  getEntity(path: number[])
+  getEntity(idOrPath: EntityID | number[]) {
     if (Array.isArray(idOrPath)) {
-      const travel = (parent: IParent, remainingPath: number[]) => {
+      const travel = (parent: ParentTrait, remainingPath: number[]) => {
         const idx = remainingPath.shift()
         const newChild = getChild(parent, idx)
         if (!newChild) {
@@ -106,13 +93,13 @@ export class State extends Schema implements IParent {
             `getEntity/path: This entity doesn't have such child.`
           )
         }
-        if (remainingPath.length > 0 && !newChild["_childrenPointers"]) {
+        if (remainingPath.length > 0 && !isParent(newChild)) {
           throw new Error(
             `getEntity/path: Path inaccessible, entity doesn't have any children. Stopped at [${remainingPath}].`
           )
         }
-        if (remainingPath.length > 0) {
-          return travel(newChild as IParent & IEntity, remainingPath)
+        if (remainingPath.length > 0 && isParent(newChild)) {
+          return travel(newChild, remainingPath)
         } else {
           return newChild
         }
@@ -128,19 +115,23 @@ export class State extends Schema implements IParent {
    * Gets an array of all entities from the top-most parent
    * to the lowest of the child.
    */
-  getEntitiesAlongPath(path: number[]): IEntity[] {
+  getEntitiesAlongPath(path: number[]): Entity[] {
     const travel = (
-      parent: IParent,
+      parent: ParentTrait,
       remainingPath: number[],
-      result: IEntity[] = []
+      result: any[] = []
     ) => {
       const idx = remainingPath.shift()
-      const newChild = getChild<IParent & IEntity>(parent, idx)
+      const newChild = getChild(parent, idx)
       if (!newChild) {
         throw new Error(
           `getEntitiesAlongPath: This entity doesn't have such child.`
         )
       }
+
+      const hasChildren = entity =>
+        isParent(entity) ? countChildren(entity) > 0 : false
+
       if (remainingPath.length > 0 && !hasChildren(newChild)) {
         throw new Error(
           `getEntitiesAlongPath: Path inaccessible, entity doesn't have any children. Stopped at [${path}]. Remaining path: [${remainingPath}]`
@@ -148,7 +139,7 @@ export class State extends Schema implements IParent {
       }
 
       result.push(newChild)
-      if (remainingPath.length > 0) {
+      if (remainingPath.length > 0 && isParent(newChild)) {
         return travel(newChild, remainingPath, result)
       } else {
         return result
@@ -157,45 +148,47 @@ export class State extends Schema implements IParent {
     return travel(this, [...path])
   }
 
-  logTreeState(logger: any = logs, startingPoint?: IParent & IEntity) {
-    const travel = (parent: IParent) => {
-      getChildren(parent).map((child, idx, entities) => {
-        if (
-          // getParentEntity(child).isContainer && // Parent HAS to be a container...
-          entities.length > 60 &&
-          idx < entities.length - 60
-        ) {
-          // That's too much, man!
-          if (idx === 0) {
-            logger.notice("...")
+  logTreeState(state: State, logger: any = logs, startingPoint?: ParentTrait) {
+    const travel = parent => {
+      getChildren(parent).map(
+        (child: ChildTrait & IdentityTrait, idx, entities) => {
+          if (
+            // getParentEntity(child).isContainer && // Parent HAS to be a container...
+            entities.length > 60 &&
+            idx < entities.length - 60
+          ) {
+            // That's too much, man!
+            if (idx === 0) {
+              logger.notice("...")
+            }
+            return
           }
-          return
+
+          const owner = getOwner(this, child)
+
+          // const lastChild = entities.length - 1 === idx
+          const sIdx = idx === child.idx ? `${idx}` : `e${child.idx}:s${idx}`
+          const idxPath = getIdxPath(state, child)
+
+          const childrenCount = isParent(child) ? countChildren(child) : "~~"
+          const sChildren = childrenCount > 0 ? childrenCount : ""
+          const sOwner = owner ? `(${owner.name} ${owner.clientID})` : ""
+          // const branchSymbol = lastChild ? "┕━" : "┝━"
+
+          const hasChildren = isParent(child) && childrenCount > 0
+
+          logger[hasChildren ? "group" : "notice"](
+            `[${idxPath}]`,
+            `${child.type}:${child.name}-[${child.idx}]`,
+            sChildren,
+            sOwner
+          )
+          if (isParent(child) && childrenCount > 0) {
+            travel(child)
+            logger.groupEnd()
+          }
         }
-
-        const owner = getOwner(child)
-
-        // const lastChild = entities.length - 1 === idx
-        const sIdx = idx === child.idx ? `${idx}` : `e${child.idx}:s${idx}`
-        const idxPath = getIdxPath(child)
-
-        const childrenCount = countChildren(child as IParent & IEntity)
-        const sChildren = childrenCount > 0 ? childrenCount : ""
-        const sOwner = owner ? `(${owner.name} ${owner.clientID})` : ""
-        // const branchSymbol = lastChild ? "┕━" : "┝━"
-
-        const hasChildren = child.isParent() && childrenCount > 0
-
-        logger[hasChildren ? "group" : "notice"](
-          `[${idxPath}]`,
-          `${child.type}:${child.name}-[${child.idx}]`,
-          sChildren,
-          sOwner
-        )
-        if (child.isParent() && childrenCount > 0) {
-          travel(child)
-          logger.groupEnd()
-        }
-      })
+      )
     }
 
     if (!startingPoint) {
@@ -206,10 +199,11 @@ export class State extends Schema implements IParent {
         "in total)"
       )
     } else {
-      logger.group(
-        `[${startingPoint.idx}] ${startingPoint.type}:${startingPoint.name}`,
-        countChildren(startingPoint) + "children"
-      )
+      const count = isChild(startingPoint) ? `[${startingPoint.idx}] ` : ""
+      const name = hasIdentity(startingPoint)
+        ? startingPoint.type + ":" + startingPoint.name
+        : "unidentified entity"
+      logger.group(count + name, countChildren(startingPoint) + "children")
     }
     travel(startingPoint || this)
     logger.groupEnd()
@@ -221,6 +215,10 @@ export class State extends Schema implements IParent {
   }
 }
 
+export interface State extends IdentityTrait, ParentTrait {}
+
+applyMixins(State, [IdentityTrait, ParentTrait])
+
 export interface StateUI {
   clone: () => MapSchema
   onAdd: (item: any, key: string) => void
@@ -228,10 +226,8 @@ export interface StateUI {
   onChange: (item: any, key: string) => void
 }
 
-export interface IStateOptions extends IParentOptions {
+export interface StateOptions extends Partial<State> {
   minClients: number
   maxClients: number
   hostID: string
-  tableWidth?: number
-  tableHeight?: number
 }

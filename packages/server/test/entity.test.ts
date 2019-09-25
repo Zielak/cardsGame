@@ -1,25 +1,20 @@
 import { State } from "../src/state"
-import {
-  EntityConstructor,
-  getParentEntity,
-  getOwner,
-  setParent,
-  getIdxPath
-} from "../src/traits/entity"
+import { EntityConstructor } from "../src/traits/entity"
 import { Player } from "../src/player"
-import { DumbEntity, ConstructedEntity } from "./helpers/dumbEntity"
-import { ConstructedParent } from "./helpers/dumbParent"
+import { DumbEntity } from "./helpers/dumbEntity"
+import { DumbParent } from "./helpers/dumbParent"
+import { getOwner } from "../src/traits/ownership"
 
 let entity: DumbEntity
 let state: State
 
 beforeEach(() => {
-  entity = new DumbEntity()
   state = new State({
     minClients: 1,
     maxClients: 4,
     hostID: "asd"
   })
+  entity = new DumbEntity(state)
 })
 
 describe(`EntityConstructor`, () => {
@@ -59,36 +54,36 @@ describe(`EntityConstructor`, () => {
 
 describe(`getParentEntity`, () => {
   it("gets correct parent", () => {
-    let parent = new ConstructedParent({ state })
-    let entity = new ConstructedEntity({ state, parent })
+    let parent = new DumbParent({ state })
+    let entity = new DumbEntity(state, { parent })
 
     expect(getParentEntity(entity)).toBe(parent)
   })
   it("gets undefined", () => {
-    let entity = new ConstructedEntity({ state })
+    let entity = new DumbEntity({ state })
 
     expect(getParentEntity(entity)).toBe(undefined)
   })
 })
 
 describe(`setParent`, () => {
-  let parent: ConstructedParent, entity: ConstructedEntity
+  let parent: DumbParent, entity: DumbEntity
   beforeEach(() => {
-    parent = new ConstructedParent({ state })
+    parent = new DumbParent({ state })
   })
   test(`adds new child to empty parent`, () => {
-    entity = new ConstructedEntity({ state })
+    entity = new DumbEntity({ state })
     expect(entity.parent).toBe(-1)
 
     setParent(entity, parent)
     expect(entity.parent).toBe(parent.id)
   })
   test(`adds new child to parent with children`, () => {
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
+    new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
 
-    entity = new ConstructedEntity({ state })
+    entity = new DumbEntity({ state })
 
     setParent(entity, parent)
     expect(entity.parent).toBe(parent.id)
@@ -106,18 +101,18 @@ describe(`setParent`, () => {
 describe(`getIdxPath`, () => {
   test.todo(`top level entity`)
   test(`nested entities`, () => {
-    const parentA = new ConstructedParent({ state })
-    new ConstructedEntity({ state, parent: parentA })
-    new ConstructedEntity({ state, parent: parentA })
+    const parentA = new DumbParent({ state })
+    new DumbEntity(state, { parent: parentA })
+    new DumbEntity(state, { parent: parentA })
 
-    const parentB = new ConstructedParent({ state, parent: parentA })
+    const parentB = new DumbParent(state, { parent: parentA })
 
-    new ConstructedEntity({ state, parent: parentA })
-    new ConstructedEntity({ state, parent: parentA })
+    new DumbEntity(state, { parent: parentA })
+    new DumbEntity(state, { parent: parentA })
 
-    new ConstructedEntity({ state, parent: parentB })
-    const child = new ConstructedEntity({ state, parent: parentB })
-    new ConstructedEntity({ state, parent: parentB })
+    new DumbEntity(state, { parent: parentB })
+    const child = new DumbEntity(state, { parent: parentB })
+    new DumbEntity(state, { parent: parentB })
 
     expect(getIdxPath(parentA)).toStrictEqual([0])
     expect(getIdxPath(parentB)).toStrictEqual([0, 2])
@@ -130,26 +125,26 @@ describe(`isInteractive`, () => {})
 describe(`getOwner`, () => {
   let player: Player
   beforeEach(() => {
-    player = new Player({ state, clientID: "myID" })
+    player = new Player({ clientID: "myID" })
   })
 
   test(`entity's direct owner`, () => {
-    let parent = new ConstructedParent({ state })
-    let entity = new ConstructedEntity({ state, owner: player, parent })
+    let parent = new DumbParent({ state })
+    let entity = new DumbEntity(state, { owner: player, parent })
 
-    expect(getOwner(entity)).toBe(player)
+    expect(getOwner(state, entity)).toBe(player)
   })
   test(`root entity, no owner`, () => {
-    let parent = new ConstructedParent({ state })
-    let entity = new ConstructedEntity({ state, parent })
+    let parent = new DumbParent({ state })
+    let entity = new DumbEntity(state, { parent })
 
-    expect(getOwner(entity)).toBe(undefined)
+    expect(getOwner(state, entity)).toBe(undefined)
   })
   test(`entity parent's owner`, () => {
-    let parent = new ConstructedParent({ state, owner: player })
-    let entity = new ConstructedEntity({ state, parent })
+    let parent = new DumbParent(state, { owner: player })
+    let entity = new DumbEntity(state, { parent })
 
-    expect(getOwner(entity)).toBe(player)
+    expect(getOwner(state, entity)).toBe(player)
   })
 })
 

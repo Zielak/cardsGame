@@ -1,7 +1,7 @@
 import { State } from "../src/state"
-import { IEntity } from "../src/traits/entity"
-import { ConstructedEntity } from "./helpers/dumbEntity"
-import { ConstructedParent } from "./helpers/dumbParent"
+import { DumbEntity } from "./helpers/dumbEntity"
+import { DumbParent } from "./helpers/dumbParent"
+import { Entity } from "../src/traits"
 
 let state: State
 
@@ -13,10 +13,10 @@ describe(`State`, () => {
   test(`#registerEntity`, () => {
     state = new State()
 
-    let newID = state.registerEntity({} as IEntity)
+    let newID = state.registerEntity({} as Entity)
     expect(newID).toBe(0)
 
-    newID = state.registerEntity({} as IEntity)
+    newID = state.registerEntity({} as Entity)
     expect(newID).toBe(1)
   })
 
@@ -26,61 +26,61 @@ describe(`State`, () => {
     })
 
     test(`child of root, by ID`, () => {
-      const e = new ConstructedEntity({ state })
+      const e = new DumbEntity(state)
       expect(state.getEntity(e.id)).toBe(e)
     })
     test(`child of root, by path`, () => {
-      const e = new ConstructedEntity({ state })
+      const e = new DumbEntity(state)
       expect(state.getEntity([0])).toBe(e)
     })
 
     test(`child of parent, by ID`, () => {
-      const p = new ConstructedParent({ state })
-      const e = new ConstructedEntity({ state, parent: p })
+      const p = new DumbParent(state)
+      const e = new DumbEntity(state, { parent: p })
       expect(state.getEntity(e.id)).toBe(e)
     })
     test(`child of parent, by path`, () => {
-      const p = new ConstructedParent({ state })
-      const e = new ConstructedEntity({ state, parent: p })
+      const p = new DumbParent(state)
+      const e = new DumbEntity(state, { parent: p })
       expect(state.getEntity([0, 0])).toBe(e)
     })
     test(`child of fat parent, by path`, () => {
-      const p = new ConstructedParent({ state })
-      new ConstructedEntity({ state, parent: p })
-      const e = new ConstructedEntity({ state, parent: p })
-      new ConstructedEntity({ state, parent: p })
+      const p = new DumbParent(state)
+      new DumbEntity(state, { parent: p })
+      const e = new DumbEntity(state, { parent: p })
+      new DumbEntity(state, { parent: p })
 
       expect(state.getEntity([0, 1])).toBe(e)
     })
 
     test(`deeply nested child, by ID`, () => {
-      new ConstructedEntity({ state })
-      const parentA = new ConstructedParent({ state })
-      new ConstructedEntity({ state })
+      new DumbEntity(state)
+      const parentA = new DumbParent(state)
+      new DumbEntity(state)
 
-      const parentB = new ConstructedParent({ state, parent: parentA })
-      new ConstructedEntity({ state, parent: parentA })
-      new ConstructedEntity({ state, parent: parentA })
+      const parentB = new DumbParent(state, { parent: parentA })
+      new DumbEntity(state, { parent: parentA })
+      new DumbEntity(state, { parent: parentA })
 
-      new ConstructedEntity({ state, parent: parentB })
-      new ConstructedEntity({ state, parent: parentB })
-      const c = new ConstructedEntity({ state, parent: parentB })
+      new DumbEntity(state, { parent: parentB })
+      new DumbEntity(state, { parent: parentB })
+      const c = new DumbEntity(state, { parent: parentB })
 
       expect(state.getEntity(parentB.id)).toBe(parentB)
       expect(state.getEntity(c.id)).toBe(c)
     })
     test(`deeply nested child, by path`, () => {
-      new ConstructedEntity({ state })
-      const a = new ConstructedParent({ state })
-      new ConstructedEntity({ state })
+      new DumbEntity(state)
+      const a = new DumbParent(state)
+      new DumbEntity(state)
 
-      const b = new ConstructedParent({ state, parent: a })
-      new ConstructedEntity({ state, parent: a })
-      new ConstructedEntity({ state, parent: a })
+      const b = new DumbParent(state, { parent: a })
+      new DumbEntity(state, { parent: a })
+      new DumbEntity(state, { parent: a })
 
-      new ConstructedEntity({ state, parent: b })
-      new ConstructedEntity({ state, parent: b })
-      const c = new ConstructedEntity({ state, parent: b })
+      new DumbEntity(state, { parent: b })
+      new DumbEntity(state, { parent: b })
+      const c = new DumbEntity(state, { parent: b })
 
       expect(state.getEntity([1, 0])).toBe(b)
       expect(state.getEntity([1, 0, 2])).toBe(c)

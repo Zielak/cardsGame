@@ -1,9 +1,7 @@
-import { IParent } from "./parent"
-import { IEntityOptions } from "./entity"
 import { def } from "@cardsgame/utils"
-import { IBoxModel } from "./boxModel"
+import { State } from "../state"
 
-export interface IFlexyContainer extends IParent, IBoxModel {
+export class FlexyTrait {
   alignItems: "start" | "end" | "center"
   directionReverse: boolean
   justifyContent:
@@ -15,22 +13,11 @@ export interface IFlexyContainer extends IParent, IBoxModel {
     | "spaceEvenly"
 }
 
-export interface IFlexyContainerOptions extends IEntityOptions {
-  alignItems?: "start" | "end" | "center"
-  directionReverse?: boolean
-  justifyContent?:
-    | "start"
-    | "end"
-    | "center"
-    | "spaceBetween"
-    | "spaceAround"
-    | "spaceEvenly"
-}
-
-export function FlexyContainerConstructor(
-  entity: IFlexyContainer,
-  options: IFlexyContainerOptions
-) {
+FlexyTrait.constructor = (
+  entity: FlexyTrait,
+  state: State,
+  options: Partial<FlexyTrait> = {}
+) => {
   entity.alignItems = def(options.alignItems, "center")
   entity.directionReverse = def(options.directionReverse, false)
   entity.justifyContent = def(options.justifyContent, "start")

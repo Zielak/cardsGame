@@ -1,8 +1,8 @@
-import { IEntity } from "./traits/entity"
 import { def } from "@cardsgame/utils"
 import { type, Schema } from "@colyseus/schema"
 import { State } from "./state"
 import { logs } from "@cardsgame/utils"
+import { Entity, IdentityTrait } from "./traits"
 
 // TODO: Player shouldn't be on the scene, he's not an object of play
 //       Player's pawns could be placed on the board, outside of his domain...
@@ -20,9 +20,6 @@ export class Player extends Schema {
 
   finishedPlaying = false
 
-  // FIXME: why do I need it?
-  _state: State
-
   // _selectedEntities = new Set<IEntity>()
 
   // @type("int8")
@@ -30,7 +27,6 @@ export class Player extends Schema {
 
   constructor(options: IPlayerOptions) {
     super()
-    this._state = options.state
     this.clientID = options.clientID
     this.name = def(options.name, getRandomName())
     logs.notice("Player()", `"${this.clientID}", "${this.name}"`)
@@ -38,7 +34,6 @@ export class Player extends Schema {
 }
 
 export interface IPlayerOptions {
-  state: State
   clientID: string
   name?: string
 }
@@ -46,8 +41,8 @@ export interface IPlayerOptions {
 // Event from client, with stuff auto filled when comming to server
 export type ServerPlayerEvent = PlayerEvent & {
   player?: Player
-  entity?: IEntity
-  entities?: IEntity[]
+  entity?: Entity
+  entities?: Entity[]
 }
 
 const randomPlayerNames = [

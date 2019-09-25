@@ -4,13 +4,13 @@ import {
   QuerableProps,
   find,
   getChildren,
-  getOwner,
   countChildren,
   getBottom,
   getTop
 } from "./traits"
 import { logs, IS_CHROME } from "@cardsgame/utils"
 import chalk from "chalk"
+import { getOwner } from "./traits/ownership"
 
 // export interface ExpandableConditions<S extends State> {
 //   [key: string]: (this: Conditions<S>) => Conditions<S>
@@ -209,12 +209,12 @@ class Conditions<S extends State> {
    * get('deck', {rank: 'K'})
    * ```
    */
-  get(alias: string | Symbol | QuerableProps, ...args: QuerableProps[]): this {
+  get(alias: string | QuerableProps, ...args: QuerableProps[]): this {
     let newSubject
     if (typeof alias === "string") {
       if (args.length > 0) {
         // find child of subject by alias
-        newSubject = find(this._refs.get(alias), args)
+        newSubject = find(this._refs.get(alias), ...args)
       } else {
         // get subject by alias
         newSubject = this._refs.get(alias)
@@ -628,7 +628,7 @@ class Conditions<S extends State> {
    * @asserts
    */
   get owner(): this {
-    const expected = getOwner(this._event.entity)
+    const expected = getOwner(this._state, this._event.entity)
 
     this.assert(
       this._player === expected,

@@ -1,70 +1,33 @@
-import { Schema, type } from "@colyseus/schema"
-import { IEntity, EntityConstructor, IEntityOptions } from "../traits/entity"
+import { Schema } from "@colyseus/schema"
 import {
-  IParent,
   containsChildren,
-  ParentConstructor,
   canBeChild,
   countChildren,
   getChild,
   moveChildTo,
-  IParentOptions
+  ParentTrait
 } from "../traits/parent"
+import { def } from "@cardsgame/utils"
+import { LocationTrait } from "../traits/location"
+import { ChildTrait } from "../traits/child"
+import { IdentityTrait, Entity, applyMixins } from "../traits"
 import { State } from "../state"
-import { Player } from "../player"
 
 @canBeChild
 @containsChildren()
-export class Hand extends Schema implements IEntity, IParent {
-  // IEntity
-  _state: State
-  id: EntityID
-  owner: Player
-  parent: EntityID
-  isParent(): this is IParent {
-    return true
-  }
-
-  @type("string")
-  ownerID: string
-
-  @type("boolean")
-  isInOwnersView: boolean
-
-  @type("uint8")
-  idx: number
-
-  @type("string")
-  type = "hand"
-  @type("string")
-  name = "Hand"
-
-  @type("number")
-  x: number
-  @type("number")
-  y: number
-  @type("number")
-  angle: number
-
-  // IParent
-  _childrenPointers: string[]
-  hijacksInteractionTarget = false
-
-  onChildAdded: any
-  onChildRemoved: any
-
-  // Hand's own stuff
+export class Hand extends Entity {
   autoSort: SortingFunction
 
-  constructor(options: IHandOptions) {
-    super()
-    ParentConstructor(this, options)
-    EntityConstructor(this, options)
+  constructor(state: State, options?: Partial<Hand>) {
+    super(state, options)
+
+    this.name = def(options.name, "Hand")
+    this.type = def(options.type, "hand")
 
     this.autoSort = options.autoSort
   }
 
-  childAdded(child: IEntity) {
+  childAdded(child: ChildTrait) {
     if (!this.autoSort) return
     const count = countChildren(this)
     for (let idx = 0; idx < count; idx++) {
@@ -78,8 +41,12 @@ export class Hand extends Schema implements IEntity, IParent {
   }
 }
 
-export interface IHandOptions extends IParentOptions, IEntityOptions {
-  autoSort?: SortingFunction
-}
+export interface Hand
+  extends LocationTrait,
+    ChildTrait,
+    ParentTrait,
+    IdentityTrait {}
 
-type SortingFunction = (childA: IEntity, childB: IEntity) => number
+applyMixins(Hand, [LocationTrait, ChildTrait, ParentTrait, IdentityTrait])
+
+type SortingFunction = (childA: ChildTrait, childB: ChildTrait) => number

@@ -1,8 +1,16 @@
 import { type, ArraySchema } from "@colyseus/schema"
-import { IEntity, resetWorldTransform } from "./entity"
 import { logs, def } from "@cardsgame/utils"
 import { Player } from "../player"
-import { IIdentity } from "./identity"
+import { ChildTrait, getParentEntity } from "./child"
+import { State } from "../state"
+import { IdentityTrait } from "./identity"
+import { Entity } from "./entity"
+import { BoxModelTrait } from "./boxModel"
+import { FlexyTrait } from "./flexyContainer"
+import { LocationTrait } from "./location"
+import { OwnershipTrait } from "./ownership"
+import { SelectableChildrenTrait } from "./selectableChildren"
+import { TwoSidedTrait } from "./twoSided"
 
 const registeredParents: {
   con: Function
@@ -67,31 +75,32 @@ export function containsChildren(childrenSynced = true) {
 
 // ====================
 
-export type ChildAddedHandler = (child: IEntity) => void
+export function isParent(entity: any): entity is ParentTrait {
+  return typeof (entity as ParentTrait).childrenPointers !== "undefined"
+}
+
+export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void
 
-export interface IParent extends IIdentity {
-  _childrenPointers: string[]
+export class ParentTrait extends Entity {
+  childrenPointers: string[]
   hijacksInteractionTarget: boolean
-  isParent(): this is IParent
+
+  childAdded: ChildAddedHandler
+  childRemoved: ChildRemovedHandler
 
   onChildAdded: ChildAddedHandler
   onChildRemoved: ChildRemovedHandler
-
-  childAdded?(child: IEntity): void
-  childRemoved?(idx: number): void
 }
 
-export interface IParentOptions {
-  onChildAdded?: ChildAddedHandler
-  onChildRemoved?: ChildRemovedHandler
-}
+ParentTrait.constructor = (
+  entity: ParentTrait,
+  state: State,
+  options: Partial<ParentTrait> = {}
+) => {
+  entity.childrenPointers = []
+  entity.hijacksInteractionTarget = true
 
-export function ParentConstructor(
-  entity: IParent,
-  options: IParentOptions = {}
-) {
-  entity._childrenPointers = []
   registeredChildren.forEach(con => {
     if ((entity as any).__syncChildren === false) {
       entity[`children${con.name}`] = new Array()
@@ -100,42 +109,55 @@ export function ParentConstructor(
     }
   })
 
-  this.onChildAdded = def(options.onChildAdded, undefined)
-  this.onChildRemoved = def(options.onChildRemoved, undefined)
+  entity.onChildAdded = def(options.onChildAdded, undefined)
+  entity.onChildRemoved = def(options.onChildRemoved, undefined)
 }
 
-export const getKnownConstructor = (entity: IEntity | IParent) =>
+export const getKnownConstructor = (entity: ChildTrait) =>
   registeredChildren.find(con => entity instanceof con)
 
-const updateIndexes = (parent: IParent) => {
-  parent._childrenPointers = []
+const updateIndexes = (parent: ParentTrait) => {
+  parent.childrenPointers = []
   getChildren(parent).forEach((child, newIdx) => {
     const con = registeredChildren.find(con => child instanceof con)
-    parent._childrenPointers[newIdx] = con.name
+    parent.childrenPointers[newIdx] = con.name
     child.idx = newIdx
   })
 }
 
-const pickByIdx = (idx: number) => (child: IEntity) => child.idx === idx
-const sortByIdx = (a: IEntity, b: IEntity) => a.idx - b.idx
+const pickByIdx = (idx: number) => (child: ChildTrait) => child.idx === idx
+const sortByIdx = (a: ChildTrait, b: ChildTrait) => a.idx - b.idx
 
-export const removeChild = (parent: IParent, id: EntityID): boolean => {
-  const idx = getChildren(parent).findIndex(child => child.id === id)
+/**
+ * Points out if this element can be target of any interaction
+ */
+export function isInteractive(state: State, entity) {
+  const parent = getParentEntity(state, entity)
+  if (parent.hijacksInteractionTarget) {
+    return false
+  }
+  return true
+}
+
+export const removeChild = (parent: ParentTrait, id: EntityID): boolean => {
+  const idx = getChildren<ChildTrait & IdentityTrait>(parent).findIndex(
+    child => child.id === id
+  )
   return removeChildAt(parent, idx)
 }
 
-export function removeChildAt(parent: IParent, idx: number): boolean {
+export function removeChildAt(parent: ParentTrait, idx: number): boolean {
   // ------ check
 
   if (idx < 0)
     throw new Error(`removeChildAt(): idx must be >= 0, but is ${idx}`)
-  if (idx > parent._childrenPointers.length - 1) {
+  if (idx > parent.childrenPointers.length - 1) {
     throw new Error(
       `removeChildAt(): Tried to remove idx out of bounds: 
-      ${idx}/${parent._childrenPointers.length}`
+      ${idx}/${parent.childrenPointers.length}`
     )
   }
-  const child: IEntity = getChild(parent, idx)
+  const child: ChildTrait = getChild(parent, idx)
   if (!child) {
     logs.error("removeChildAt", `getChild - I don't have ${idx} child?`)
     return
@@ -143,12 +165,12 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
 
   // ------ remove
 
-  const targetArrayName = "children" + parent._childrenPointers[idx]
+  const targetArrayName = "children" + parent.childrenPointers[idx]
   const targetArray: ArraySchema = parent[targetArrayName]
 
   const childIdx = targetArray.findIndex(el => el.idx === idx)
 
-  parent._childrenPointers.splice(idx, 1)
+  parent.childrenPointers.splice(idx, 1)
 
   // FIXME: after colyseus/schema geets fixed:
   // https://github.com/colyseus/schema/issues/17
@@ -164,15 +186,10 @@ export function removeChildAt(parent: IParent, idx: number): boolean {
 
   removedChild.parent = 0
 
-  // ------ update
-
-  // Reset last parent's stylings
-  resetWorldTransform(removedChild)
-
   return true
 }
 
-export function moveChildTo(parent: IParent, from: number, to: number) {
+export function moveChildTo(parent: ParentTrait, from: number, to: number) {
   // 1. pluck out the FROM
   const child = getChild(parent, from)
   if (!child) {
@@ -226,19 +243,16 @@ export function moveChildTo(parent: IParent, from: number, to: number) {
 /**
  * Number of child elements
  */
-export function countChildren(parent: IParent | IEntity): number {
-  return parent.isParent && parent.isParent()
-    ? parent._childrenPointers.length
-    : 0
+export function countChildren(parent: ParentTrait): number {
+  return parent.childrenPointers.length
 }
 
 /**
  * Gets all direct children in array form, "sorted" by idx
  */
-export function getChildren<T extends IEntity | IParent>(
-  parent: IParent | IEntity
-): (T & IEntity)[] {
-  if (!parent.isParent()) {
+export function getChildren<T extends ChildTrait>(parent: any): T[] {
+  // FIXME: I don't know how to translate that to Mixins
+  if (!isParent(parent)) {
     return []
   }
 
@@ -253,59 +267,61 @@ export function getChildren<T extends IEntity | IParent>(
 /**
  * Get one direct child of `parent` by its `idx`
  */
-export function getChild<T extends IEntity | IParent>(
-  parent: IParent,
+export function getChild<T extends ChildTrait>(
+  parent: ParentTrait,
   idx: number
-): T & IEntity {
-  if (!parent._childrenPointers[idx]) {
+): T {
+  if (!parent.childrenPointers[idx]) {
     throw new Error(`This parent doesn't have "${idx}" children?`)
   }
-  return parent["children" + parent._childrenPointers[idx]].find(pickByIdx(idx))
+  return parent["children" + parent.childrenPointers[idx]].find(pickByIdx(idx))
 }
 
 /**
  * Get the element with highest 'idx' value
  */
-export function getTop<T extends IEntity | IParent>(parent: IParent): T {
-  return getChild<T>(parent, Math.max(0, parent._childrenPointers.length - 1))
+export function getTop<T extends ChildTrait>(parent: ParentTrait): T {
+  return getChild<T>(parent, Math.max(0, parent.childrenPointers.length - 1))
 }
 
 /**
  * Get the element with the lowest 'idx' value
  */
-export function getBottom<T extends IEntity | IParent>(parent: IParent): T {
+export function getBottom<T extends ChildTrait>(parent: ParentTrait): T {
   return getChild<T>(parent, 0)
 }
 
 /**
  * Recursively fetches all children
  */
-export function getDescendants<T extends IEntity | IParent>(
-  parent: IParent
-): T[] {
-  return getChildren(parent).reduce((prev, entity) => {
-    prev.push(entity)
-    if (entity.isParent()) {
-      prev.concat(getDescendants(entity))
-    }
-    return prev
-  }, [])
+export function getDescendants(parent: ParentTrait): ChildTrait[] {
+  return getChildren(parent).reduce(
+    (prev, entity: ParentTrait | ChildTrait) => {
+      prev.push(entity)
+      if (isParent(entity)) {
+        prev.concat(getDescendants(entity))
+      }
+      return prev
+    },
+    []
+  )
 }
 
-export interface QuerableProps {
-  id?: EntityID
+type EveryTrait = BoxModelTrait &
+  ChildTrait &
+  ParentTrait &
+  FlexyTrait &
+  IdentityTrait &
+  LocationTrait &
+  OwnershipTrait &
+  SelectableChildrenTrait &
+  TwoSidedTrait
 
-  idx?: number
+export interface QuerableProps extends Partial<Omit<EveryTrait, "parent">> {
   parent?: EntityID | QuerableProps
-  owner?: Player
-
-  type?: string
-  name?: string
-
-  [key: string]: any
 }
 
-const queryRunner = (props: QuerableProps) => (entity: IEntity | IParent) => {
+const queryRunner = (props: QuerableProps) => entity => {
   const propKeys = Object.keys(props)
 
   return propKeys.every(propName => {
@@ -314,18 +330,20 @@ const queryRunner = (props: QuerableProps) => (entity: IEntity | IParent) => {
 }
 
 // TODO: TEST IT
-export function findAll<T extends IEntity | IParent>(
-  parent: IParent,
-  ...props: QuerableProps[]
-): T[] {
-  const result = props.reduce<T[]>(
-    (_parents, _props) => {
-      return _parents.reduce((children, _parent) => {
-        const newMatches = getChildren<T>(_parent).filter(queryRunner(_props))
-        return children.concat(newMatches)
-      }, [])
+export function findAll(parent: ParentTrait, ...props: QuerableProps[]) {
+  const result = props.reduce(
+    (allParents, currentProps) => {
+      return allParents.reduce<(ChildTrait | ParentTrait)[]>(
+        (children: ChildTrait[], _parent) => {
+          const newMatches = getChildren(_parent).filter(
+            queryRunner(currentProps)
+          )
+          return children.concat(newMatches)
+        },
+        []
+      )
     },
-    [parent as T]
+    [parent]
   )
   if (result.length === 0) {
     throw new Error(
@@ -335,27 +353,26 @@ export function findAll<T extends IEntity | IParent>(
   return result
 }
 
-export function findAllDeep<T extends IEntity | IParent>(
-  parent: IParent,
-  ...props: QuerableProps[]
-): T[] {
-  const result = getDescendants<T>(parent).filter(queryRunner(props))
-  if (result.length === 0) {
-    throw new Error(
-      `findAllDeep: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
-    )
-  }
-  return result
-}
+// @deprecated unused.
+// export function findAllDeep(
+//   parent: ParentTrait,
+//   ...props: QuerableProps[]
+// ): T[] {
+//   const result = getDescendants(parent).filter(queryRunner(props))
+//   if (result.length === 0) {
+//     throw new Error(
+//       `findAllDeep: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
+//     )
+//   }
+//   return result
+// }
 
-export function find<T extends IEntity | IParent>(
-  parent: IParent,
-  ...props: QuerableProps[]
-): T {
-  const result = props.reduce<T>(
-    (_parent, _props) => getChildren<T>(_parent).find(queryRunner(_props)),
-    parent as T
+export function find(parent: ParentTrait, ...props: QuerableProps[]) {
+  const result = props.reduce<Entity>(
+    (_parent, _props) => getChildren(_parent).find(queryRunner(_props)),
+    parent
   )
+
   if (!result) {
     throw new Error(
       `find: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
@@ -364,15 +381,13 @@ export function find<T extends IEntity | IParent>(
   return result
 }
 
-export function findDeep<T extends IEntity | IParent>(
-  parent: IParent,
-  props: QuerableProps[]
-): T {
-  const result = getDescendants<T>(parent).find(queryRunner(props))
-  if (!result) {
-    throw new Error(
-      `findDeep: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
-    )
-  }
-  return result
-}
+// @deprecated unused anywhere now.
+// export function findDeep(parent: ParentTrait, ...props: QuerableProps[]) {
+//   const result = getDescendants(parent).find(queryRunner(props))
+//   if (!result) {
+//     throw new Error(
+//       `findDeep: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
+//     )
+//   }
+//   return result
+// }

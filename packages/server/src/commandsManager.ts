@@ -4,10 +4,11 @@ import { CompositeCommand } from "./commands/compositeCommand"
 import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
-import { isInteractive, getParentEntity } from "./traits/entity"
 import { ICommand } from "./commands"
 import { Room } from "./room"
 import { Conditions } from "./conditions"
+import { getParentEntity } from "./traits/child"
+import { isInteractive } from "./traits"
 
 export class CommandsManager<S extends State> {
   history: ICommand[] = []
@@ -32,7 +33,7 @@ export class CommandsManager<S extends State> {
       )
     }
 
-    let actions = this.filterActionsByInteraction(event)
+    let actions = this.filterActionsByInteraction(state, event)
     actions = this.filterActionsByConditions(actions, state, event)
 
     if (actions.length === 0) {
@@ -66,7 +67,10 @@ export class CommandsManager<S extends State> {
    * Gets you a list of all possible game actions
    * that match with player's interaction
    */
-  filterActionsByInteraction(event: ServerPlayerEvent): ActionTemplate<S>[] {
+  filterActionsByInteraction(
+    state: State,
+    event: ServerPlayerEvent
+  ): ActionTemplate<S>[] {
     logs.groupCollapsed(`Filter out actions by INTERACTIONS`)
     logs.info(`getActionsByInteraction()`)
 
@@ -94,7 +98,10 @@ export class CommandsManager<S extends State> {
             return values.some(testValue => currentTarget[prop] === testValue)
           }
           if (prop === "parent") {
-            const parentOfCurrent = getParentEntity(currentTarget)
+            const parentOfCurrent = getParentEntity(
+              this.room.state,
+              currentTarget
+            )
 
             return parentOfCurrent
               ? interactionMatchesEntity(value)(parentOfCurrent)
@@ -112,7 +119,7 @@ export class CommandsManager<S extends State> {
         ) {
           // Check props for every interactive entity in `targets` array
           return event.entities
-            .filter(currentTarget => isInteractive(currentTarget))
+            .filter(currentTarget => isInteractive(state, currentTarget))
             .some(interactionMatchesEntity(definition))
         } else if (definition.command) {
           // TODO: react on button click or anything else

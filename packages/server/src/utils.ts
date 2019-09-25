@@ -2,7 +2,7 @@ import { State } from "./state"
 import { Client } from "colyseus"
 import { ServerPlayerEvent, Player } from "./player"
 import { isInteractive } from "./traits"
-import { map2Array, logs } from "@cardsgame/utils"
+import { map2Array } from "@cardsgame/utils"
 
 export const populatePlayerEvent = (
   state: State,
@@ -15,7 +15,7 @@ export const populatePlayerEvent = (
     newEvent.entities = state
       .getEntitiesAlongPath(newEvent.entityPath)
       .reverse()
-      .filter(target => isInteractive(target))
+      .filter(target => isInteractive(state, target))
     newEvent.entity = newEvent.entities[0]
   }
 

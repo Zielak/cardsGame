@@ -1,9 +1,9 @@
 import { State } from "../state"
 import { ICommand } from "."
-import { IParent, countChildren, moveChildTo } from "../traits/parent"
+import { countChildren, moveChildTo, ParentTrait } from "../traits/parent"
 
 export class ShuffleChildren implements ICommand {
-  constructor(private container: IParent) {}
+  constructor(private container: ParentTrait) {}
 
   execute(state: State) {
     let idxA = countChildren(this.container)
