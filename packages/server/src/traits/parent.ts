@@ -1,16 +1,15 @@
 import { type, ArraySchema } from "@colyseus/schema"
 import { logs, def } from "@cardsgame/utils"
-import { Player } from "../player"
 import { ChildTrait, getParentEntity } from "./child"
 import { State } from "../state"
-import { IdentityTrait } from "./identity"
-import { Entity } from "./entity"
+import { LabelTrait } from "./label"
 import { BoxModelTrait } from "./boxModel"
 import { FlexyTrait } from "./flexyContainer"
 import { LocationTrait } from "./location"
 import { OwnershipTrait } from "./ownership"
 import { SelectableChildrenTrait } from "./selectableChildren"
 import { TwoSidedTrait } from "./twoSided"
+import { IdentityTrait } from "./identity"
 
 const registeredParents: {
   con: Function
@@ -82,7 +81,7 @@ export function isParent(entity: any): entity is ParentTrait {
 export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void
 
-export class ParentTrait extends Entity {
+export class ParentTrait extends IdentityTrait {
   childrenPointers: string[]
   hijacksInteractionTarget: boolean
 
@@ -91,26 +90,24 @@ export class ParentTrait extends Entity {
 
   onChildAdded: ChildAddedHandler
   onChildRemoved: ChildRemovedHandler
-}
 
-ParentTrait.constructor = (
-  entity: ParentTrait,
-  state: State,
-  options: Partial<ParentTrait> = {}
-) => {
-  entity.childrenPointers = []
-  entity.hijacksInteractionTarget = true
+  constructor(state: State, options: Partial<ParentTrait> = {}) {
+    super(state)
 
-  registeredChildren.forEach(con => {
-    if ((entity as any).__syncChildren === false) {
-      entity[`children${con.name}`] = new Array()
-    } else {
-      entity[`children${con.name}`] = new ArraySchema()
-    }
-  })
+    this.childrenPointers = []
+    this.hijacksInteractionTarget = true
 
-  entity.onChildAdded = def(options.onChildAdded, undefined)
-  entity.onChildRemoved = def(options.onChildRemoved, undefined)
+    registeredChildren.forEach(con => {
+      if ((this as any).__syncChildren === false) {
+        this[`children${con.name}`] = new Array()
+      } else {
+        this[`children${con.name}`] = new ArraySchema()
+      }
+    })
+
+    this.onChildAdded = def(options.onChildAdded, undefined)
+    this.onChildRemoved = def(options.onChildRemoved, undefined)
+  }
 }
 
 export const getKnownConstructor = (entity: ChildTrait) =>
@@ -140,7 +137,7 @@ export function isInteractive(state: State, entity) {
 }
 
 export const removeChild = (parent: ParentTrait, id: EntityID): boolean => {
-  const idx = getChildren<ChildTrait & IdentityTrait>(parent).findIndex(
+  const idx = getChildren<ChildTrait & LabelTrait>(parent).findIndex(
     child => child.id === id
   )
   return removeChildAt(parent, idx)
@@ -311,7 +308,7 @@ type EveryTrait = BoxModelTrait &
   ChildTrait &
   ParentTrait &
   FlexyTrait &
-  IdentityTrait &
+  LabelTrait &
   LocationTrait &
   OwnershipTrait &
   SelectableChildrenTrait &
@@ -368,9 +365,9 @@ export function findAll(parent: ParentTrait, ...props: QuerableProps[]) {
 // }
 
 export function find(parent: ParentTrait, ...props: QuerableProps[]) {
-  const result = props.reduce<Entity>(
+  const result = props.reduce(
     (_parent, _props) => getChildren(_parent).find(queryRunner(_props)),
-    parent
+    parent as ChildTrait & ParentTrait
   )
 
   if (!result) {

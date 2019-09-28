@@ -1,5 +1,6 @@
 export * from "./entity"
 export * from "./flexyContainer"
 export * from "./identity"
+export * from "./label"
 export * from "./parent"
 export * from "./twoSided"

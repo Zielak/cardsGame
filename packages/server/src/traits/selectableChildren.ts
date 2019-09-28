@@ -2,14 +2,11 @@ import { ParentTrait, countChildren } from "./parent"
 
 export class SelectableChildrenTrait extends ParentTrait {
   selectedChildren: boolean[]
-}
 
-SelectableChildrenTrait.constructor = (
-  entity: SelectableChildrenTrait
-  // state: State,
-  // options: SelectableChildrenTrait
-) => {
-  entity.selectedChildren = []
+  constructor(state, options) {
+    super(state, options)
+    this.selectedChildren = []
+  }
 }
 
 // TODO: React on child removed(!)/added(~?)

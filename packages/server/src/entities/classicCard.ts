@@ -3,7 +3,7 @@ import { def, logs } from "@cardsgame/utils"
 import {
   canBeChild,
   TwoSidedTrait,
-  IdentityTrait,
+  LabelTrait,
   Entity,
   applyMixins
 } from "../traits"
@@ -32,7 +32,7 @@ import { State } from "../state"
 // }
 
 @canBeChild
-export class ClassicCard extends Entity {
+export class ClassicCard extends Entity<ClassicCardOptions> {
   // My own props
   // @filter(faceDownOnlyOwner)
   @type("string")
@@ -42,7 +42,7 @@ export class ClassicCard extends Entity {
   @type("string")
   rank: string
 
-  constructor(state: State, options?: Partial<ClassicCard>) {
+  constructor(state: State, options: Partial<ClassicCardOptions> = {}) {
     super(state, options)
     this.suit = def(options.suit, "X")
     this.rank = def(options.rank, "Y")
@@ -51,18 +51,18 @@ export class ClassicCard extends Entity {
   }
 }
 
-export interface ClassicCard
+export interface ClassicCardOptions
   extends LocationTrait,
     ChildTrait,
     TwoSidedTrait,
-    IdentityTrait {}
+    LabelTrait {
+  suit: string
+  rank: string
+}
 
-applyMixins(ClassicCard, [
-  LocationTrait,
-  ChildTrait,
-  TwoSidedTrait,
-  IdentityTrait
-])
+export interface ClassicCard extends ClassicCardOptions {}
+
+applyMixins(ClassicCard, [LocationTrait, ChildTrait, TwoSidedTrait, LabelTrait])
 
 /**
  * Will generate an array of card options.

@@ -12,12 +12,18 @@ import {
 } from "./traits/parent"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
-import { Entity, IdentityTrait, hasIdentity, applyMixins } from "./traits"
+import {
+  Entity,
+  LabelTrait,
+  hasIdentity,
+  applyMixins,
+  IdentityTrait
+} from "./traits"
 import { getOwner } from "./traits/ownership"
 import { getIdxPath, ChildTrait, isChild } from "./traits/child"
 
 @containsChildren()
-export class State extends Entity {
+export class State extends Entity<any> {
   @type("number")
   tableWidth = cm2px(60) // 60 cm
 
@@ -53,7 +59,7 @@ export class State extends Entity {
   playerViewPosition = new PlayerViewPosition()
 
   _lastID = -1
-  _allEntities = new Map<number, Entity>()
+  _allEntities = new Map<number, IdentityTrait>()
 
   constructor(options?: StateOptions) {
     super(undefined, options)
@@ -67,7 +73,7 @@ export class State extends Entity {
    * @param entity
    * @returns new ID to be assigned to that entity
    */
-  registerEntity(entity: Entity) {
+  registerEntity(entity) {
     const newID = ++this._lastID
     this._allEntities.set(newID, entity)
     return newID
@@ -115,7 +121,7 @@ export class State extends Entity {
    * Gets an array of all entities from the top-most parent
    * to the lowest of the child.
    */
-  getEntitiesAlongPath(path: number[]): Entity[] {
+  getEntitiesAlongPath(path: number[]): IdentityTrait[] {
     const travel = (
       parent: ParentTrait,
       remainingPath: number[],
@@ -151,7 +157,7 @@ export class State extends Entity {
   logTreeState(state: State, logger: any = logs, startingPoint?: ParentTrait) {
     const travel = parent => {
       getChildren(parent).map(
-        (child: ChildTrait & IdentityTrait, idx, entities) => {
+        (child: ChildTrait & LabelTrait, idx, entities) => {
           if (
             // getParentEntity(child).isContainer && // Parent HAS to be a container...
             entities.length > 60 &&
@@ -215,9 +221,9 @@ export class State extends Entity {
   }
 }
 
-export interface State extends IdentityTrait, ParentTrait {}
+export interface State extends LabelTrait, ParentTrait {}
 
-applyMixins(State, [IdentityTrait, ParentTrait])
+applyMixins(State, [LabelTrait, ParentTrait])
 
 export interface StateUI {
   clone: () => MapSchema

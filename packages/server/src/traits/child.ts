@@ -10,7 +10,6 @@ import {
   isParent
 } from "./parent"
 import { IdentityTrait } from "./identity"
-import { Entity } from "./entity"
 
 export function isChild(entity: any): entity is ChildTrait {
   return (
@@ -19,37 +18,30 @@ export function isChild(entity: any): entity is ChildTrait {
   )
 }
 
-export class ChildTrait extends Entity {
+export class ChildTrait extends IdentityTrait {
   @type("number")
   idx: number
 
-  parent: EntityID
-}
+  parent: ParentTrait
 
-ChildTrait.prototype.constructor = function(
-  this: ChildTrait,
-  state: State,
-  options: Partial<ChildTrait> = {}
-) {
-  // Parent
-  this.parent = def(options.parent, -1)
+  constructor(state: State, options: Partial<ChildTrait> = {}) {
+    super(state)
 
-  const newParent: ParentTrait & IdentityTrait =
-    this.parent >= 0 ? state.getEntity(this.parent) : state
+    // Parent
+    setParent(state, this, def(options.parent, state))
 
-  setParent(this, newParent, state)
-
-  if (typeof options.idx === "number") {
-    moveChildTo(newParent, this.idx, options.idx)
+    if (typeof options.idx === "number") {
+      moveChildTo(this.parent, this.idx, options.idx)
+    }
   }
 }
 
 export function setParent(
+  state: State,
   entity: ChildTrait,
-  newParent: ParentTrait,
-  state: State
+  newParent: ParentTrait
 ) {
-  if (entity.parent !== undefined && entity.parent !== -1) {
+  if (entity.parent !== undefined && entity.parent !== state) {
     removeChildAt(getParentEntity(state, entity), entity.idx)
   }
 
@@ -60,7 +52,7 @@ export function setParent(
   targetArray.push(entity)
 
   entity.idx = countChildren(newParent)
-  entity.parent = newParent.id
+  entity.parent = newParent
   newParent.childrenPointers.push(con.name)
 
   if (newParent.childAdded) {
@@ -73,9 +65,8 @@ export function setParent(
  * Root elements won't return state, but `undefined` instead.
  */
 export function getParentEntity(state: State, entity: ChildTrait): ParentTrait {
-  const parent = state.getEntity(entity.parent)
-  if (isParent(parent)) {
-    return parent
+  if (isParent(entity.parent)) {
+    return entity.parent
   }
 }
 

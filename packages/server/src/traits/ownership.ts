@@ -7,8 +7,8 @@ import { isParent } from "./parent"
 
 export function hasOwnership(entity: any): entity is OwnershipTrait {
   return (
-    typeof (entity as OwnershipTrait).owner !== "undefined" &&
-    typeof (entity as OwnershipTrait).ownerID !== "undefined"
+    "owner" in (entity as OwnershipTrait) &&
+    "ownerID" in (entity as OwnershipTrait)
   )
 }
 
@@ -20,16 +20,12 @@ export class OwnershipTrait {
 
   @type("boolean")
   isInOwnersView: boolean
-}
 
-OwnershipTrait.constructor = (
-  entity: OwnershipTrait,
-  state: State,
-  options: Partial<OwnershipTrait> = {}
-) => {
-  entity.owner = def(options.owner, undefined)
-  entity.ownerID = def(entity.owner && entity.owner.clientID, undefined)
-  entity.isInOwnersView = def(options.isInOwnersView, false)
+  constructor(state: State, options: Partial<OwnershipTrait> = {}) {
+    this.owner = def(options.owner, undefined)
+    this.ownerID = def(this.owner && this.owner.clientID, undefined)
+    this.isInOwnersView = def(options.isInOwnersView, false)
+  }
 }
 
 /**

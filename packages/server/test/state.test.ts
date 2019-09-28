@@ -2,6 +2,7 @@ import { State } from "../src/state"
 import { DumbEntity } from "./helpers/dumbEntity"
 import { DumbParent } from "./helpers/dumbParent"
 import { Entity } from "../src/traits"
+import { ClassicCard, Container } from "../src/entities"
 
 let state: State
 
@@ -13,10 +14,10 @@ describe(`State`, () => {
   test(`#registerEntity`, () => {
     state = new State()
 
-    let newID = state.registerEntity({} as Entity)
+    let newID = state.registerEntity({})
     expect(newID).toBe(0)
 
-    newID = state.registerEntity({} as Entity)
+    newID = state.registerEntity({})
     expect(newID).toBe(1)
   })
 
@@ -35,8 +36,9 @@ describe(`State`, () => {
     })
 
     test(`child of parent, by ID`, () => {
-      const p = new DumbParent(state)
+      const p = new DumbParent(state, {})
       const e = new DumbEntity(state, { parent: p })
+
       expect(state.getEntity(e.id)).toBe(e)
     })
     test(`child of parent, by path`, () => {
@@ -45,7 +47,7 @@ describe(`State`, () => {
       expect(state.getEntity([0, 0])).toBe(e)
     })
     test(`child of fat parent, by path`, () => {
-      const p = new DumbParent(state)
+      const p = new DumbParent(state, {})
       new DumbEntity(state, { parent: p })
       const e = new DumbEntity(state, { parent: p })
       new DumbEntity(state, { parent: p })

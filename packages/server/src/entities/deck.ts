@@ -3,12 +3,12 @@ import { def } from "@cardsgame/utils"
 import { containsChildren, canBeChild } from "../traits/parent"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { IdentityTrait, ParentTrait, Entity, applyMixins } from "../traits"
+import { LabelTrait, ParentTrait, Entity, applyMixins } from "../traits"
 import { State } from "../state"
 
 @canBeChild
 @containsChildren(false)
-export class Deck extends Entity {
+export class Deck extends Entity<DeckOptions> {
   @type("uint16")
   childCount: number = 0
 
@@ -32,7 +32,7 @@ export class Deck extends Entity {
     }
   }
 
-  constructor(state: State, options?: Partial<Deck>) {
+  constructor(state: State, options: Partial<Deck> = {}) {
     super(state, options)
     this.onEmptied = def(options.onEmptied, undefined)
     this.name = def(options.name, "Deck")
@@ -40,10 +40,15 @@ export class Deck extends Entity {
   }
 }
 
-export interface Deck
+interface DeckOptions
   extends LocationTrait,
     ChildTrait,
     ParentTrait,
-    IdentityTrait {}
+    LabelTrait {
+  childCount: number
+  onEmptied: () => void
+}
 
-applyMixins(Deck, [LocationTrait, ChildTrait, ParentTrait, IdentityTrait])
+export interface Deck extends DeckOptions {}
+
+applyMixins(Deck, [LocationTrait, ChildTrait, ParentTrait, LabelTrait])

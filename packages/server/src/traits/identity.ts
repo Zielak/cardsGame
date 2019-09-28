@@ -1,30 +1,15 @@
-import { type } from "@colyseus/schema"
 import { State } from "../state"
 
 export class IdentityTrait {
-  name: string = "Unnamed"
+  id: EntityID
 
-  @type("string")
-  type: string = "entity" // SYNCH
-}
+  constructor(state: State) {
+    if (this.id !== undefined) return
 
-IdentityTrait.constructor = (
-  entity: IdentityTrait,
-  state: State,
-  options: Partial<IdentityTrait> = {}
-) => {
-  if (options.name) {
-    entity.name = options.name
+    if (state) {
+      this.id = state.registerEntity(this)
+    } else {
+      this.id = -1
+    }
   }
-  if (options.type) {
-    entity.type = options.type
-  }
-}
-
-export function hasIdentity(entity): entity is IdentityTrait {
-  return (
-    typeof entity.id !== "undefined" &&
-    typeof entity.name === "string" &&
-    typeof entity.type === "string"
-  )
 }

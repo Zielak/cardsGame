@@ -1,4 +1,11 @@
-import { Entity, ParentTrait, IdentityTrait, applyMixins } from "../traits"
+import {
+  Entity,
+  ParentTrait,
+  LabelTrait,
+  applyMixins,
+  canBeChild,
+  containsChildren
+} from "../traits"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
 
@@ -8,12 +15,16 @@ import { ChildTrait } from "../traits/child"
  * It contains maximum number of spots for cards.
  * A spot can be empty.
  */
-export class Line extends Entity {}
+@canBeChild
+@containsChildren()
+export class Line extends Entity<LineOptions> {}
 
-export interface Line
+export interface LineOptions
   extends LocationTrait,
     ChildTrait,
     ParentTrait,
-    IdentityTrait {}
+    LabelTrait {}
 
-applyMixins(Line, [LocationTrait, ChildTrait, ParentTrait, IdentityTrait])
+export interface Line extends LineOptions {}
+
+applyMixins(Line, [LocationTrait, ChildTrait, ParentTrait, LabelTrait])

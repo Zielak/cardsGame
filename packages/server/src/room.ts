@@ -13,7 +13,7 @@ import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
 import { populatePlayerEvent } from "./utils"
 import { BroadcastOptions } from "colyseus/lib/Room"
-import { Entity, IdentityTrait, hasIdentity } from "./traits"
+import { LabelTrait, hasIdentity } from "./traits"
 
 export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
@@ -136,7 +136,7 @@ export class Room<S extends State> extends colRoom<S> {
 }
 
 const debugLogMessage = (newEvent: ServerPlayerEvent) => {
-  const minifyTarget = (e: IdentityTrait) => {
+  const minifyTarget = (e: LabelTrait) => {
     return `${e.type}:${e.name}`
   }
   const minifyPlayer = (p: Player) => {

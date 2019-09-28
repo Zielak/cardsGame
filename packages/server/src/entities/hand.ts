@@ -1,4 +1,3 @@
-import { Schema } from "@colyseus/schema"
 import {
   containsChildren,
   canBeChild,
@@ -10,15 +9,15 @@ import {
 import { def } from "@cardsgame/utils"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { IdentityTrait, Entity, applyMixins } from "../traits"
+import { LabelTrait, Entity, applyMixins } from "../traits"
 import { State } from "../state"
 
 @canBeChild
 @containsChildren()
-export class Hand extends Entity {
+export class Hand extends Entity<HandOptions> {
   autoSort: SortingFunction
 
-  constructor(state: State, options?: Partial<Hand>) {
+  constructor(state: State, options: Partial<Hand> = {}) {
     super(state, options)
 
     this.name = def(options.name, "Hand")
@@ -41,12 +40,16 @@ export class Hand extends Entity {
   }
 }
 
-export interface Hand
+interface HandOptions
   extends LocationTrait,
     ChildTrait,
     ParentTrait,
-    IdentityTrait {}
+    LabelTrait {
+  autoSort: SortingFunction
+}
 
-applyMixins(Hand, [LocationTrait, ChildTrait, ParentTrait, IdentityTrait])
+export interface Hand extends HandOptions {}
+
+applyMixins(Hand, [LocationTrait, ChildTrait, ParentTrait, LabelTrait])
 
 type SortingFunction = (childA: ChildTrait, childB: ChildTrait) => number

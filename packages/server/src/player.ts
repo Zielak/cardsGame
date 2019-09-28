@@ -1,6 +1,5 @@
 import { def } from "@cardsgame/utils"
 import { type, Schema } from "@colyseus/schema"
-import { State } from "./state"
 import { logs } from "@cardsgame/utils"
 import { Entity, IdentityTrait } from "./traits"
 
@@ -41,8 +40,8 @@ export interface IPlayerOptions {
 // Event from client, with stuff auto filled when comming to server
 export type ServerPlayerEvent = PlayerEvent & {
   player?: Player
-  entity?: Entity
-  entities?: Entity[]
+  entity?: Entity<IdentityTrait>
+  entities?: Entity<IdentityTrait>[]
 }
 
 const randomPlayerNames = [

@@ -4,12 +4,12 @@ import { containsChildren, canBeChild, ParentTrait } from "../traits/parent"
 import { State } from "../state"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { IdentityTrait } from "../traits"
+import { LabelTrait } from "../traits"
 
 @canBeChild
 @containsChildren()
-export class Pile extends Entity {
-  constructor(state: State, options?: Partial<Pile>) {
+export class Pile extends Entity<PileOptions> {
+  constructor(state: State, options: Partial<Pile> = {}) {
     super(state, options)
 
     this.name = def(options.name, "Pile")
@@ -17,10 +17,12 @@ export class Pile extends Entity {
   }
 }
 
-export interface Pile
+export interface PileOptions
   extends LocationTrait,
     ChildTrait,
     ParentTrait,
-    IdentityTrait {}
+    LabelTrait {}
 
-applyMixins(Pile, [LocationTrait, ChildTrait, ParentTrait, IdentityTrait])
+export interface Pile extends PileOptions {}
+
+applyMixins(Pile, [LocationTrait, ChildTrait, ParentTrait, LabelTrait])
