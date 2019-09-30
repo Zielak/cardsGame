@@ -1,16 +1,10 @@
-import { State } from "./state"
-import { ServerPlayerEvent, Player } from "./player"
-import {
-  QuerableProps,
-  find,
-  getChildren,
-  countChildren,
-  getBottom,
-  getTop
-} from "./traits"
-import { logs, IS_CHROME } from "@cardsgame/utils"
 import chalk from "chalk"
-import { getOwner } from "./traits/ownership"
+import { logs, IS_CHROME } from "@cardsgame/utils"
+
+import { ServerPlayerEvent, Player } from "./player"
+import { State } from "./state"
+import { hasOwnership } from "./traits/ownership"
+import { QuerableProps } from "./queryRunner"
 
 // export interface ExpandableConditions<S extends State> {
 //   [key: string]: (this: Conditions<S>) => Conditions<S>
@@ -214,14 +208,14 @@ class Conditions<S extends State> {
     if (typeof alias === "string") {
       if (args.length > 0) {
         // find child of subject by alias
-        newSubject = find(this._refs.get(alias), ...args)
+        newSubject = this._refs.get(alias).find(...args)
       } else {
         // get subject by alias
         newSubject = this._refs.get(alias)
       }
     } else {
       // find subject in State tree
-      newSubject = find(this._state, alias, ...args)
+      newSubject = this._state.find(alias, ...args)
     }
 
     flag(this, "subject", newSubject)
@@ -262,7 +256,7 @@ class Conditions<S extends State> {
    * @yields children of current subject
    */
   get children(): this {
-    const children = getChildren(flag(this, "subject"))
+    const children = flag(this, "subject").getChildren()
 
     flag(this, "subject", children)
 
@@ -282,7 +276,7 @@ class Conditions<S extends State> {
     if ("length" in subject) {
       flag(this, "subject", subject[0])
     } else {
-      flag(this, "subject", getBottom(subject))
+      flag(this, "subject", subject.getBottom())
     }
 
     return this
@@ -301,7 +295,7 @@ class Conditions<S extends State> {
     if ("length" in subject) {
       flag(this, "subject", subject[subject.length - 1])
     } else {
-      flag(this, "subject", getTop(subject))
+      flag(this, "subject", subject.getTop())
     }
 
     return this
@@ -331,7 +325,7 @@ class Conditions<S extends State> {
       `childrenCount | Expected "subject" to be an object`
     )
 
-    const count = countChildren(flag(this, "subject"))
+    const count = flag(this, "subject").countChildren()
     flag(this, "subject", count)
 
     return this
@@ -447,7 +441,7 @@ class Conditions<S extends State> {
    */
   childrenCountOf(value: number): this {
     const subject = flag(this, "subject")
-    const count = countChildren(subject)
+    const count = subject.countChildren()
 
     this.assert(
       count == value,
@@ -628,7 +622,10 @@ class Conditions<S extends State> {
    * @asserts
    */
   get owner(): this {
-    const expected = getOwner(this._state, this._event.entity)
+    const entity = this._event.entity
+    const expected = hasOwnership(entity)
+      ? entity.getOwner(this._state)
+      : undefined
 
     this.assert(
       this._player === expected,

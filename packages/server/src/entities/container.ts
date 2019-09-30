@@ -7,12 +7,10 @@ import { LocationTrait } from "../traits/location"
 @containsChildren()
 export class Container extends Entity<ContainerOptions> {}
 
-export interface ContainerOptions
-  extends LabelTrait,
-    ChildTrait,
-    ParentTrait,
-    LocationTrait {}
+interface Mixin extends LabelTrait, ChildTrait, ParentTrait, LocationTrait {}
 
-export interface Container extends ContainerOptions {}
+type ContainerOptions = Partial<ConstructorType<Mixin>>
+
+export interface Container extends Mixin {}
 
 applyMixins(Container, [LabelTrait, ChildTrait, ParentTrait, LocationTrait])

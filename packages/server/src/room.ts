@@ -13,7 +13,7 @@ import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
 import { populatePlayerEvent } from "./utils"
 import { BroadcastOptions } from "colyseus/lib/Room"
-import { LabelTrait, hasIdentity } from "./traits"
+import { LabelTrait, hasLabel } from "./traits"
 
 export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
@@ -68,7 +68,6 @@ export class Room<S extends State> extends colRoom<S> {
     if (event.data === "start" && !this.state.isGameStarted) {
       Object.keys(this.state.clients).forEach((key, idx) => {
         this.state.players[idx] = new Player({
-          state: this.state,
           clientID: this.state.clients[key]
         })
       })
@@ -143,14 +142,12 @@ const debugLogMessage = (newEvent: ServerPlayerEvent) => {
     return `${p.name}[${p.clientID}]`
   }
 
-  const entity = hasIdentity(newEvent.entity)
-    ? minifyTarget(newEvent.entity)
-    : ""
+  const entity = hasLabel(newEvent.entity) ? minifyTarget(newEvent.entity) : ""
   const entities =
     newEvent.entities &&
     newEvent.entities
       .map(e => {
-        hasIdentity(e) ? minifyTarget(e) : "?"
+        hasLabel(e) ? minifyTarget(e) : "?"
       })
       .join(", ")
   const entityPath =

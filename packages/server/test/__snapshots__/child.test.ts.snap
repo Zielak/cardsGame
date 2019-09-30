@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`setParent adds new child to parent with children 1`] = `
+exports[`addChild adds new child to parent with children 1`] = `
 Object {
   "childrenDumbEntity": Array [
     Object {

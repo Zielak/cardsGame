@@ -1,29 +1,21 @@
 import { type, MapSchema } from "@colyseus/schema"
 import { logs } from "@cardsgame/utils"
 import { cm2px, mapCount } from "@cardsgame/utils"
-import {
-  getChild,
-  countChildren,
-  getChildren,
-  getDescendants,
-  containsChildren,
-  isParent,
-  ParentTrait
-} from "./traits/parent"
+import { containsChildren, isParent, ParentTrait } from "./traits/parent"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
 import {
   Entity,
   LabelTrait,
-  hasIdentity,
+  hasLabel,
   applyMixins,
   IdentityTrait
 } from "./traits"
-import { getOwner } from "./traits/ownership"
-import { getIdxPath, ChildTrait, isChild } from "./traits/child"
+import { ChildTrait, isChild } from "./traits/child"
+import { hasOwnership } from "./traits/ownership"
 
 @containsChildren()
-export class State extends Entity<any> {
+export class State extends Entity<StateOptions> {
   @type("number")
   tableWidth = cm2px(60) // 60 cm
 
@@ -64,7 +56,6 @@ export class State extends Entity<any> {
   constructor(options?: StateOptions) {
     super(undefined, options)
 
-    this.id = -1
     this.hijacksInteractionTarget = false
   }
 
@@ -93,7 +84,7 @@ export class State extends Entity<any> {
     if (Array.isArray(idOrPath)) {
       const travel = (parent: ParentTrait, remainingPath: number[]) => {
         const idx = remainingPath.shift()
-        const newChild = getChild(parent, idx)
+        const newChild = parent.getChild(idx)
         if (!newChild) {
           throw new Error(
             `getEntity/path: This entity doesn't have such child.`
@@ -128,7 +119,7 @@ export class State extends Entity<any> {
       result: any[] = []
     ) => {
       const idx = remainingPath.shift()
-      const newChild = getChild(parent, idx)
+      const newChild = parent.getChild(idx)
       if (!newChild) {
         throw new Error(
           `getEntitiesAlongPath: This entity doesn't have such child.`
@@ -136,7 +127,7 @@ export class State extends Entity<any> {
       }
 
       const hasChildren = entity =>
-        isParent(entity) ? countChildren(entity) > 0 : false
+        isParent(entity) ? entity.countChildren() > 0 : false
 
       if (remainingPath.length > 0 && !hasChildren(newChild)) {
         throw new Error(
@@ -156,8 +147,9 @@ export class State extends Entity<any> {
 
   logTreeState(state: State, logger: any = logs, startingPoint?: ParentTrait) {
     const travel = parent => {
-      getChildren(parent).map(
-        (child: ChildTrait & LabelTrait, idx, entities) => {
+      parent
+        .getChildren()
+        .map((child: ChildTrait & LabelTrait, idx, entities) => {
           if (
             // getParentEntity(child).isContainer && // Parent HAS to be a container...
             entities.length > 60 &&
@@ -170,13 +162,13 @@ export class State extends Entity<any> {
             return
           }
 
-          const owner = getOwner(this, child)
+          const owner = hasOwnership(child) ? child.getOwner(this) : undefined
 
           // const lastChild = entities.length - 1 === idx
           const sIdx = idx === child.idx ? `${idx}` : `e${child.idx}:s${idx}`
-          const idxPath = getIdxPath(state, child)
+          const idxPath = child.getIdxPath()
 
-          const childrenCount = isParent(child) ? countChildren(child) : "~~"
+          const childrenCount = isParent(child) ? child.countChildren() : "~~"
           const sChildren = childrenCount > 0 ? childrenCount : ""
           const sOwner = owner ? `(${owner.name} ${owner.clientID})` : ""
           // const branchSymbol = lastChild ? "┕━" : "┝━"
@@ -193,23 +185,22 @@ export class State extends Entity<any> {
             travel(child)
             logger.groupEnd()
           }
-        }
-      )
+        })
     }
 
     if (!startingPoint) {
       logger.group(
         "ROOT",
-        "(" + countChildren(this) + " direct children,",
-        getDescendants(this).length,
+        "(" + this.countChildren() + " direct children,",
+        this.getDescendants().length,
         "in total)"
       )
     } else {
       const count = isChild(startingPoint) ? `[${startingPoint.idx}] ` : ""
-      const name = hasIdentity(startingPoint)
+      const name = hasLabel(startingPoint)
         ? startingPoint.type + ":" + startingPoint.name
         : "unidentified entity"
-      logger.group(count + name, countChildren(startingPoint) + "children")
+      logger.group(count + name, startingPoint.countChildren() + "children")
     }
     travel(startingPoint || this)
     logger.groupEnd()
@@ -221,19 +212,23 @@ export class State extends Entity<any> {
   }
 }
 
-export interface State extends LabelTrait, ParentTrait {}
+interface Mixin extends IdentityTrait, LabelTrait, ParentTrait {}
 
-applyMixins(State, [LabelTrait, ParentTrait])
+type StateOptions = Partial<
+  ConstructorType<Mixin> & {
+    minClients: number
+    maxClients: number
+    hostID: string
+  }
+>
+
+export interface State extends Mixin {}
+
+applyMixins(State, [IdentityTrait, LabelTrait, ParentTrait])
 
 export interface StateUI {
   clone: () => MapSchema
   onAdd: (item: any, key: string) => void
   onRemove: (item: any, key: string) => void
   onChange: (item: any, key: string) => void
-}
-
-export interface StateOptions extends Partial<State> {
-  minClients: number
-  maxClients: number
-  hostID: string
 }

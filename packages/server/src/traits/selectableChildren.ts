@@ -1,4 +1,6 @@
-import { ParentTrait, countChildren } from "./parent"
+import { ParentTrait } from "./parent"
+
+// TODO: React on child removed(!)/added(~?)
 
 export class SelectableChildrenTrait extends ParentTrait {
   selectedChildren: boolean[]
@@ -7,36 +9,28 @@ export class SelectableChildrenTrait extends ParentTrait {
     super(state, options)
     this.selectedChildren = []
   }
-}
 
-// TODO: React on child removed(!)/added(~?)
+  selectChildAt(index: number) {
+    this.ensureIndex(index)
+    this.selectedChildren[index] = true
+  }
 
-const ensureIndex = (parent: SelectableChildrenTrait, index: number) => {
-  if (typeof index !== "number")
-    throw new Error("selectChildAt | should be a number!")
-  if (countChildren(parent) - 1 < index)
-    throw new Error(
-      `selectChildAt | this parent doesn't have child at index ${index}`
-    )
-}
+  deSelectChildAt(index: number) {
+    this.ensureIndex(index)
+    this.selectedChildren[index] = false
+  }
 
-export function selectChildAt(parent: SelectableChildrenTrait, index: number) {
-  ensureIndex(parent, index)
-  parent.selectedChildren[index] = true
-}
+  toggleSelectionChildAt(index: number) {
+    this.ensureIndex(index)
+    this.selectedChildren[index] = !this.selectedChildren[index]
+  }
 
-export function deSelectChildAt(
-  parent: SelectableChildrenTrait,
-  index: number
-) {
-  ensureIndex(parent, index)
-  parent.selectedChildren[index] = false
-}
-
-export function toggleSelectionChildAt(
-  parent: SelectableChildrenTrait,
-  index: number
-) {
-  ensureIndex(parent, index)
-  parent.selectedChildren[index] = !parent.selectedChildren[index]
+  private ensureIndex(index: number) {
+    if (typeof index !== "number")
+      throw new Error("selectChildAt | should be a number!")
+    if (this.countChildren() - 1 < index)
+      throw new Error(
+        `selectChildAt | this parent doesn't have child at index ${index}`
+      )
+  }
 }

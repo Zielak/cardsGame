@@ -2,7 +2,7 @@ import { State } from "../state"
 import { logs } from "@cardsgame/utils"
 import { ICommand } from "."
 import { ChangeParent } from "./changeParent"
-import { countChildren, getTop, ParentTrait, isParent } from "../traits/parent"
+import { ParentTrait, isParent } from "../traits/parent"
 
 export class DealCards implements ICommand {
   targets: ParentTrait[]
@@ -33,7 +33,7 @@ export class DealCards implements ICommand {
 
     const maxDeals = this.count * this.targets.length
     const next = () => {
-      const top = getTop(this.source)
+      const top = this.source.getTop()
       if (isParent(top)) {
         logs.warn(
           "DealCards",
@@ -50,7 +50,7 @@ export class DealCards implements ICommand {
       if (++stepI % this.step === 0) {
         targetI++
       }
-      if (countChildren(this.source) > 0 && targetI < maxDeals) {
+      if (this.source.countChildren() > 0 && targetI < maxDeals) {
         next()
       } else {
         logs.notice(_, `Done dealing cards.`)

@@ -40,8 +40,8 @@ export interface IPlayerOptions {
 // Event from client, with stuff auto filled when comming to server
 export type ServerPlayerEvent = PlayerEvent & {
   player?: Player
-  entity?: Entity<IdentityTrait>
-  entities?: Entity<IdentityTrait>[]
+  entity?: IdentityTrait
+  entities?: IdentityTrait[]
 }
 
 const randomPlayerNames = [

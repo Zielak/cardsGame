@@ -32,7 +32,7 @@ export class Deck extends Entity<DeckOptions> {
     }
   }
 
-  constructor(state: State, options: Partial<Deck> = {}) {
+  constructor(state: State, options: DeckOptions = {}) {
     super(state, options)
     this.onEmptied = def(options.onEmptied, undefined)
     this.name = def(options.name, "Deck")
@@ -40,15 +40,17 @@ export class Deck extends Entity<DeckOptions> {
   }
 }
 
-interface DeckOptions
-  extends LocationTrait,
-    ChildTrait,
-    ParentTrait,
-    LabelTrait {
-  childCount: number
-  onEmptied: () => void
-}
+interface Mixin extends LocationTrait, ChildTrait, ParentTrait, LabelTrait {}
 
-export interface Deck extends DeckOptions {}
+// Options for the game authors to fill in
+type DeckOptions = Partial<
+  ConstructorType<Mixin> & {
+    childCount: number
+    onEmptied: () => void
+  }
+>
+
+// What I want the entity to actually contain
+export interface Deck extends Mixin {}
 
 applyMixins(Deck, [LocationTrait, ChildTrait, ParentTrait, LabelTrait])

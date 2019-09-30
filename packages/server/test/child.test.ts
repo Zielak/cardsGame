@@ -1,6 +1,5 @@
 import { DumbParent, DumbEntity } from "./helpers/dumbEntities"
 import { State } from "../src/state"
-import { getParentEntity, setParent, getIdxPath } from "../src/traits/child"
 
 let state: State
 
@@ -12,22 +11,22 @@ beforeEach(() => {
   })
 })
 
-describe(`getParentEntity`, () => {
+describe(`parent`, () => {
   it("gets correct parent", () => {
     let parent = new DumbParent(state)
     let entity = new DumbEntity(state, { parent })
 
-    expect(getParentEntity(state, entity)).toBe(parent)
+    expect(entity.parent).toBe(parent)
   })
 
   it("gets state for root element", () => {
     let entity = new DumbEntity(state)
 
-    expect(getParentEntity(state, entity)).toBe(state)
+    expect(entity.parent).toBe(state)
   })
 })
 
-describe(`setParent`, () => {
+describe(`addChild`, () => {
   let parent: DumbParent, entity: DumbEntity
   beforeEach(() => {
     parent = new DumbParent(state)
@@ -36,7 +35,7 @@ describe(`setParent`, () => {
     entity = new DumbEntity(state)
     expect(entity.parent).toBe(state)
 
-    setParent(state, entity, parent)
+    parent.addChild(entity)
     expect(entity.parent).toBe(parent)
   })
   test(`adds new child to parent with children`, () => {
@@ -46,7 +45,7 @@ describe(`setParent`, () => {
 
     entity = new DumbEntity(state)
 
-    setParent(state, entity, parent)
+    parent.addChild(entity)
     expect(entity.parent).toBe(parent)
     expect(parent).toMatchSnapshot()
   })
@@ -75,8 +74,8 @@ describe(`getIdxPath`, () => {
     const child = new DumbEntity(state, { parent: parentB })
     new DumbEntity(state, { parent: parentB })
 
-    expect(getIdxPath(state, parentA)).toStrictEqual([0])
-    expect(getIdxPath(state, parentB)).toStrictEqual([0, 2])
-    expect(getIdxPath(state, child)).toStrictEqual([0, 2, 1])
+    expect(parentA.getIdxPath()).toStrictEqual([0])
+    expect(parentB.getIdxPath()).toStrictEqual([0, 2])
+    expect(child.getIdxPath()).toStrictEqual([0, 2, 1])
   })
 })

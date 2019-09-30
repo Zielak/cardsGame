@@ -1,6 +1,6 @@
 import { State } from "../state"
 import { ICommand } from "."
-import { faceUp, faceDown, flip, TwoSidedTrait } from "../traits/twoSided"
+import { TwoSidedTrait } from "../traits/twoSided"
 
 /**
  * Reveal the front side (overse) of an element
@@ -14,10 +14,10 @@ export class FaceUp implements ICommand {
     this.entities = Array.isArray(_entities) ? _entities : [_entities]
   }
   execute(state: State) {
-    this.entities.forEach(faceUp)
+    this.entities.forEach(e => e.flipUp())
   }
   undo(state: State) {
-    this.entities.forEach(faceDown)
+    this.entities.forEach(e => e.flipDown())
   }
 }
 
@@ -33,11 +33,11 @@ export class FaceDown implements ICommand {
   }
 
   execute(state: State) {
-    this.entities.forEach(faceDown)
+    this.entities.forEach(e => e.flipDown())
   }
 
   undo(state: State) {
-    this.entities.forEach(faceUp)
+    this.entities.forEach(e => e.flipUp())
   }
 }
 
@@ -53,10 +53,10 @@ export class Flip implements ICommand {
   }
 
   execute(state: State) {
-    this.entities.forEach(flip)
+    this.entities.forEach(e => e.flip())
   }
 
   undo(state: State) {
-    this.entities.forEach(flip)
+    this.entities.forEach(e => e.flip())
   }
 }

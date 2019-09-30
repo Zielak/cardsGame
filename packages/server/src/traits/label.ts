@@ -17,10 +17,6 @@ export class LabelTrait {
 
 ;(LabelTrait as any).typeDef = { type: "string" }
 
-export function hasIdentity(entity): entity is LabelTrait {
-  return (
-    typeof entity.id !== "undefined" &&
-    typeof entity.name === "string" &&
-    typeof entity.type === "string"
-  )
+export function hasLabel(entity): entity is LabelTrait {
+  return typeof entity.name === "string" && typeof entity.type === "string"
 }

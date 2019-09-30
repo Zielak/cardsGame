@@ -42,7 +42,7 @@ export class ClassicCard extends Entity<ClassicCardOptions> {
   @type("string")
   rank: string
 
-  constructor(state: State, options: Partial<ClassicCardOptions> = {}) {
+  constructor(state: State, options: ClassicCardOptions = {}) {
     super(state, options)
     this.suit = def(options.suit, "X")
     this.rank = def(options.rank, "Y")
@@ -51,14 +51,14 @@ export class ClassicCard extends Entity<ClassicCardOptions> {
   }
 }
 
-export interface ClassicCardOptions
-  extends LocationTrait,
-    ChildTrait,
-    TwoSidedTrait,
-    LabelTrait {
-  suit: string
-  rank: string
-}
+interface Mixin extends LocationTrait, ChildTrait, TwoSidedTrait, LabelTrait {}
+
+type ClassicCardOptions = Partial<
+  ConstructorType<Mixin> & {
+    suit: string
+    rank: string
+  }
+>
 
 export interface ClassicCard extends ClassicCardOptions {}
 

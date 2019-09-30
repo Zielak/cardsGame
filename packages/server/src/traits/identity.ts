@@ -1,15 +1,19 @@
 import { State } from "../state"
 
 export class IdentityTrait {
-  id: EntityID
+  private _id: EntityID
+
+  get id() {
+    return this._id
+  }
 
   constructor(state: State) {
-    if (this.id !== undefined) return
+    if (this._id !== undefined) return
 
     if (state) {
-      this.id = state.registerEntity(this)
+      this._id = state.registerEntity(this)
     } else {
-      this.id = -1
+      this._id = -1
     }
   }
 }

@@ -7,8 +7,7 @@ import { ActionTemplate, ActionsSet } from "./actionTemplate"
 import { ICommand } from "./commands"
 import { Room } from "./room"
 import { Conditions } from "./conditions"
-import { getParentEntity } from "./traits/child"
-import { isInteractive } from "./traits"
+import { isChild } from "./traits"
 
 export class CommandsManager<S extends State> {
   history: ICommand[] = []
@@ -98,10 +97,7 @@ export class CommandsManager<S extends State> {
             return values.some(testValue => currentTarget[prop] === testValue)
           }
           if (prop === "parent") {
-            const parentOfCurrent = getParentEntity(
-              this.room.state,
-              currentTarget
-            )
+            const parentOfCurrent = currentTarget.parent
 
             return parentOfCurrent
               ? interactionMatchesEntity(value)(parentOfCurrent)
@@ -119,7 +115,9 @@ export class CommandsManager<S extends State> {
         ) {
           // Check props for every interactive entity in `targets` array
           return event.entities
-            .filter(currentTarget => isInteractive(state, currentTarget))
+            .filter(currentTarget =>
+              isChild(currentTarget) ? currentTarget.isInteractive() : false
+            )
             .some(interactionMatchesEntity(definition))
         } else if (definition.command) {
           // TODO: react on button click or anything else

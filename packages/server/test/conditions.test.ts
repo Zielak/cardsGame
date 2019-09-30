@@ -2,6 +2,7 @@ import { Conditions, getConditionFlag as flag } from "../src/conditions"
 import { State } from "../src/state"
 import { ServerPlayerEvent, Player } from "../src/player"
 import { SmartEntity, SmartParent } from "./helpers/smartEntities"
+import { ClassicCard } from "../src/entities"
 
 let state: State
 let event: ServerPlayerEvent

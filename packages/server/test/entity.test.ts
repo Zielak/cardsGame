@@ -18,7 +18,3 @@ describe(`constructor`, () => {
 })
 
 describe(`isInteractive`, () => {})
-
-describe(`updateTransform`, () => {})
-
-describe(`resetWorldTransform`, () => {})
