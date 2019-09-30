@@ -1,15 +1,8 @@
-import {
-  containsChildren,
-  canBeChild,
-  countChildren,
-  getChild,
-  moveChildTo,
-  ParentTrait
-} from "../traits/parent"
+import { containsChildren, canBeChild, ParentTrait } from "../traits/parent"
 import { def } from "@cardsgame/utils"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { LabelTrait, Entity, applyMixins } from "../traits"
+import { LabelTrait, Entity, applyMixins, OwnershipTrait } from "../traits"
 import { State } from "../state"
 
 @canBeChild
@@ -17,7 +10,7 @@ import { State } from "../state"
 export class Hand extends Entity<HandOptions> {
   autoSort: SortingFunction
 
-  constructor(state: State, options: Partial<Hand> = {}) {
+  constructor(state: State, options: HandOptions = {}) {
     super(state, options)
 
     this.name = def(options.name, "Hand")
@@ -28,28 +21,39 @@ export class Hand extends Entity<HandOptions> {
 
   childAdded(child: ChildTrait) {
     if (!this.autoSort) return
-    const count = countChildren(this)
+    const count = this.countChildren()
     for (let idx = 0; idx < count; idx++) {
-      if (this.autoSort(child, getChild(this, idx)) > 0) {
+      if (this.autoSort(child, this.getChild(idx)) > 0) {
         continue
       }
       // I shall drop incomming child right here
-      moveChildTo(this, child.idx, idx)
+      this.moveChildTo(child.idx, idx)
       break
     }
   }
 }
 
-interface HandOptions
+interface Mixin
   extends LocationTrait,
     ChildTrait,
     ParentTrait,
-    LabelTrait {
-  autoSort: SortingFunction
-}
+    LabelTrait,
+    OwnershipTrait {}
 
-export interface Hand extends HandOptions {}
+type HandOptions = Partial<
+  ConstructorType<Mixin> & {
+    autoSort: SortingFunction
+  }
+>
 
-applyMixins(Hand, [LocationTrait, ChildTrait, ParentTrait, LabelTrait])
+export interface Hand extends Mixin {}
+
+applyMixins(Hand, [
+  LocationTrait,
+  ChildTrait,
+  ParentTrait,
+  LabelTrait,
+  OwnershipTrait
+])
 
 type SortingFunction = (childA: ChildTrait, childB: ChildTrait) => number

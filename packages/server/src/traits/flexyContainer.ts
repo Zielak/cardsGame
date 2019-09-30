@@ -11,10 +11,13 @@ export class FlexyTrait {
     | "spaceBetween"
     | "spaceAround"
     | "spaceEvenly"
+}
 
-  constructor(state: State, options: Partial<FlexyTrait> = {}) {
-    this.alignItems = def(options.alignItems, "center")
-    this.directionReverse = def(options.directionReverse, false)
-    this.justifyContent = def(options.justifyContent, "start")
-  }
+;(FlexyTrait as any).trait = function FlexyTrait(
+  state: State,
+  options: Partial<FlexyTrait> = {}
+) {
+  this.alignItems = def(options.alignItems, "center")
+  this.directionReverse = def(options.directionReverse, false)
+  this.justifyContent = def(options.justifyContent, "start")
 }

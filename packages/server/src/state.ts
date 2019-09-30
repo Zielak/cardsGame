@@ -145,7 +145,7 @@ export class State extends Entity<StateOptions> {
     return travel(this, [...path])
   }
 
-  logTreeState(state: State, logger: any = logs, startingPoint?: ParentTrait) {
+  logTreeState(logger: any = logs, startingPoint?: ParentTrait) {
     const travel = parent => {
       parent
         .getChildren()
@@ -214,7 +214,7 @@ export class State extends Entity<StateOptions> {
 
 interface Mixin extends IdentityTrait, LabelTrait, ParentTrait {}
 
-type StateOptions = Partial<
+export type StateOptions = Partial<
   ConstructorType<Mixin> & {
     minClients: number
     maxClients: number

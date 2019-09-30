@@ -1,11 +1,4 @@
-import {
-  Container,
-  Deck,
-  Hand,
-  Line,
-  Pile,
-  Row
-} from "../../src/entities/index"
+import { Container, Deck, Hand, Line, Pile, Row } from "../../src/entities"
 import { State } from "../../src/state"
 
 let state: State

@@ -5,7 +5,8 @@ import {
   TwoSidedTrait,
   LabelTrait,
   Entity,
-  applyMixins
+  applyMixins,
+  IdentityTrait
 } from "../traits"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
@@ -47,11 +48,17 @@ export class ClassicCard extends Entity<ClassicCardOptions> {
     this.suit = def(options.suit, "X")
     this.rank = def(options.rank, "Y")
     this.name = options.suit + options.rank
+    this.type = "classicCard"
     this.faceUp = def(options.faceUp, false)
   }
 }
 
-interface Mixin extends LocationTrait, ChildTrait, TwoSidedTrait, LabelTrait {}
+interface Mixin
+  extends IdentityTrait,
+    LocationTrait,
+    ChildTrait,
+    TwoSidedTrait,
+    LabelTrait {}
 
 type ClassicCardOptions = Partial<
   ConstructorType<Mixin> & {
@@ -60,9 +67,15 @@ type ClassicCardOptions = Partial<
   }
 >
 
-export interface ClassicCard extends ClassicCardOptions {}
+export interface ClassicCard extends Mixin {}
 
-applyMixins(ClassicCard, [LocationTrait, ChildTrait, TwoSidedTrait, LabelTrait])
+applyMixins(ClassicCard, [
+  IdentityTrait,
+  LocationTrait,
+  ChildTrait,
+  TwoSidedTrait,
+  LabelTrait
+])
 
 /**
  * Will generate an array of card options.

@@ -1,7 +1,6 @@
-import { ArraySchema } from "@colyseus/schema"
 import { def } from "@cardsgame/utils"
 import { State } from "../state"
-import { ParentTrait, getKnownConstructor } from "./parent"
+import { ParentTrait } from "./parent"
 
 export function isChild(entity: any): entity is ChildTrait {
   return (
@@ -14,14 +13,6 @@ export class ChildTrait {
   parent: ParentTrait
 
   idx: number
-
-  constructor(state: State, options: Partial<ChildTrait> = {}) {
-    def(options.parent, state).addChild(this)
-
-    if (typeof options.idx === "number") {
-      this.parent.moveChildTo(this.idx, options.idx)
-    }
-  }
 
   /**
    * Gets a reference to this entity's parent.
@@ -69,3 +60,13 @@ export class ChildTrait {
 }
 
 ;(ChildTrait as any).typeDef = { idx: "number" }
+;(ChildTrait as any).trait = function ChildTrait(
+  state: State,
+  options: Partial<ChildTrait> = {}
+) {
+  def(options.parent, state).addChild(this)
+
+  if (typeof options.idx === "number") {
+    this.parent.moveChildTo(this.idx, options.idx)
+  }
+}

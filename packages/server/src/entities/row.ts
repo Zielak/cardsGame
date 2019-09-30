@@ -10,7 +10,7 @@ import { LabelTrait, Entity, applyMixins } from "../traits"
 @canBeChild
 @containsChildren()
 export class Row extends Entity<RowOptions> {
-  constructor(state: State, options: Partial<Row> = {}) {
+  constructor(state: State, options: RowOptions = {}) {
     super(state, options)
 
     this.name = def(options.name, "Row")
@@ -18,14 +18,16 @@ export class Row extends Entity<RowOptions> {
   }
 }
 
-export interface RowOptions
+interface Mixin
   extends LocationTrait,
     ChildTrait,
     ParentTrait,
     LabelTrait,
     FlexyTrait {}
 
-export interface Row extends RowOptions {}
+type RowOptions = Partial<ConstructorType<Mixin>>
+
+export interface Row extends Mixin {}
 
 applyMixins(Row, [
   LocationTrait,

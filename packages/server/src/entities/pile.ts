@@ -9,7 +9,7 @@ import { LabelTrait } from "../traits"
 @canBeChild
 @containsChildren()
 export class Pile extends Entity<PileOptions> {
-  constructor(state: State, options: Partial<Pile> = {}) {
+  constructor(state: State, options: PileOptions = {}) {
     super(state, options)
 
     this.name = def(options.name, "Pile")
@@ -17,12 +17,10 @@ export class Pile extends Entity<PileOptions> {
   }
 }
 
-export interface PileOptions
-  extends LocationTrait,
-    ChildTrait,
-    ParentTrait,
-    LabelTrait {}
+interface Mixin extends LocationTrait, ChildTrait, ParentTrait, LabelTrait {}
 
-export interface Pile extends PileOptions {}
+type PileOptions = Partial<ConstructorType<Mixin>>
+
+export interface Pile extends Mixin {}
 
 applyMixins(Pile, [LocationTrait, ChildTrait, ParentTrait, LabelTrait])

@@ -13,15 +13,9 @@ export function hasOwnership(entity: any): entity is OwnershipTrait {
 
 export class OwnershipTrait {
   owner: Player
-  private ownerID: string
+  protected ownerID: string
 
   isInOwnersView: boolean
-
-  constructor(state: State, options: Partial<OwnershipTrait> = {}) {
-    this.owner = def(options.owner, undefined)
-    this.ownerID = def(this.owner && this.owner.clientID, undefined)
-    this.isInOwnersView = def(options.isInOwnersView, false)
-  }
 
   /**
    * Get the real owner of this thing, by traversing `this.parent` chain.
@@ -52,4 +46,12 @@ export class OwnershipTrait {
 
 ;(OwnershipTrait as any).typeDef = {
   isInOwnersView: "boolean"
+}
+;(OwnershipTrait as any).trait = function OwnershipTrait(
+  state: State,
+  options: Partial<OwnershipTrait> = {}
+) {
+  this.owner = def(options.owner, undefined)
+  this.ownerID = def(this.owner && this.owner.clientID, undefined)
+  this.isInOwnersView = def(options.isInOwnersView, false)
 }

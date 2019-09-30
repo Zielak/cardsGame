@@ -30,23 +30,19 @@ export const applyMixins = (derivedCtor: any, baseCtors: any[]) => {
   baseCtors.forEach(baseCtor => {
     Object.getOwnPropertyNames(baseCtor.prototype)
       .map(name => {
-        if (name === "constructor") {
-          derivedCtor.prototype.traitsConstructors.push(
-            baseCtor.prototype.constructor
-          )
-        } else {
-          Object.defineProperty(
-            derivedCtor.prototype,
-            name,
-            Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
-          )
-        }
+        Object.defineProperty(
+          derivedCtor.prototype,
+          name,
+          Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
+        )
       })
       .filter(e => e !== undefined)
 
     Object.getOwnPropertyNames(baseCtor).map(name => {
       if (name === "typeDef") {
         typeDefs.push(baseCtor.typeDef)
+      } else if (name === "trait") {
+        derivedCtor.prototype.traitsConstructors.push(baseCtor.trait)
       }
     })
   })
