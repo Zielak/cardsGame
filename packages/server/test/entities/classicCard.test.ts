@@ -23,7 +23,8 @@ afterEach(() => {
 describe("constructor", () => {
   test("sets up defaults", () => {
     card = new ClassicCard(state, { suit: "H", rank: "A" })
-    expect(card.faceUp).toBe(false)
+
+    expect(card).toMatchSnapshot()
   })
 })
 

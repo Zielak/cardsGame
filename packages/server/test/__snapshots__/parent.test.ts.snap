@@ -3,44 +3,19 @@
 exports[`#getChildren couple of children 1`] = `
 Array [
   Object {
-    "angle": 0,
     "idx": 0,
-    "name": "Dummie",
-    "type": "dumb",
-    "x": 0,
-    "y": 0,
   },
   Object {
-    "angle": 0,
     "idx": 1,
-    "name": "Dummie",
-    "type": "dumb",
-    "x": 0,
-    "y": 0,
   },
   Object {
-    "angle": 0,
     "idx": 2,
-    "name": "Dummie",
-    "type": "dumb",
-    "x": 0,
-    "y": 0,
   },
   Object {
-    "angle": 0,
     "idx": 3,
-    "name": "Dummie",
-    "type": "dumb",
-    "x": 0,
-    "y": 0,
   },
   Object {
-    "angle": 0,
     "idx": 4,
-    "name": "Dummie",
-    "type": "dumb",
-    "x": 0,
-    "y": 0,
   },
 ]
 `;

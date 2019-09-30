@@ -1,8 +1,5 @@
 import { State } from "../src/state"
-import { DumbEntity } from "./helpers/dumbEntity"
-import { DumbParent } from "./helpers/dumbParent"
-import { Entity } from "../src/traits"
-import { ClassicCard, Container } from "../src/entities"
+import { DumbParent, DumbEntity } from "./helpers/dumbEntities"
 
 let state: State
 

@@ -1,10 +1,8 @@
-import { type } from "@colyseus/schema"
 import { State } from "../state"
 
 export class LabelTrait {
   name: string = "Unnamed"
 
-  @type("string")
   type: string = "entity" // SYNCH
 
   constructor(state: State, options: Partial<LabelTrait> = {}) {
@@ -16,6 +14,8 @@ export class LabelTrait {
     }
   }
 }
+
+;(LabelTrait as any).typeDef = { type: "string" }
 
 export function hasIdentity(entity): entity is LabelTrait {
   return (

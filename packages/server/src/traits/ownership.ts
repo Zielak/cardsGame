@@ -1,4 +1,3 @@
-import { type } from "@colyseus/schema"
 import { def } from "@cardsgame/utils"
 import { Player } from "../player"
 import { State } from "../state"
@@ -15,10 +14,7 @@ export function hasOwnership(entity: any): entity is OwnershipTrait {
 export class OwnershipTrait {
   owner: Player
 
-  @type("string")
   ownerID: string
-
-  @type("boolean")
   isInOwnersView: boolean
 
   constructor(state: State, options: Partial<OwnershipTrait> = {}) {
@@ -28,6 +24,10 @@ export class OwnershipTrait {
   }
 }
 
+;(OwnershipTrait as any).typeDef = {
+  ownerID: "string",
+  isInOwnersView: "boolean"
+}
 /**
  * Get the real owner of this thing, by traversing `this.parent` chain.
  * Owner could be set on an element or container, meaning every element in

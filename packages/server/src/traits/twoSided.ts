@@ -1,8 +1,9 @@
-import { type } from "@colyseus/schema"
-
 export class TwoSidedTrait {
-  @type("boolean")
   faceUp: boolean
+}
+
+;(TwoSidedTrait as any).typeDef = {
+  faceUp: "boolean"
 }
 
 export function flip(entity: TwoSidedTrait) {

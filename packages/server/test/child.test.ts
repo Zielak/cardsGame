@@ -1,5 +1,4 @@
-import { DumbParent } from "./helpers/dumbParent"
-import { DumbEntity } from "./helpers/dumbEntity"
+import { DumbParent, DumbEntity } from "./helpers/dumbEntities"
 import { State } from "../src/state"
 import { getParentEntity, setParent, getIdxPath } from "../src/traits/child"
 

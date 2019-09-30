@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constructor sets up defaults 1`] = `
+Object {
+  "angle": 0,
+  "faceUp": false,
+  "idx": 0,
+  "rank": "A",
+  "suit": "H",
+  "type": "entity",
+  "x": 0,
+  "y": 0,
+}
+`;

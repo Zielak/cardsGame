@@ -16,6 +16,7 @@ Object {
       "idx": 3,
     },
   ],
+  "childrenDumbParent": Array [],
   "idx": 0,
 }
 `;

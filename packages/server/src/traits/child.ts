@@ -9,7 +9,6 @@ import {
   getKnownConstructor,
   isParent
 } from "./parent"
-import { IdentityTrait } from "./identity"
 
 export function isChild(entity: any): entity is ChildTrait {
   return (
@@ -18,15 +17,14 @@ export function isChild(entity: any): entity is ChildTrait {
   )
 }
 
-export class ChildTrait extends IdentityTrait {
-  @type("number")
+export class ChildTrait {
+  id: EntityID
+
   idx: number
 
   parent: ParentTrait
 
   constructor(state: State, options: Partial<ChildTrait> = {}) {
-    super(state)
-
     // Parent
     setParent(state, this, def(options.parent, state))
 
@@ -35,6 +33,8 @@ export class ChildTrait extends IdentityTrait {
     }
   }
 }
+
+;(ChildTrait as any).typeDef = { idx: "number" }
 
 export function setParent(
   state: State,

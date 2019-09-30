@@ -9,7 +9,6 @@ import { LocationTrait } from "./location"
 import { OwnershipTrait } from "./ownership"
 import { SelectableChildrenTrait } from "./selectableChildren"
 import { TwoSidedTrait } from "./twoSided"
-import { IdentityTrait } from "./identity"
 
 const registeredParents: {
   con: Function
@@ -81,7 +80,9 @@ export function isParent(entity: any): entity is ParentTrait {
 export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void
 
-export class ParentTrait extends IdentityTrait {
+export class ParentTrait {
+  id: EntityID
+
   childrenPointers: string[]
   hijacksInteractionTarget: boolean
 
@@ -92,8 +93,6 @@ export class ParentTrait extends IdentityTrait {
   onChildRemoved: ChildRemovedHandler
 
   constructor(state: State, options: Partial<ParentTrait> = {}) {
-    super(state)
-
     this.childrenPointers = []
     this.hijacksInteractionTarget = true
 
@@ -248,7 +247,6 @@ export function countChildren(parent: ParentTrait): number {
  * Gets all direct children in array form, "sorted" by idx
  */
 export function getChildren<T extends ChildTrait>(parent: any): T[] {
-  // FIXME: I don't know how to translate that to Mixins
   if (!isParent(parent)) {
     return []
   }

@@ -8,8 +8,7 @@ import {
   getBottom,
   moveChildTo
 } from "../src/traits/parent"
-import { DumbEntity } from "./helpers/dumbEntity"
-import { DumbParent } from "./helpers/dumbParent"
+import { DumbParent, DumbEntity } from "./helpers/dumbEntities"
 import { State } from "../src/state"
 
 let state: State
@@ -35,7 +34,7 @@ describe("ParentConstructor", () => {
 })
 
 describe("#removeChildAt", () => {
-  let parent
+  let parent: DumbParent
   beforeEach(() => {
     parent = new DumbParent(state)
   })
@@ -59,7 +58,7 @@ describe("#removeChildAt", () => {
 
     expect(countChildren(parent)).toBe(3)
     expect(removeChildAt(parent, 1)).toBe(true)
-    expect(parent._childrenPointers.length).toBe(2)
+    expect(parent.childrenPointers.length).toBe(2)
     expect(countChildren(parent)).toBe(2)
   })
 })
@@ -125,7 +124,7 @@ describe("#moveChildTo", () => {
 
 test.todo("#countChildren")
 describe("#getChildren", () => {
-  let parent
+  let parent: DumbParent
   beforeEach(() => {
     parent = new DumbParent(state)
   })
@@ -133,13 +132,16 @@ describe("#getChildren", () => {
     expect(getChildren(parent)).toMatchSnapshot()
   })
   test("couple of children", () => {
+    const first = new DumbEntity(state, { parent })
     new DumbEntity(state, { parent })
     new DumbEntity(state, { parent })
     new DumbEntity(state, { parent })
-    new DumbEntity(state, { parent })
-    new DumbEntity(state, { parent })
+    const last = new DumbEntity(state, { parent })
 
-    expect(getChildren(parent)).toMatchSnapshot()
+    const result = getChildren(parent)
+    expect(result).toMatchSnapshot()
+    expect(result[0]).toBe(first)
+    expect(result[result.length - 1]).toBe(last)
   })
 })
 

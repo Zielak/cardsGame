@@ -1,4 +1,4 @@
-import { Schema } from "@colyseus/schema"
+import { Schema, defineTypes } from "@colyseus/schema"
 import { State } from "../state"
 
 export class Entity<T> extends Schema {
@@ -25,18 +25,39 @@ export const applyMixins = (derivedCtor: any, baseCtors: any[]) => {
     })
   }
 
+  const typeDefs = []
+
   baseCtors.forEach(baseCtor => {
-    Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
-      if (name === "constructor") {
-        derivedCtor.prototype.traitsConstructors.push(
-          baseCtor.prototype.constructor
-        )
+    Object.getOwnPropertyNames(baseCtor.prototype)
+      .map(name => {
+        if (name === "constructor") {
+          derivedCtor.prototype.traitsConstructors.push(
+            baseCtor.prototype.constructor
+          )
+        } else {
+          Object.defineProperty(
+            derivedCtor.prototype,
+            name,
+            Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
+          )
+        }
+      })
+      .filter(e => e !== undefined)
+
+    Object.getOwnPropertyNames(baseCtor).map(name => {
+      if (name === "typeDef") {
+        typeDefs.push(baseCtor.typeDef)
       }
-      Object.defineProperty(
-        derivedCtor.prototype,
-        name,
-        Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
-      )
     })
   })
+
+  defineTypes(
+    derivedCtor,
+    typeDefs.reduce((prev, typeDef) => {
+      return {
+        ...prev,
+        ...typeDef
+      }
+    }, {})
+  )
 }

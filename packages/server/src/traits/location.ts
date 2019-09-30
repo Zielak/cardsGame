@@ -1,12 +1,11 @@
-import { type } from "@colyseus/schema"
-
 export class LocationTrait {
-  @type("number")
   x: number = 0
-
-  @type("number")
   y: number = 0
-
-  @type("number")
   angle: number = 0
+}
+
+;(LocationTrait as any).typeDef = {
+  x: "number",
+  y: "number",
+  angle: "number"
 }
