@@ -2,14 +2,14 @@ import { type } from "@colyseus/schema"
 import { def, logs } from "@cardsgame/utils"
 import {
   canBeChild,
+  ChildTrait,
   TwoSidedTrait,
   LabelTrait,
+  LocationTrait,
   Entity,
   applyMixins,
   IdentityTrait
 } from "../traits"
-import { LocationTrait } from "../traits/location"
-import { ChildTrait } from "../traits/child"
 import { State } from "../state"
 
 /**
@@ -33,6 +33,13 @@ import { State } from "../state"
 // }
 
 @canBeChild
+@applyMixins([
+  IdentityTrait,
+  LocationTrait,
+  ChildTrait,
+  TwoSidedTrait,
+  LabelTrait
+])
 export class ClassicCard extends Entity<ClassicCardOptions> {
   // My own props
   // @filter(faceDownOnlyOwner)
@@ -68,14 +75,6 @@ type ClassicCardOptions = Partial<
 >
 
 export interface ClassicCard extends Mixin {}
-
-applyMixins(ClassicCard, [
-  IdentityTrait,
-  LocationTrait,
-  ChildTrait,
-  TwoSidedTrait,
-  LabelTrait
-])
 
 /**
  * Will generate an array of card options.

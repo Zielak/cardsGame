@@ -7,6 +7,13 @@ import { State } from "../state"
 
 @canBeChild
 @containsChildren()
+@applyMixins([
+  LocationTrait,
+  ChildTrait,
+  ParentTrait,
+  LabelTrait,
+  OwnershipTrait
+])
 export class Hand extends Entity<HandOptions> {
   autoSort: SortingFunction
 
@@ -47,13 +54,5 @@ type HandOptions = Partial<
 >
 
 export interface Hand extends Mixin {}
-
-applyMixins(Hand, [
-  LocationTrait,
-  ChildTrait,
-  ParentTrait,
-  LabelTrait,
-  OwnershipTrait
-])
 
 type SortingFunction = (childA: ChildTrait, childB: ChildTrait) => number

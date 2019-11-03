@@ -1,9 +1,9 @@
 import { State } from "../state"
+import { def } from "@cardsgame/utils"
 
 export class LabelTrait {
-  name: string = "Unnamed"
-
-  type: string = "entity" // SYNCH
+  name: string
+  type: string
 }
 
 ;(LabelTrait as any).typeDef = { type: "string" }
@@ -11,12 +11,8 @@ export class LabelTrait {
   state: State,
   options: Partial<LabelTrait> = {}
 ) {
-  if (options.name) {
-    this.name = options.name
-  }
-  if (options.type) {
-    this.type = options.type
-  }
+  this.name = def(options.name, this.name, "Unnamed")
+  this.type = def(options.type, this.type, "entity")
 }
 
 export function hasLabel(entity): entity is LabelTrait {

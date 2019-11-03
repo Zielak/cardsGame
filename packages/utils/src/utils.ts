@@ -1,15 +1,14 @@
 /**
- * Returns `def` if `value` wasn't provided
- * @param value provided from someplace else
- * @param def returned default if no `value` was provided
+ * Returns first, *defined* value
  */
-export const def = <T>(value: T, def: T): T =>
-  typeof value !== "undefined" ? value : def
+export const def = <T>(...values: T[]): T =>
+  values.find(value => typeof value !== "undefined")
 
 export const noop = () => {}
 
 /**
- * Call each function with the current argument and the result is use for the next call
+ * Calls each function with the current argument
+ * and its result is used for the next call
  * @param initial value to be passed through the pipeline
  */
 export const compose = (value: any, ...functions: ((...args) => any)[]) => {

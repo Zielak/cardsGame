@@ -9,6 +9,7 @@ import { LabelTrait, Entity, applyMixins } from "../traits"
 
 @canBeChild
 @containsChildren()
+@applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait, FlexyTrait])
 export class Row extends Entity<RowOptions> {
   constructor(state: State, options: RowOptions = {}) {
     super(state, options)
@@ -28,11 +29,3 @@ interface Mixin
 type RowOptions = Partial<ConstructorType<Mixin>>
 
 export interface Row extends Mixin {}
-
-applyMixins(Row, [
-  LocationTrait,
-  ChildTrait,
-  ParentTrait,
-  LabelTrait,
-  FlexyTrait
-])

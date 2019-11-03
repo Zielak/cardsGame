@@ -1,4 +1,4 @@
-import { Schema, defineTypes } from "@colyseus/schema"
+import { Schema, type } from "@colyseus/schema"
 import { State } from "../state"
 
 export class Entity<T> extends Schema {
@@ -18,17 +18,16 @@ export class Entity<T> extends Schema {
  * @param derivedCtor
  * @param baseCtors
  */
-export const applyMixins = (derivedCtor: any, baseCtors: any[]) => {
+export const applyMixins = (baseCtors: any[]) => (derivedCtor: Function) => {
   if (!derivedCtor.prototype.hasOwnProperty("traitsConstructors")) {
     Object.defineProperty(derivedCtor.prototype, "traitsConstructors", {
       value: []
     })
   }
 
-  const typeDefs = []
-
   baseCtors.forEach(baseCtor => {
     Object.getOwnPropertyNames(baseCtor.prototype)
+      .filter(name => name !== "constructor")
       .map(name => {
         Object.defineProperty(
           derivedCtor.prototype,
@@ -36,24 +35,15 @@ export const applyMixins = (derivedCtor: any, baseCtors: any[]) => {
           Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
         )
       })
-      .filter(e => e !== undefined)
 
     Object.getOwnPropertyNames(baseCtor).map(name => {
       if (name === "typeDef") {
-        typeDefs.push(baseCtor.typeDef)
+        for (var field in baseCtor.typeDef) {
+          type(baseCtor.typeDef[field])(derivedCtor.prototype, field)
+        }
       } else if (name === "trait") {
         derivedCtor.prototype.traitsConstructors.push(baseCtor.trait)
       }
     })
   })
-
-  defineTypes(
-    derivedCtor,
-    typeDefs.reduce((prev, typeDef) => {
-      return {
-        ...prev,
-        ...typeDef
-      }
-    }, {})
-  )
 }

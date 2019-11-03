@@ -15,6 +15,7 @@ import { ChildTrait, isChild } from "./traits/child"
 import { hasOwnership } from "./traits/ownership"
 
 @containsChildren()
+@applyMixins([IdentityTrait, LabelTrait, ParentTrait])
 export class State extends Entity<StateOptions> {
   @type("number")
   tableWidth = cm2px(60) // 60 cm
@@ -223,8 +224,6 @@ export type StateOptions = Partial<
 >
 
 export interface State extends Mixin {}
-
-applyMixins(State, [IdentityTrait, LabelTrait, ParentTrait])
 
 export interface StateUI {
   clone: () => MapSchema

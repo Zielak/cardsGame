@@ -1,3 +1,6 @@
+import { def } from "@cardsgame/utils"
+import { State } from "../state"
+
 export class TwoSidedTrait {
   faceUp: boolean
 
@@ -16,4 +19,10 @@ export class TwoSidedTrait {
 
 ;(TwoSidedTrait as any).typeDef = {
   faceUp: "boolean"
+}
+;(TwoSidedTrait as any).trait = function TwoSidedTrait(
+  state: State,
+  options: Partial<TwoSidedTrait>
+) {
+  this.faceUp = def(options.faceUp, false)
 }

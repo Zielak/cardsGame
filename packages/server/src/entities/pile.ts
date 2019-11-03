@@ -8,6 +8,7 @@ import { LabelTrait } from "../traits"
 
 @canBeChild
 @containsChildren()
+@applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait])
 export class Pile extends Entity<PileOptions> {
   constructor(state: State, options: PileOptions = {}) {
     super(state, options)
@@ -22,5 +23,3 @@ interface Mixin extends LocationTrait, ChildTrait, ParentTrait, LabelTrait {}
 type PileOptions = Partial<ConstructorType<Mixin>>
 
 export interface Pile extends Mixin {}
-
-applyMixins(Pile, [LocationTrait, ChildTrait, ParentTrait, LabelTrait])

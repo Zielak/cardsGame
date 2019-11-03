@@ -17,6 +17,7 @@ import { ChildTrait } from "../traits/child"
  */
 @canBeChild
 @containsChildren()
+@applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait])
 export class Line extends Entity<LineOptions> {}
 
 interface Mixin extends LocationTrait, ChildTrait, ParentTrait, LabelTrait {}
@@ -24,5 +25,3 @@ interface Mixin extends LocationTrait, ChildTrait, ParentTrait, LabelTrait {}
 type LineOptions = Partial<ConstructorType<Mixin>>
 
 export interface Line extends Mixin {}
-
-applyMixins(Line, [LocationTrait, ChildTrait, ParentTrait, LabelTrait])

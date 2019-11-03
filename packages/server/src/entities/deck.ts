@@ -8,6 +8,7 @@ import { State } from "../state"
 
 @canBeChild
 @containsChildren(false)
+@applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait])
 export class Deck extends Entity<DeckOptions> {
   @type("uint16")
   childCount: number = 0
@@ -52,5 +53,3 @@ type DeckOptions = Partial<
 
 // What I want the entity to actually contain
 export interface Deck extends Mixin {}
-
-applyMixins(Deck, [LocationTrait, ChildTrait, ParentTrait, LabelTrait])

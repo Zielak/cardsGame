@@ -1,21 +1,22 @@
-import { type, ArraySchema } from "@colyseus/schema"
+import { type, ArraySchema, Schema } from "@colyseus/schema"
 import { logs, def } from "@cardsgame/utils"
 import { ChildTrait } from "./child"
 import { State } from "../state"
 import { QuerableProps, queryRunner } from "../queryRunner"
 
 const registeredParents: {
-  con: Function
+  con: typeof Schema
   childrenSynced: boolean
 }[] = []
 const registeredChildren: Function[] = []
 
 const synchChildrenArray = (
-  parentConstructor: Function,
+  parentConstructor: typeof Schema,
   childrenConstructor: Function
 ) => {
   const arr = []
   arr.push(childrenConstructor)
+
   logs.verbose(
     `syncing "children${childrenConstructor.name}" in ${parentConstructor.name}`
   )
@@ -45,7 +46,7 @@ export function canBeChild(childConstructor: Function) {
  * @param childrenSynced set `false` to disable syncing children to clients
  */
 export function containsChildren(childrenSynced = true) {
-  return function containsChildren(parentConstructor: Function) {
+  return function containsChildren(parentConstructor: typeof Schema) {
     // Remember this parent
     registeredParents.push({
       con: parentConstructor,
