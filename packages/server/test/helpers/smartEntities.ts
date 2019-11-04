@@ -10,6 +10,13 @@ import { OwnershipTrait } from "../../src/traits/ownership"
 
 @canBeChild
 @containsChildren()
+@applyMixins([
+  IdentityTrait,
+  ParentTrait,
+  ChildTrait,
+  LabelTrait,
+  OwnershipTrait
+])
 export class SmartParent extends Entity<SmartParentOptions> {}
 
 interface ParentMixin
@@ -23,17 +30,10 @@ type SmartParentOptions = Partial<ConstructorType<ParentMixin>>
 
 export interface SmartParent extends ParentMixin {}
 
-applyMixins(SmartParent, [
-  IdentityTrait,
-  ParentTrait,
-  ChildTrait,
-  LabelTrait,
-  OwnershipTrait
-])
-
 // ==================================
 
 @canBeChild
+@applyMixins([IdentityTrait, ChildTrait, LabelTrait, OwnershipTrait])
 export class SmartEntity extends Entity<SmartEntityOptions> {}
 
 interface EntityMixin
@@ -45,10 +45,3 @@ interface EntityMixin
 type SmartEntityOptions = Partial<ConstructorType<EntityMixin>>
 
 export interface SmartEntity extends EntityMixin {}
-
-applyMixins(SmartEntity, [
-  IdentityTrait,
-  ChildTrait,
-  LabelTrait,
-  OwnershipTrait
-])

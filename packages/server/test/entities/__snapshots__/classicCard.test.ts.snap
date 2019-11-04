@@ -7,7 +7,7 @@ Object {
   "idx": 0,
   "rank": "A",
   "suit": "H",
-  "type": "entity",
+  "type": "classicCard",
   "x": 0,
   "y": 0,
 }

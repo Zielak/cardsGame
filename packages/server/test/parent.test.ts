@@ -1,5 +1,6 @@
 import { DumbParent, DumbEntity } from "./helpers/dumbEntities"
 import { State } from "../src/state"
+import { IdentityTrait, ChildTrait } from "../src/traits"
 
 let state: State
 
@@ -15,8 +16,7 @@ describe("ParentConstructor", () => {
   test("sets default properties", () => {
     let parent = new DumbParent(state)
 
-    expect(parent.childrenPointers).toBeDefined()
-    expect(parent.childrenPointers.length).toBe(0)
+    expect(parent.countChildren()).toBe(0)
 
     expect(parent.hijacksInteractionTarget).toBeDefined()
     expect(parent.hijacksInteractionTarget).toBe(true)
@@ -48,19 +48,18 @@ describe("#removeChildAt", () => {
 
     expect(parent.countChildren()).toBe(3)
     expect(parent.removeChildAt(1)).toBe(true)
-    expect(parent.childrenPointers.length).toBe(2)
     expect(parent.countChildren()).toBe(2)
   })
 })
 
 describe("#removeChild", () => {
-  let parent
+  let parent: DumbParent
   it("calls removeChildAt", () => {
     parent = new DumbParent(state)
     const entity = new DumbEntity(state, { parent })
 
     expect(parent.countChildren()).toBe(1)
-    parent.removeChild(entity.id)
+    expect(parent.removeChild(entity)).toBe(true)
     expect(parent.countChildren()).toBe(0)
   })
 
@@ -70,8 +69,10 @@ describe("#removeChild", () => {
     const entity = new DumbEntity(state, { parent })
     new DumbEntity(state, { parent })
 
-    parent.removeChild(entity.id)
-    expect(parent.getChildren().map(e => e.id)).toMatchSnapshot()
+    parent.removeChild(entity)
+    expect(
+      parent.getChildren().map((e: ChildTrait & IdentityTrait) => e.id)
+    ).toMatchSnapshot()
   })
 })
 describe("#moveChildTo", () => {

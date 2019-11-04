@@ -10,6 +10,7 @@ import { OwnershipTrait } from "../../src/traits/ownership"
 
 @canBeChild
 @containsChildren()
+@applyMixins([IdentityTrait, ParentTrait, ChildTrait, OwnershipTrait])
 export class OwnableParent extends Entity<OwnableParent> {}
 
 export interface OwnableParent
@@ -18,19 +19,11 @@ export interface OwnableParent
     ChildTrait,
     OwnershipTrait {}
 
-applyMixins(OwnableParent, [
-  IdentityTrait,
-  ParentTrait,
-  ChildTrait,
-  OwnershipTrait
-])
-
 @canBeChild
+@applyMixins([IdentityTrait, ChildTrait, OwnershipTrait])
 export class OwnableEntity extends Entity<OwnableEntity> {}
 
 export interface OwnableEntity
   extends IdentityTrait,
     ChildTrait,
     OwnershipTrait {}
-
-applyMixins(OwnableEntity, [IdentityTrait, ChildTrait, OwnershipTrait])

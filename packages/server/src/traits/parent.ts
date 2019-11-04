@@ -107,7 +107,7 @@ export class ParentTrait {
     const child: ChildTrait = this.getChild(idx)
     if (!child) {
       logs.error("removeChildAt", `getChild - I don't have ${idx} child?`)
-      return
+      return false
     }
 
     // ------ remove
