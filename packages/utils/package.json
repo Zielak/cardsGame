@@ -16,6 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@colyseus/schema": "^0.5.2"
+    "@colyseus/schema": "^0.5.3"
   }
 }
