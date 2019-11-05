@@ -1,17 +1,6 @@
-import {
-  ParentConstructor,
-  getChild,
-  getChildren,
-  removeChildAt,
-  countChildren,
-  removeChild,
-  getTop,
-  getBottom,
-  moveChildTo
-} from "../src/traits/parent"
-import { DumbParent, ConstructedParent } from "./helpers/dumbParent"
+import { DumbParent, DumbEntity } from "./helpers/dumbEntities"
 import { State } from "../src/state"
-import { ConstructedEntity } from "./helpers/dumbEntity"
+import { IdentityTrait, ChildTrait } from "../src/traits"
 
 let state: State
 
@@ -24,121 +13,126 @@ beforeEach(() => {
 })
 
 describe("ParentConstructor", () => {
-  test("sets _childrenPointers", () => {
-    let parent = new DumbParent()
-    ParentConstructor(parent)
+  test("sets default properties", () => {
+    let parent = new DumbParent(state)
 
-    expect(parent._childrenPointers).toBeDefined()
-    expect(parent._childrenPointers.length).toBe(0)
+    expect(parent.countChildren()).toBe(0)
+
+    expect(parent.hijacksInteractionTarget).toBeDefined()
+    expect(parent.hijacksInteractionTarget).toBe(true)
   })
 })
 
 describe("#removeChildAt", () => {
-  let parent
+  let parent: DumbParent
   beforeEach(() => {
-    parent = new ConstructedParent({ state })
+    parent = new DumbParent(state)
   })
   it("throws on invalid `idx`", () => {
-    expect(() => removeChildAt(parent, -2)).toThrow()
-    expect(() => removeChildAt(parent, NaN)).toThrow()
-    expect(() => removeChildAt(parent, Infinity)).toThrow()
-    expect(() => removeChildAt(parent, 10)).toThrow()
+    expect(() => parent.removeChildAt(-2)).toThrow()
+    expect(() => parent.removeChildAt(NaN)).toThrow()
+    expect(() => parent.removeChildAt(Infinity)).toThrow()
+    expect(() => parent.removeChildAt(10)).toThrow()
   })
   it("removes the only child", () => {
-    new ConstructedEntity({ state, parent })
+    new DumbEntity(state, { parent })
 
-    expect(countChildren(parent)).toBe(1)
-    expect(removeChildAt(parent, 0)).toBe(true)
-    expect(countChildren(parent)).toBe(0)
+    expect(parent.countChildren()).toBe(1)
+    expect(parent.removeChildAt(0)).toBe(true)
+    expect(parent.countChildren()).toBe(0)
   })
   it("removes child in the middle", () => {
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
+    new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
 
-    expect(countChildren(parent)).toBe(3)
-    expect(removeChildAt(parent, 1)).toBe(true)
-    expect(parent._childrenPointers.length).toBe(2)
-    expect(countChildren(parent)).toBe(2)
+    expect(parent.countChildren()).toBe(3)
+    expect(parent.removeChildAt(1)).toBe(true)
+    expect(parent.countChildren()).toBe(2)
   })
 })
 
 describe("#removeChild", () => {
-  let parent
+  let parent: DumbParent
   it("calls removeChildAt", () => {
-    parent = new ConstructedParent({ state })
-    const entity = new ConstructedEntity({ state, parent })
+    parent = new DumbParent(state)
+    const entity = new DumbEntity(state, { parent })
 
-    expect(countChildren(parent)).toBe(1)
-    removeChild(parent, entity.id)
-    expect(countChildren(parent)).toBe(0)
+    expect(parent.countChildren()).toBe(1)
+    expect(parent.removeChild(entity)).toBe(true)
+    expect(parent.countChildren()).toBe(0)
   })
 
   it("finds proper child", () => {
-    parent = new ConstructedParent({ state })
-    new ConstructedEntity({ state, parent })
-    const entity = new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
+    parent = new DumbParent(state)
+    new DumbEntity(state, { parent })
+    const entity = new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
 
-    removeChild(parent, entity.id)
-    expect(getChildren(parent).map(e => e.id)).toMatchSnapshot()
+    parent.removeChild(entity)
+    expect(
+      parent.getChildren().map((e: ChildTrait & IdentityTrait) => e.id)
+    ).toMatchSnapshot()
   })
 })
 describe("#moveChildTo", () => {
   let parent
-  const mapChildren = parent => getChildren(parent).map(e => e.id)
+  const mapChildren = parent => parent.getChildren().map(e => e.id)
   beforeEach(() => {
-    parent = new ConstructedParent({ state })
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
+    parent = new DumbParent(state)
+    new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
   })
   it("moves item down 1 position", () => {
-    moveChildTo(parent, 2, 1)
+    parent.moveChildTo(2, 1)
     expect(mapChildren(parent)).toMatchSnapshot()
   })
   it("moves item up 1 position", () => {
-    moveChildTo(parent, 2, 3)
+    parent.moveChildTo(2, 3)
     expect(mapChildren(parent)).toMatchSnapshot()
   })
   it("moves item to bottom", () => {
-    moveChildTo(parent, 2, 0)
+    parent.moveChildTo(2, 0)
     expect(mapChildren(parent)).toMatchSnapshot()
   })
   it("moves item to top", () => {
-    moveChildTo(parent, 2, countChildren(parent) - 1)
+    parent.moveChildTo(2, parent.countChildren() - 1)
     expect(mapChildren(parent)).toMatchSnapshot()
   })
   it("doesn't move anything", () => {
-    moveChildTo(parent, 2, 2)
+    parent.moveChildTo(2, 2)
     expect(mapChildren(parent)).toMatchSnapshot()
   })
 
   it("throws on out of range idx", () => {
-    expect(() => moveChildTo(parent, 2, 10)).toThrow()
-    expect(() => moveChildTo(parent, -2, 3)).toThrow()
+    expect(() => parent.moveChildTo(2, 10)).toThrow()
+    expect(() => parent.moveChildTo(-2, 3)).toThrow()
   })
 })
 
 test.todo("#countChildren")
 describe("#getChildren", () => {
-  let parent
+  let parent: DumbParent
   beforeEach(() => {
-    parent = new ConstructedParent({ state })
+    parent = new DumbParent(state)
   })
   test("empty parent", () => {
-    expect(getChildren(parent)).toMatchSnapshot()
+    expect(parent.getChildren()).toMatchSnapshot()
   })
   test("couple of children", () => {
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
-    new ConstructedEntity({ state, parent })
+    const first = new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
+    new DumbEntity(state, { parent })
+    const last = new DumbEntity(state, { parent })
 
-    expect(getChildren(parent)).toMatchSnapshot()
+    const result = parent.getChildren()
+    expect(result).toMatchSnapshot()
+    expect(result[0]).toBe(first)
+    expect(result[result.length - 1]).toBe(last)
   })
 })
 
@@ -146,30 +140,30 @@ describe("#getChild", () => {
   let parent
   let entity
   it("gets child", () => {
-    parent = new ConstructedParent({ state })
-    new ConstructedEntity({ state, parent })
-    entity = new ConstructedEntity({ state, parent })
+    parent = new DumbParent(state)
+    new DumbEntity(state, { parent })
+    entity = new DumbEntity(state, { parent })
 
-    expect(getChild(parent, 1)).toBe(entity)
+    expect(parent.getChild(1)).toBe(entity)
   })
   it.todo("throws if idx out of range")
 })
 
 test("#getTop", () => {
-  const parent = new ConstructedParent({ state })
-  new ConstructedEntity({ state, parent })
-  new ConstructedEntity({ state, parent })
-  const entity = new ConstructedEntity({ state, parent })
+  const parent = new DumbParent(state)
+  new DumbEntity(state, { parent })
+  new DumbEntity(state, { parent })
+  const entity = new DumbEntity(state, { parent })
 
-  expect(getTop(parent)).toBe(entity)
+  expect(parent.getTop()).toBe(entity)
 })
 test("#getBottom", () => {
-  const parent = new ConstructedParent({ state })
-  const entity = new ConstructedEntity({ state, parent })
-  new ConstructedEntity({ state, parent })
-  new ConstructedEntity({ state, parent })
+  const parent = new DumbParent(state)
+  const entity = new DumbEntity(state, { parent })
+  new DumbEntity(state, { parent })
+  new DumbEntity(state, { parent })
 
-  expect(getBottom(parent)).toBe(entity)
+  expect(parent.getBottom()).toBe(entity)
 })
 // getDescendants is now only used for debugging?
 test.todo("#getDescendants")

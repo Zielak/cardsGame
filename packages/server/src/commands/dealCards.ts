@@ -2,10 +2,10 @@ import { State } from "../state"
 import { logs } from "@cardsgame/utils"
 import { ICommand } from "."
 import { ChangeParent } from "./changeParent"
-import { IParent, countChildren, getTop } from "../traits/parent"
+import { ParentTrait, isParent } from "../traits/parent"
 
 export class DealCards implements ICommand {
-  targets: IParent[]
+  targets: ParentTrait[]
 
   /**
    * Deals `count` cards from this container to other containers.
@@ -17,8 +17,8 @@ export class DealCards implements ICommand {
    * @param step number of cards on each singular deal
    */
   constructor(
-    private source: IParent,
-    targets: IParent | IParent[],
+    private source: ParentTrait,
+    targets: ParentTrait | ParentTrait[],
     private count: number = Infinity,
     private step: number = 1
   ) {
@@ -33,8 +33,8 @@ export class DealCards implements ICommand {
 
     const maxDeals = this.count * this.targets.length
     const next = () => {
-      const top = getTop(this.source)
-      if (top.isParent()) {
+      const top = this.source.getTop()
+      if (isParent(top)) {
         logs.warn(
           "DealCards",
           `Unlikely situation, you're making me deal a CONTAINER (IParent) instead of singular object. Is that really what you want?`
@@ -50,7 +50,7 @@ export class DealCards implements ICommand {
       if (++stepI % this.step === 0) {
         targetI++
       }
-      if (countChildren(this.source) > 0 && targetI < maxDeals) {
+      if (this.source.countChildren() > 0 && targetI < maxDeals) {
         next()
       } else {
         logs.notice(_, `Done dealing cards.`)

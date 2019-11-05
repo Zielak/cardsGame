@@ -1,5 +1,5 @@
-import { map2Array, mapRemoveIdx } from "../src/mapSchema"
 import { MapSchema, Schema, type } from "@colyseus/schema"
+import { map2Array, mapRemoveIdx } from "../src/mapSchema"
 
 class Box extends Schema {
   name: string

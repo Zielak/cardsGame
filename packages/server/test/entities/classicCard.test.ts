@@ -3,7 +3,6 @@ import {
   ClassicCard
 } from "../../src/entities/classicCard"
 import { State } from "../../src/state"
-import { flip, faceUp, faceDown } from "../../src/traits/twoSided"
 
 let card: ClassicCard
 let state: State
@@ -22,36 +21,37 @@ afterEach(() => {
 
 describe("constructor", () => {
   test("sets up defaults", () => {
-    card = new ClassicCard({ state, suit: "H", rank: "A" })
-    expect(card.faceUp).toBe(false)
+    card = new ClassicCard(state, { suit: "H", rank: "A" })
+
+    expect(card).toMatchSnapshot()
   })
 })
 
 describe("state changers", () => {
   beforeEach(() => {
-    card = new ClassicCard({ state, suit: "H", rank: "A" })
+    card = new ClassicCard(state, { suit: "H", rank: "A" })
   })
   test("flip", () => {
     expect(card.faceUp).toBe(false)
-    flip(card)
+    card.flip()
     expect(card.faceUp).toBe(true)
-    flip(card)
+    card.flip()
     expect(card.faceUp).toBe(false)
   })
   test("faceUp", () => {
     expect(card.faceUp).toBe(false)
-    faceUp(card)
+    card.flipUp()
     expect(card.faceUp).toBe(true)
-    faceUp(card)
+    card.flipUp()
     expect(card.faceUp).toBe(true)
   })
   test("faceDown", () => {
     expect(card.faceUp).toBe(false)
-    faceUp(card)
+    card.flipUp()
     expect(card.faceUp).toBe(true)
-    faceDown(card)
+    card.flipDown()
     expect(card.faceUp).toBe(false)
-    faceDown(card)
+    card.flipDown()
     expect(card.faceUp).toBe(false)
   })
 })

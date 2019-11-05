@@ -1,23 +1,23 @@
 import { State } from "../state"
 import { ICommand } from "."
-import { ITwoSided, faceUp, faceDown, flip } from "../traits/twoSided"
+import { TwoSidedTrait } from "../traits/twoSided"
 
 /**
  * Reveal the front side (overse) of an element
  */
 export class FaceUp implements ICommand {
-  entities: ITwoSided[]
+  entities: TwoSidedTrait[]
 
-  constructor(entity: ITwoSided)
-  constructor(entities: ITwoSided[])
-  constructor(_entities: ITwoSided | ITwoSided[]) {
+  constructor(entity: TwoSidedTrait)
+  constructor(entities: TwoSidedTrait[])
+  constructor(_entities: TwoSidedTrait | TwoSidedTrait[]) {
     this.entities = Array.isArray(_entities) ? _entities : [_entities]
   }
   execute(state: State) {
-    this.entities.forEach(faceUp)
+    this.entities.forEach(e => e.flipUp())
   }
   undo(state: State) {
-    this.entities.forEach(faceDown)
+    this.entities.forEach(e => e.flipDown())
   }
 }
 
@@ -25,19 +25,19 @@ export class FaceUp implements ICommand {
  * Reveal the back side (revers) of an element
  */
 export class FaceDown implements ICommand {
-  entities: ITwoSided[]
-  constructor(entity: ITwoSided)
-  constructor(entities: ITwoSided[])
-  constructor(_entities: ITwoSided | ITwoSided[]) {
+  entities: TwoSidedTrait[]
+  constructor(entity: TwoSidedTrait)
+  constructor(entities: TwoSidedTrait[])
+  constructor(_entities: TwoSidedTrait | TwoSidedTrait[]) {
     this.entities = Array.isArray(_entities) ? _entities : [_entities]
   }
 
   execute(state: State) {
-    this.entities.forEach(faceDown)
+    this.entities.forEach(e => e.flipDown())
   }
 
   undo(state: State) {
-    this.entities.forEach(faceUp)
+    this.entities.forEach(e => e.flipUp())
   }
 }
 
@@ -45,18 +45,18 @@ export class FaceDown implements ICommand {
  * Flip the element to reveal its other side
  */
 export class Flip implements ICommand {
-  entities: ITwoSided[]
-  constructor(entity: ITwoSided)
-  constructor(entities: ITwoSided[])
-  constructor(_entities: ITwoSided | ITwoSided[]) {
+  entities: TwoSidedTrait[]
+  constructor(entity: TwoSidedTrait)
+  constructor(entities: TwoSidedTrait[])
+  constructor(_entities: TwoSidedTrait | TwoSidedTrait[]) {
     this.entities = Array.isArray(_entities) ? _entities : [_entities]
   }
 
   execute(state: State) {
-    this.entities.forEach(flip)
+    this.entities.forEach(e => e.flip())
   }
 
   undo(state: State) {
-    this.entities.forEach(flip)
+    this.entities.forEach(e => e.flip())
   }
 }

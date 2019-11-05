@@ -1,60 +1,25 @@
-import { Schema, type } from "@colyseus/schema"
-import { IEntity, EntityConstructor, IEntityOptions } from "../traits/entity"
-import {
-  IParent,
-  containsChildren,
-  ParentConstructor,
-  canBeChild,
-  IParentOptions
-} from "../traits/parent"
+import { def } from "@cardsgame/utils"
+import { Entity, applyMixins } from "../traits/entity"
+import { containsChildren, canBeChild, ParentTrait } from "../traits/parent"
 import { State } from "../state"
-import { Player } from "../player"
+import { LocationTrait } from "../traits/location"
+import { ChildTrait } from "../traits/child"
+import { LabelTrait } from "../traits"
 
 @canBeChild
 @containsChildren()
-export class Pile extends Schema implements IEntity, IParent {
-  // IEntity
-  _state: State
-  id: EntityID
-  owner: Player
-  parent: EntityID
-  isParent(): this is IParent {
-    return true
-  }
+@applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait])
+export class Pile extends Entity<PileOptions> {
+  constructor(state: State, options: PileOptions = {}) {
+    super(state, options)
 
-  @type("string")
-  ownerID: string
-
-  @type("boolean")
-  isInOwnersView: boolean
-
-  @type("uint8")
-  idx: number
-
-  @type("string")
-  type = "pile"
-  @type("string")
-  name = "Pile"
-
-  @type("number")
-  x: number
-  @type("number")
-  y: number
-  @type("number")
-  angle: number
-
-  // IParent
-  _childrenPointers: string[]
-  hijacksInteractionTarget = true
-
-  onChildAdded: any
-  onChildRemoved: any
-
-  constructor(options: IPileOptions) {
-    super()
-    ParentConstructor(this, options)
-    EntityConstructor(this, options)
+    this.name = def(options.name, "Pile")
+    this.type = def(options.type, "pile")
   }
 }
 
-interface IPileOptions extends IParentOptions, IEntityOptions {}
+interface Mixin extends LocationTrait, ChildTrait, ParentTrait, LabelTrait {}
+
+type PileOptions = Partial<ConstructorType<Mixin>>
+
+export interface Pile extends Mixin {}

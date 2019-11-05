@@ -1,17 +1,21 @@
-import { IEntity, setParent } from "../traits/entity"
 import { State } from "../state"
 import { logs, chalk } from "@cardsgame/utils"
 import { ICommand } from "."
-import { IParent } from "../traits/parent"
+import { ChildTrait } from "../traits/child"
+import { ParentTrait, hasLabel } from "../traits"
 
 export class ChangeParent implements ICommand {
-  private entities: IEntity[]
-  private source: IParent
-  private target: IParent
+  private entities: ChildTrait[]
+  private source: ParentTrait
+  private target: ParentTrait
 
-  // constructor(entity: IEntity, source: IParent, target: IParent)
-  // constructor(entities: IEntity[], source: IParent, target: IParent)
-  constructor(ents: IEntity | IEntity[], source: IParent, target: IParent) {
+  // constructor(entity: ChildTrait, source: ParentTrait, target: ParentTrait)
+  // constructor(entities: ChildTrait[], source: ParentTrait, target: ParentTrait)
+  constructor(
+    ents: ChildTrait | ChildTrait[],
+    source: ParentTrait,
+    target: ParentTrait
+  ) {
     this.entities = Array.isArray(ents) ? ents : [ents]
     this.source = source
     this.target = target
@@ -30,19 +34,19 @@ export class ChangeParent implements ICommand {
     logs.notice(
       _,
       "starting, moving",
-      this.entities.map(e => e.name),
+      this.entities.map(e => (hasLabel(e) ? e.name : "")),
       "entities from",
       chalk.yellow(this.source["name"] || "ROOT"),
       "to",
       chalk.yellow(this.target["name"] || "ROOT")
     )
 
-    this.entities.forEach(entity => setParent(entity, this.target))
+    this.entities.forEach(entity => this.target.addChild(entity))
 
     // state.logTreeState()
   }
 
   undo(state: State) {
-    this.entities.forEach(entity => setParent(entity, this.source))
+    this.entities.forEach(entity => this.source.addChild(entity))
   }
 }

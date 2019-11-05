@@ -1,23 +1,23 @@
 import { Conditions, getConditionFlag as flag } from "../src/conditions"
 import { State } from "../src/state"
 import { ServerPlayerEvent, Player } from "../src/player"
-import { ConstructedEntity } from "./helpers/dumbEntity"
-import { ConstructedParent } from "./helpers/dumbParent"
+import { SmartEntity, SmartParent } from "./helpers/smartEntities"
+import { ClassicCard } from "../src/entities"
 
 let state: State
 let event: ServerPlayerEvent
-let parent: ConstructedParent
-let child: ConstructedEntity
+let parent: SmartParent
+let child: SmartEntity
 let con: Conditions<State>
 
 beforeEach(() => {
   state = new State()
   event = {
-    player: new Player({ clientID: "123", state }),
-    entity: new ConstructedEntity({ state })
+    player: new Player({ clientID: "123" }),
+    entity: new SmartEntity(state)
   }
-  parent = new ConstructedParent({ state, name: "parent" })
-  child = new ConstructedEntity({ state, parent, name: "child" })
+  parent = new SmartParent(state, { name: "parent" })
+  child = new SmartEntity(state, { parent, name: "child" })
 
   con = new Conditions<State>(state, event)
 })
@@ -137,7 +137,7 @@ describe("equals", () => {
 
 describe("oneOf", () => {
   beforeEach(() => {
-    new ConstructedEntity({ state, name: "foo" })
+    new SmartEntity(state, { name: "foo" })
   })
   it("passes", () => {
     expect(() =>
@@ -188,9 +188,9 @@ describe("oneOf", () => {
 
 describe("each", () => {
   beforeEach(() => {
-    new ConstructedEntity({ state, parent, name: "childA" })
-    new ConstructedEntity({ state, parent, name: "childB" })
-    new ConstructedEntity({ state, parent, name: "childC" })
+    new SmartEntity(state, { parent, name: "childA" })
+    new SmartEntity(state, { parent, name: "childB" })
+    new SmartEntity(state, { parent, name: "childC" })
   })
   describe("pass", () => {
     // it('tests entities structure', () => {

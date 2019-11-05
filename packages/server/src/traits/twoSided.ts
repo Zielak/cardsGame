@@ -1,15 +1,28 @@
-export interface ITwoSided {
+import { def } from "@cardsgame/utils"
+import { State } from "../state"
+
+export class TwoSidedTrait {
   faceUp: boolean
+
+  flip() {
+    this.faceUp = !this.faceUp
+  }
+
+  flipUp() {
+    this.faceUp = true
+  }
+
+  flipDown() {
+    this.faceUp = false
+  }
 }
 
-export function flip(entity: ITwoSided) {
-  entity.faceUp = !entity.faceUp
+;(TwoSidedTrait as any).typeDef = {
+  faceUp: "boolean"
 }
-
-export function faceUp(entity: ITwoSided) {
-  entity.faceUp = true
-}
-
-export function faceDown(entity: ITwoSided) {
-  entity.faceUp = false
+;(TwoSidedTrait as any).trait = function TwoSidedTrait(
+  state: State,
+  options: Partial<TwoSidedTrait>
+) {
+  this.faceUp = def(options.faceUp, false)
 }

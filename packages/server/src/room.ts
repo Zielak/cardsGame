@@ -9,11 +9,11 @@ import {
 } from "@cardsgame/utils"
 import { CommandsManager } from "./commandsManager"
 import { State } from "./state"
-import { IEntity } from "./traits/entity"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
 import { populatePlayerEvent } from "./utils"
 import { BroadcastOptions } from "colyseus/lib/Room"
+import { LabelTrait, hasLabel } from "./traits"
 
 export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
@@ -68,7 +68,6 @@ export class Room<S extends State> extends colRoom<S> {
     if (event.data === "start" && !this.state.isGameStarted) {
       Object.keys(this.state.clients).forEach((key, idx) => {
         this.state.players[idx] = new Player({
-          state: this.state,
           clientID: this.state.clients[key]
         })
       })
@@ -136,16 +135,17 @@ export class Room<S extends State> extends colRoom<S> {
 }
 
 const debugLogMessage = (newEvent: ServerPlayerEvent) => {
-  const minifyTarget = (e: IEntity) => {
+  const minifyTarget = (e: LabelTrait) => {
     return `${e.type}:${e.name}`
   }
   const minifyPlayer = (p: Player) => {
     return `${p.name}[${p.clientID}]`
   }
 
-  const entity = newEvent.entity && minifyTarget(newEvent.entity)
+  const entity = hasLabel(newEvent.entity) ? minifyTarget(newEvent.entity) : ""
   const entities =
-    newEvent.entities && newEvent.entities.map(minifyTarget).join(", ")
+    newEvent.entities &&
+    newEvent.entities.map(e => (hasLabel(e) ? minifyTarget(e) : "?")).join(", ")
   const entityPath =
     newEvent.entityPath && chalk.green(newEvent.entityPath.join(", "))
 

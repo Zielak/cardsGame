@@ -1,60 +1,29 @@
-import { IEntity, EntityConstructor, IEntityOptions } from "../traits/entity"
-import { Schema, type } from "@colyseus/schema"
-import {
-  IParent,
-  containsChildren,
-  ParentConstructor,
-  canBeChild,
-  IParentOptions
-} from "../traits/parent"
-import { State } from "../state"
-import { Player } from "../player"
+import { containsChildren, canBeChild, ParentTrait } from "../traits/parent"
+import { Entity, LabelTrait, applyMixins, OwnershipTrait } from "../traits"
+import { ChildTrait } from "../traits/child"
+import { LocationTrait } from "../traits/location"
 
 @canBeChild
 @containsChildren()
-export class Container extends Schema implements IEntity, IParent {
-  // IEntity
-  _state: State
-  id: EntityID
-  owner: Player
-  parent: EntityID
-  isParent(): this is IParent {
-    return true
-  }
-
-  @type("string")
-  ownerID: string
-
-  @type("boolean")
-  isInOwnersView: boolean
-
-  @type("uint8")
-  idx: number
-
-  @type("string")
+@applyMixins([
+  LabelTrait,
+  ChildTrait,
+  ParentTrait,
+  LocationTrait,
+  OwnershipTrait
+])
+export class Container extends Entity<ContainerOptions> {
   type = "container"
-  @type("string")
-  name = "Container"
-
-  @type("number")
-  x: number
-  @type("number")
-  y: number
-  @type("number")
-  angle: number
-
-  // IParent
-  _childrenPointers: string[]
   hijacksInteractionTarget = false
-
-  onChildAdded: any
-  onChildRemoved: any
-
-  constructor(options: IContainerOptions) {
-    super()
-    ParentConstructor(this, options)
-    EntityConstructor(this, options)
-  }
 }
 
-interface IContainerOptions extends IParentOptions, IEntityOptions {}
+interface Mixin
+  extends LabelTrait,
+    ChildTrait,
+    ParentTrait,
+    LocationTrait,
+    OwnershipTrait {}
+
+type ContainerOptions = Partial<ConstructorType<Mixin>>
+
+export interface Container extends Mixin {}

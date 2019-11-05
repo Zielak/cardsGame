@@ -1,85 +1,48 @@
-import { Schema, type } from "@colyseus/schema"
-import { logs } from "@cardsgame/utils"
+import { type } from "@colyseus/schema"
+import { def, logs } from "@cardsgame/utils"
 import {
-  IEntity,
-  getOwner,
-  getParentEntity,
-  IEntityOptions,
-  EntityConstructor
-} from "../traits/entity"
+  canBeChild,
+  ChildTrait,
+  TwoSidedTrait,
+  LabelTrait,
+  LocationTrait,
+  Entity,
+  applyMixins,
+  IdentityTrait,
+  OwnershipTrait
+} from "../traits"
 import { State } from "../state"
-import { Client } from "colyseus"
-import { ITwoSided } from "../traits/twoSided"
-import { def } from "@cardsgame/utils"
-import { Player } from "../player"
-import { IParent, canBeChild } from "../traits/parent"
-import { IBoxModel } from "../traits/boxModel"
 
 /**
  * Visibility filter
  * @param my
  * @param client
  */
-export function faceDownOnlyOwner(
-  this: Schema & IClassicCard,
-  client: any,
-  value: any
-): boolean {
-  logs.notice("faceDownOnlyOwner", this.name, ":", value)
-  // 1. To everyone only if it's faceUp
-  // 2. To owner, only if it's in his hands
-  return (
-    this.faceUp ||
-    (getOwner(this).clientID === (client as Client).id &&
-      getParentEntity(this).type === "hand")
-  )
-}
-
-interface IClassicCard extends IEntity, ITwoSided, IBoxModel {}
+// export function faceDownOnlyOwner(
+//   this: Schema & IClassicCard,
+//   client: any,
+//   value: any
+// ): boolean {
+//   logs.notice("faceDownOnlyOwner", this.name, ":", value)
+//   // 1. To everyone only if it's faceUp
+//   // 2. To owner, only if it's in his hands
+//   return (
+//     this.faceUp ||
+//     (getOwner().clientID === (client as Client).id &&
+//       getParentEntity(this).type === "hand")
+//   )
+// }
 
 @canBeChild
-export class ClassicCard extends Schema implements IClassicCard {
-  // IEntity
-  _state: State
-  id: EntityID
-  owner: Player
-  parent: EntityID
-  isParent(): this is IParent {
-    return false
-  }
-
-  @type("string")
-  ownerID: string
-
-  @type("boolean")
-  isInOwnersView: boolean
-
-  @type("uint8")
-  idx: number
-
-  // @filter(faceDownOnlyOwner)
-  @type("string")
-  type = "classicCard"
-  // @filter(faceDownOnlyOwner)
-  @type("string")
-  name: string
-
-  @type("number")
-  x: number
-  @type("number")
-  y: number
-  @type("number")
-  angle: number
-
-  @type("number")
-  width: number
-  @type("number")
-  height: number
-
-  // ITwoSided
-  @type("boolean")
-  faceUp: boolean
-
+@applyMixins([
+  IdentityTrait,
+  LocationTrait,
+  ChildTrait,
+  TwoSidedTrait,
+  LabelTrait,
+  OwnershipTrait
+])
+export class ClassicCard extends Entity<ClassicCardOptions> {
   // My own props
   // @filter(faceDownOnlyOwner)
   @type("string")
@@ -89,23 +52,32 @@ export class ClassicCard extends Schema implements IClassicCard {
   @type("string")
   rank: string
 
-  constructor(options: IClassicCardOptions) {
-    super()
-    this.suit = options.suit
-    this.rank = options.rank
+  constructor(state: State, options: ClassicCardOptions = {}) {
+    super(state, options)
+    this.suit = def(options.suit, "X")
+    this.rank = def(options.rank, "Y")
     this.name = options.suit + options.rank
-
+    this.type = "classicCard"
     this.faceUp = def(options.faceUp, false)
-
-    EntityConstructor(this, options)
   }
 }
 
-export interface IClassicCardOptions extends IEntityOptions {
-  suit: string
-  rank: string
-  faceUp?: boolean
-}
+interface Mixin
+  extends IdentityTrait,
+    LocationTrait,
+    ChildTrait,
+    TwoSidedTrait,
+    LabelTrait,
+    OwnershipTrait {}
+
+type ClassicCardOptions = Partial<
+  ConstructorType<Mixin> & {
+    suit: string
+    rank: string
+  }
+>
+
+export interface ClassicCard extends Mixin {}
 
 /**
  * Will generate an array of card options.
@@ -123,8 +95,8 @@ export const standardDeckFactory = (
     "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"
   ],
   suits: string[] = ["H", "S", "C", "D"]
-): IClassicCardOptions[] => {
-  const cards: IClassicCardOptions[] = suits.reduce(
+): ClassicCard[] => {
+  const cards: ClassicCard[] = suits.reduce(
     (prevS, suit) => [
       ...prevS,
       ...ranks.reduce((prevR, rank) => [...prevR, { suit, rank }], [])

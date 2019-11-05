@@ -1,12 +1,12 @@
 import { State } from "../state"
 import { ICommand } from "."
-import { IParent, countChildren, moveChildTo } from "../traits/parent"
+import { ParentTrait } from "../traits/parent"
 
 export class ShuffleChildren implements ICommand {
-  constructor(private container: IParent) {}
+  constructor(private container: ParentTrait) {}
 
   execute(state: State) {
-    let idxA = countChildren(this.container)
+    let idxA = this.container.countChildren()
     if (idxA === 0) return
     while (--idxA) {
       const idxB = Math.floor(Math.random() * (idxA + 1))
@@ -14,8 +14,8 @@ export class ShuffleChildren implements ICommand {
       // const childj = getChild(this.container, idxB)
 
       if (idxA > idxB) {
-        moveChildTo(this.container, idxA, idxB)
-        moveChildTo(this.container, idxB + 1, idxA)
+        this.container.moveChildTo(idxA, idxB)
+        this.container.moveChildTo(idxB + 1, idxA)
       }
       // FIXME: remove? this condition will never launch
       // else if (idxB > idxA) {
