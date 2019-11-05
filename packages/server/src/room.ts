@@ -145,11 +145,7 @@ const debugLogMessage = (newEvent: ServerPlayerEvent) => {
   const entity = hasLabel(newEvent.entity) ? minifyTarget(newEvent.entity) : ""
   const entities =
     newEvent.entities &&
-    newEvent.entities
-      .map(e => {
-        hasLabel(e) ? minifyTarget(e) : "?"
-      })
-      .join(", ")
+    newEvent.entities.map(e => (hasLabel(e) ? minifyTarget(e) : "?")).join(", ")
   const entityPath =
     newEvent.entityPath && chalk.green(newEvent.entityPath.join(", "))
 

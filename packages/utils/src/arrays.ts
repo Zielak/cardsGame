@@ -14,3 +14,6 @@ export const mapCompose = (
     }
   }, array || [])
 }
+
+export const sortAlphabetically = (a: string, b: string) =>
+  a < b ? -1 : a > b ? 1 : 0

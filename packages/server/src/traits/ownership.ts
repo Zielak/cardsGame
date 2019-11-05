@@ -12,8 +12,16 @@ export function hasOwnership(entity: any): entity is OwnershipTrait {
 }
 
 export class OwnershipTrait {
-  owner: Player
-  protected ownerID: string
+  protected _owner: Player
+  get owner() {
+    return this._owner
+  }
+  set owner(value: Player) {
+    this._owner = value
+    this.ownerID = value ? value.clientID : undefined
+  }
+
+  ownerID: string
 
   isInOwnersView: boolean
 
@@ -24,10 +32,7 @@ export class OwnershipTrait {
    *
    * @returns `Player` or `undefined` if this container doesn't belong to anyone
    */
-  getOwner(state: State): Player {
-    if (!hasOwnership(this)) {
-      return
-    }
+  getOwner(): Player {
     if (this.owner) {
       return this.owner
     }
@@ -38,20 +43,20 @@ export class OwnershipTrait {
         if (parent.owner) {
           return parent.owner
         }
-        return parent.getOwner(state)
+        return parent.getOwner()
       }
     }
   }
 }
 
 ;(OwnershipTrait as any).typeDef = {
-  isInOwnersView: "boolean"
+  isInOwnersView: "boolean",
+  ownerID: "string"
 }
 ;(OwnershipTrait as any).trait = function OwnershipTrait(
   state: State,
   options: Partial<OwnershipTrait> = {}
 ) {
   this.owner = def(options.owner, undefined)
-  this.ownerID = def(this.owner && this.owner.clientID, undefined)
   this.isInOwnersView = def(options.isInOwnersView, false)
 }

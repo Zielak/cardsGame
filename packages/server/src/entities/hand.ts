@@ -23,6 +23,8 @@ export class Hand extends Entity<HandOptions> {
     this.name = def(options.name, "Hand")
     this.type = def(options.type, "hand")
 
+    this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, false)
+
     this.autoSort = options.autoSort
   }
 

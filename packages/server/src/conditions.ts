@@ -623,14 +623,14 @@ class Conditions<S extends State> {
    */
   get owner(): this {
     const entity = this._event.entity
-    const expected = hasOwnership(entity)
-      ? entity.getOwner(this._state)
-      : undefined
+    const expected = hasOwnership(entity) ? entity.getOwner() : undefined
 
     this.assert(
       this._player === expected,
-      `Player is not an owner`,
-      `Player is an owner, but shouldn't`
+      `Player #{act} is not an owner. Expected #{exp}`,
+      `Player #{act} is an owner, but shouldn't`,
+      expected && expected.clientID,
+      hasOwnership(entity) ? entity.getOwner().clientID : undefined
     )
 
     return this

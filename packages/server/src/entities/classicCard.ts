@@ -8,7 +8,8 @@ import {
   LocationTrait,
   Entity,
   applyMixins,
-  IdentityTrait
+  IdentityTrait,
+  OwnershipTrait
 } from "../traits"
 import { State } from "../state"
 
@@ -27,7 +28,7 @@ import { State } from "../state"
 //   // 2. To owner, only if it's in his hands
 //   return (
 //     this.faceUp ||
-//     (getOwner(this).clientID === (client as Client).id &&
+//     (getOwner().clientID === (client as Client).id &&
 //       getParentEntity(this).type === "hand")
 //   )
 // }
@@ -38,7 +39,8 @@ import { State } from "../state"
   LocationTrait,
   ChildTrait,
   TwoSidedTrait,
-  LabelTrait
+  LabelTrait,
+  OwnershipTrait
 ])
 export class ClassicCard extends Entity<ClassicCardOptions> {
   // My own props
@@ -65,7 +67,8 @@ interface Mixin
     LocationTrait,
     ChildTrait,
     TwoSidedTrait,
-    LabelTrait {}
+    LabelTrait,
+    OwnershipTrait {}
 
 type ClassicCardOptions = Partial<
   ConstructorType<Mixin> & {

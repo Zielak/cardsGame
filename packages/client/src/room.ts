@@ -65,7 +65,7 @@ export class Room extends EventEmitter {
   }
 
   send(message: PlayerEvent) {
-    logs.info("Sending:", message)
+    logs.verbose("Sending:", message)
     this.room.send(message)
   }
 

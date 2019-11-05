@@ -9,6 +9,7 @@ import { IdentityTrait, LabelTrait } from "../../src/traits"
 
 @canBeChild
 @containsChildren()
+@applyMixins([IdentityTrait, ParentTrait, ChildTrait, LabelTrait])
 export class LabeledParent extends Entity<LabeledParent> {}
 
 export interface LabeledParent
@@ -17,11 +18,8 @@ export interface LabeledParent
     ChildTrait,
     LabelTrait {}
 
-applyMixins(LabeledParent, [IdentityTrait, ParentTrait, ChildTrait, LabelTrait])
-
 @canBeChild
+@applyMixins([IdentityTrait, ChildTrait, LabelTrait])
 export class LabeledEntity extends Entity<LabeledEntity> {}
 
 export interface LabeledEntity extends IdentityTrait, ChildTrait, LabelTrait {}
-
-applyMixins(LabeledEntity, [IdentityTrait, ChildTrait, LabelTrait])

@@ -2,7 +2,6 @@ import { containsChildren, canBeChild, ParentTrait } from "../traits/parent"
 import { Entity, LabelTrait, applyMixins, OwnershipTrait } from "../traits"
 import { ChildTrait } from "../traits/child"
 import { LocationTrait } from "../traits/location"
-import { State } from "../state"
 
 @canBeChild
 @containsChildren()
@@ -15,6 +14,7 @@ import { State } from "../state"
 ])
 export class Container extends Entity<ContainerOptions> {
   type = "container"
+  hijacksInteractionTarget = false
 }
 
 interface Mixin

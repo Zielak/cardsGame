@@ -9,7 +9,8 @@ import {
   LabelTrait,
   hasLabel,
   applyMixins,
-  IdentityTrait
+  IdentityTrait,
+  hasChildren
 } from "./traits"
 import { ChildTrait, isChild } from "./traits/child"
 import { hasOwnership } from "./traits/ownership"
@@ -17,6 +18,8 @@ import { hasOwnership } from "./traits/ownership"
 @containsChildren()
 @applyMixins([IdentityTrait, LabelTrait, ParentTrait])
 export class State extends Entity<StateOptions> {
+  type = "state"
+
   @type("number")
   tableWidth = cm2px(60) // 60 cm
 
@@ -127,9 +130,6 @@ export class State extends Entity<StateOptions> {
         )
       }
 
-      const hasChildren = entity =>
-        isParent(entity) ? entity.countChildren() > 0 : false
-
       if (remainingPath.length > 0 && !hasChildren(newChild)) {
         throw new Error(
           `getEntitiesAlongPath: Path inaccessible, entity doesn't have any children. Stopped at [${path}]. Remaining path: [${remainingPath}]`
@@ -163,7 +163,7 @@ export class State extends Entity<StateOptions> {
             return
           }
 
-          const owner = hasOwnership(child) ? child.getOwner(this) : undefined
+          const owner = hasOwnership(child) ? child.getOwner() : undefined
 
           // const lastChild = entities.length - 1 === idx
           const sIdx = idx === child.idx ? `${idx}` : `e${child.idx}:s${idx}`
@@ -174,9 +174,7 @@ export class State extends Entity<StateOptions> {
           const sOwner = owner ? `(${owner.name} ${owner.clientID})` : ""
           // const branchSymbol = lastChild ? "┕━" : "┝━"
 
-          const hasChildren = isParent(child) && childrenCount > 0
-
-          logger[hasChildren ? "group" : "notice"](
+          logger[hasChildren(child) ? "group" : "notice"](
             `[${idxPath}]`,
             `${child.type}:${child.name}-[${child.idx}]`,
             sChildren,

@@ -102,6 +102,7 @@ if (isBrowser) {
     groupEnd: console.groupEnd.bind(window.console)
   }
 }
+
 if (!IS_CHROME) {
   logs = {
     verbose: function(...args: any[]) {

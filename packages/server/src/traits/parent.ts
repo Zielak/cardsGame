@@ -24,6 +24,7 @@ const synchChildrenArray = (
 }
 
 /**
+ * Decorator!
  * Register as possible child for any other parent enttities
  */
 export function canBeChild(childConstructor: Function) {
@@ -41,6 +42,7 @@ export function canBeChild(childConstructor: Function) {
 }
 
 /**
+ * Decorator!
  * Remember as possible parent to any kinds of children entities
  * Also enables syncing any previously remembered children kind on this constructor
  * @param childrenSynced set `false` to disable syncing children to clients
@@ -71,6 +73,9 @@ export function containsChildren(childrenSynced = true) {
 export function isParent(entity: any): entity is ParentTrait {
   return typeof (entity as ParentTrait).hijacksInteractionTarget !== "undefined"
 }
+
+export const hasChildren = entity =>
+  isParent(entity) ? entity.countChildren() > 0 : false
 
 export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void
