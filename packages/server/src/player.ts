@@ -1,8 +1,6 @@
 import { type, Schema } from "@colyseus/schema"
 import { def, logs } from "@cardsgame/utils"
 
-// TODO: Player shouldn't be on the scene, he's not an object of play
-//       Player's pawns could be placed on the board, outside of his domain...
 export class Player extends Schema {
   @type("string")
   clientID: string
@@ -16,11 +14,6 @@ export class Player extends Schema {
   timeLeft: number = -1
 
   finishedPlaying = false
-
-  // _selectedEntities = new Set<IEntity>()
-
-  // @type("int8")
-  // selectedEntitiesCount: number
 
   constructor(options: IPlayerOptions) {
     super()

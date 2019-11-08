@@ -26,11 +26,21 @@ export class State extends Entity<StateOptions> {
   @type("number")
   tableHeight = cm2px(60) // 60 cm
 
-  @type({ map: Player })
-  players = new MapSchema<Player>()
-
   @type({ map: "string" })
   clients = new MapSchema<string>()
+
+  get clientsCount(): number {
+    return mapCount(this.clients)
+  }
+
+  @type("boolean")
+  turnBased: boolean
+
+  @type("uint16")
+  round: number
+
+  @type({ map: Player })
+  players = new MapSchema<Player>()
 
   @type("uint8")
   currentPlayerIdx: number
@@ -42,8 +52,11 @@ export class State extends Entity<StateOptions> {
     return mapCount(this.players)
   }
 
-  // TODO: think this through:
-  // gameVariants: any
+  getPlayersIndex(player: Player): number {
+    return parseInt(
+      Object.keys(this.players).find(idx => this.players[idx] === player)
+    )
+  }
 
   @type("boolean")
   isGameStarted = false
@@ -57,10 +70,20 @@ export class State extends Entity<StateOptions> {
   _lastID = -1
   _allEntities = new Map<number, IdentityTrait>()
 
-  constructor(options?: StateOptions) {
+  constructor(options: StateOptions = {}) {
     super(undefined, options)
 
     this.hijacksInteractionTarget = false
+
+    this.round = 0
+
+    if (options.turnBased === false) {
+      this.turnBased = false
+      this.currentPlayerIdx = -1
+    } else {
+      this.turnBased = true
+      this.currentPlayerIdx = 0
+    }
   }
 
   /**
@@ -204,22 +227,14 @@ export class State extends Entity<StateOptions> {
     travel(startingPoint || this)
     logger.groupEnd()
   }
-
-  static events = {
-    playerTurnStarted: Symbol("playerTurnStarted"),
-    playerTurnEnded: Symbol("playerTurnEnded")
-  }
 }
 
 interface Mixin extends IdentityTrait, LabelTrait, ParentTrait {}
 
-export type StateOptions = Partial<
-  ConstructorType<Mixin> & {
-    minClients: number
-    maxClients: number
-    hostID: string
-  }
->
+export type StateOptions = Partial<{
+  hostID: string
+  turnBased: boolean
+}>
 
 export interface State extends Mixin {}
 

@@ -1,0 +1,61 @@
+main.gameView {
+  text-align: center;
+}
+
+header h2 {
+  margin-bottom: 0;
+}
+header p {
+  margin-top: 0;
+}
+
+.playerContainer--disconnected {
+  opacity: 0.5;
+}
+
+.deck,
+.pile,
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.deck,
+.pile {
+  height: 6em;
+}
+
+.pile .card {
+  margin-right: -1.5em;
+}
+
+.card {
+  cursor: pointer;
+  width: 4em;
+  height: 6em;
+  text-align: center;
+
+  transform: rotate(var(--angle));
+
+  box-sizing: border-box;
+  box-shadow: 0.1em 0.1em 6px 0px #0005;
+  border: 0.05em solid #0003;
+  border-radius: 0.25em;
+  background-color: white;
+}
+
+.card__suit,
+.card__rank {
+  font-size: 2em;
+}
+
+.card--faceDown {
+  border: 0.5em solid white;
+  background-color: #834224;
+}
+
+.card--faceDown .card__suit,
+.card--faceDown .card__rank {
+  display: none;
+}

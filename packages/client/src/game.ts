@@ -3,8 +3,7 @@ import { Client } from "colyseus.js"
 import { Room } from "./room"
 
 interface IGameOptions {
-  viewElement: HTMLElement
-  roomNames: string[]
+  roomNames?: string[]
   wss?: WSSOptions
 }
 
@@ -30,15 +29,12 @@ export class Game {
   room: Room
 
   roomNames: string[]
-  viewElement: HTMLElement
   wss: WSSOptions
 
-  constructor(options: IGameOptions) {
+  constructor(options: IGameOptions = {}) {
     logs.verbose("GAME", "constructor")
-    const { roomNames, viewElement } = options
 
-    this.roomNames = roomNames
-    this.viewElement = viewElement
+    this.roomNames = options.roomNames
     this.wss = {
       host: def(
         options.wss && options.wss.host,
@@ -47,19 +43,9 @@ export class Game {
       port: def(options.wss && options.wss.port, 2657)
     }
 
-    this.init()
-  }
-
-  init() {
-    import(/* webpackChunkName: 'colyseus.js' */ "colyseus.js")
-      .then(({ Client }) => {
-        this.client = new Client(
-          `wss://${this.wss.host}${this.wss.port ? ":" + this.wss.port : ""}`
-        )
-      })
-      .catch(err => {
-        logs.error("Game", "couldn't load Client from `colyseus.js`", err)
-      })
+    this.client = new Client(
+      `wss://${this.wss.host}${this.wss.port ? ":" + this.wss.port : ""}`
+    )
   }
 
   get sessionID() {

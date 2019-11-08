@@ -1,0 +1,9 @@
+node_modules
+dist
+certs/localhost*
+
+# TMP files
+.DS_Store
+Thumbs.db
+npm-debug.log
+lerna-debug.log

@@ -8,3 +8,7 @@ cd ../types
 npm link
 cd ../utils
 npm link
+
+cd ../examples
+npm link @cardsgame/server
+npm link @cardsgame/client

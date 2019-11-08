@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>@cardsGame/example</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>@cardsgame/example</h1>
+    <nav>
+      <button id="start_btn" type="button">Start game</button>
+    </nav>
+    <main class="gameView">
+      <div id="opponent" class="playerContainer playerContainer--disconnected">
+        <header>
+          <h2>Opponent</h2>
+          <p>(clientID: <span class="clientID"></span>)</p>
+        </header>
+
+        <div class="deck">
+          <div class="card card--faceDown"></div>
+          <p>Deck of <span class="deck__cardsCount">X</span> cards</p>
+        </div>
+        <div class="pile"></div>
+      </div>
+
+      <hr />
+
+      <div id="player" class="playerContainer playerContainer--disconnected">
+        <div class="pile"></div>
+        <div class="deck">
+          <div class="card card--faceDown"></div>
+          <p>Deck of <span class="deck__cardsCount">Y</span> cards</p>
+        </div>
+
+        <header>
+          <h2>You</h2>
+          <p>(clientID: <span class="clientID"></span>)</p>
+        </header>
+      </div>
+    </main>
+
+    <hr />
+
+    <p>Some cards just for UI testing</p>
+    <p>Rotating cards</p>
+    <div class="container">
+      <div class="card" style="--angle:20deg;">
+        <div class="card__suit">S</div>
+        <div class="card__rank">10</div>
+      </div>
+      <div class="card" style="--angle:-38deg;">
+        <div class="card__suit">H</div>
+        <div class="card__rank">A</div>
+      </div>
+      <div class="card">
+        <div class="card__suit">C</div>
+        <div class="card__rank">Q</div>
+      </div>
+    </div>
+    <p>cards in "pile"</p>
+    <div class="pile">
+      <div class="card" style="--angle:3deg;">
+        <div class="card__suit">S</div>
+        <div class="card__rank">10</div>
+      </div>
+      <div class="card card--faceDown" style="--angle:-7deg;">
+        <div class="card__suit">H</div>
+        <div class="card__rank">A</div>
+      </div>
+      <div class="card" style="--angle:13deg;">
+        <div class="card__suit">C</div>
+        <div class="card__rank">Q</div>
+      </div>
+      <div class="card card--faceDown" style="--angle:1deg;">
+        <div class="card__suit">D</div>
+        <div class="card__rank">6</div>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>

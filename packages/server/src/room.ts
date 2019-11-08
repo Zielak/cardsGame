@@ -53,7 +53,7 @@ export class Room<S extends State> extends colRoom<S> {
   }
 
   onLeave(client: Client, consented: boolean) {
-    if (consented) {
+    if (consented || !this.state.isGameStarted) {
       mapRemoveEntry(this.state.clients, client.id)
       logs.notice("onLeave", `client "${client.id}" left permamently`)
     } else {
@@ -66,12 +66,19 @@ export class Room<S extends State> extends colRoom<S> {
 
   onMessage(client: Client, event: PlayerEvent) {
     if (event.data === "start" && !this.state.isGameStarted) {
+      if (this.canGameStart && !this.canGameStart()) {
+        logs.notice(
+          "onMessage",
+          `Someone requested game start, but we can't go yet...`
+        )
+        return
+      }
+
       Object.keys(this.state.clients).forEach((key, idx) => {
         this.state.players[idx] = new Player({
           clientID: this.state.clients[key]
         })
       })
-      this.state.currentPlayerIdx = 0
       this.state.isGameStarted = true
       this.onStartGame(this.state)
 
@@ -101,6 +108,14 @@ export class Room<S extends State> extends colRoom<S> {
   }
 
   /**
+   * Override it to state your own conditions of whether the game can be started or not.
+   * @returns {boolean}
+   */
+  canGameStart() {
+    return true
+  }
+
+  /**
    * Will be called right after the game room is created.
    * Prepare your play area now.
    * @param state
@@ -123,14 +138,38 @@ export class Room<S extends State> extends colRoom<S> {
    * Invoked when players turn starts
    */
   onPlayerTurnStarted(player: Player) {
-    logs.error("Room", `onPlayerTurnStarted is not implemented!`)
+    if (!this.state.turnBased) {
+      logs.error("Room", `onPlayerTurnStarted is not implemented!`)
+    }
   }
 
   /**
    * Invoked when players turn ends
    */
   onPlayerTurnEnded(player: Player) {
-    logs.error("Room", `onPlayerTurnEnded is not implemented!`)
+    if (!this.state.turnBased) {
+      logs.error("Room", `onPlayerTurnEnded is not implemented!`)
+    }
+  }
+
+  /**
+   * Invoked when each round starts.
+   */
+  onRoundStart() {
+    logs.error(
+      "Room",
+      `"nextRound" action was called, but "room.onRoundStart()" is not implemented!`
+    )
+  }
+
+  /**
+   * Invoked when a round is near completion.
+   */
+  onRoundEnd() {
+    logs.error(
+      "Room",
+      `"nextRound" action was called, but "room.onRoundEnd()" is not implemented!`
+    )
   }
 }
 

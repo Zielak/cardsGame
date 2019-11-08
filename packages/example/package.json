@@ -1,0 +1,20 @@
+{
+  "name": "@cardsgame/example",
+  "version": "0.1.0",
+  "description": "Simplest implementation example of @cardsgame",
+  "main": "index.js",
+  "scripts": {
+    "start": "LOGS=verbose node index",
+    "build": "webpack --mode=development --devtool eval",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cardsgame/client": "^0.2.1",
+    "@cardsgame/server": "^0.2.1",
+    "express": "^4.17.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  }
+}

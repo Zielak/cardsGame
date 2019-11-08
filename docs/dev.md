@@ -13,6 +13,12 @@ npm run build:client-w
 npm run build:server-w
 ```
 
+# Server
+
+## Traits updates and QueryRunner
+
+All props in `QuerableProps` are written by hand. Keep them updated with any changes to any new or existing traits.
+
 # Units
 
 All dimensional units are in milimeters, to be as close to reality as possible.

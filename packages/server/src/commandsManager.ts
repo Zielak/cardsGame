@@ -120,13 +120,6 @@ export class CommandsManager<S extends State> {
             )
             .some(interactionMatchesEntity(definition))
         } else if (definition.command) {
-          // TODO: react on button click or anything else
-          // logs.verbose(
-          //   `\t\tCommand:\n\t`,
-          //   definition.command,
-          //   "===",
-          //   event.command
-          // )
           return definition.command === event.command
         }
       })
