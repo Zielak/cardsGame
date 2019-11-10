@@ -5,41 +5,48 @@
 type EntityID = number
 
 /**
- * Client-server interacton
- */
-
-/**
- * Message sent by server, usually containing
- * private entity props (state filtering)
+ * Message sent by server, either directly to one client
+ * or broadcast to all.
  */
 type ServerMessage = {
-  event: string
-  data?: unknown & PrivateAttributeChangeData
+  type: string
+  data?: unknown // & PrivateAttributeChangeData
 }
 
-type PrivateAttributeChangeData = {
-  path: number[]
-  owner?: string
-  public: boolean
-  attribute: string
-  value: any
-}
+// type PrivateAttributeChangeData = {
+//   path: number[]
+//   owner?: string
+//   public: boolean
+//   attribute: string
+//   value: any
+// }
 
 /**
  * Event created by player on client
- * while interacting with game elements
+ * while interacting with game elements or UI
  */
-type PlayerEvent = {
-  // EntityInteraction or any other Game-related command
+type ClientPlayerEvent = {
+  /**
+   * Defaults to `EntityInteraction` when sending via `room.sendInteraction()`.
+   * May be any other Game-specific command.
+   */
   command?: string
 
-  // Interaction-related events ("click")
+  /**
+   * Interaction-related events ("click", "touchstart"...)
+   */
   event?: string
 
-  // Path to target Entity, by idx/idx/idx...
-  entityPath?: number[]
+  /**
+   * Path to target Entity.
+   * As array of numbers: `[0, 2, 0]`
+   * Ar a string: `"0,2,0"` (no spaces)
+   */
+  entityPath?: number[] | string
 
-  // custom command's data
+  /**
+   * Custom command's data.
+   */
   data?: any
 }
 
@@ -55,16 +62,16 @@ interface IPlayerViewPosition {
   paddingY?: number
 }
 
-// 1 Transform the type to flag all the undesired keys as 'never'
+// 1. Transform the type to flag all the undesired keys as 'never'
 type FlagExcludedType<Base, Type> = {
   [Key in keyof Base]: Base[Key] extends Type ? never : Key
 }
 
-// 2 Get the keys that are not flagged as 'never'
+// 2. Get the keys that are not flagged as 'never'
 type AllowedNames<Base, Type> = FlagExcludedType<Base, Type>[keyof Base]
 
-// 3 Use this with a simple Pick to get the right interface, excluding the undesired type
+// 3. Use this with a simple Pick to get the right interface, excluding the undesired type
 type OmitType<Base, Type> = Pick<Base, AllowedNames<Base, Type>>
 
-// 4 Exclude the Function type to only get properties
+// 4. Exclude the Function type to only get properties
 type ConstructorType<T> = OmitType<T, Function>

@@ -11,6 +11,29 @@ export function hasOwnership(entity: any): entity is OwnershipTrait {
   )
 }
 
+/**
+ * Get the real owner of this thing, by traversing `this.parent` chain.
+ * Owner could be set on an element or container, meaning every element in
+ * such container belongs to one owner.
+ *
+ * @returns `Player` or `undefined` if this container doesn't belong to anyone
+ */
+export function getOwner(entity): Player {
+  if (entity.owner) {
+    return entity.owner
+  }
+  if (isChild(entity)) {
+    const parent = entity.parent
+
+    if (isParent(parent) && hasOwnership(parent)) {
+      if (parent.owner) {
+        return parent.owner
+      }
+      return getOwner(parent)
+    }
+  }
+}
+
 export class OwnershipTrait {
   protected _owner: Player
   get owner() {
@@ -24,29 +47,6 @@ export class OwnershipTrait {
   ownerID: string
 
   isInOwnersView: boolean
-
-  /**
-   * Get the real owner of this thing, by traversing `this.parent` chain.
-   * Owner could be set on an element or container, meaning every element in
-   * such container belongs to one owner.
-   *
-   * @returns `Player` or `undefined` if this container doesn't belong to anyone
-   */
-  getOwner(): Player {
-    if (this.owner) {
-      return this.owner
-    }
-    if (isChild(this)) {
-      const parent = this.parent
-
-      if (isParent(parent) && hasOwnership(parent)) {
-        if (parent.owner) {
-          return parent.owner
-        }
-        return parent.getOwner()
-      }
-    }
-  }
 }
 
 ;(OwnershipTrait as any).typeDef = {

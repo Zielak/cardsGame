@@ -3,7 +3,7 @@ import { logs, IS_CHROME } from "@cardsgame/utils"
 
 import { ServerPlayerEvent, Player } from "./player"
 import { State } from "./state"
-import { hasOwnership } from "./traits/ownership"
+import { hasOwnership, getOwner } from "./traits/ownership"
 import { QuerableProps } from "./queryRunner"
 import { isParent } from "./traits"
 
@@ -650,19 +650,18 @@ class Conditions<S extends State> {
   }
 
   /**
-   * Based on `event` instead of `subject`
-   * @asserts
+   * @asserts if current player is an owner of entity from current `event`
    */
   get owner(): this {
     const entity = this._event.entity
-    const expected = hasOwnership(entity) ? entity.getOwner() : undefined
+    const expected = getOwner(entity)
 
     this.assert(
       this._player === expected,
       `Player #{act} is not an owner. Expected #{exp}`,
       `Player #{act} is an owner, but shouldn't`,
       expected && expected.clientID,
-      hasOwnership(entity) ? entity.getOwner().clientID : undefined
+      hasOwnership(entity) ? getOwner(entity).clientID : undefined
     )
 
     return this

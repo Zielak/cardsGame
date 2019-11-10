@@ -96,19 +96,6 @@ export class Game {
     return this.client.getAvailableRooms(gameName)
   }
 
-  sendInteraction(event, entityIdxPath: number[]) {
-    const playerEvent: PlayerEvent = {
-      command: "EntityInteraction",
-      event: event.type,
-      entityPath: entityIdxPath
-    }
-    this.room.send(playerEvent)
-  }
-
-  send(event: PlayerEvent) {
-    this.room.send(event)
-  }
-
   // TODO: reconsider it, maybe this method is useless?
   destroy() {
     logs.verbose("GAME", "destroy()")

@@ -11,13 +11,9 @@ export class ChangeParent implements ICommand {
 
   // constructor(entity: ChildTrait, source: ParentTrait, target: ParentTrait)
   // constructor(entities: ChildTrait[], source: ParentTrait, target: ParentTrait)
-  constructor(
-    ents: ChildTrait | ChildTrait[],
-    source: ParentTrait,
-    target: ParentTrait
-  ) {
+  constructor(ents: ChildTrait | ChildTrait[], target: ParentTrait) {
     this.entities = Array.isArray(ents) ? ents : [ents]
-    this.source = source
+    this.source = this.entities[0].parent
     this.target = target
 
     if (this.entities.length < 1 || !this.source || !this.target) {
@@ -33,7 +29,7 @@ export class ChangeParent implements ICommand {
     }
     logs.notice(
       _,
-      "starting, moving",
+      "moving",
       this.entities.map(e => (hasLabel(e) ? e.name : "")),
       "entities from",
       chalk.yellow(this.source["name"] || "ROOT"),
@@ -42,8 +38,6 @@ export class ChangeParent implements ICommand {
     )
 
     this.entities.forEach(entity => this.target.addChild(entity))
-
-    // state.logTreeState()
   }
 
   undo(state: State) {

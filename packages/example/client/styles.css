@@ -13,6 +13,10 @@ header p {
   opacity: 0.5;
 }
 
+.playerContainer--loser {
+  backgorund-color: #f44336;
+}
+
 .deck,
 .pile,
 .container {
@@ -24,15 +28,32 @@ header p {
 .deck,
 .pile {
   height: 6em;
+  margin-bottom: 0.5em;
+}
+
+.deck__cardsCount {
+  font-size: 2em;
+}
+
+.pile:not(:empty) {
+  padding-right: 3.5em;
+  padding-bottom: 2.5em;
+  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 .pile .card {
   margin-right: -1.5em;
+  margin-bottom: -2.5em;
+}
+
+.pile .card.card--faceDown {
+  margin-right: -3.5em;
 }
 
 .card {
   cursor: pointer;
-  width: 4em;
+  width: 4.5em;
   height: 6em;
   text-align: center;
 

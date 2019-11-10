@@ -44,7 +44,7 @@ export class DealCards implements ICommand {
       const currentTarget = this.targets[targetI % this.targets.length]
 
       // This command thing moves the entity
-      new ChangeParent(top, this.source, currentTarget).execute(state)
+      new ChangeParent(top, currentTarget).execute(state)
 
       // Pick next target if we dealt `this.step` cards to current target
       if (++stepI % this.step === 0) {

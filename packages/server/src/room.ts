@@ -36,19 +36,26 @@ export class Room<S extends State> extends colRoom<S> {
     this.onInitGame(options)
   }
 
-  broadcast(data: any, options?: BroadcastOptions) {
+  /**
+   * Send message to EVERY connected client.
+   * @param data
+   * @param options
+   */
+  broadcast(data: ServerMessage, options?: BroadcastOptions) {
     logs.notice("BROADCAST 📢", data)
 
     return super.broadcast(data, options)
   }
 
   onJoin(newClient: Client) {
-    // If not on the list already
+    // Add to `state.clients` only if the game is not yet started
     if (
+      !this.state.isGameStarted &&
       map2Array(this.state.clients).every(clientID => newClient.id !== clientID)
     ) {
       mapAdd(this.state.clients, newClient.id)
     }
+
     logs.notice("onJoin", `client "${newClient.id}" joined`)
   }
 
@@ -64,8 +71,30 @@ export class Room<S extends State> extends colRoom<S> {
     }
   }
 
-  onMessage(client: Client, event: PlayerEvent) {
-    if (event.data === "start" && !this.state.isGameStarted) {
+  onMessage(client: Client, event: ClientPlayerEvent) {
+    if (event.data === "start") {
+      this.handleGameStart()
+    }
+
+    const newEvent = populatePlayerEvent(this.state, event, client)
+
+    if (!newEvent.player) {
+      logs.error("onMessage", "You're not a player, get out!")
+      return
+    }
+
+    debugLogMessage(newEvent)
+
+    const result = this.commandsManager.action(client, newEvent)
+    if (result) {
+      logs.notice("ROOM", "action() completed")
+    } else {
+      logs.error("ROOM", "action() failed")
+    }
+  }
+
+  handleGameStart() {
+    if (!this.state.isGameStarted) {
       if (this.canGameStart && !this.canGameStart()) {
         logs.notice(
           "onMessage",
@@ -85,25 +114,9 @@ export class Room<S extends State> extends colRoom<S> {
       // Initial play started "event".
       this.onPlayerTurnStarted(this.state.currentPlayer)
       return
-    } else if (event.data === "start" && this.state.isGameStarted) {
+    } else if (this.state.isGameStarted) {
       logs.notice("onMessage", `Game is already started, ignoring...`)
       return
-    }
-
-    const newEvent = populatePlayerEvent(this.state, event, client)
-
-    if (!newEvent.player) {
-      logs.error("onMessage", "You're not a player, get out!")
-      return
-    }
-
-    debugLogMessage(newEvent)
-
-    const result = this.commandsManager.action(client, newEvent)
-    if (result) {
-      logs.notice("ROOM", "action() completed")
-    } else {
-      logs.error("ROOM", "action() failed")
     }
   }
 

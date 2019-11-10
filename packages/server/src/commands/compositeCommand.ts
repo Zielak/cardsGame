@@ -13,6 +13,7 @@ export class CompositeCommand implements ICommand {
   execute(state: State, room: Room<any>) {
     for (let i = 0; i < this.commands.length; i++) {
       const command = this.commands[i]
+      logs.notice(`\t${command._name}: executing`)
       command.execute(state, room)
     }
   }

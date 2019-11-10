@@ -9,8 +9,8 @@ export class Room extends EventEmitter {
     super()
 
     room.onMessage((message: ServerMessage) => {
-      if (message.event && message.data) {
-        switch (message.event) {
+      if (message.type && message.data) {
+        switch (message.type) {
           case "game.info":
             logs.info("Server:", message.data)
             break
@@ -25,23 +25,22 @@ export class Room extends EventEmitter {
         // Any other silly type of message:
         logs.verbose("server just sent this message:", message)
       }
-      this.emit(Room.events.message, message)
+      this.onMessage(message)
     })
     room.onStateChange(state => {
       logs.notice("ROOM, state been updated:", state)
-      this.emit(Room.events.stateChange, state)
+      this.onStateChange(state)
     })
-    room.onLeave(data => {
-      logs.notice("client left the room", data)
-      this.emit(Room.events.leave, data)
+    room.onLeave(code => {
+      logs.notice("client left the room", code)
+      this.onLeave(code)
     })
-    room.onError(err => {
-      logs.error("oops, error ocurred:", err)
-      this.emit(Room.events.error, err)
+    room.onError(message => {
+      logs.error("oops, error ocurred:", message)
+      this.onError(message)
     })
 
     logs.notice("client joined successfully")
-    this.emit(Room.events.join)
   }
 
   gameStateListeners(state) {
@@ -64,9 +63,36 @@ export class Room extends EventEmitter {
     }
   }
 
-  send(message: PlayerEvent) {
+  onMessage(message: ServerMessage) {}
+  onStateChange(state) {}
+  /**
+   * @param {number} code webSocket shutdown code
+   */
+  onLeave(code) {}
+  onError(message) {}
+
+  /**
+   * Send a message from client to server.
+   * @param {ClientPlayerEvent} message
+   */
+  send(message: ClientPlayerEvent) {
     logs.verbose("Sending:", JSON.stringify(message))
     this.room.send(message)
+  }
+
+  /**
+   * Sends en event related to entity interaction.
+   *
+   * @param {MouseEvent | TouchEvent} event mouse or touch event. `event.type` will be grabbed from it automatically.
+   * @param {number[] entityIdxPath
+   */
+  sendInteraction(event: MouseEvent | TouchEvent, entityIdxPath: number[]) {
+    const playerEvent: ClientPlayerEvent = {
+      command: "EntityInteraction",
+      event: event.type,
+      entityPath: entityIdxPath
+    }
+    this.room.send(playerEvent)
   }
 
   leave() {
@@ -90,6 +116,8 @@ export class Room extends EventEmitter {
     return this.room.id
   }
 
+  // TODO:
+  /** @deprecate */
   static events = {
     stateChange: Symbol("stateChange"),
     message: Symbol("message"),

@@ -29,10 +29,11 @@ export interface IPlayerOptions {
 }
 
 // Event from client, with stuff auto filled when comming to server
-export type ServerPlayerEvent = PlayerEvent & {
+export type ServerPlayerEvent = ClientPlayerEvent & {
   player?: Player
   entity?: unknown
   entities?: unknown[]
+  entityPath?: number[]
 }
 
 const randomPlayerNames = [

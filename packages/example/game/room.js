@@ -10,11 +10,13 @@ const {
 } = cardsGameServer
 
 const { WarState } = require("./state")
+const actions = require("./actions")
 
 class WarGame extends Room {
   constructor(options) {
     super(options)
     this.maxClients = 2
+    this.possibleActions = new Set(actions)
   }
 
   onInitGame() {

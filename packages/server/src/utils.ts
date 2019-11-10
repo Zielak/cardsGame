@@ -6,12 +6,17 @@ import { isChild, hasLabel, hasIdentity } from "./traits"
 
 export const populatePlayerEvent = (
   state: State,
-  event: PlayerEvent,
+  event: ClientPlayerEvent,
   client: Client
 ) => {
   // Populate event with server-side known data
-  const newEvent: ServerPlayerEvent = { ...event }
-  if (newEvent.entityPath) {
+  const newEvent: ServerPlayerEvent = {}
+  if (event.entityPath) {
+    newEvent.entityPath =
+      typeof event.entityPath === "string"
+        ? event.entityPath.split(",").map(idx => parseInt(idx))
+        : event.entityPath
+
     newEvent.entities = state
       .getEntitiesAlongPath(newEvent.entityPath)
       .reverse()

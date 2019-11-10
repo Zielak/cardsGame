@@ -2,9 +2,9 @@
   "name": "@cardsgame/example",
   "version": "0.1.0",
   "description": "Simplest implementation example of @cardsgame",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "LOGS=verbose node index",
+    "start": "NODE_ENV=development LOGS=verbose node app",
     "build": "webpack --mode=development --devtool eval",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
