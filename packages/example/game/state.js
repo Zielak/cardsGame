@@ -1,8 +1,14 @@
 const { State, defineTypes, ArraySchema } = require("@cardsgame/server")
 
 class WarState extends State {
-  constructor(options) {
-    super(options)
+  constructor() {
+    super()
+
+    // Override state's defaults
+    this.turnBased = false
+
+    // New, custom state properties
+
     /** @type {boolean} */
     this.isAtWar = false
 
@@ -11,6 +17,10 @@ class WarState extends State {
   }
 }
 
+/**
+ * Makes sure these props are synchronizable with the client
+ * and of a specific type.
+ */
 defineTypes(WarState, {
   isAtWar: "boolean",
   playersPlayed: ["boolean"]

@@ -1,7 +1,7 @@
-const { commands, Conditions, Deck } = require("@cardsgame/server")
+const { commands, Conditions } = require("@cardsgame/server")
 
 const { WarState } = require("./state")
-const { MarkPlayerPlayed, Battle } = require("./commands")
+const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
 
 const PickCard = {
   name: "PickCard",
@@ -34,9 +34,12 @@ const PickCard = {
     const deck = container.find({ type: "deck" })
     const pile = container.find({ type: "pile" })
 
+    const card = deck.getTop()
+
     return [
       new MarkPlayerPlayed(state.getPlayersIndex(event.player)),
-      new commands.ChangeParent(deck.getTop(), pile)
+      new commands.ChangeParent(card, pile),
+      new commands.FaceUp(card)
     ]
   }
 }
@@ -80,11 +83,14 @@ const PickCardLast = {
     const container = state.find({ owner: event.player })
     const deck = container.find({ type: "deck" })
     const pile = container.find({ type: "pile" })
+    const card = deck.getTop()
 
     return [
       new MarkPlayerPlayed(state.getPlayersIndex(event.player)),
-      new commands.ChangeParent(deck.getTop(), pile),
-      new Battle()
+      new commands.ChangeParent(card, pile),
+      new commands.FaceUp(card),
+      new Battle(),
+      new ResetPlayersPlayed()
     ]
   }
 }

@@ -13,6 +13,7 @@
   "dependencies": {
     "@cardsgame/client": "^0.2.1",
     "@cardsgame/server": "^0.2.1",
+    "@cardsgame/utils": "^0.2.1",
     "express": "^4.17.1",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"

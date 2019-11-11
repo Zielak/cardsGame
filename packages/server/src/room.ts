@@ -85,12 +85,14 @@ export class Room<S extends State> extends colRoom<S> {
 
     debugLogMessage(newEvent)
 
-    const result = this.commandsManager.action(client, newEvent)
-    if (result) {
-      logs.notice("ROOM", "action() completed")
-    } else {
-      logs.error("ROOM", "action() failed")
-    }
+    this.commandsManager
+      .action(client, newEvent)
+      .then(result => {
+        logs.notice("ROOM", "action() completed, result:", result)
+      })
+      .catch(error => {
+        logs.error("ROOM", `action() failed. Client: "${client.id}". ${error}`)
+      })
   }
 
   handleGameStart() {

@@ -1,11 +1,15 @@
 import { State } from "../state"
-import { ICommand } from "."
+import { Command } from "../command"
 import { ParentTrait } from "../traits/parent"
 
-export class ShuffleChildren implements ICommand {
-  constructor(private container: ParentTrait) {}
+export class ShuffleChildren extends Command {
+  _name = "ShuffleChildren"
 
-  execute(state: State) {
+  constructor(private container: ParentTrait) {
+    super()
+  }
+
+  async execute(state: State) {
     let idxA = this.container.countChildren()
     if (idxA === 0) return
     while (--idxA) {

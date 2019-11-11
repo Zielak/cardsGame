@@ -1,18 +1,17 @@
 import { Client } from "colyseus"
 import { logs, chalk } from "@cardsgame/utils"
-import { CompositeCommand } from "./commands/compositeCommand"
 import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
-import { ICommand } from "./commands"
+import { Command } from "./command"
 import { Room } from "./room"
 import { Conditions } from "./conditions"
 import { isChild } from "./traits"
 
 export class CommandsManager<S extends State> {
-  history: ICommand[] = []
+  history: Command[] = []
 
-  currentCommand: ICommand
+  currentCommand: Command
   actionPending: boolean = false
   currentAction: ActionTemplate<S>
 
@@ -22,7 +21,7 @@ export class CommandsManager<S extends State> {
     this.possibleActions = room.possibleActions
   }
 
-  action(client: Client, event: ServerPlayerEvent) {
+  async action(client: Client, event: ServerPlayerEvent): Promise<boolean> {
     const { state } = this.room
 
     if (this.actionPending) {
@@ -50,16 +49,7 @@ export class CommandsManager<S extends State> {
       )
     }
 
-    try {
-      const result = this.parseAction(state, actions[0], event)
-
-      return result
-    } catch (error) {
-      logs.error(
-        "action",
-        `Client "${client.id}" failed to perform action. ${error}`
-      )
-    }
+    return await this.parseAction(state, actions[0], event)
   }
 
   /**
@@ -182,12 +172,11 @@ export class CommandsManager<S extends State> {
    * @param state current room's state
    * @param event incomming user's event
    */
-  parseAction(
+  async parseAction(
     state: State,
     action: ActionTemplate<S>,
     event: ServerPlayerEvent
-  ): boolean {
-    let result = false
+  ): Promise<boolean> {
     this.actionPending = true
     this.currentAction = action
     logs.info("parseAction", "current action:", action.name)
@@ -195,32 +184,32 @@ export class CommandsManager<S extends State> {
     try {
       let cmd = action.getCommands(state, event)
       if (Array.isArray(cmd)) {
-        cmd = new CompositeCommand(...cmd)
+        cmd = new Command(action.name, cmd)
       }
-      this.execute(state, cmd)
-      result = true
+
+      await this.execute(state, cmd)
     } catch (error) {
-      this.actionPending = false
       logs.error(
         "parseAction",
         `command "${this.currentCommand &&
           this.currentCommand.constructor.name}" FAILED to execute`,
         error
       )
+      return false
     }
 
     this.actionPending = false
     this.currentAction = null
 
-    return result
+    return true
   }
 
-  execute(state: State, command: ICommand): void {
+  async execute(state: State, command: Command) {
     this.currentCommand = command
-    const commandName = command.constructor.name
+    const commandName = command._name || command.constructor.name
 
     logs.group(commandName, "executing")
-    this.currentCommand.execute(state, this.room)
+    await this.currentCommand.execute(state, this.room)
     logs.groupEnd(commandName, "done")
 
     this.history.push(command)

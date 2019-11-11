@@ -14,15 +14,15 @@ header p {
 }
 
 .playerContainer--loser {
-  backgorund-color: #f44336;
+  background-color: #f44336;
 }
 
 .deck,
 .pile,
 .container {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .deck,
@@ -35,11 +35,10 @@ header p {
   font-size: 2em;
 }
 
-.pile:not(:empty) {
-  padding-right: 3.5em;
-  padding-bottom: 2.5em;
+.pile {
   flex-wrap: wrap;
   align-items: flex-start;
+  padding-right: 3.5em;
 }
 
 .pile .card {
@@ -52,18 +51,18 @@ header p {
 }
 
 .card {
-  cursor: pointer;
+  box-sizing: border-box;
   width: 4.5em;
   height: 6em;
+
   text-align: center;
 
-  transform: rotate(var(--angle));
-
-  box-sizing: border-box;
-  box-shadow: 0.1em 0.1em 6px 0px #0005;
+  background-color: white;
   border: 0.05em solid #0003;
   border-radius: 0.25em;
-  background-color: white;
+  box-shadow: 0.1em 0.1em 6px 0px #0005;
+  transform: rotate(var(--angle));
+  cursor: pointer;
 }
 
 .card__suit,
@@ -72,8 +71,8 @@ header p {
 }
 
 .card--faceDown {
-  border: 0.5em solid white;
   background-color: #834224;
+  border: 0.5em solid white;
 }
 
 .card--faceDown .card__suit,

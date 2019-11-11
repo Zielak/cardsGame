@@ -11,6 +11,12 @@ type EntityID = number
 type ServerMessage = {
   type: string
   data?: unknown // & PrivateAttributeChangeData
+
+  /**
+   * Broadcasts sent by undoing a command will be marked with `undo: true`.
+   * Use it however you need on client-side.
+   */
+  undo?: boolean
 }
 
 // type PrivateAttributeChangeData = {

@@ -131,7 +131,11 @@ export class ParentTrait {
     // https://github.com/colyseus/schema/issues/17
     // https://discordapp.com/channels/525739117951320081/526083188108296202/573204615290683392
     // this[targetArrayName] = targetArray.filter(el => el !== child)
-    const [removedChild] = this[targetArrayName].splice(childIdx, 1)
+    const removedChild = this[targetArrayName].splice(
+      childIdx,
+      1
+    )[0] as ChildTrait
+
     this.childRemoved && this.childRemoved(idx)
     this.updateIndexes()
 
@@ -139,23 +143,29 @@ export class ParentTrait {
       throw new Error("How the fuck did that happen?")
     }
 
-    removedChild.parent = 0
+    removedChild.parent = undefined
 
     return true
   }
 
-  addChild(entity: ChildTrait) {
+  addChild(entity: ChildTrait, prepend = false) {
     if (entity.parent !== undefined) {
       entity.parent.removeChildAt(entity.idx)
     }
 
     const con = getKnownConstructor(entity)
     const targetArray = this["children" + con.name] as ArraySchema<ChildTrait>
-    targetArray.push(entity)
+    targetArray[prepend ? "unshift" : "push"](entity)
 
-    entity.idx = this.countChildren()
+    if (prepend) {
+      this.getChildren().forEach((child, idx) => {
+        child.idx = idx + 1
+      })
+    }
+
+    entity.idx = prepend ? 0 : this.countChildren()
     entity.parent = this
-    this.childrenPointers.push(con.name)
+    this.childrenPointers[prepend ? "unshift" : "push"](con.name)
 
     if (this.childAdded) {
       this.childAdded(entity)
@@ -277,7 +287,7 @@ export class ParentTrait {
   }
 
   /**
-   * Deeply looks for only first matching entity
+   * ~~Deeply~~ looks for only first matching entity
    */
   find<T>(...props: QuerableProps[]): T {
     if (props.length === 0) return

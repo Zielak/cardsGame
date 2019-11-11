@@ -1,30 +1,56 @@
-const { Room, commands } = require("@cardsgame/server")
+const { commands, Command } = require("@cardsgame/server")
+const { logs } = require("@cardsgame/utils")
 const { WarState } = require("./state")
 const { sortRank } = require("./utils")
 
-class MarkPlayerPlayed {
+module.exports.MarkPlayerPlayed = class MarkPlayerPlayed extends Command {
   /** @param {number} playerIdx */
   constructor(playerIdx) {
+    super("MarkPlayerPlayed")
     this.playerIdx = playerIdx
   }
 
   /** @param {WarState} state */
-  execute(state) {
+  async execute(state) {
     state.playersPlayed[this.playerIdx] = true
   }
 
   /** @param {WarState} state */
-  undo(state) {
+  async undo(state) {
     state.playersPlayed[this.playerIdx] = false
   }
 }
 
-class Battle {
-  /**
-   * @param {WarState} state
-   * @param {Room} room
-   */
-  execute(state, room) {
+module.exports.ResetPlayersPlayed = class ResetPlayersPlayed extends Command {
+  constructor() {
+    super("ResetPlayersPlayed")
+    this.memory = []
+  }
+
+  /** @param {WarState} state */
+  async execute(state) {
+    for (let idx = 0; idx < state.playersCount; idx++) {
+      this.memory[idx] = state.playersPlayed[idx]
+      state.playersPlayed[idx] = false
+    }
+  }
+
+  /** @param {WarState} state */
+  async undo(state) {
+    for (let idx = 0; idx < state.playersCount; idx++) {
+      state.playersPlayed[idx] = this.memory[idx]
+    }
+  }
+}
+
+/**
+ * @param {WarState} state
+ */
+module.exports.Battle = class Battle extends Command {
+  constructor() {
+    super("Battle")
+  }
+  async execute(state) {
     // TODO: maybe prepare it for more than 2 players setup?
 
     const containerA = state.find({
@@ -42,41 +68,65 @@ class Battle {
     const topB = containerB.find({ type: "pile" }).getTop()
 
     const data = {
-      result: ""
+      outcome: "",
+      winner: undefined,
+      loser: undefined
     }
 
     const res = sortRank(topA.rank, topB.rank)
     if (res > 0) {
-      data.result = "win"
+      data.outcome = "win"
       data.winner = state.players[0].clientID
       data.loser = state.players[1].clientID
     } else if (res < 0) {
-      data.result = "win"
+      data.outcome = "win"
       data.winner = state.players[1].clientID
       data.loser = state.players[0].clientID
     } else {
-      data.result = "tie"
+      data.outcome = "tie"
     }
 
-    if (data.result === "tie") {
+    logs.notice("Battle outcome:", data)
+
+    if (data.outcome === "tie") {
+      const result = [
+        new commands.Broadcast({ type: "battleResult", data }),
+        new commands.Wait(500)
+      ]
+
       containers.forEach(container => {
         const card = container.find({ type: "deck" }).getTop()
-        card.flipDown()
-
-        new commands.ChangeParent(card, containerA.find({ type: "pile" }))
+        result.push(
+          new commands.FaceDown(card),
+          new commands.ChangeParent(card, container.find({ type: "pile" }))
+        )
       })
+
+      return result
     } else {
-      new commands.NextRound().execute(state, room)
+      const losersCards = state
+        .find({ ownerID: data.loser }, { type: "pile" })
+        .getChildren()
+      logs.verbose("losersCards:", losersCards)
+
+      const winnersCards = state
+        .find({ ownerID: data.winner }, { type: "pile" })
+        .getChildren()
+      logs.verbose("winnersCards:", winnersCards)
+
+      const winnersDeck = state.find({ ownerID: data.winner }, { type: "deck" })
+
+      return [
+        new commands.Broadcast({ type: "battleResult", data }),
+        new commands.Wait(1000),
+        new commands.FaceUp([...losersCards, ...winnersCards]),
+        new commands.ChangeParent(
+          [...losersCards, ...winnersCards],
+          winnersDeck,
+          true
+        ),
+        new commands.NextRound()
+      ]
     }
-
-    state.playersPlayed[0] = false
-    state.playersPlayed[1] = false
-
-    room.broadcast({ type: "battleResult", data })
   }
-}
-
-module.exports = {
-  MarkPlayerPlayed,
-  Battle
 }

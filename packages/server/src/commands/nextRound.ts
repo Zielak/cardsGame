@@ -1,12 +1,12 @@
 import { logs } from "@cardsgame/utils"
-import { ICommand } from "."
+import { Command } from "../command"
 import { State } from "../state"
 import { Room } from "../room"
 
-export class NextRound implements ICommand {
-  _name: string = "NextRound"
+export class NextRound extends Command {
+  _name = "NextRound"
 
-  execute(state: State, room: Room<any>) {
+  async execute(state: State, room: Room<any>) {
     room.onRoundEnd()
 
     state.round++
@@ -15,7 +15,7 @@ export class NextRound implements ICommand {
     room.onRoundStart()
   }
 
-  undo(state: State, room: Room<any>) {
+  async undo(state: State, room: Room<any>) {
     room.onRoundStart()
 
     state.round--

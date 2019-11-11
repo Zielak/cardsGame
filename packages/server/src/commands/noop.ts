@@ -1,5 +1,6 @@
-import { ICommand } from "."
+import { Command } from "../command"
 
-export class Noop implements ICommand {
-  execute() {}
+export class Noop extends Command {
+  _name = "Noop"
+  async execute() {}
 }

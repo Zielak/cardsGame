@@ -46,20 +46,30 @@ const UI = {
   pileAddedeCard: (isPlayer, card) => {
     const elem = document.createElement("div")
 
-    elem.innerHTML = `<div class="card__suit">${card.suit}</div><div class="card__rank">${card.rank}</div>`
     elem.classList.add("card")
+    elem.classList.add("card" + card.suit + card.rank)
     if (!card.faceUp) em.classList.add("card--faceDown")
+
+    elem.innerHTML = `<div class="card__suit">${card.suit}</div><div class="card__rank">${card.rank}</div>`
+
     elem.style.setProperty("--angle", `${Math.random()}deg`)
 
     EL[isPlayer ? "player" : "opponent"].pile.appendChild(elem)
   },
-  pileCleared: isPlayer => {
-    EL[isPlayer ? "player" : "opponent"].pile.innerHTM = ""
+  pileRemovedCard: (isPlayer, card) => {
+    const parent = EL[isPlayer ? "player" : "opponent"].pile
+    const elem = parent.querySelector(".card" + card.suit + card.rank)
+
+    parent.removeChild(elem)
   },
   playerLost: isPlayer => {
-    EL[isPlayer ? "player" : "opponent"].container.classList.add(
-      "playerContainer--loser"
-    )
+    const container = EL[isPlayer ? "player" : "opponent"].container
+
+    container.classList.add("playerContainer--loser")
+
+    setTimeout(() => {
+      container.classList.remove("playerContainer--loser")
+    }, 1000)
   }
 }
 
@@ -85,6 +95,7 @@ class GameHandler {
 
   roomListeners() {
     const { room } = this
+    const clientID = room.sessionID
 
     EL.start_btn.addEventListener("click", () => {
       room.send({ data: "start" })
@@ -98,6 +109,10 @@ class GameHandler {
 
     room.onMessage = message => {
       console.log("MSG:", message.type, message.data)
+
+      if (message.type === "battleResult") {
+        UI.playerLost(message.data.loser === clientID)
+      }
     }
 
     room.onStateChange = state => {
@@ -107,13 +122,13 @@ class GameHandler {
     room.state.clients.onAdd = (client, key) => {
       console.log("client added", client, key)
 
-      UI.clientJoined(client === room.sessionID, client)
+      UI.clientJoined(client === clientID, client)
       UI.updateStartButton(room.state)
     }
     room.state.clients.onRemove = (client, key) => {
       console.log("client removed", client, key)
 
-      UI.clientLeft(client === room.sessionID, client)
+      UI.clientLeft(client === clientID, client)
       UI.updateStartButton(room.state)
     }
 
@@ -122,7 +137,7 @@ class GameHandler {
       const deck = container.childrenDeck[0]
       const pile = container.childrenPile[0]
 
-      const isPlayer = container.ownerID === room.sessionID
+      const isPlayer = container.ownerID === clientID
       const target = isPlayer ? "player" : "opponent"
       EL[target].container.dataset["idxPath"] = container.idx
       EL[target].deck.dataset["idxPath"] = [container.idx, 0].join(",")
@@ -135,6 +150,9 @@ class GameHandler {
 
       pile.childrenClassicCard.onAdd = card => {
         UI.pileAddedeCard(isPlayer, card)
+      }
+      pile.childrenClassicCard.onRemove = card => {
+        UI.pileRemovedCard(isPlayer, card)
       }
     }
 

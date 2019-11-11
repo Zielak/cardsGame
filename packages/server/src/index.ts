@@ -10,6 +10,8 @@ export {
 import * as commands from "./commands"
 export { commands }
 
+export * from "./command"
+
 export * from "./room"
 export * from "./state"
 

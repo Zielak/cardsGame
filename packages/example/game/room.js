@@ -20,11 +20,7 @@ class WarGame extends Room {
   }
 
   onInitGame() {
-    this.setState(
-      new WarState({
-        turnBased: false
-      })
-    )
+    this.setState(new WarState())
 
     const { state } = this
 
@@ -40,8 +36,7 @@ class WarGame extends Room {
         new ClassicCard(state, {
           parent: this.deck,
           suit: data.suit,
-          rank: data.rank,
-          faceUp: true
+          rank: data.rank
         })
     )
   }
@@ -77,7 +72,8 @@ class WarGame extends Room {
       state.playersPlayed[idx] = false
     }
 
-    // Deal the cards
+    // Shuffle & Deal the cards
+    commandsManager.execute(state, new commands.ShuffleChildren(this.deck))
     commandsManager.execute(state, new commands.DealCards(this.deck, decks))
   }
 
