@@ -5,9 +5,7 @@ let entity: DumbEntity
 let state: State
 
 beforeEach(() => {
-  state = new State({
-    hostID: "asd"
-  })
+  state = new State()
   entity = new DumbEntity(state)
 })
 

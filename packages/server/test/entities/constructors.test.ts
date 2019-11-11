@@ -4,9 +4,7 @@ import { State } from "../../src/state"
 let state: State
 
 beforeEach(() => {
-  state = new State({
-    hostID: "asd"
-  })
+  state = new State()
 })
 
 test("All constructors", () => {

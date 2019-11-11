@@ -11,9 +11,7 @@ let state: State
 
 beforeEach(() => {
   player = new Player({ clientID: "myID" })
-  state = new State({
-    hostID: "asd"
-  })
+  state = new State()
 })
 
 describe(`entity properties`, () => {
