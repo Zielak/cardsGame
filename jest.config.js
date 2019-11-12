@@ -5,5 +5,9 @@ module.exports = {
     "!**/node_modules/**",
     "!**/test/**/*.ts"
   ],
-  projects: ["<rootDir>/packages/*"]
+  projects: [
+    "<rootDir>/packages/client",
+    "<rootDir>/packages/server",
+    "<rootDir>/packages/utils"
+  ]
 }
