@@ -77,6 +77,7 @@ export class State extends Entity<{}> {
   }
 
   @type("boolean") isGameStarted = false
+  @type("boolean") isGameOver = false
 
   @type({ map: "string" }) ui: StateUI = new MapSchema<string | string[]>()
 

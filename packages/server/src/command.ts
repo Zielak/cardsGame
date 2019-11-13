@@ -7,11 +7,16 @@ export class Command {
   public _name: string
 
   constructor(name?: string, subCommands?: Command[]) {
-    this._name = name || `Some ${subCommands ? "compund" : "plain"} command`
+    this._name = name || `Some ${subCommands ? "compound" : "plain"} command`
     this._subCommands = subCommands || []
   }
 
   async execute(state: State, room: Room<any>): Promise<void | Command[]> {
+    if (this._subCommands.length === 0) {
+      logs.notice(`${this._name}, nothing to execute.`)
+      return
+    }
+
     logs.group(`Commands group: ${this._name}.execute()`)
     for (let i = 0; i < this._subCommands.length; i++) {
       const command = this._subCommands[i]
@@ -28,6 +33,11 @@ export class Command {
   }
 
   async undo(state: State, room: Room<any>) {
+    if (this._subCommands.length === 0) {
+      logs.notice(`${this._name}, nothing to undo.`)
+      return
+    }
+
     logs.group(`Commands group: ${this._name}.undo()`)
     for (let i = this._subCommands.length; i > 0; i--) {
       const command = this._subCommands[i]

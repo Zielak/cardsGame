@@ -5,7 +5,7 @@ import { Room } from "../room"
 export class Broadcast extends Command {
   _name = "Broadcast"
 
-  constructor(private message: ServerMessage) {
+  constructor(public message: ServerMessage) {
     super()
   }
 

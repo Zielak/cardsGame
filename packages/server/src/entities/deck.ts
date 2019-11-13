@@ -10,8 +10,7 @@ import { State } from "../state"
 @containsChildren(false)
 @applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait])
 export class Deck extends Entity<DeckOptions> {
-  @type("uint16")
-  childCount: number = 0
+  @type("uint16") childCount: number = 0
 
   onEmptied: () => void
 

@@ -85,7 +85,11 @@ class WarGame extends Room {
     }
   }
 
-  onRoundEnd() {}
+  onRoundEnd() {
+    const { state } = this
+
+    // state.findAll({name: 'playersDeck'}).
+  }
 }
 
 WarGame.prototype.name = "WarGame"

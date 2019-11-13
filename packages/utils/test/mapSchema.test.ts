@@ -5,8 +5,7 @@ class Box extends Schema {
   name: string
 }
 class State extends Schema {
-  @type({ map: Box })
-  boxes = new MapSchema<Box>()
+  @type({ map: Box }) boxes = new MapSchema<Box>()
 }
 
 describe("map2Array", () => {

@@ -2,16 +2,11 @@ import { type, Schema } from "@colyseus/schema"
 import { def, logs } from "@cardsgame/utils"
 
 export class Player extends Schema {
-  @type("string")
-  clientID: string
-  @type("string")
-  name: string
+  @type("string") clientID: string
+  @type("string") name: string
 
-  @type("number")
-  score: number = 0
-
-  @type("number")
-  timeLeft: number = -1
+  @type("number") score: number = 0
+  @type("number") timeLeft: number = -1
 
   finishedPlaying = false
 

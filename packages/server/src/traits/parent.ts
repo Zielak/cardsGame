@@ -301,6 +301,24 @@ export class ParentTrait {
     }
   }
 
+  /**
+   * Looks for every matching entity here and deeper
+   */
+  findAll(props: QuerableProps): ChildTrait[] {
+    if (Object.keys(props).length === 0) return
+
+    const parents = this.getChildren().filter(isParent)
+    const result = parents.filter(queryRunner(props))
+
+    parents.forEach(parent => {
+      if (isParent(parent)) {
+        result.push(...parent.findAll(props))
+      }
+    })
+
+    return result
+  }
+
   protected updateIndexes() {
     this.childrenPointers = []
     this.getChildren().forEach((child, newIdx) => {
