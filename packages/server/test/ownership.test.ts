@@ -1,7 +1,7 @@
 import { Player } from "../src/player"
 import { OwnableParent, OwnableEntity } from "./helpers/ownableEntities"
 import { State } from "../src/state"
-import { hasOwnership, getOwner } from "../src/traits"
+import { hasOwnership } from "../src/traits"
 import { DumbParent, DumbEntity } from "./helpers/dumbEntities"
 import { LabeledEntity, LabeledParent } from "./helpers/labeledEntities"
 import { SmartParent, SmartEntity } from "./helpers/smartEntities"
@@ -27,19 +27,19 @@ describe(`getOwner`, () => {
     let parent = new OwnableParent(state)
     let entity = new OwnableEntity(state, { owner: player })
 
-    expect(getOwner(entity)).toBe(player)
+    expect(entity.getOwner()).toBe(player)
   })
   test(`root entity, no owner`, () => {
     let parent = new OwnableParent(state)
     let entity = new OwnableEntity(state, { parent })
 
-    expect(getOwner(entity)).toBe(undefined)
+    expect(entity.getOwner()).toBe(undefined)
   })
   test(`entity parent's owner`, () => {
     let parent = new OwnableParent(state, { owner: player })
     let entity = new OwnableEntity(state, { parent })
 
-    expect(getOwner(entity)).toBe(player)
+    expect(entity.getOwner()).toBe(player)
   })
 })
 

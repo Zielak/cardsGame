@@ -20,7 +20,7 @@ const sortRank = (rankA, rankB) => {
   } else if (cardRank.indexOf(rankB) < cardRank.indexOf(rankA)) {
     return 1
   }
-  return 1
+  return 0
 }
 
 module.exports = {

@@ -72,6 +72,13 @@ export class Room<S extends State> extends colRoom<S> {
   }
 
   onMessage(client: Client, event: ClientPlayerEvent) {
+    if (this.state.isGameOver) {
+      logs.info(
+        "onMessage",
+        "Game's already over, I'm not accepting any more messages"
+      )
+      return
+    }
     if (event.data === "start") {
       this.handleGameStart()
     }
@@ -79,7 +86,7 @@ export class Room<S extends State> extends colRoom<S> {
     const newEvent = populatePlayerEvent(this.state, event, client)
 
     if (!newEvent.player) {
-      logs.error("onMessage", "You're not a player, get out!")
+      logs.error("onMessage", "You're not a player, get out!", event)
       return
     }
 

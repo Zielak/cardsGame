@@ -13,7 +13,7 @@ import {
   hasChildren
 } from "./traits"
 import { ChildTrait, isChild } from "./traits/child"
-import { hasOwnership, getOwner } from "./traits/ownership"
+import { hasOwnership } from "./traits/ownership"
 
 @containsChildren()
 @applyMixins([IdentityTrait, LabelTrait, ParentTrait])
@@ -208,7 +208,7 @@ export class State extends Entity<{}> {
             return
           }
 
-          const owner = hasOwnership(child) ? getOwner(child) : undefined
+          const owner = hasOwnership(child) ? child.getOwner() : undefined
 
           // const lastChild = entities.length - 1 === idx
           const sIdx = idx === child.idx ? `${idx}` : `e${child.idx}:s${idx}`

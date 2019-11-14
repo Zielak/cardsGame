@@ -1,6 +1,7 @@
 const { Game, Room } = require("@cardsgame/client")
 
 const EL = {
+  gameView: document.querySelector(".gameView"),
   start_btn: document.getElementById("start_btn"),
   quickJoin_btn: document.getElementById("quickJoin_btn"),
   player: {
@@ -16,7 +17,8 @@ const EL = {
     pile: document.querySelector("#opponent .pile"),
     deck: document.querySelector("#opponent .deck"),
     deckCount: document.querySelector("#opponent .deck__cardsCount")
-  }
+  },
+  endScreen: document.getElementById("endScreen")
 }
 
 const UI = {
@@ -48,11 +50,11 @@ const UI = {
 
     elem.classList.add("card")
     elem.classList.add("card" + card.suit + card.rank)
-    if (!card.faceUp) em.classList.add("card--faceDown")
+    if (!card.faceUp) elem.classList.add("card--faceDown")
 
     elem.innerHTML = `<div class="card__suit">${card.suit}</div><div class="card__rank">${card.rank}</div>`
 
-    elem.style.setProperty("--angle", `${Math.random()}deg`)
+    elem.style.setProperty("--angle", `${(Math.random() - 0.5) * 10}deg`)
 
     EL[isPlayer ? "player" : "opponent"].pile.appendChild(elem)
   },
@@ -70,6 +72,17 @@ const UI = {
     setTimeout(() => {
       container.classList.remove("playerContainer--loser")
     }, 1000)
+  },
+  playersTie: () => {
+    EL.gameView.classList.add("playerContainer--tie")
+
+    setTimeout(() => {
+      EL.gameView.classList.remove("playerContainer--tie")
+    }, 1000)
+  },
+  gameOver: ({ winner }) => {
+    EL.endScreen.style.display = "block"
+    EL.endScreen.innerHTML = `<h1>GAME OVER</h1><p>Player ${winner} is the winner!</p>`
   }
 }
 
@@ -111,7 +124,14 @@ class GameHandler {
       console.log("MSG:", message.type, message.data)
 
       if (message.type === "battleResult") {
-        UI.playerLost(message.data.loser === clientID)
+        if (message.data.outcome === "tie") {
+          UI.playersTie()
+        } else {
+          UI.playerLost(message.data.loser === clientID)
+        }
+      }
+      if (message.type === "gameOver") {
+        UI.gameOver(message.data)
       }
     }
 

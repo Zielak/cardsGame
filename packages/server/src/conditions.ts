@@ -3,7 +3,7 @@ import { logs, IS_CHROME } from "@cardsgame/utils"
 
 import { ServerPlayerEvent, Player } from "./player"
 import { State } from "./state"
-import { hasOwnership, getOwner } from "./traits/ownership"
+import { hasOwnership } from "./traits/ownership"
 import { QuerableProps } from "./queryRunner"
 import { isParent } from "./traits"
 
@@ -97,9 +97,9 @@ class Conditions<S extends State> {
    *
    * @param result
    * @param errMessage use #{exp} and #{act} to inject values in error messages
-   * @param errMessageNot use #{exp} and #{act} to inject values in error messages
-   * @param expected
-   * @param actual
+   * @param [errMessageNot] use #{exp} and #{act} to inject values in error messages
+   * @param [expected]
+   * @param [actual]
    */
   private assert(
     result: boolean,
@@ -654,15 +654,20 @@ class Conditions<S extends State> {
    */
   get owner(): this {
     const entity = this._event.entity
-    const expected = getOwner(entity)
 
-    this.assert(
-      this._player === expected,
-      `Player #{act} is not an owner. Expected #{exp}`,
-      `Player #{act} is an owner, but shouldn't`,
-      expected && expected.clientID,
-      hasOwnership(entity) ? getOwner(entity).clientID : undefined
-    )
+    if (hasOwnership(entity)) {
+      const expected = entity.getOwner()
+
+      this.assert(
+        this._player === expected,
+        `Player #{act} is not an owner. Expected #{exp}`,
+        `Player #{act} is an owner, but shouldn't`,
+        expected && expected.clientID,
+        hasOwnership(entity) ? entity.getOwner().clientID : undefined
+      )
+    } else {
+      this.assert(false, `Given entity is not ownable.`)
+    }
 
     return this
   }

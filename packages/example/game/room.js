@@ -31,7 +31,7 @@ class WarGame extends Room {
     this.pile = new Pile(state, {
       name: "mainPile"
     })
-    standardDeckFactory().forEach(
+    standardDeckFactory(["9", "10", "J", "Q", "K", "A"]).forEach(
       data =>
         new ClassicCard(state, {
           parent: this.deck,
@@ -88,7 +88,19 @@ class WarGame extends Room {
   onRoundEnd() {
     const { state } = this
 
-    // state.findAll({name: 'playersDeck'}).
+    const winningDeck = state
+      .findAll({ name: "playersDeck" })
+      .find(deck => deck.countChildren() === 0)
+
+    if (winningDeck) {
+      state.isGameOver = true
+      this.broadcast({
+        type: "gameOver",
+        data: {
+          winner: winningDeck.getOwner().clientID
+        }
+      })
+    }
   }
 }
 

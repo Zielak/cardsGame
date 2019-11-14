@@ -1,5 +1,6 @@
 main.gameView {
   text-align: center;
+  position: relative;
 }
 
 header h2 {
@@ -15,6 +16,9 @@ header p {
 
 .playerContainer--loser {
   background-color: #f44336;
+}
+.playerContainer--tie {
+  background-color: #36aef4;
 }
 
 .deck,
@@ -63,6 +67,8 @@ header p {
   box-shadow: 0.1em 0.1em 6px 0px #0005;
   transform: rotate(var(--angle));
   cursor: pointer;
+
+  user-select: none;
 }
 
 .card__suit,
@@ -78,4 +84,17 @@ header p {
 .card--faceDown .card__suit,
 .card--faceDown .card__rank {
   display: none;
+}
+
+#endScreen {
+  display: none;
+  position: absolute;
+  top: 30%;
+  left: 20%;
+  right: 20%;
+  bottom: 30%;
+  border-radius: 1em;
+  font-size: 1.5em;
+  background: #030c;
+  color: white;
 }
