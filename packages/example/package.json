@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@cardsgame/client": "^0.2.1",
     "@cardsgame/server": "^0.2.1",
