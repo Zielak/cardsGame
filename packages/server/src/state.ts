@@ -17,48 +17,91 @@ import { hasOwnership } from "./traits/ownership"
 
 @containsChildren()
 @applyMixins([IdentityTrait, LabelTrait, ParentTrait])
-export class State extends Entity<StateOptions> {
+export class State extends Entity<{}> {
   type = "state"
 
-  @type("number")
-  tableWidth = cm2px(60) // 60 cm
+  @type("number") tableWidth = cm2px(60) // 60 cm
 
-  @type("number")
-  tableHeight = cm2px(60) // 60 cm
+  @type("number") tableHeight = cm2px(60) // 60 cm
 
-  @type({ map: Player })
-  players = new MapSchema<Player>()
+  /**
+   * IDs of clients who are connecting to the room.
+   * A "client" is someone who just stopped by in this room
+   * and not necessarily someone who is playing the game.
+   */
+  @type({ map: "string" }) clients = new MapSchema<string>()
 
-  @type({ map: "string" })
-  clients = new MapSchema<string>()
+  /**
+   * How much clients are connected to the room
+   */
+  get clientsCount(): number {
+    return mapCount(this.clients)
+  }
 
-  @type("uint8")
-  currentPlayerIdx: number
+  /**
+   * Games are turn-based by default. Each player takes their turns one by one.
+   * Set this to `false` to allow simultaneous play.
+   * Don't rely on `currentPlayer` value for non turn-based games.
+   */
+  @type("boolean") turnBased: boolean = true
+
+  /**
+   * Current round number. Increased using `NextRound` command.
+   */
+  @type("uint16") round: number = 0
+
+  /**
+   * List of player - game participants, after the game satrts.
+   */
+  @type({ map: Player }) players = new MapSchema<Player>()
+
+  @type("uint8") currentPlayerIdx: number = 0
 
   get currentPlayer(): Player {
-    return this.players[this.currentPlayerIdx]
+    return this.turnBased ? this.players[this.currentPlayerIdx] : null
   }
+
   get playersCount(): number {
     return mapCount(this.players)
   }
 
-  // TODO: think this through:
-  // gameVariants: any
+  /**
+   * Will get you an index of given player in turn queue.
+   * Useful if you happen to have just a `Player` reference at hand.
+   * @param player
+   */
+  getPlayersIndex(player: Player): number {
+    return parseInt(
+      Object.keys(this.players).find(idx => this.players[idx] === player)
+    )
+  }
 
-  @type("boolean")
-  isGameStarted = false
+  @type("boolean") isGameStarted = false
+  @type("boolean") isGameOver = false
 
-  @type({ map: "string" })
-  ui: StateUI = new MapSchema<string | string[]>()
+  @type({ map: "string" }) ui: StateUI = new MapSchema<string | string[]>()
 
-  @type(PlayerViewPosition)
-  playerViewPosition = new PlayerViewPosition()
+  /**
+   * A construct describing how should player's main items
+   * be positioned in his view. Containers of other players
+   * will not follow these rules.
+   * Default is: center/bottom, +10 px up.
+   */
+  @type(PlayerViewPosition) playerViewPosition = new PlayerViewPosition()
 
+  /**
+   * @private
+   */
   _lastID = -1
+
+  /**
+   * Use `find()` or `getEntity()` methods instead.
+   * @private
+   */
   _allEntities = new Map<number, IdentityTrait>()
 
-  constructor(options?: StateOptions) {
-    super(undefined, options)
+  constructor() {
+    super(undefined)
 
     this.hijacksInteractionTarget = false
   }
@@ -74,6 +117,8 @@ export class State extends Entity<StateOptions> {
     return newID
   }
 
+  // TODO: Separate this function to `getEntityByID` and `getEntityByIdxPath`. State also has `find` automatically
+  // TODO: wait... isn't this function also `getEntitiesAlongPath`?
   /**
    * Get an Entity by its ID
    * @param id
@@ -204,22 +249,9 @@ export class State extends Entity<StateOptions> {
     travel(startingPoint || this)
     logger.groupEnd()
   }
-
-  static events = {
-    playerTurnStarted: Symbol("playerTurnStarted"),
-    playerTurnEnded: Symbol("playerTurnEnded")
-  }
 }
 
 interface Mixin extends IdentityTrait, LabelTrait, ParentTrait {}
-
-export type StateOptions = Partial<
-  ConstructorType<Mixin> & {
-    minClients: number
-    maxClients: number
-    hostID: string
-  }
->
 
 export interface State extends Mixin {}
 

@@ -1,10 +1,12 @@
-import { State } from "../state"
 import { logs } from "@cardsgame/utils"
-import { ICommand } from "."
-import { ChangeParent } from "./changeParent"
+import { Command } from "../command"
+import { State } from "../state"
 import { ParentTrait, isParent } from "../traits/parent"
+import { ChangeParent } from "./changeParent"
 
-export class DealCards implements ICommand {
+export class DealCards extends Command {
+  _name = "DealCards"
+
   targets: ParentTrait[]
 
   /**
@@ -22,17 +24,18 @@ export class DealCards implements ICommand {
     private count: number = Infinity,
     private step: number = 1
   ) {
+    super()
     this.targets = Array.isArray(targets) ? targets : [targets]
   }
 
-  execute(state: State) {
+  async execute(state: State) {
     const _ = this.constructor.name
     logs.notice(_, "count:", this.count, ", step:", this.step)
     let targetI = 0
     let stepI = 0
 
     const maxDeals = this.count * this.targets.length
-    const next = () => {
+    const next = async () => {
       const top = this.source.getTop()
       if (isParent(top)) {
         logs.warn(
@@ -44,7 +47,7 @@ export class DealCards implements ICommand {
       const currentTarget = this.targets[targetI % this.targets.length]
 
       // This command thing moves the entity
-      new ChangeParent(top, this.source, currentTarget).execute(state)
+      new ChangeParent(top, currentTarget).execute(state)
 
       // Pick next target if we dealt `this.step` cards to current target
       if (++stepI % this.step === 0) {
@@ -56,7 +59,7 @@ export class DealCards implements ICommand {
         logs.notice(_, `Done dealing cards.`)
       }
     }
-    return next()
+    return await next()
     // state.logTreeState()
   }
 }

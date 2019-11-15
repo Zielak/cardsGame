@@ -36,24 +36,31 @@ export class Room<S extends State> extends colRoom<S> {
     this.onInitGame(options)
   }
 
-  broadcast(data: any, options?: BroadcastOptions) {
+  /**
+   * Send message to EVERY connected client.
+   * @param data
+   * @param options
+   */
+  broadcast(data: ServerMessage, options?: BroadcastOptions) {
     logs.notice("BROADCAST 📢", data)
 
     return super.broadcast(data, options)
   }
 
   onJoin(newClient: Client) {
-    // If not on the list already
+    // Add to `state.clients` only if the game is not yet started
     if (
+      !this.state.isGameStarted &&
       map2Array(this.state.clients).every(clientID => newClient.id !== clientID)
     ) {
       mapAdd(this.state.clients, newClient.id)
     }
+
     logs.notice("onJoin", `client "${newClient.id}" joined`)
   }
 
   onLeave(client: Client, consented: boolean) {
-    if (consented) {
+    if (consented || !this.state.isGameStarted) {
       mapRemoveEntry(this.state.clients, client.id)
       logs.notice("onLeave", `client "${client.id}" left permamently`)
     } else {
@@ -64,40 +71,70 @@ export class Room<S extends State> extends colRoom<S> {
     }
   }
 
-  onMessage(client: Client, event: PlayerEvent) {
-    if (event.data === "start" && !this.state.isGameStarted) {
+  onMessage(client: Client, event: ClientPlayerEvent) {
+    if (this.state.isGameOver) {
+      logs.info(
+        "onMessage",
+        "Game's already over, I'm not accepting any more messages"
+      )
+      return
+    }
+    if (event.data === "start") {
+      this.handleGameStart()
+    }
+
+    const newEvent = populatePlayerEvent(this.state, event, client)
+
+    if (!newEvent.player) {
+      logs.error("onMessage", "You're not a player, get out!", event)
+      return
+    }
+
+    debugLogMessage(newEvent)
+
+    this.commandsManager
+      .action(client, newEvent)
+      .then(result => {
+        logs.notice("ROOM", "action() completed, result:", result)
+      })
+      .catch(error => {
+        logs.error("ROOM", `action() failed. Client: "${client.id}". ${error}`)
+      })
+  }
+
+  handleGameStart() {
+    if (!this.state.isGameStarted) {
+      if (this.canGameStart && !this.canGameStart()) {
+        logs.notice(
+          "onMessage",
+          `Someone requested game start, but we can't go yet...`
+        )
+        return
+      }
+
       Object.keys(this.state.clients).forEach((key, idx) => {
         this.state.players[idx] = new Player({
           clientID: this.state.clients[key]
         })
       })
-      this.state.currentPlayerIdx = 0
       this.state.isGameStarted = true
       this.onStartGame(this.state)
 
       // Initial play started "event".
       this.onPlayerTurnStarted(this.state.currentPlayer)
       return
-    } else if (event.data === "start" && this.state.isGameStarted) {
+    } else if (this.state.isGameStarted) {
       logs.notice("onMessage", `Game is already started, ignoring...`)
       return
     }
+  }
 
-    const newEvent = populatePlayerEvent(this.state, event, client)
-
-    if (!newEvent.player) {
-      logs.error("onMessage", "You're not a player, get out!")
-      return
-    }
-
-    debugLogMessage(newEvent)
-
-    const result = this.commandsManager.action(client, newEvent)
-    if (result) {
-      logs.notice("ROOM", "action() completed")
-    } else {
-      logs.error("ROOM", "action() failed")
-    }
+  /**
+   * Override it to state your own conditions of whether the game can be started or not.
+   * @returns {boolean}
+   */
+  canGameStart() {
+    return true
   }
 
   /**
@@ -123,14 +160,38 @@ export class Room<S extends State> extends colRoom<S> {
    * Invoked when players turn starts
    */
   onPlayerTurnStarted(player: Player) {
-    logs.error("Room", `onPlayerTurnStarted is not implemented!`)
+    if (!this.state.turnBased) {
+      logs.error("Room", `onPlayerTurnStarted is not implemented!`)
+    }
   }
 
   /**
    * Invoked when players turn ends
    */
   onPlayerTurnEnded(player: Player) {
-    logs.error("Room", `onPlayerTurnEnded is not implemented!`)
+    if (!this.state.turnBased) {
+      logs.error("Room", `onPlayerTurnEnded is not implemented!`)
+    }
+  }
+
+  /**
+   * Invoked when each round starts.
+   */
+  onRoundStart() {
+    logs.error(
+      "Room",
+      `"nextRound" action was called, but "room.onRoundStart()" is not implemented!`
+    )
+  }
+
+  /**
+   * Invoked when a round is near completion.
+   */
+  onRoundEnd() {
+    logs.error(
+      "Room",
+      `"nextRound" action was called, but "room.onRoundEnd()" is not implemented!`
+    )
   }
 }
 

@@ -1,0 +1,102 @@
+main.gameView {
+  text-align: center;
+  position: relative;
+}
+
+header h2 {
+  margin-bottom: 0;
+}
+header p {
+  margin-top: 0;
+}
+
+.playerContainer--disconnected {
+  opacity: 0.5;
+}
+
+.playerContainer--loser {
+  background-color: #f44336;
+}
+.playerContainer--tie {
+  background-color: #36aef4;
+}
+
+.deck,
+.pile,
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deck,
+.pile {
+  height: 6em;
+  margin-bottom: 0.5em;
+}
+
+.deck__cardsCount {
+  font-size: 2em;
+}
+
+.pile {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding-right: 3.5em;
+}
+
+.pile .card {
+  margin-right: -1.5em;
+  margin-bottom: -2.5em;
+}
+
+.pile .card.card--faceDown {
+  margin-right: -3.5em;
+}
+
+.card {
+  box-sizing: border-box;
+  width: 4.5em;
+  height: 6em;
+
+  text-align: center;
+
+  background-color: white;
+  border: 0.05em solid #0003;
+  border-radius: 0.25em;
+  box-shadow: 0.1em 0.1em 6px 0px #0005;
+  transform: rotate(var(--angle));
+  cursor: pointer;
+
+  user-select: none;
+}
+
+.card__suit,
+.card__rank {
+  font-size: 2em;
+}
+
+.card--faceDown {
+  background-color: #834224;
+  border: 0.5em solid white;
+}
+
+.card--faceDown .card__suit,
+.card--faceDown .card__rank {
+  display: none;
+}
+
+#endScreen {
+  display: none;
+  position: absolute;
+  flex-direction: column;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 1em;
+  font-size: 1.5em;
+  background: #030c;
+  color: white;
+}

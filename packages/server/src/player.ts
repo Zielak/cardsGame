@@ -1,26 +1,14 @@
 import { type, Schema } from "@colyseus/schema"
 import { def, logs } from "@cardsgame/utils"
 
-// TODO: Player shouldn't be on the scene, he's not an object of play
-//       Player's pawns could be placed on the board, outside of his domain...
 export class Player extends Schema {
-  @type("string")
-  clientID: string
-  @type("string")
-  name: string
+  @type("string") clientID: string
+  @type("string") name: string
 
-  @type("number")
-  score: number = 0
-
-  @type("number")
-  timeLeft: number = -1
+  @type("number") score: number = 0
+  @type("number") timeLeft: number = -1
 
   finishedPlaying = false
-
-  // _selectedEntities = new Set<IEntity>()
-
-  // @type("int8")
-  // selectedEntitiesCount: number
 
   constructor(options: IPlayerOptions) {
     super()
@@ -36,10 +24,11 @@ export interface IPlayerOptions {
 }
 
 // Event from client, with stuff auto filled when comming to server
-export type ServerPlayerEvent = PlayerEvent & {
+export type ServerPlayerEvent = ClientPlayerEvent & {
   player?: Player
   entity?: unknown
   entities?: unknown[]
+  entityPath?: number[]
 }
 
 const randomPlayerNames = [

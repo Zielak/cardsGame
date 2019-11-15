@@ -1,31 +1,35 @@
 import { State } from "../state"
 import { logs, chalk } from "@cardsgame/utils"
-import { ICommand } from "."
+import { Command } from "../command"
 import { ChildTrait } from "../traits/child"
 import { ParentTrait, hasLabel } from "../traits"
 
-export class ChangeParent implements ICommand {
-  private entities: ChildTrait[]
-  private source: ParentTrait
-  private target: ParentTrait
+export class ChangeParent extends Command {
+  _name = "ChangeParent"
 
-  // constructor(entity: ChildTrait, source: ParentTrait, target: ParentTrait)
-  // constructor(entities: ChildTrait[], source: ParentTrait, target: ParentTrait)
+  private entities: ChildTrait[]
+  private sources: ParentTrait[]
+  private target: ParentTrait
+  private prepend: boolean
+
   constructor(
     ents: ChildTrait | ChildTrait[],
-    source: ParentTrait,
-    target: ParentTrait
+    target: ParentTrait,
+    prepend = false
   ) {
-    this.entities = Array.isArray(ents) ? ents : [ents]
-    this.source = source
-    this.target = target
+    super()
 
-    if (this.entities.length < 1 || !this.source || !this.target) {
-      throw new Error(`I'm missing something...`)
+    this.entities = Array.isArray(ents) ? ents : [ents]
+    this.sources = []
+    this.target = target
+    this.prepend = prepend
+
+    if (!this.target) {
+      throw new Error(`Target is required.`)
     }
   }
 
-  execute(state: State) {
+  async execute(state: State) {
     const _ = this.constructor.name
     if (this.entities.length < 1) {
       logs.error("ChangeParent command", `I don't have an entity to move!`)
@@ -33,20 +37,21 @@ export class ChangeParent implements ICommand {
     }
     logs.notice(
       _,
-      "starting, moving",
+      "moving",
       this.entities.map(e => (hasLabel(e) ? e.name : "")),
-      "entities from",
-      chalk.yellow(this.source["name"] || "ROOT"),
-      "to",
+      "entities to",
       chalk.yellow(this.target["name"] || "ROOT")
     )
 
-    this.entities.forEach(entity => this.target.addChild(entity))
-
-    // state.logTreeState()
+    this.entities.forEach((entity, idx) => {
+      this.sources[idx] = entity.parent
+      this.target.addChild(entity, this.prepend)
+    })
   }
 
-  undo(state: State) {
-    this.entities.forEach(entity => this.source.addChild(entity))
+  async undo(state: State) {
+    this.entities.forEach((entity, idx) => {
+      this.sources[idx].addChild(entity)
+    })
   }
 }

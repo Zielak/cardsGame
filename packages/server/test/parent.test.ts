@@ -1,15 +1,12 @@
 import { DumbParent, DumbEntity } from "./helpers/dumbEntities"
-import { State } from "../src/state"
+import { SmartParent, SmartEntity } from "./helpers/smartEntities"
 import { IdentityTrait, ChildTrait } from "../src/traits"
+import { State } from "../src/state"
 
 let state: State
 
 beforeEach(() => {
-  state = new State({
-    minClients: 1,
-    maxClients: 4,
-    hostID: "asd"
-  })
+  state = new State()
 })
 
 describe("ParentConstructor", () => {
@@ -165,14 +162,11 @@ test("#getBottom", () => {
 
   expect(parent.getBottom()).toBe(entity)
 })
+
 // getDescendants is now only used for debugging?
 test.todo("#getDescendants")
 
 describe("queryRunner functions", () => {
-  describe("#findAll", () => {
-    test.todo("finds")
-    test.todo("throws")
-  })
   describe("#find", () => {
     test.todo("finds")
     test.todo("throws")

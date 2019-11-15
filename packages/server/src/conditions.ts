@@ -5,6 +5,7 @@ import { ServerPlayerEvent, Player } from "./player"
 import { State } from "./state"
 import { hasOwnership } from "./traits/ownership"
 import { QuerableProps } from "./queryRunner"
+import { isParent } from "./traits"
 
 // export interface ExpandableConditions<S extends State> {
 //   [key: string]: (this: Conditions<S>) => Conditions<S>
@@ -96,9 +97,9 @@ class Conditions<S extends State> {
    *
    * @param result
    * @param errMessage use #{exp} and #{act} to inject values in error messages
-   * @param errMessageNot use #{exp} and #{act} to inject values in error messages
-   * @param expected
-   * @param actual
+   * @param [errMessageNot] use #{exp} and #{act} to inject values in error messages
+   * @param [expected]
+   * @param [actual]
    */
   private assert(
     result: boolean,
@@ -169,6 +170,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @yields `player` of current interaction
    */
@@ -178,6 +180,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @yields `entity` from players interaction
    */
@@ -187,6 +190,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @yields completely new subject, provided in the argument
    */
@@ -195,6 +199,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @yields an entity, found by alias or `QuerableProps` query
    * @example ```
@@ -224,6 +229,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @yields subjects key to be asserted. Will remember the reference to the object, so you can chain key checks
    * @example
@@ -262,6 +268,25 @@ class Conditions<S extends State> {
 
     return this
   }
+
+  /**
+   * @yields a child at a specific index (array or Parent)
+   * @param index
+   */
+  nthChild(index: number): this {
+    const subject = flag(this, "subject")
+
+    ensure(typeof subject === "object", `nthChild | Subject must be an objec`)
+
+    if (isParent(subject)) {
+      flag(this, "subject", subject.getChild(index))
+    } else {
+      flag(this, "subject", subject[index])
+    }
+
+    return this
+  }
+
   /**
    * @yields first element in collection
    */
@@ -281,6 +306,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @yields last element in collection
    */
@@ -300,6 +326,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @yields `length` property of a collection (or string)
    */
@@ -314,6 +341,7 @@ class Conditions<S extends State> {
     flag(this, "subject", subject.length)
     return this
   }
+
   /**
    * @yields children count if `subject` is a `Parent`
    */
@@ -336,6 +364,7 @@ class Conditions<S extends State> {
    * Each item is set as the `subject` with each iteration automatically.
    * After all iterations are done, the `subject` will be reset back to what it originally was.
    * If one of the items fail any assertions, whole `each` block fails.
+   *
    * @param predicate a function in style of native `array.forEach`, but first argument is new Conditions instance. This `con` will have its own subject set to each item of current subject.
    * @example
    * con.get("chosenCards").children.each((con, item, index, array) => {
@@ -436,6 +465,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @asserts that subject (IParent) has exactly the expected children count.
    */
@@ -453,6 +483,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @asserts that subject is equal to one of the provided values. Coercion allowed.
    */
@@ -531,6 +562,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * Based on `state` instead of `subject`
    * Current player has a specific UI element presented to him.
@@ -618,20 +650,24 @@ class Conditions<S extends State> {
   }
 
   /**
-   * Based on `event` instead of `subject`
-   * @asserts
+   * @asserts if current player is an owner of entity from current `event`
    */
   get owner(): this {
     const entity = this._event.entity
-    const expected = hasOwnership(entity) ? entity.getOwner() : undefined
 
-    this.assert(
-      this._player === expected,
-      `Player #{act} is not an owner. Expected #{exp}`,
-      `Player #{act} is an owner, but shouldn't`,
-      expected && expected.clientID,
-      hasOwnership(entity) ? entity.getOwner().clientID : undefined
-    )
+    if (hasOwnership(entity)) {
+      const expected = entity.getOwner()
+
+      this.assert(
+        this._player === expected,
+        `Player #{act} is not an owner. Expected #{exp}`,
+        `Player #{act} is an owner, but shouldn't`,
+        expected && expected.clientID,
+        hasOwnership(entity) ? entity.getOwner().clientID : undefined
+      )
+    } else {
+      this.assert(false, `Given entity is not ownable.`)
+    }
 
     return this
   }
@@ -642,12 +678,14 @@ class Conditions<S extends State> {
   getState(): S {
     return this._state
   }
+
   /**
    * @returns `event` reference
    */
   getEvent(): ServerPlayerEvent {
     return this._event
   }
+
   /**
    * @returns `player` reference
    */

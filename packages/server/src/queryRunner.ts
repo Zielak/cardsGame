@@ -20,7 +20,28 @@ type EveryTrait = BoxModelTrait &
   SelectableChildrenTrait &
   TwoSidedTrait
 
-export interface QuerableProps extends Partial<Omit<EveryTrait, "parent">> {
+export interface QuerableProps
+  extends Partial<
+    Pick<
+      EveryTrait,
+      | "width"
+      | "height"
+      | "idx"
+      | "alignItems"
+      | "directionReverse"
+      | "justifyContent"
+      | "name"
+      | "type"
+      | "x"
+      | "y"
+      | "angle"
+      | "owner"
+      | "ownerID"
+      | "isInOwnersView"
+      | "hijacksInteractionTarget"
+      | "faceUp"
+    >
+  > {
   parent?: EntityID | QuerableProps
 }
 

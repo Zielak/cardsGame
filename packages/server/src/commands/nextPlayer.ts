@@ -1,10 +1,15 @@
 import { logs } from "@cardsgame/utils"
-import { ICommand } from "."
+import { Command } from "../command"
 import { State } from "../state"
 import { Room } from "../room"
 
-export class NextPlayer implements ICommand {
-  execute(state: State, room: Room<any>) {
+export class NextPlayer extends Command {
+  _name = "NextPlayer"
+
+  async execute(state: State, room: Room<any>) {
+    if (state.turnBased)
+      throw new Error(`Can't use NextPlayer in non turn based game.`)
+
     const _ = this.constructor.name
     const current = state.currentPlayerIdx
     const next: number = current + 1 === state.playersCount ? 0 : current + 1

@@ -45,12 +45,10 @@ import { State } from "../state"
 export class ClassicCard extends Entity<ClassicCardOptions> {
   // My own props
   // @filter(faceDownOnlyOwner)
-  @type("string")
-  suit: string
+  @type("string") suit: string
 
   // @filter(faceDownOnlyOwner)
-  @type("string")
-  rank: string
+  @type("string") rank: string
 
   constructor(state: State, options: ClassicCardOptions = {}) {
     super(state, options)

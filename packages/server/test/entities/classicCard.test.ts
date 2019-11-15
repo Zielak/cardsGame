@@ -8,11 +8,7 @@ let card: ClassicCard
 let state: State
 
 beforeEach(() => {
-  state = new State({
-    minClients: 1,
-    maxClients: 4,
-    hostID: "asd"
-  })
+  state = new State()
 })
 
 afterEach(() => {

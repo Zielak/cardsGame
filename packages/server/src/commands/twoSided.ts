@@ -1,22 +1,25 @@
 import { State } from "../state"
-import { ICommand } from "."
+import { Command } from "../command"
 import { TwoSidedTrait } from "../traits/twoSided"
 
 /**
  * Reveal the front side (overse) of an element
  */
-export class FaceUp implements ICommand {
+export class FaceUp extends Command {
+  _name = "FaceUp"
+
   entities: TwoSidedTrait[]
 
   constructor(entity: TwoSidedTrait)
   constructor(entities: TwoSidedTrait[])
   constructor(_entities: TwoSidedTrait | TwoSidedTrait[]) {
+    super()
     this.entities = Array.isArray(_entities) ? _entities : [_entities]
   }
-  execute(state: State) {
+  async execute(state: State) {
     this.entities.forEach(e => e.flipUp())
   }
-  undo(state: State) {
+  async undo(state: State) {
     this.entities.forEach(e => e.flipDown())
   }
 }
@@ -24,19 +27,22 @@ export class FaceUp implements ICommand {
 /**
  * Reveal the back side (revers) of an element
  */
-export class FaceDown implements ICommand {
+export class FaceDown extends Command {
+  _name = "FaceDown"
+
   entities: TwoSidedTrait[]
   constructor(entity: TwoSidedTrait)
   constructor(entities: TwoSidedTrait[])
   constructor(_entities: TwoSidedTrait | TwoSidedTrait[]) {
+    super()
     this.entities = Array.isArray(_entities) ? _entities : [_entities]
   }
 
-  execute(state: State) {
+  async execute(state: State) {
     this.entities.forEach(e => e.flipDown())
   }
 
-  undo(state: State) {
+  async undo(state: State) {
     this.entities.forEach(e => e.flipUp())
   }
 }
@@ -44,19 +50,22 @@ export class FaceDown implements ICommand {
 /**
  * Flip the element to reveal its other side
  */
-export class Flip implements ICommand {
+export class Flip extends Command {
+  _name = "Flip"
+
   entities: TwoSidedTrait[]
   constructor(entity: TwoSidedTrait)
   constructor(entities: TwoSidedTrait[])
   constructor(_entities: TwoSidedTrait | TwoSidedTrait[]) {
+    super()
     this.entities = Array.isArray(_entities) ? _entities : [_entities]
   }
 
-  execute(state: State) {
+  async execute(state: State) {
     this.entities.forEach(e => e.flip())
   }
 
-  undo(state: State) {
+  async undo(state: State) {
     this.entities.forEach(e => e.flip())
   }
 }

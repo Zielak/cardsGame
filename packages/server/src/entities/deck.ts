@@ -3,15 +3,26 @@ import { def } from "@cardsgame/utils"
 import { containsChildren, canBeChild } from "../traits/parent"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { LabelTrait, ParentTrait, Entity, applyMixins } from "../traits"
+import {
+  LabelTrait,
+  ParentTrait,
+  Entity,
+  applyMixins,
+  OwnershipTrait
+} from "../traits"
 import { State } from "../state"
 
 @canBeChild
 @containsChildren(false)
-@applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait])
+@applyMixins([
+  LocationTrait,
+  ChildTrait,
+  ParentTrait,
+  LabelTrait,
+  OwnershipTrait
+])
 export class Deck extends Entity<DeckOptions> {
-  @type("uint16")
-  childCount: number = 0
+  @type("uint16") childCount: number = 0
 
   onEmptied: () => void
 
@@ -41,7 +52,12 @@ export class Deck extends Entity<DeckOptions> {
   }
 }
 
-interface Mixin extends LocationTrait, ChildTrait, ParentTrait, LabelTrait {}
+interface Mixin
+  extends LocationTrait,
+    ChildTrait,
+    ParentTrait,
+    LabelTrait,
+    OwnershipTrait {}
 
 // Options for the game authors to fill in
 type DeckOptions = Partial<

@@ -71,7 +71,10 @@ export function containsChildren(childrenSynced = true) {
 // ====================
 
 export function isParent(entity: any): entity is ParentTrait {
-  return typeof (entity as ParentTrait).hijacksInteractionTarget !== "undefined"
+  return (
+    typeof (entity as ParentTrait).addChild !== "undefined" &&
+    typeof (entity as ParentTrait).getChildren !== "undefined"
+  )
 }
 
 export const hasChildren = entity =>
@@ -128,7 +131,11 @@ export class ParentTrait {
     // https://github.com/colyseus/schema/issues/17
     // https://discordapp.com/channels/525739117951320081/526083188108296202/573204615290683392
     // this[targetArrayName] = targetArray.filter(el => el !== child)
-    const [removedChild] = this[targetArrayName].splice(childIdx, 1)
+    const removedChild = this[targetArrayName].splice(
+      childIdx,
+      1
+    )[0] as ChildTrait
+
     this.childRemoved && this.childRemoved(idx)
     this.updateIndexes()
 
@@ -136,23 +143,31 @@ export class ParentTrait {
       throw new Error("How the fuck did that happen?")
     }
 
-    removedChild.parent = 0
+    removedChild.parent = undefined
 
     return true
   }
 
-  addChild(entity: ChildTrait) {
+  addChild(entity: ChildTrait, prepend = false) {
     if (entity.parent !== undefined) {
       entity.parent.removeChildAt(entity.idx)
     }
 
     const con = getKnownConstructor(entity)
     const targetArray = this["children" + con.name] as ArraySchema<ChildTrait>
-    targetArray.push(entity)
+    targetArray[prepend ? "unshift" : "push"](entity)
 
-    entity.idx = this.countChildren()
+    if (prepend) {
+      entity.idx = -1
+      this.getChildren().forEach((child, idx) => {
+        child.idx = idx
+      })
+    } else {
+      entity.idx = this.countChildren()
+    }
+
     entity.parent = this
-    this.childrenPointers.push(con.name)
+    this.childrenPointers[prepend ? "unshift" : "push"](con.name)
 
     if (this.childAdded) {
       this.childAdded(entity)
@@ -273,42 +288,36 @@ export class ParentTrait {
     )
   }
 
+  /**
+   * ~~Deeply~~ looks for only first matching entity
+   */
   find<T>(...props: QuerableProps[]): T {
-    const result = props.reduce<T | unknown>((_parent, _props) => {
-      if (isParent(_parent)) {
-        return _parent.getChildren().find(queryRunner(_props))
-      }
-    }, this)
+    if (props.length === 0) return
 
-    if (!result) {
-      throw new Error(
-        `find: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
-      )
+    const newTarget = this.getChildren().find(queryRunner(props[0]))
+
+    if (newTarget && props.length === 1) {
+      return newTarget as ChildTrait & T
+    } else if (isParent(newTarget) && props.length > 1) {
+      return newTarget.find(...props.slice(1))
     }
-    return result as T
   }
 
-  // TODO: TEST IT
-  findAll(...props: QuerableProps[]) {
-    const result = props.reduce(
-      (allParents, currentProps) => {
-        return allParents.reduce<(ChildTrait | ParentTrait)[]>(
-          (children: ChildTrait[], _parent) => {
-            const newMatches = _parent
-              .getChildren()
-              .filter(queryRunner(currentProps))
-            return children.concat(newMatches)
-          },
-          []
-        )
-      },
-      [this]
-    )
-    if (result.length === 0) {
-      throw new Error(
-        `findAll: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
-      )
-    }
+  /**
+   * Looks for every matching entity here and deeper
+   */
+  findAll(props: QuerableProps): ChildTrait[] {
+    if (Object.keys(props).length === 0) return
+
+    const parents = this.getChildren().filter(isParent)
+    const result = parents.filter(queryRunner(props))
+
+    parents.forEach(parent => {
+      if (isParent(parent)) {
+        result.push(...parent.findAll(props))
+      }
+    })
+
     return result
   }
 
@@ -329,7 +338,6 @@ export class ParentTrait {
   this.childrenPointers = []
   this.hijacksInteractionTarget = true
 
-  // FIXME: All these children properties are not tracked
   registeredChildren.forEach(con => {
     if ((this as any).__syncChildren === false) {
       this[`children${con.name}`] = new Array()
@@ -347,28 +355,3 @@ export const getKnownConstructor = (entity: ChildTrait) =>
 
 const pickByIdx = (idx: number) => (child: ChildTrait) => child.idx === idx
 const sortByIdx = (a: ChildTrait, b: ChildTrait) => a.idx - b.idx
-
-// @deprecated unused.
-// export function findAllDeep(
-//   parent: ParentTrait,
-//   ...props: QuerableProps[]
-// ): T[] {
-//   const result = getDescendants(parent).filter(queryRunner(props))
-//   if (result.length === 0) {
-//     throw new Error(
-//       `findAllDeep: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
-//     )
-//   }
-//   return result
-// }
-
-// @deprecated unused anywhere now.
-// export function findDeep(parent: ParentTrait, ...props: QuerableProps[]) {
-//   const result = getDescendants(parent).find(queryRunner(props))
-//   if (!result) {
-//     throw new Error(
-//       `findDeep: couldn't find anything.\nQuery: ${JSON.stringify(props)}`
-//     )
-//   }
-//   return result
-// }

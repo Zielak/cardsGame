@@ -17,3 +17,7 @@ export class IdentityTrait {
     this._id = -1
   }
 }
+
+export function hasIdentity(entity): entity is IdentityTrait {
+  return !!entity && typeof entity.id === "number"
+}
