@@ -18,6 +18,8 @@ const EL = {
     deck: document.querySelector("#opponent .deck"),
     deckCount: document.querySelector("#opponent .deck__cardsCount")
   },
+  round: document.getElementById("roundText"),
+  ante: document.getElementById("anteText"),
   endScreen: document.getElementById("endScreen")
 }
 
@@ -80,8 +82,12 @@ const UI = {
       EL.gameView.classList.remove("playerContainer--tie")
     }, 1000)
   },
+  updateGameInfo: state => {
+    EL.ante.innerHTML = state.ante
+    EL.round.innerHTML = state.round
+  },
   gameOver: ({ winner }) => {
-    EL.endScreen.style.display = "block"
+    EL.endScreen.style.display = "flex"
     EL.endScreen.innerHTML = `<h1>GAME OVER</h1><p>Player ${winner} is the winner!</p>`
   }
 }
@@ -137,6 +143,7 @@ class GameHandler {
 
     room.onStateChange = state => {
       UI.updateStartButton(state)
+      UI.updateGameInfo(state)
     }
 
     room.state.clients.onAdd = (client, key) => {

@@ -3,6 +3,27 @@ const { commands, Conditions } = require("@cardsgame/server")
 const { WarState } = require("./state")
 const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
 
+/**
+ * @param {WarState} state
+ * @param {ServerPlayerEvent} event
+ */
+const PlayCardWithAnte = (state, event) => {
+  const container = state.find({ owner: event.player })
+  const deck = container.find({ type: "deck" })
+  const pile = container.find({ type: "pile" })
+
+  const ante =
+    state.ante > 0 ? deck.getChildren().splice(-state.ante - 1, state.ante) : []
+  const card = deck.getTop()
+
+  return [
+    new MarkPlayerPlayed(state.getPlayersIndex(event.player)),
+    new commands.ChangeParent(ante, pile),
+    new commands.ChangeParent(card, pile),
+    new commands.FaceUp(card)
+  ]
+}
+
 const PickCard = {
   name: "PickCard",
   description: `Player picks a card from his deck, while other didn't choose yet`,
@@ -25,23 +46,7 @@ const PickCard = {
     })
   },
 
-  /**
-   * @param {WarState} state
-   * @param {ServerPlayerEvent} event
-   */
-  getCommands: (state, event) => {
-    const container = state.find({ owner: event.player })
-    const deck = container.find({ type: "deck" })
-    const pile = container.find({ type: "pile" })
-
-    const card = deck.getTop()
-
-    return [
-      new MarkPlayerPlayed(state.getPlayersIndex(event.player)),
-      new commands.ChangeParent(card, pile),
-      new commands.FaceUp(card)
-    ]
-  }
+  getCommands: PlayCardWithAnte
 }
 
 const PickCardLast = {
@@ -80,15 +85,8 @@ const PickCardLast = {
    * @param {ServerPlayerEvent} event
    */
   getCommands: (state, event) => {
-    const container = state.find({ owner: event.player })
-    const deck = container.find({ type: "deck" })
-    const pile = container.find({ type: "pile" })
-    const card = deck.getTop()
-
     return [
-      new MarkPlayerPlayed(state.getPlayersIndex(event.player)),
-      new commands.ChangeParent(card, pile),
-      new commands.FaceUp(card),
+      ...PlayCardWithAnte(state, event),
       new Battle(),
       new ResetPlayersPlayed()
     ]

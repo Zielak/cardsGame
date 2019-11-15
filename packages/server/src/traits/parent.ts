@@ -158,12 +158,14 @@ export class ParentTrait {
     targetArray[prepend ? "unshift" : "push"](entity)
 
     if (prepend) {
+      entity.idx = -1
       this.getChildren().forEach((child, idx) => {
-        child.idx = idx + 1
+        child.idx = idx
       })
+    } else {
+      entity.idx = this.countChildren()
     }
 
-    entity.idx = prepend ? 0 : this.countChildren()
     entity.parent = this
     this.childrenPointers[prepend ? "unshift" : "push"](con.name)
 

@@ -89,10 +89,12 @@ header p {
 #endScreen {
   display: none;
   position: absolute;
-  top: 30%;
-  left: 20%;
-  right: 20%;
-  bottom: 30%;
+  flex-direction: column;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   border-radius: 1em;
   font-size: 1.5em;
   background: #030c;

@@ -31,7 +31,7 @@ class WarGame extends Room {
     this.pile = new Pile(state, {
       name: "mainPile"
     })
-    standardDeckFactory(["9", "10", "J", "Q", "K", "A"]).forEach(
+    standardDeckFactory().forEach(
       data =>
         new ClassicCard(state, {
           parent: this.deck,
@@ -87,6 +87,8 @@ class WarGame extends Room {
 
   onRoundEnd() {
     const { state } = this
+
+    state.ante = Math.floor(state.round / 2)
 
     const winningDeck = state
       .findAll({ name: "playersDeck" })

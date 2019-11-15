@@ -14,6 +14,9 @@ class WarState extends State {
 
     /** @type {boolean[]} */
     this.playersPlayed = new ArraySchema()
+
+    /** @type {number} */
+    this.ante = 0
   }
 }
 
@@ -23,7 +26,8 @@ class WarState extends State {
  */
 defineTypes(WarState, {
   isAtWar: "boolean",
-  playersPlayed: ["boolean"]
+  playersPlayed: ["boolean"],
+  ante: "number"
 })
 
 module.exports = { WarState }

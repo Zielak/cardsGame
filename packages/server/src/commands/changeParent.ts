@@ -24,8 +24,8 @@ export class ChangeParent extends Command {
     this.target = target
     this.prepend = prepend
 
-    if (this.entities.length < 1 || !this.target) {
-      throw new Error(`I'm missing something...`)
+    if (!this.target) {
+      throw new Error(`Target is required.`)
     }
   }
 

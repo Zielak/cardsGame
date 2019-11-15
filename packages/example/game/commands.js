@@ -52,7 +52,6 @@ module.exports.Battle = class Battle extends Command {
   }
   async execute(state) {
     // TODO: maybe prepare it for more than 2 players setup?
-
     const containerA = state.find({
       type: "container",
       owner: state.players[0]
@@ -86,47 +85,33 @@ module.exports.Battle = class Battle extends Command {
       data.outcome = "tie"
     }
 
-    logs.notice("Battle outcome:", data)
+    const subCommands = [
+      new commands.Broadcast({ type: "battleResult", data }),
+      new commands.Wait(500)
+    ]
 
-    if (data.outcome === "tie") {
-      const result = [
-        new commands.Broadcast({ type: "battleResult", data }),
-        new commands.Wait(500)
-      ]
-
-      containers.forEach(container => {
-        const card = container.find({ type: "deck" }).getTop()
-        result.push(
-          new commands.FaceDown(card),
-          new commands.ChangeParent(card, container.find({ type: "pile" }))
-        )
-      })
-
-      return result
-    } else {
+    if (data.outcome !== "tie") {
       const losersCards = state
         .find({ ownerID: data.loser }, { type: "pile" })
         .getChildren()
-      logs.verbose("losersCards:", losersCards)
 
       const winnersCards = state
         .find({ ownerID: data.winner }, { type: "pile" })
         .getChildren()
-      logs.verbose("winnersCards:", winnersCards)
 
       const winnersDeck = state.find({ ownerID: data.winner }, { type: "deck" })
 
-      return [
-        new commands.Broadcast({ type: "battleResult", data }),
-        new commands.Wait(1000),
-        new commands.FaceUp([...losersCards, ...winnersCards]),
+      subCommands.push(
+        new commands.FaceDown([...losersCards, ...winnersCards]),
         new commands.ChangeParent(
           [...losersCards, ...winnersCards],
           winnersDeck,
           true
         ),
         new commands.NextRound()
-      ]
+      )
     }
+
+    return subCommands
   }
 }
