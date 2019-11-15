@@ -19,7 +19,6 @@ export * from "./conditions"
 export * from "./actionTemplate"
 export * from "./player"
 
-export * from "./transform"
 export * from "./traits"
 export * from "./entities"
 
