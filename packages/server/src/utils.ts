@@ -10,7 +10,10 @@ export const populatePlayerEvent = (
   client: Client
 ) => {
   // Populate event with server-side known data
-  const newEvent: ServerPlayerEvent = {}
+  const newEvent: ServerPlayerEvent = {
+    command: event.command,
+    data: event.data
+  }
   if (event.entityPath) {
     newEvent.entityPath =
       typeof event.entityPath === "string"

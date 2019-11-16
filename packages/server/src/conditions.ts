@@ -660,8 +660,8 @@ class Conditions<S extends State> {
 
       this.assert(
         this._player === expected,
-        `Player #{act} is not an owner. Expected #{exp}`,
-        `Player #{act} is an owner, but shouldn't`,
+        `Player "#{act}" is not an owner.`,
+        `Player "#{act}" is an owner, but shouldn't`,
         expected && expected.clientID,
         hasOwnership(entity) ? entity.getOwner().clientID : undefined
       )

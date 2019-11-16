@@ -7,7 +7,7 @@ export class PreviousPlayer extends Command {
   _name = "PreviousPlayer"
 
   async execute(state: State, room: Room<any>) {
-    if (state.turnBased)
+    if (!state.turnBased)
       throw new Error(`Can't use PreviousPlayer in non turn based game.`)
 
     const _ = this.constructor.name

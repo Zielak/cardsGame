@@ -8,7 +8,9 @@ export class Command {
 
   constructor(name?: string, subCommands?: Command[]) {
     this._name = name || `Some ${subCommands ? "compound" : "plain"} command`
-    this._subCommands = subCommands || []
+    this._subCommands = subCommands
+      ? subCommands.filter(c => typeof c === "object")
+      : []
   }
 
   async execute(state: State, room: Room<any>): Promise<void | Command[]> {
