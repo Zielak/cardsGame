@@ -11,7 +11,7 @@
     "test": "jest --silent",
     "test:watch": "jest --silent --watch",
     "test:cover": "jest --silent --coverage",
-    "test:backup": "jest -c=packages/server/jest.config.js",
+    "test:ci": "jest --silent --coverage --coverageReporters=text-lcov | coveralls",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
     "build:server": "lerna run --stream --concurrency 1 --scope '*/server' build",
     "build:server-w": "lerna run --stream --concurrency 1 --scope '*/server' build:watch",
@@ -36,6 +36,7 @@
   "devDependencies": {
     "@types/jest": "^24.0.22",
     "chalk": "^3.0.0",
+    "coveralls": "^3.0.7",
     "css-loader": "^3.2.0",
     "eventemitter3": "^4.0.0",
     "husky": "^3.0.9",

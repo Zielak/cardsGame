@@ -71,8 +71,8 @@ jobs:
             npm run build:client
 
       - run:
-          name: Test
-          command: npm run test
+          name: Test & Coverage report
+          command: npm run test:ci
 
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
