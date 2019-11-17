@@ -1,23 +1,15 @@
 import { logs, def } from "@cardsgame/utils"
 import { Client } from "colyseus.js"
+import { RoomAvailable } from "colyseus.js/lib/Room"
 import { Room } from "./room"
 
 interface IGameOptions {
-  roomNames?: string[]
   wss?: WSSOptions
 }
 
 interface WSSOptions {
   host?: string
   port?: number
-}
-
-// It's a copy straight from colyseus.js...
-interface RoomAvailable {
-  roomId: string
-  clients: number
-  maxClients: number
-  metadata?: any
 }
 
 /**
@@ -28,13 +20,11 @@ export class Game {
   client: Client
   room: Room
 
-  roomNames: string[]
   wss: WSSOptions
 
   constructor(options: IGameOptions = {}) {
     logs.verbose("GAME", "constructor")
 
-    this.roomNames = options.roomNames
     this.wss = {
       host: def(
         options.wss && options.wss.host,
@@ -92,7 +82,7 @@ export class Game {
     })
   }
 
-  getAvailableRooms(gameName: string): Promise<RoomAvailable[]> {
+  getAvailableRooms(gameName?: string): Promise<RoomAvailable<any>[]> {
     return this.client.getAvailableRooms(gameName)
   }
 
@@ -103,12 +93,5 @@ export class Game {
       this.room.leave()
       this.room = null
     }
-  }
-
-  static events = {
-    clientOpen: Symbol("clientOpen"),
-    clientClose: Symbol("clientClose"),
-    joinedRoom: Symbol("joinedRoom")
-    // clientOpen: Symbol("clientOpen")
   }
 }
