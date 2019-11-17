@@ -1,13 +1,10 @@
 import { Room as colyseusRoom } from "colyseus.js/lib/Room"
-import { EventEmitter } from "eventemitter3"
 import { logs } from "@cardsgame/utils"
 
-export class Room extends EventEmitter {
+export class Room {
   childrenListeners = []
 
   constructor(public room: colyseusRoom) {
-    super()
-
     room.onMessage((message: ServerMessage) => {
       if (message.type && message.data) {
         switch (message.type) {
@@ -45,21 +42,17 @@ export class Room extends EventEmitter {
 
   gameStateListeners(state) {
     this.room.state.clients.onAdd = (client, key) => {
-      logs.notice("new client joined", client)
-      this.emit(Room.events.clientJoined, client)
+      logs.verbose("new client joined", client)
     }
     this.room.state.clients.onRemove = (client, key) => {
-      logs.notice("client left", client)
-      this.emit(Room.events.clientLeft, client)
+      logs.verbose("client left", client)
     }
 
     this.room.state.players.onAdd = (player, key) => {
-      logs.notice("player created", key, player.name)
-      this.emit(Room.events.playerAdded, player)
+      logs.verbose("player created", key, player.name)
     }
     this.room.state.players.onRemove = (player, key) => {
-      logs.notice("player removed", player.name)
-      this.emit(Room.events.playerRemoved, player)
+      logs.verbose("player removed", player.name)
     }
   }
 
