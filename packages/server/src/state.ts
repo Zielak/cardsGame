@@ -1,6 +1,6 @@
 import { type, MapSchema } from "@colyseus/schema"
 import { logs } from "@cardsgame/utils"
-import { cm2px, mapCount } from "@cardsgame/utils"
+import { mapCount } from "@cardsgame/utils"
 import { containsChildren, isParent, ParentTrait } from "./traits/parent"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
@@ -20,9 +20,9 @@ import { hasOwnership } from "./traits/ownership"
 export class State extends Entity<{}> {
   type = "state"
 
-  @type("number") tableWidth = cm2px(60) // 60 cm
+  @type("number") tableWidth = 60 // 60 cm
 
-  @type("number") tableHeight = cm2px(60) // 60 cm
+  @type("number") tableHeight = 60 // 60 cm
 
   /**
    * IDs of clients who are connecting to the room.

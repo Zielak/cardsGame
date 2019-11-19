@@ -61,6 +61,10 @@ type ClientPlayerEvent = {
  */
 // type PlayerEventTargetType = "Entity" | "UIElement"
 
+/**
+ * How to transform current player's containers/entities on client's screen.
+ * Units are in pixels.
+ */
 interface IPlayerViewPosition {
   alignX?: "left" | "center" | "right"
   alignY?: "top" | "middle" | "bottom"
