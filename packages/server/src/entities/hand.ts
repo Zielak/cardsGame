@@ -1,9 +1,11 @@
-import { containsChildren, canBeChild, ParentTrait } from "../traits/parent"
 import { def } from "@cardsgame/utils"
+
+import { canBeChild, containsChildren } from "../annotations"
+import { State } from "../state"
+import { ParentTrait } from "../traits/parent"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
 import { LabelTrait, Entity, applyMixins, OwnershipTrait } from "../traits"
-import { State } from "../state"
 
 @canBeChild
 @containsChildren()

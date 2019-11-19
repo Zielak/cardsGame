@@ -1,16 +1,9 @@
-import {
-  Entity,
-  ParentTrait,
-  LabelTrait,
-  applyMixins,
-  canBeChild,
-  containsChildren
-} from "../traits"
+import { canBeChild, containsChildren } from "../annotations"
+import { Entity, ParentTrait, LabelTrait, applyMixins } from "../traits"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
 
 /**
- * TODO: finish it for SUPERHOT, but only once I'm almost done with everything
  * Row or column of set number of cards.
  * It contains maximum number of spots for cards.
  * A spot can be empty.

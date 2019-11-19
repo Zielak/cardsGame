@@ -1,7 +1,9 @@
 import { def } from "@cardsgame/utils"
-import { Entity, applyMixins } from "../traits/entity"
-import { containsChildren, canBeChild, ParentTrait } from "../traits/parent"
+
+import { canBeChild, containsChildren } from "../annotations"
 import { State } from "../state"
+import { Entity, applyMixins } from "../traits/entity"
+import { ParentTrait } from "../traits/parent"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
 import { LabelTrait } from "../traits"

@@ -1,4 +1,6 @@
-import { Schema, type } from "@colyseus/schema"
+import { Schema } from "@colyseus/schema"
+
+import { type } from "../annotations"
 import { State } from "../state"
 
 export class Entity<T> extends Schema {

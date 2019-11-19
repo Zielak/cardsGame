@@ -1,5 +1,7 @@
-import { type, Schema } from "@colyseus/schema"
+import { Schema } from "@colyseus/schema"
 import { def, logs } from "@cardsgame/utils"
+
+import { type } from "./annotations"
 
 export class Player extends Schema {
   @type("string") clientID: string

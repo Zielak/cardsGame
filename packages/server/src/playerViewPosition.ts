@@ -1,5 +1,7 @@
-import { Schema, type } from "@colyseus/schema"
+import { Schema } from "@colyseus/schema"
 import { def, limit } from "@cardsgame/utils"
+
+import { type } from "./annotations"
 
 export class PlayerViewPosition extends Schema implements IPlayerViewPosition {
   @type("string") alignX: "left" | "center" | "right"

@@ -1,6 +1,6 @@
-import { type } from "@colyseus/schema"
 import { def } from "@cardsgame/utils"
-import { containsChildren, canBeChild } from "../traits/parent"
+
+import { type, canBeChild, containsChildren } from "../annotations"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
 import {
