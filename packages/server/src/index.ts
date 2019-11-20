@@ -1,11 +1,8 @@
 export { Server } from "colyseus"
-export {
-  type,
-  defineTypes,
-  Schema,
-  ArraySchema,
-  MapSchema
-} from "@colyseus/schema"
+export { defineTypes, Schema, ArraySchema, MapSchema } from "@colyseus/schema"
+
+// TODO: wrap `defineTypes` for our `types`!!!
+export { type, canBeChild, containsChildren } from "./annotations"
 
 import * as commands from "./commands"
 export { commands }

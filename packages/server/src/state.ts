@@ -1,7 +1,9 @@
-import { type, MapSchema } from "@colyseus/schema"
+import { MapSchema } from "@colyseus/schema"
 import { logs } from "@cardsgame/utils"
 import { mapCount } from "@cardsgame/utils"
-import { containsChildren, isParent, ParentTrait } from "./traits/parent"
+
+import { type, containsChildren } from "./annotations"
+import { isParent, ParentTrait } from "./traits/parent"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
 import {

@@ -1,19 +1,18 @@
 import { def } from "@cardsgame/utils"
 
-import { canBeChild, containsChildren, ParentTrait } from "../traits/parent"
+import { canBeChild, containsChildren } from "../annotations"
 import { State } from "../state"
+import { LabelTrait, Entity, applyMixins } from "../traits"
+import { ParentTrait } from "../traits/parent"
 import { FlexyTrait } from "../traits/flexyContainer"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { LabelTrait, Entity, applyMixins } from "../traits"
 
 @canBeChild
 @containsChildren()
 @applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait, FlexyTrait])
 export class Row extends Entity<RowOptions> {
-  constructor(state: State, options: RowOptions = {}) {
-    super(state, options)
-
+  create(state: State, options: RowOptions = {}) {
     this.name = def(options.name, "Row")
     this.type = def(options.type, "row")
   }

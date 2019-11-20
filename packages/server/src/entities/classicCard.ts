@@ -1,7 +1,6 @@
-import { type } from "@colyseus/schema"
 import { def, logs } from "@cardsgame/utils"
+import { type, canBeChild } from "../annotations"
 import {
-  canBeChild,
   ChildTrait,
   TwoSidedTrait,
   LabelTrait,
@@ -43,15 +42,13 @@ import { State } from "../state"
   OwnershipTrait
 ])
 export class ClassicCard extends Entity<ClassicCardOptions> {
-  // My own props
   // @filter(faceDownOnlyOwner)
   @type("string") suit: string
 
   // @filter(faceDownOnlyOwner)
   @type("string") rank: string
 
-  constructor(state: State, options: ClassicCardOptions = {}) {
-    super(state, options)
+  create(state: State, options: ClassicCardOptions = {}) {
     this.suit = def(options.suit, "X")
     this.rank = def(options.rank, "Y")
     this.name = options.suit + options.rank

@@ -6,7 +6,10 @@ export class LabelTrait {
   type: string
 }
 
-;(LabelTrait as any).typeDef = { type: "string" }
+;(LabelTrait as any).typeDef = {
+  type: "string",
+  name: "string"
+}
 ;(LabelTrait as any).trait = function LabelTrait(
   state: State,
   options: Partial<LabelTrait> = {}

@@ -1,7 +1,9 @@
 import { def } from "@cardsgame/utils"
-import { Entity, applyMixins } from "../traits/entity"
-import { containsChildren, canBeChild, ParentTrait } from "../traits/parent"
+
+import { canBeChild, containsChildren } from "../annotations"
 import { State } from "../state"
+import { Entity, applyMixins } from "../traits/entity"
+import { ParentTrait } from "../traits/parent"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
 import { LabelTrait } from "../traits"
@@ -10,9 +12,7 @@ import { LabelTrait } from "../traits"
 @containsChildren()
 @applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait])
 export class Pile extends Entity<PileOptions> {
-  constructor(state: State, options: PileOptions = {}) {
-    super(state, options)
-
+  create(state: State, options: PileOptions = {}) {
     this.name = def(options.name, "Pile")
     this.type = def(options.type, "pile")
   }

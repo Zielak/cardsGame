@@ -1,74 +1,10 @@
-import { type, ArraySchema, Schema } from "@colyseus/schema"
+import { ArraySchema } from "@colyseus/schema"
 import { logs, def } from "@cardsgame/utils"
+
 import { ChildTrait } from "./child"
 import { State } from "../state"
 import { QuerableProps, queryRunner } from "../queryRunner"
-
-const registeredParents: {
-  con: typeof Schema
-  childrenSynced: boolean
-}[] = []
-const registeredChildren: Function[] = []
-
-const synchChildrenArray = (
-  parentConstructor: typeof Schema,
-  childrenConstructor: Function
-) => {
-  const arr = []
-  arr.push(childrenConstructor)
-
-  logs.verbose(
-    `syncing "children${childrenConstructor.name}" in ${parentConstructor.name}`
-  )
-  type(arr)(parentConstructor.prototype, `children${childrenConstructor.name}`)
-}
-
-/**
- * Decorator!
- * Register as possible child for any other parent enttities
- */
-export function canBeChild(childConstructor: Function) {
-  // Remember this child type for future classes
-  registeredChildren.push(childConstructor)
-
-  // Add this child type to other parents,
-  // which wish their children to be synced to client
-  registeredParents
-    .filter(({ childrenSynced }) => childrenSynced)
-    .map(({ con }) => con)
-    .forEach(parentConstructor =>
-      synchChildrenArray(parentConstructor, childConstructor)
-    )
-}
-
-/**
- * Decorator!
- * Remember as possible parent to any kinds of children entities
- * Also enables syncing any previously remembered children kind on this constructor
- * @param childrenSynced set `false` to disable syncing children to clients
- */
-export function containsChildren(childrenSynced = true) {
-  return function containsChildren(parentConstructor: typeof Schema) {
-    // Remember this parent
-    registeredParents.push({
-      con: parentConstructor,
-      childrenSynced
-    })
-
-    Object.defineProperty(parentConstructor.prototype, "__syncChildren", {
-      value: childrenSynced
-    })
-
-    // Add all known children kinds to this one
-    if (childrenSynced) {
-      registeredChildren.forEach(childConstructor =>
-        synchChildrenArray(parentConstructor, childConstructor)
-      )
-    }
-  }
-}
-
-// ====================
+import { registeredChildren } from "../annotations"
 
 export function isParent(entity: any): entity is ParentTrait {
   return (

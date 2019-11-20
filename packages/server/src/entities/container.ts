@@ -1,5 +1,6 @@
-import { containsChildren, canBeChild, ParentTrait } from "../traits/parent"
+import { containsChildren, canBeChild } from "../annotations"
 import { Entity, LabelTrait, applyMixins, OwnershipTrait } from "../traits"
+import { ParentTrait } from "../traits/parent"
 import { ChildTrait } from "../traits/child"
 import { LocationTrait } from "../traits/location"
 
@@ -13,8 +14,10 @@ import { LocationTrait } from "../traits/location"
   OwnershipTrait
 ])
 export class Container extends Entity<ContainerOptions> {
-  type = "container"
-  hijacksInteractionTarget = false
+  create() {
+    this.type = "container"
+    this.hijacksInteractionTarget = false
+  }
 }
 
 interface Mixin
