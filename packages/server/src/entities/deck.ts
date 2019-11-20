@@ -1,6 +1,14 @@
+import { Schema } from "@colyseus/schema"
+
 import { def } from "@cardsgame/utils"
 
-import { type, canBeChild, containsChildren } from "../annotations"
+import {
+  canBeChild,
+  containsChildren,
+  defineTypes,
+  getAllChildrensTypes,
+  type
+} from "../annotations"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
 import {
@@ -12,6 +20,9 @@ import {
 } from "../traits"
 import { State } from "../state"
 
+class TopDeckElement extends Schema {}
+defineTypes(TopDeckElement, getAllChildrensTypes())
+
 @canBeChild
 @containsChildren(false)
 @applyMixins([
@@ -22,7 +33,18 @@ import { State } from "../state"
   OwnershipTrait
 ])
 export class Deck extends Entity<DeckOptions> {
-  @type("uint16") childCount: number = 0
+  @type("uint16") childCount: number
+
+  @type(TopDeckElement) topDeck: TopDeckElement
+
+  create(state: State, options: DeckOptions = {}) {
+    this.onEmptied = def(options.onEmptied, undefined)
+    this.name = def(options.name, "Deck")
+    this.type = def(options.type, "deck")
+
+    this.childCount = 0
+    this.topDeck = new TopDeckElement()
+  }
 
   onEmptied: () => void
 
@@ -30,6 +52,7 @@ export class Deck extends Entity<DeckOptions> {
 
   childAdded(child: ChildTrait) {
     this.childCount++
+    this.updateTopElement(child)
     if (this.onChildAdded) {
       this.onChildAdded(child)
     }
@@ -41,14 +64,17 @@ export class Deck extends Entity<DeckOptions> {
     }
     if (this.childCount === 0 && this.onEmptied) {
       this.onEmptied()
+    } else {
+      this.updateTopElement(this.getTop())
     }
   }
 
-  constructor(state: State, options: DeckOptions = {}) {
-    super(state, options)
-    this.onEmptied = def(options.onEmptied, undefined)
-    this.name = def(options.name, "Deck")
-    this.type = def(options.type, "deck")
+  updateTopElement(child: { [key: string]: any }) {
+    const whitelist = Object.keys(getAllChildrensTypes())
+
+    whitelist.forEach(key => {
+      this.topDeck[key] = child[key]
+    })
   }
 }
 

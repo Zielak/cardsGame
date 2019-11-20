@@ -19,9 +19,7 @@ import { LabelTrait, Entity, applyMixins, OwnershipTrait } from "../traits"
 export class Hand extends Entity<HandOptions> {
   autoSort: SortingFunction
 
-  constructor(state: State, options: HandOptions = {}) {
-    super(state, options)
-
+  create(state: State, options: HandOptions = {}) {
     this.name = def(options.name, "Hand")
     this.type = def(options.type, "hand")
 

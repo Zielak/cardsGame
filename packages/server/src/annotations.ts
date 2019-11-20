@@ -4,6 +4,8 @@ import {
   Context,
   Schema
 } from "@colyseus/schema"
+import { globalContext } from "@colyseus/schema/lib/annotations"
+
 import { logs } from "@cardsgame/utils"
 
 const registeredTypeDefinitions: Map<
@@ -48,6 +50,17 @@ export function type(
 
     return colType(type, context)(target, field)
   }
+}
+
+export function defineTypes(
+  target: typeof Schema,
+  fields: { [property: string]: DefinitionType },
+  context: Context = globalContext
+) {
+  for (let field in fields) {
+    type(fields[field], context)(target.prototype, field)
+  }
+  return target
 }
 
 const registeredParents: {

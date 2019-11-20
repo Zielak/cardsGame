@@ -12,9 +12,7 @@ import { ChildTrait } from "../traits/child"
 @containsChildren()
 @applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait, FlexyTrait])
 export class Row extends Entity<RowOptions> {
-  constructor(state: State, options: RowOptions = {}) {
-    super(state, options)
-
+  create(state: State, options: RowOptions = {}) {
     this.name = def(options.name, "Row")
     this.type = def(options.type, "row")
   }

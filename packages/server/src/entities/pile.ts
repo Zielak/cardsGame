@@ -12,9 +12,7 @@ import { LabelTrait } from "../traits"
 @containsChildren()
 @applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait])
 export class Pile extends Entity<PileOptions> {
-  constructor(state: State, options: PileOptions = {}) {
-    super(state, options)
-
+  create(state: State, options: PileOptions = {}) {
     this.name = def(options.name, "Pile")
     this.type = def(options.type, "pile")
   }

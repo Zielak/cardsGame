@@ -14,8 +14,10 @@ import { LocationTrait } from "../traits/location"
   OwnershipTrait
 ])
 export class Container extends Entity<ContainerOptions> {
-  type = "container"
-  hijacksInteractionTarget = false
+  create() {
+    this.type = "container"
+    this.hijacksInteractionTarget = false
+  }
 }
 
 interface Mixin

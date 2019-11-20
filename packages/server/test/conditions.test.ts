@@ -2,7 +2,6 @@ import { Conditions, getConditionFlag as flag } from "../src/conditions"
 import { State } from "../src/state"
 import { ServerPlayerEvent, Player } from "../src/player"
 import { SmartEntity, SmartParent } from "./helpers/smartEntities"
-import { ClassicCard } from "../src/entities"
 
 let state: State
 let event: ServerPlayerEvent
@@ -69,7 +68,10 @@ describe("subject changing", () => {
     it("passes", () => {
       expect(() => {
         con
-          .set([{ rank: "K", suit: "H" }, { rank: "K", suit: "S" }])
+          .set([
+            { rank: "K", suit: "H" },
+            { rank: "K", suit: "S" }
+          ])
           .each(con => {
             con
               .its("rank")
@@ -83,7 +85,10 @@ describe("subject changing", () => {
     it("fails as expected, one non-match", () => {
       expect(() => {
         con
-          .set([{ rank: "5", suit: "H" }, { rank: "K", suit: "S" }])
+          .set([
+            { rank: "5", suit: "H" },
+            { rank: "K", suit: "S" }
+          ])
           .each(con => {
             con
               .its("rank")
@@ -95,7 +100,10 @@ describe("subject changing", () => {
 
       expect(() => {
         con
-          .set([{ rank: "K", suit: "H" }, { rank: "5", suit: "D" }])
+          .set([
+            { rank: "K", suit: "H" },
+            { rank: "5", suit: "D" }
+          ])
           .each(con => {
             con
               .its("rank")
@@ -108,7 +116,10 @@ describe("subject changing", () => {
     it("fails as expected, all non-match", () => {
       expect(() => {
         con
-          .set([{ rank: "5", suit: "D" }, { rank: "K", suit: "D" }])
+          .set([
+            { rank: "5", suit: "D" },
+            { rank: "K", suit: "D" }
+          ])
           .each(con => {
             con
               .its("rank")
@@ -124,13 +135,13 @@ describe("subject changing", () => {
 describe("equals", () => {
   test("states properties", () => {
     expect(() => {
-      con.state.its("tableWidth").equals(690)
+      con.state.its("tableWidth").equals(60)
       con.state.its("tableWidth").not.equals("any")
-      con.state.its("tableWidth").not.equals(800)
+      con.state.its("tableWidth").not.equals(80)
     }).not.toThrow()
 
     expect(() => {
-      con.state.its("tableWidth").equals(400)
+      con.state.its("tableWidth").equals(80)
     }).toThrow()
   })
 })

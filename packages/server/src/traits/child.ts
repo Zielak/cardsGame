@@ -64,9 +64,11 @@ export class ChildTrait {
   state: State,
   options: Partial<ChildTrait> = {}
 ) {
-  def(options.parent, state).addChild(this)
+  return () => {
+    def(options.parent, state).addChild(this)
 
-  if (typeof options.idx === "number") {
-    this.parent.moveChildTo(this.idx, options.idx)
+    if (typeof options.idx === "number") {
+      this.parent.moveChildTo(this.idx, options.idx)
+    }
   }
 }
