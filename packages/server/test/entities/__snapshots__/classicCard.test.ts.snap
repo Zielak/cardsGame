@@ -6,6 +6,7 @@ Object {
   "faceUp": false,
   "idx": 0,
   "isInOwnersView": false,
+  "name": "HA",
   "rank": "A",
   "suit": "H",
   "type": "classicCard",
