@@ -2,6 +2,10 @@ import { State } from "./state"
 import { Room } from "./room"
 import { logs } from "@cardsgame/utils"
 
+export interface Command {
+  execute(state: State, room: Room<any>): Promise<void | Command[]>
+}
+
 export class Command {
   private _subCommands: Command[]
   public _name: string
@@ -48,5 +52,26 @@ export class Command {
       }
     }
     logs.groupEnd()
+  }
+}
+
+export type Targets<T> = T | T[] | (() => T | T[])
+export class TargetsHolder<T> {
+  constructor(private value: Targets<T>) {}
+  get(): T[] {
+    const targets =
+      typeof this.value === "function" ? (this.value as () => T)() : this.value
+
+    return !Array.isArray(targets) ? [targets] : targets
+  }
+}
+
+export type Target<T> = T | (() => T)
+export class TargetHolder<T> {
+  constructor(private value: Target<T>) {}
+  get(): T {
+    return typeof this.value === "function"
+      ? (this.value as () => T)()
+      : this.value
   }
 }

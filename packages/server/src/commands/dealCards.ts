@@ -1,13 +1,23 @@
-import { logs } from "@cardsgame/utils"
-import { Command } from "../command"
+import { logs, def } from "@cardsgame/utils"
+
+import {
+  Command,
+  Target,
+  TargetHolder,
+  Targets,
+  TargetsHolder
+} from "../command"
 import { State } from "../state"
 import { ParentTrait, isParent } from "../traits/parent"
 import { ChangeParent } from "./changeParent"
 
 export class DealCards extends Command {
-  _name = "DealCards"
+  private source: TargetHolder<ParentTrait>
+  private targets: TargetsHolder<ParentTrait>
 
-  targets: ParentTrait[]
+  private count: number
+  private step: number
+  private onDeckEmptied: () => Command
 
   /**
    * Deals `count` cards from this container to other containers.
@@ -15,17 +25,22 @@ export class DealCards extends Command {
    *
    * @param source will take cards from here
    * @param targets and put them in these containers
-   * @param count how many cards should I deal for each target in total?
-   * @param step number of cards on each singular deal
+   * @param {DealCardsOptions} options
+   * @param {number} options.count how many cards should I deal for each target in total?
+   * @param {number} options.step number of cards on each singular deal
    */
   constructor(
-    private source: ParentTrait,
-    targets: ParentTrait | ParentTrait[],
-    private count: number = Infinity,
-    private step: number = 1
+    source: Target<ParentTrait>,
+    targets: Targets<ParentTrait>,
+    options: DealCardsOptions = {}
   ) {
-    super()
-    this.targets = Array.isArray(targets) ? targets : [targets]
+    super("DealCards")
+    this.source = new TargetHolder<ParentTrait>(source)
+    this.targets = new TargetsHolder<ParentTrait>(targets)
+
+    this.count = def(options.count, Infinity)
+    this.step = def(options.step, 1)
+    this.onDeckEmptied = options.onDeckEmptied
   }
 
   async execute(state: State) {
@@ -62,4 +77,10 @@ export class DealCards extends Command {
     return await next()
     // state.logTreeState()
   }
+}
+
+interface DealCardsOptions {
+  count?: number
+  step?: number
+  onDeckEmptied?: () => Command
 }

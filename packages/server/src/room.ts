@@ -14,6 +14,7 @@ import { ActionsSet } from "./actionTemplate"
 import { populatePlayerEvent } from "./utils"
 import { BroadcastOptions } from "colyseus/lib/Room"
 import { LabelTrait, hasLabel } from "./traits"
+import { Command } from "./command"
 
 export class Room<S extends State> extends colRoom<S> {
   name = "CardsGame test"
@@ -80,7 +81,7 @@ export class Room<S extends State> extends colRoom<S> {
       return
     }
     if (event.data === "start") {
-      this.handleGameStart()
+      return this.handleGameStart()
     }
 
     const newEvent = populatePlayerEvent(this.state, event, client)
@@ -118,14 +119,23 @@ export class Room<S extends State> extends colRoom<S> {
         })
       })
       this.state.isGameStarted = true
-      this.onStartGame(this.state)
 
-      // Initial play started "event".
-      this.onPlayerTurnStarted(this.state.currentPlayer)
-      return
+      const postStartCommands = this.onStartGame(this.state)
+
+      if (postStartCommands) {
+        this.commandsManager
+          .execute(
+            this.state,
+            new Command("PostStartCommands", postStartCommands)
+          )
+          .then(() => {
+            this.onPlayerTurnStarted(this.state.currentPlayer)
+          })
+      } else {
+        this.onPlayerTurnStarted(this.state.currentPlayer)
+      }
     } else if (this.state.isGameStarted) {
       logs.notice("onMessage", `Game is already started, ignoring...`)
-      return
     }
   }
 
@@ -152,7 +162,7 @@ export class Room<S extends State> extends colRoom<S> {
    * After this function, the game will give turn to the first player.
    * @param state
    */
-  onStartGame(state: State) {
+  onStartGame(state: State): void | Command[] {
     logs.error("Room", `onStartGame is not implemented!`)
   }
 

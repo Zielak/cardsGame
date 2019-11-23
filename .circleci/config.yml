@@ -74,6 +74,8 @@ jobs:
           name: Test & Coverage report
           command: npm run test:ci
 
+      - sonarcloud/scan
+
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
           # taken to be the root directory of the workspace.
@@ -97,11 +99,15 @@ jobs:
             npm set //registry.npmjs.org/:_authToken=$NPM_TOKEN
             npm run ci:publish
 
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.0.1
+
 workflows:
   version: 2
   build-test-and-publish:
     jobs:
-      - build-and-test
+      - build-and-test:
+          context: SonarCloud
       - publish:
           requires:
             - build-and-test
