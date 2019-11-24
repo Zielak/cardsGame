@@ -11,7 +11,7 @@
     "test": "jest --silent",
     "test:watch": "jest --silent --watch",
     "test:cover": "jest --silent --coverage",
-    "test:ci": "jest --silent --coverage --coverageReporters=text-lcov | coveralls",
+    "test:ci": "jest --silent --coverage --coverageReporters=text-lcov --coverageReporters=lcovonly | coveralls",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
     "build:server": "lerna run --stream --concurrency 1 --scope '*/server' build",
     "build:server-w": "lerna run --stream --concurrency 1 --scope '*/server' build:watch",

@@ -76,7 +76,7 @@ export class CommandsManager<S extends State> {
 
       const interactionMatchesEntity = definition => currentTarget => {
         // Every KEY in definition should be present
-        // in the Entity and be of eqaul value
+        // in the Entity and be of equal value
         // or either of values if its an array
         return Object.keys(definition).every((prop: string) => {
           const value = definition[prop]
@@ -170,7 +170,7 @@ export class CommandsManager<S extends State> {
   /**
    * @param action
    * @param state current room's state
-   * @param event incomming user's event
+   * @param event incoming user's event
    */
   async parseAction(
     state: State,
@@ -184,7 +184,7 @@ export class CommandsManager<S extends State> {
     try {
       let cmd = action.getCommands(state, event)
       if (Array.isArray(cmd)) {
-        cmd = new Command(action.name, cmd)
+        cmd = new Command(cmd)
       }
 
       await this.execute(state, cmd)
@@ -206,7 +206,7 @@ export class CommandsManager<S extends State> {
 
   async execute(state: State, command: Command) {
     this.currentCommand = command
-    const commandName = command._name || command.constructor.name
+    const commandName = command.name
 
     logs.group(commandName, "executing")
     await this.currentCommand.execute(state, this.room)

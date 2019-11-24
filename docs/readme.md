@@ -1,8 +1,8 @@
 # Documentation
 
-Think of the games here like the real-life games: a pack of 52 cards, sometimes with jokers, or a box of chess pieces and checker board. Once you start the game, the number of game elements doesn't change. They're always there on the table an dyou don't spontanously create new cards out of thin air.
+Think of the games here like the real-life games: a pack of 52 cards, sometimes with jokers, or a box of chess pieces and checker board. Once you start the game, the number of game elements doesn't change. They're always there on the table and you don't spontaneously create new cards out of thin air.
 
-Game elements are called `entities`. All entities and all their informations are perserved in the `state`. The information includes: their location, ownership, name, is it face up, etc. Entities are a mixture of `traits`, which enable them to hold such information but also can provide additional functionalities.
+Game elements are called `entities`. All entities and all their information are preserved in the `state`. The information includes: their location, ownership, name, is it face up, etc. Entities are a mixture of `traits`, which enable them to hold such information but also can provide additional functionalities.
 
 ## Client-server communication
 

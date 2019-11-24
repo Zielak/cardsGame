@@ -30,7 +30,7 @@ export const compose = (value: any, ...functions: ((...args) => any)[]) => {
  * @param length number of times function will be exetuced
  * @param func a function
  */
-export const times = (length: number, func: () => any) =>
+export const times = (length: number, func: (idx: number) => any) =>
   Array.from({ length }, func)
 
 /**

@@ -6,7 +6,7 @@ export class ShuffleChildren extends Command {
   target: TargetHolder<ParentTrait>
 
   constructor(container: Target<ParentTrait>) {
-    super("ShuffleChildren")
+    super()
     this.target = new TargetHolder(container)
   }
 

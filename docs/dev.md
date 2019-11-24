@@ -21,6 +21,6 @@ All props in `QuerableProps` are written by hand. Keep them updated with any cha
 
 # Units
 
-All dimensional units are in milimeters, to be as close to reality as possible.
+All dimensional units are in centimeters, to be as close to reality as possible.
 
-The clinent-side would have to decide how to scale it and present on any devices. Sometimes it would be needed to ignore some units, for example: table size on small mobile devices.
+The client-side would have to decide how to scale it and present on any devices. Sometimes it would be needed to ignore some units, for example: table size on small mobile devices.

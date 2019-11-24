@@ -3,8 +3,6 @@ import { State } from "../state"
 import { Room } from "../room"
 
 export class Broadcast extends Command {
-  _name = "Broadcast"
-
   constructor(public message: ServerMessage) {
     super()
   }

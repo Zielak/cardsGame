@@ -1,6 +1,6 @@
 # Action Templates
 
-With Action Templates you're helping to decipher players intention, after they click some item in the game.
+With Action Templates you're helping to decipher players intention, after they click some item in the game. Player may interact with UI in many different ways at any time they wish. It's our job to filter out "illegal" moves.
 
 Here's how a basic action may look like. It's and object with 5 properties:
 
@@ -25,13 +25,13 @@ const MyAction: ActionTemplate<MyGameState> = {
 }
 ```
 
-`name` and `description` are esimply just that.
+`name` and `description` are simply just that.
 
 ## getInteractions
 
 _With that elements is this action related to?_
 
-Return an array of `InteractionDefinition` object. In each object describe either an entity, of which you want to capture an interaction, or provide a `command` or `event` name.
+Return an array of `InteractionDefinition` objects. In each object describe either an entity, of which you want to capture an interaction, or provide a `command` name. An entity can be describe by any of its props, matched only strictly.
 
 ```typescript
 // Interaction with any deck
@@ -66,20 +66,23 @@ return [
 ]
 ```
 
+> NOTE: `InteractionDefinition` is a mixture of [`QuerableProps`](./types.md#QuerableProps) type with an addition of `command` prop.
+
 ## getConditions
 
 _Is players intention legal?_
 
-Use `conditions`, first and only argument of this function, to define a set of rules for this action. If one of these rules fail, the action will be ignored.
+Use [`conditions`](./conditions.md), first and only argument of this function, to define a set of rules for this action. If one of these rules fail, the action will be ignored.
 
-`conditions` object has a reference to player's event and current game's state. You can use its pre-defined methods and properties to construct easily readable assertions.
+[`conditions`](./conditions.md) object has a reference to player's event and current game's state. You can use its pre-defined methods and properties to construct easily readable assertions.
 
 ```typescript
 // You can name it `con` for short.
 getConditions: con => {
-  //
   con.is.playersTurn
 
+  // Grab current player's `hand` and remember it
+  // under alias "chosenCards"
   con
     .get(
       {
@@ -92,9 +95,13 @@ getConditions: con => {
     )
     .as("chosenCards")
 
+  // Change subject to previously remembered "chosenCards"
+  // and ensure its got nothing inside.
   con.get("chosenCards").children.not.empty
 }
 ```
+
+If any of these conditions fail, the whole action is disregarded, and internal CommandsManager will simply try checking the next available Action Template.
 
 [Read more about Conditions](./conditions.md).
 

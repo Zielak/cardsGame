@@ -17,3 +17,5 @@ export const mapCompose = (
 
 export const sortAlphabetically = (a: string, b: string) =>
   a < b ? -1 : a > b ? 1 : 0
+
+export const arrayWith = (count: number) => [...Array(count).keys()]

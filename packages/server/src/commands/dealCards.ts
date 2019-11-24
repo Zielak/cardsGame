@@ -8,16 +8,17 @@ import {
   TargetsHolder
 } from "../command"
 import { State } from "../state"
-import { ParentTrait, isParent } from "../traits/parent"
+import { ParentTrait } from "../traits/parent"
 import { ChangeParent } from "./changeParent"
+import { Room } from "../room"
 
 export class DealCards extends Command {
-  private source: TargetHolder<ParentTrait>
-  private targets: TargetsHolder<ParentTrait>
+  source: TargetHolder<ParentTrait>
+  targets: TargetsHolder<ParentTrait>
 
-  private count: number
-  private step: number
-  private onDeckEmptied: () => Command
+  count: number
+  step: number
+  onDeckEmptied: () => Command[]
 
   /**
    * Deals `count` cards from this container to other containers.
@@ -34,53 +35,65 @@ export class DealCards extends Command {
     targets: Targets<ParentTrait>,
     options: DealCardsOptions = {}
   ) {
-    super("DealCards")
+    super()
     this.source = new TargetHolder<ParentTrait>(source)
     this.targets = new TargetsHolder<ParentTrait>(targets)
 
     this.count = def(options.count, Infinity)
-    this.step = def(options.step, 1)
+    this.step = Math.max(def(options.step, 1), 1)
     this.onDeckEmptied = options.onDeckEmptied
   }
 
-  async execute(state: State) {
+  async execute(state: State, room: Room<any>) {
     const _ = this.constructor.name
     logs.notice(_, "count:", this.count, ", step:", this.step)
+
     let targetI = 0
     let stepI = 0
 
-    const maxDeals = this.count * this.targets.length
-    const next = async () => {
-      const top = this.source.getTop()
-      if (isParent(top)) {
-        logs.warn(
-          "DealCards",
-          `Unlikely situation, you're making me deal a CONTAINER (IParent) instead of singular object. Is that really what you want?`
-        )
-        return
-      }
-      const currentTarget = this.targets[targetI % this.targets.length]
+    const source = this.source.get()
+    const targets = this.targets.get()
+
+    const maxDeals = this.count * targets.length
+
+    let childrenLeft
+
+    do {
+      const currentTarget = targets[targetI % targets.length]
 
       // This command thing moves the entity
-      new ChangeParent(top, currentTarget).execute(state)
+      const cmd = new ChangeParent(() => source.getTop(), currentTarget)
+      await cmd.execute(state)
+      this.addSubCommand(cmd)
+      childrenLeft = source.countChildren()
 
       // Pick next target if we dealt `this.step` cards to current target
       if (++stepI % this.step === 0) {
         targetI++
       }
-      if (this.source.countChildren() > 0 && targetI < maxDeals) {
-        next()
-      } else {
-        logs.notice(_, `Done dealing cards.`)
+
+      if (childrenLeft === 0 && targetI < maxDeals && maxDeals !== Infinity) {
+        const cmds = this.onDeckEmptied && this.onDeckEmptied()
+        if (!cmds) {
+          throw new Error(
+            `Source emptied before dealing every requested card. Add onDeckEmptied in options to for example refill the source with new elements.`
+          )
+        }
+        const cmd = new Command(cmds)
+        await cmd.execute(state, room)
+        this.addSubCommand(cmd)
       }
-    }
-    return await next()
-    // state.logTreeState()
+    } while (
+      (maxDeals === Infinity && childrenLeft > 0) ||
+      (maxDeals !== Infinity && targetI < maxDeals)
+    )
+
+    logs.notice(_, `Done dealing cards.`)
   }
 }
 
 interface DealCardsOptions {
   count?: number
   step?: number
-  onDeckEmptied?: () => Command
+  onDeckEmptied?: () => Command[]
 }

@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cm/px 1`] = `115`;
+
+exports[`cm/px 2`] = `0.8695652173913043`;

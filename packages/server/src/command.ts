@@ -3,53 +3,90 @@ import { Room } from "./room"
 import { logs } from "@cardsgame/utils"
 
 export interface Command {
-  execute(state: State, room: Room<any>): Promise<void | Command[]>
+  execute(state: State, room: Room<any>): Promise<void | Command>
 }
 
 export class Command {
   private _subCommands: Command[]
-  public _name: string
-
-  constructor(name?: string, subCommands?: Command[]) {
-    this._name = name || `Some ${subCommands ? "compound" : "plain"} command`
-    this._subCommands = subCommands
-      ? subCommands.filter(c => typeof c === "object")
-      : []
+  private _name: string
+  get name() {
+    return this._name
   }
 
-  async execute(state: State, room: Room<any>): Promise<void | Command[]> {
+  constructor(subCommands?: Command[]) {
+    this._name = this.constructor.name
+
+    this._setSubCommands(subCommands)
+  }
+
+  async execute(state: State, room: Room<any>): Promise<void> {
+    this._executeSubCommands(state, room)
+  }
+
+  async undo(state: State, room: Room<any>) {
     if (this._subCommands.length === 0) {
-      logs.notice(`${this._name}, nothing to execute.`)
+      logs.verbose(`${this.name}, nothing to undo.`)
       return
     }
 
-    logs.group(`Commands group: ${this._name}.execute()`)
-    for (let i = 0; i < this._subCommands.length; i++) {
+    logs.group(`Commands group: ${this.name}.undo()`)
+    for (let i = this._subCommands.length; i > 0; i--) {
       const command = this._subCommands[i]
-      const commandName = command._name || command.constructor.name
-
-      logs.notice(`\t${commandName}: executing`)
-
-      const result = await command.execute(state, room)
-      if (Array.isArray(result)) {
-        await new Command(commandName, result).execute(state, room)
+      if (command.undo) {
+        logs.notice(`- ${command.name}: undoing`)
+        command.undo(state, room)
+      } else {
+        logs.warn(`- ${command.name} doesn't have undo()!`)
       }
     }
     logs.groupEnd()
   }
 
-  async undo(state: State, room: Room<any>) {
-    if (this._subCommands.length === 0) {
-      logs.notice(`${this._name}, nothing to undo.`)
+  /**
+   * Call this to execute sub commands.
+   * Will remember them internally here and execute them in place.
+   * @param state
+   * @param room
+   * @param commands
+   */
+  async subExecute(state: State, room: Room<any>, commands: Command[]) {
+    this._setSubCommands(commands)
+    await this._executeSubCommands(state, room)
+  }
+
+  /**
+   * Set the list of sub commands, filter out any dirt.
+   * @private
+   * @param commands
+   */
+  private _setSubCommands(commands: Command[]) {
+    this._subCommands = commands
+      ? commands.filter(c => typeof c === "object")
+      : []
+  }
+
+  protected addSubCommand(command: Command) {
+    this._subCommands.push(command)
+  }
+
+  /**
+   * Executes every planned sub commands.
+   * @private
+   * @param state
+   * @param room
+   */
+  private async _executeSubCommands(state: State, room: Room<any>) {
+    if (!this._subCommands) {
       return
     }
 
-    logs.group(`Commands group: ${this._name}.undo()`)
-    for (let i = this._subCommands.length; i > 0; i--) {
+    logs.group(`Commands group: ${this.name}._executeSubCommands()`)
+    for (let i = 0; i < this._subCommands.length; i++) {
       const command = this._subCommands[i]
-      if (command.undo) {
-        command.undo(state, room)
-      }
+
+      logs.notice(`- ${command.name}: executing`)
+
+      await command.execute(state, room)
     }
     logs.groupEnd()
   }

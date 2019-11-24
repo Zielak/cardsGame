@@ -1,8 +1,10 @@
-import { InteractionDefinition } from "./room"
 import { State } from "./state"
 import { ServerPlayerEvent } from "./player"
 import { Command } from "./command"
 import { Conditions } from "./conditions"
+import { QuerableProps } from "./queryRunner"
+
+type InteractionDefinition = QuerableProps & { command?: string }
 
 export type ActionTemplate<S extends State> = {
   name: string

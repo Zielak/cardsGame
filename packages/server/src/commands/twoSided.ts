@@ -1,26 +1,26 @@
 import { State } from "../state"
-import { Command } from "../command"
+import { Command, TargetsHolder, Targets } from "../command"
 import { TwoSidedTrait } from "../traits/twoSided"
+
+// Make it possible to provide functions as target...
 
 /**
  * Reveal the front side (overse) of an element
  */
 export class FaceUp extends Command {
-  _name = "FaceUp"
+  targets: TargetsHolder<TwoSidedTrait>
 
-  entities: TwoSidedTrait[]
-
-  constructor(entity: TwoSidedTrait)
-  constructor(entities: TwoSidedTrait[])
-  constructor(_entities: TwoSidedTrait | TwoSidedTrait[]) {
+  constructor(entities: Targets<TwoSidedTrait>) {
     super()
-    this.entities = Array.isArray(_entities) ? _entities : [_entities]
+    this.targets = new TargetsHolder<TwoSidedTrait>(entities)
   }
+
   async execute(state: State) {
-    this.entities.forEach(e => e.flipUp())
+    this.targets.get().forEach(e => e.flipUp())
   }
+
   async undo(state: State) {
-    this.entities.forEach(e => e.flipDown())
+    this.targets.get().forEach(e => e.flipDown())
   }
 }
 
@@ -28,22 +28,19 @@ export class FaceUp extends Command {
  * Reveal the back side (revers) of an element
  */
 export class FaceDown extends Command {
-  _name = "FaceDown"
+  targets: TargetsHolder<TwoSidedTrait>
 
-  entities: TwoSidedTrait[]
-  constructor(entity: TwoSidedTrait)
-  constructor(entities: TwoSidedTrait[])
-  constructor(_entities: TwoSidedTrait | TwoSidedTrait[]) {
+  constructor(entities: Targets<TwoSidedTrait>) {
     super()
-    this.entities = Array.isArray(_entities) ? _entities : [_entities]
+    this.targets = new TargetsHolder<TwoSidedTrait>(entities)
   }
 
   async execute(state: State) {
-    this.entities.forEach(e => e.flipDown())
+    this.targets.get().forEach(e => e.flipDown())
   }
 
   async undo(state: State) {
-    this.entities.forEach(e => e.flipUp())
+    this.targets.get().forEach(e => e.flipUp())
   }
 }
 
@@ -51,21 +48,18 @@ export class FaceDown extends Command {
  * Flip the element to reveal its other side
  */
 export class Flip extends Command {
-  _name = "Flip"
+  targets: TargetsHolder<TwoSidedTrait>
 
-  entities: TwoSidedTrait[]
-  constructor(entity: TwoSidedTrait)
-  constructor(entities: TwoSidedTrait[])
-  constructor(_entities: TwoSidedTrait | TwoSidedTrait[]) {
+  constructor(entities: Targets<TwoSidedTrait>) {
     super()
-    this.entities = Array.isArray(_entities) ? _entities : [_entities]
+    this.targets = new TargetsHolder<TwoSidedTrait>(entities)
   }
 
   async execute(state: State) {
-    this.entities.forEach(e => e.flip())
+    this.targets.get().forEach(e => e.flip())
   }
 
   async undo(state: State) {
-    this.entities.forEach(e => e.flip())
+    this.targets.get().forEach(e => e.flip())
   }
 }

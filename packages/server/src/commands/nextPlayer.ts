@@ -4,8 +4,6 @@ import { State } from "../state"
 import { Room } from "../room"
 
 export class NextPlayer extends Command {
-  _name = "NextPlayer"
-
   async execute(state: State, room: Room<any>) {
     if (!state.turnBased)
       throw new Error(`Can't use NextPlayer in non turn based game.`)

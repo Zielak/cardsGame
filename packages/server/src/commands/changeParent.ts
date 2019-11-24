@@ -12,8 +12,6 @@ import { ChildTrait } from "../traits/child"
 import { ParentTrait, hasLabel } from "../traits"
 
 export class ChangeParent extends Command {
-  _name = "ChangeParent"
-
   private entities: TargetsHolder<ChildTrait>
   private target: TargetHolder<ParentTrait>
   private prepend: boolean

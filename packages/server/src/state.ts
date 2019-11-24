@@ -53,7 +53,7 @@ export class State extends Entity<{}> {
   @type("uint16") round: number = 0
 
   /**
-   * List of player - game participants, after the game satrts.
+   * List of player - game participants, after the game starts.
    */
   @type({ map: Player }) players = new MapSchema<Player>()
 
@@ -109,7 +109,7 @@ export class State extends Entity<{}> {
   }
 
   /**
-   * Registers new entity to the gamestate
+   * Registers new entity to the game state
    * @param entity
    * @returns new ID to be assigned to that entity
    */
@@ -121,16 +121,23 @@ export class State extends Entity<{}> {
 
   // TODO: Separate this function to `getEntityByID` and `getEntityByIdxPath`. State also has `find` automatically
   // TODO: wait... isn't this function also `getEntitiesAlongPath`?
+  // FIXME: Deprecate. It's not used anywhere...
   /**
    * Get an Entity by its ID
+   * @deprecated
    * @param id
    */
   getEntity(id: EntityID)
   /**
    * Get an Entity by its idx path
+   * @deprecated
    * @param path
    */
   getEntity(path: number[])
+  /**
+   * @deprecated
+   * @param idOrPath
+   */
   getEntity(idOrPath: EntityID | number[]) {
     if (Array.isArray(idOrPath)) {
       const travel = (parent: ParentTrait, remainingPath: number[]) => {

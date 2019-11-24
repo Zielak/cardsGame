@@ -16,8 +16,33 @@ export function isParent(entity: any): entity is ParentTrait {
 export const hasChildren = entity =>
   isParent(entity) ? entity.countChildren() > 0 : false
 
+const getKnownConstructor = (entity: ChildTrait) =>
+  registeredChildren.find(con => entity instanceof con)
+
+const pickByIdx = (idx: number) => (child: ChildTrait) => child.idx === idx
+const sortByIdx = (a: ChildTrait, b: ChildTrait) => a.idx - b.idx
+
 export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void
+// export type EmptiedHandler = () => void
+
+// export interface ParentTrait {
+//   /**
+//    * User defined function, for this instance.
+//    * Will be called after container gets new child.
+//    */
+//   onChildAdded: ChildAddedHandler
+//   /**
+//    * User defined function, for this instance.
+//    * Will be called after container's child gets removed.
+//    */
+//   onChildRemoved: ChildRemovedHandler
+//   /**
+//    * User defined function, for this instance.
+//    * Will be called after container gets emptied.
+//    */
+//   onEmptied: EmptiedHandler
+// }
 
 export class ParentTrait {
   protected childrenPointers: string[]
@@ -25,9 +50,6 @@ export class ParentTrait {
 
   childAdded: ChildAddedHandler
   childRemoved: ChildRemovedHandler
-
-  onChildAdded: ChildAddedHandler
-  onChildRemoved: ChildRemovedHandler
 
   removeChild(child: ChildTrait): boolean {
     if (child.parent === this) {
@@ -210,6 +232,7 @@ export class ParentTrait {
 
   /**
    * Recursively fetches all children
+   * @deprecated unused anywhere useful in code.
    */
   getDescendants(): ChildTrait[] {
     return this.getChildren().reduce(
@@ -282,12 +305,7 @@ export class ParentTrait {
     }
   })
 
-  this.onChildAdded = def(options.onChildAdded, undefined)
-  this.onChildRemoved = def(options.onChildRemoved, undefined)
+  // this.onChildAdded = def(options.onChildAdded, undefined)
+  // this.onChildRemoved = def(options.onChildRemoved, undefined)
+  // this.onEmptied = def(options.onEmptied, undefined)
 }
-
-export const getKnownConstructor = (entity: ChildTrait) =>
-  registeredChildren.find(con => entity instanceof con)
-
-const pickByIdx = (idx: number) => (child: ChildTrait) => child.idx === idx
-const sortByIdx = (a: ChildTrait, b: ChildTrait) => a.idx - b.idx

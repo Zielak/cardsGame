@@ -38,7 +38,6 @@ export class Deck extends Entity<DeckOptions> {
   @type(TopDeckElement) topDeck: TopDeckElement
 
   create(state: State, options: DeckOptions = {}) {
-    this.onEmptied = def(options.onEmptied, undefined)
     this.name = def(options.name, "Deck")
     this.type = def(options.type, "deck")
 
@@ -46,27 +45,25 @@ export class Deck extends Entity<DeckOptions> {
     this.topDeck = new TopDeckElement()
   }
 
-  onEmptied: () => void
-
   // TODO: deck may display its topmost card, if it's `faceUp`
 
   childAdded(child: ChildTrait) {
     this.childCount++
     this.updateTopElement(child)
-    if (this.onChildAdded) {
-      this.onChildAdded(child)
-    }
+    // if (this.onChildAdded) {
+    //   this.onChildAdded(child)
+    // }
   }
   childRemoved(idx: number) {
     this.childCount--
-    if (this.onChildAdded) {
-      this.onChildRemoved(idx)
-    }
-    if (this.childCount === 0 && this.onEmptied) {
-      this.onEmptied()
-    } else {
-      this.updateTopElement(this.getTop())
-    }
+    // if (this.onChildAdded) {
+    //   this.onChildRemoved(idx)
+    // }
+    // if (this.childCount === 0 && this.onEmptied) {
+    //   this.onEmptied()
+    // } else {
+    this.updateTopElement(this.getTop())
+    // }
   }
 
   updateTopElement(child: { [key: string]: any }) {
@@ -89,7 +86,6 @@ interface Mixin
 type DeckOptions = Partial<
   ConstructorType<Mixin> & {
     childCount: number
-    onEmptied: () => void
   }
 >
 

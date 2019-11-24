@@ -63,7 +63,7 @@ export class Room<S extends State> extends colRoom<S> {
   onLeave(client: Client, consented: boolean) {
     if (consented || !this.state.isGameStarted) {
       mapRemoveEntry(this.state.clients, client.id)
-      logs.notice("onLeave", `client "${client.id}" left permamently`)
+      logs.notice("onLeave", `client "${client.id}" left permanently`)
     } else {
       logs.notice(
         "onLeave",
@@ -124,10 +124,7 @@ export class Room<S extends State> extends colRoom<S> {
 
       if (postStartCommands) {
         this.commandsManager
-          .execute(
-            this.state,
-            new Command("PostStartCommands", postStartCommands)
-          )
+          .execute(this.state, new Command(postStartCommands))
           .then(() => {
             this.onPlayerTurnStarted(this.state.currentPlayer)
           })
@@ -252,19 +249,4 @@ const debugLogMessage = (newEvent: ServerPlayerEvent) => {
       ].join("")
     )
   }
-}
-
-export type EntityProps = {
-  [key: string]: boolean | string | number | string[] | number[] | EntityProps
-  name?: string | string[]
-  type?: string | string[]
-  value?: number | number[]
-  rank?: string | string[]
-  suit?: string | string[]
-  parent?: EntityProps
-}
-
-export type InteractionDefinition = EntityProps & {
-  command?: string
-  event?: string
 }

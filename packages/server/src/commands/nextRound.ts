@@ -4,13 +4,11 @@ import { State } from "../state"
 import { Room } from "../room"
 
 export class NextRound extends Command {
-  _name = "NextRound"
-
   async execute(state: State, room: Room<any>) {
     room.onRoundEnd()
 
     state.round++
-    logs.notice(this._name, `Round ${state.round}!`)
+    logs.notice(this.name, `Round ${state.round}!`)
 
     room.onRoundStart()
   }
@@ -19,7 +17,7 @@ export class NextRound extends Command {
     room.onRoundStart()
 
     state.round--
-    logs.notice(this._name, `Bringing back Round ${state.round}!`)
+    logs.notice(this.name, `Bringing back Round ${state.round}!`)
 
     room.onRoundEnd()
   }
