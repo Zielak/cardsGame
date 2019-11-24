@@ -1,5 +1,5 @@
 import { MapSchema, Schema, type } from "@colyseus/schema"
-import { map2Array, mapRemoveIdx } from "../src/mapSchema"
+import { map2Array, mapRemoveIdx, mapCount } from "../src/mapSchema"
 
 class Box extends Schema {
   name: string
@@ -27,6 +27,18 @@ describe("map2Array", () => {
   test("empty map", () => {
     expect(Object.keys(state.boxes).length).toBe(0)
   })
+})
+
+test("mapCount", () => {
+  expect(mapCount([])).toBe(0)
+  expect(mapCount({})).toBe(0)
+
+  expect(
+    mapCount({
+      0: "dqwdasd",
+      1: "e13fr4"
+    })
+  ).toBe(2)
 })
 
 describe("mapRemoveIdx", () => {

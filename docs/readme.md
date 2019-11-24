@@ -1,25 +1,30 @@
-[![CircleCI](https://circleci.com/gh/Zielak/cardsGame/tree/master.svg?style=svg&circle-token=0731ea14fca235ad0b3aaaa4484137faa81d8b47)](https://circleci.com/gh/Zielak/cardsGame/tree/master) [![Coverage Status](https://coveralls.io/repos/github/Zielak/cardsGame/badge.svg?branch=master)](https://coveralls.io/github/Zielak/cardsGame?branch=master)
+# Documentation
 
-# `@cardsgame`
+Think of the games here like the real-life games: a pack of 52 cards, sometimes with jokers, or a box of chess pieces and checker board. Once you start the game, the number of game elements doesn't change. They're always there on the table an dyou don't spontanously create new cards out of thin air.
 
-Libraries for creating card games in general.
+Game elements are called `entities`. All entities and all their informations are perserved in the `state`. The information includes: their location, ownership, name, is it face up, etc. Entities are a mixture of `traits`, which enable them to hold such information but also can provide additional functionalities.
 
-## Packages included
+## Client-server communication
 
-- `@cardsgame/server` - base server-side lib. Just write your own game actions, condition and elemens (classic card games elements already included).
-- `@cardsgame/client` - base client-side lib. No rendering included/enforced. Gives you neatly packed game state updates, so you could render your game in whatever way you want.
-- `@cardsgame/utils` - some utilities used by both server and client side code.
-- `@cardsgame/types` - TS types for things used in both server and client side code.
+Player can interact either with game elements (entities) or UI elements. Such interaction should be converted to a message object by game author (you).
 
-## Example usage
+Client-side library sends a message to the server, where it is received and translated into player's intention.
 
-In the `./example/` directory you'll find the most basic implementation of this lib. Client-side is "rendered" with vanilla JS.
+From now `CommandsManager` takes this message and tries to figure out:
 
-## Wishlist
+- is any other action still pending?
+- does the interaction relate to any defined `actionTemplate`?
+- will any pre-defined action's `conditions` allow to execute such interaction?
 
-Right now I'm focusing on the basics, and I'd love to start working on the following in the future:
+If commands manager finds only one possible, legal, game action to make, it executes all its `commands` and keeps them in the history.
 
-- **Game variants** - most classic card games play different in different regions. I'd like to make it possible to define, select and play what kind of the game you wish to play exactly.
-- **Play against bots** - in games you define all possible moves and their conditions. Such list could be one day used by simple AI system to choose actions automatically.
-- **Accessibility** - color blindness, high contrast, keyboard controls, screen readers, voice activation, all the good stuff. Make games accessible to as much people as possible.
-- **Online profiles** - at the very bottom on the list for a reason.
+Commands job is mainly to change game state in any way. For example: move card to another container, change points on one player, or present player with some UI to make choice.
+
+Such change is then sent back to all clients with state change event, so game author can handle it to update clients game interface.
+
+---
+
+- ♥ kier - Hearts
+- ♠ pik - Spades
+- ♦ karo - Diamonds
+- ♣ trefl - Clubs

@@ -1,4 +1,12 @@
-import { limit, rad2deg, wrap, deg2rad, decimal } from "../src/numbers"
+import {
+  limit,
+  rad2deg,
+  wrap,
+  deg2rad,
+  decimal,
+  cm2px,
+  px2cm
+} from "../src/numbers"
 
 describe("limit", () => {
   test("in range", () => {
@@ -24,7 +32,12 @@ describe("limit", () => {
   })
 })
 
-describe("wrap", () => {})
+describe("wrap", () => {
+  expect(wrap(2, 1)).toBe(0)
+  expect(wrap(1.5, 1)).toBe(0.5)
+  expect(wrap(2, 10)).toBe(2)
+  expect(wrap(-2, 10)).toBe(8)
+})
 
 describe("rad2deg", () => {
   expect(rad2deg(Math.PI)).toBe(180)
@@ -44,4 +57,9 @@ describe("decimal", () => {
   expect(decimal(-0.11111111, 4)).toBe(-0.1111)
   expect(decimal(-0.66666666, 5)).toBe(-0.66667)
   expect(decimal(10)).toBe(10)
+})
+
+test("cm/px", () => {
+  expect(cm2px(10)).toMatchSnapshot()
+  expect(px2cm(10)).toMatchSnapshot()
 })

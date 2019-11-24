@@ -86,6 +86,17 @@ describe(`State`, () => {
     })
   })
 
+  test("#clientsCount", () => {
+    state = new State()
+
+    expect(state.clientsCount).toBe(0)
+
+    state.clients[0] = "1234"
+    state.clients[1] = "qwer"
+
+    expect(state.clientsCount).toBe(2)
+  })
+
   test.todo("#get currentPlayer")
   test.todo("#get playersCount")
 

@@ -1,4 +1,4 @@
-import { trim, randomName, camelCase, sentenceCase } from "../src/strings"
+import { trim, camelCase } from "../src/strings"
 
 describe("trim", () => {
   test(`default arguments`, () => {

@@ -143,25 +143,34 @@ class Conditions<S extends State> {
     this._propName = undefined
   }
 
+  /**
+   * Negates the following assertion.
+   */
   get not(): this {
     flag(this, "not", true)
     return this
   }
 
   // Chainers
-  // prettier-ignore
-  get has(): this { return this }
-  // prettier-ignore
-  get to(): this { return this }
-  // prettier-ignore
-  get is(): this { return this }
-  // prettier-ignore
-  get be(): this { return this }
-  // prettier-ignore
-  get and(): this { return this }
+  get has(): this {
+    return this
+  }
+  get to(): this {
+    return this
+  }
+  get is(): this {
+    return this
+  }
+  get be(): this {
+    return this
+  }
+  get and(): this {
+    return this
+  }
 
   // Subject changer
   /**
+   * Changes subject to game's state
    * @yields `state`
    */
   get state(): this {
@@ -172,6 +181,7 @@ class Conditions<S extends State> {
   }
 
   /**
+   * Changes subject to a player of current interaction
    * @yields `player` of current interaction
    */
   get player(): this {
@@ -182,6 +192,7 @@ class Conditions<S extends State> {
   }
 
   /**
+   * Changes subject to interacted entity
    * @yields `entity` from players interaction
    */
   get entity(): this {
@@ -192,6 +203,7 @@ class Conditions<S extends State> {
   }
 
   /**
+   * Sets new subject. This can be anything.
    * @yields completely new subject, provided in the argument
    */
   set(newSubject): this {
@@ -201,11 +213,15 @@ class Conditions<S extends State> {
   }
 
   /**
+   * Sets new subject, and entity, found by its previously defined `alias`
+   * or by it's props. Provide multiple arguments to find an item by its
+   * relation to parents.
    * @yields an entity, found by alias or `QuerableProps` query
    * @example ```
-   * get({name: 'deck'}).as('deck')
-   * get('deck')
-   * get('deck', {rank: 'K'})
+   * con.get({name: 'deck'}).as('deck')
+   * con.get('deck')
+   * // get([...] GrandParent, Parent, Child)
+   * con.get('deck', {rank: 'K'})
    * ```
    */
   get(alias: string | QuerableProps, ...args: QuerableProps[]): this {
@@ -231,7 +247,8 @@ class Conditions<S extends State> {
   }
 
   /**
-   * @yields subjects key to be asserted. Will remember the reference to the object, so you can chain key checks
+   * Changes subject to a prop of its current subject.
+   * @yields subject prop's value to be asserted. Will remember the reference to the object, so you can chain key checks
    * @example
    * con.entity
    *   .its('propA').equals('foo')
@@ -251,6 +268,9 @@ class Conditions<S extends State> {
 
   /**
    * Remembers the subject with a given alias
+   * @example ```
+   * con.get({name: 'deck'}).as('deck')
+   * ```
    */
   as(ref: string | Symbol): void {
     this._refs.set(ref, flag(this, "subject"))
@@ -328,7 +348,7 @@ class Conditions<S extends State> {
   }
 
   /**
-   * @yields `length` property of a collection (or string)
+   * @yields {number} `length` property of a collection (or string)
    */
   get length(): this {
     const subject = flag(this, "subject")
@@ -343,7 +363,7 @@ class Conditions<S extends State> {
   }
 
   /**
-   * @yields children count if `subject` is a `Parent`
+   * @yields {number} children count if `subject` is a `Parent`
    */
   get childrenCount(): this {
     const subject = flag(this, "subject")
@@ -370,7 +390,7 @@ class Conditions<S extends State> {
    * con.get("chosenCards").children.each((con, item, index, array) => {
    *   con.its("rank").oneOf(["2", "3"])
    * })
-   * @yields anything that was before `.each()` command
+   * @yields back anything that was before `.each()` command so you can chain it further
    */
   each(
     predicate: (
@@ -395,8 +415,10 @@ class Conditions<S extends State> {
 
   // Commands?
   // Throw when assertion doesn't pass
+
   /**
-   * @asserts that subject is equal to provided value. No coercion.
+   * Compares current subject to given value, no coercion (strict equality).
+   * @asserts that subject is equal to provided value.
    * @alias equals
    */
   equals(value: any): this {
@@ -502,6 +524,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @asserts that subject's length is equal to expected.
    */
@@ -523,6 +546,7 @@ class Conditions<S extends State> {
 
     return this
   }
+
   /**
    * @asserts
    */
@@ -549,7 +573,7 @@ class Conditions<S extends State> {
   }
 
   /**
-   * Based on `state` instead of `subject`
+   * @asserts if interacting player currently has the turn.
    */
   get playersTurn(): this {
     const { currentPlayer } = this._state
@@ -564,16 +588,20 @@ class Conditions<S extends State> {
   }
 
   /**
-   * Based on `state` instead of `subject`
-   * Current player has a specific UI element presented to him.
+   * Does current player has a specific UI element presented to him?
    * If `uiKey` is left empty, function will test if player
-   * has ANY ui interface open.
+   * has ANY ui interface presented.
+   * Based on `state` and `event` instead of `subject`
    * @asserts
    * @example
-   * con.revealedUI() // player has ANY UI revealed
-   * con.not.revealedUI() // player doesn't have ANY UI revealed
-   * con.revealedUI("rankChooser") // player has "rankChooser" revealed
-   * con.not.revealedUI("rankChooser") // player doesn't have "rankChooser" revealed
+   * // player has ANY UI revealed
+   * con.revealedUI()
+   * // player doesn't have ANY UI revealed
+   * con.not.revealedUI()
+   * // player has "rankChooser" revealed
+   * con.revealedUI("rankChooser")
+   * // player doesn't have "rankChooser" revealed
+   * con.not.revealedUI("rankChooser")
    */
   revealedUI(uiKey?: string): this {
     const { ui } = this._state
@@ -650,7 +678,7 @@ class Conditions<S extends State> {
   }
 
   /**
-   * @asserts if current player is an owner of entity from current `event`
+   * @asserts that player is intereactin with an entity which belongs to them
    */
   get owner(): this {
     const entity = this._event.entity
@@ -680,7 +708,7 @@ class Conditions<S extends State> {
   }
 
   /**
-   * @returns `event` reference
+   * @returns player's `event` reference
    */
   getEvent(): ServerPlayerEvent {
     return this._event
