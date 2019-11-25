@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/Zielak/cardsGame/tree/master.svg?style=svg&circle-token=0731ea14fca235ad0b3aaaa4484137faa81d8b47)](https://circleci.com/gh/Zielak/cardsGame/tree/master) [![Coverage Status](https://coveralls.io/repos/github/Zielak/cardsGame/badge.svg?branch=master)](https://coveralls.io/github/Zielak/cardsGame?branch=master)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Zielak_cardsGame&metric=bugs)](https://sonarcloud.io/dashboard?id=Zielak_cardsGame) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Zielak_cardsGame&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Zielak_cardsGame) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Zielak_cardsGame&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Zielak_cardsGame) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Zielak_cardsGame&metric=security_rating)](https://sonarcloud.io/dashboard?id=Zielak_cardsGame) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Zielak_cardsGame&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=Zielak_cardsGame)
 
 # `@cardsgame`
 
@@ -6,7 +7,7 @@ Libraries for creating card games in general.
 
 ## Packages included
 
-- `@cardsgame/server` - base server-side lib. Just write your own game actions, condition and elemens (classic card games elements already included).
+- `@cardsgame/server` - base server-side lib. Just write your own game actions, condition and elements (classic card games elements already included).
 - `@cardsgame/client` - base client-side lib. No rendering included/enforced. Gives you neatly packed game state updates, so you could render your game in whatever way you want.
 - `@cardsgame/utils` - some utilities used by both server and client side code.
 - `@cardsgame/types` - TS types for things used in both server and client side code.
