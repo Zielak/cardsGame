@@ -1,5 +1,11 @@
 import { containsChildren, canBeChild } from "../annotations"
-import { Entity, LabelTrait, applyMixins, OwnershipTrait } from "../traits"
+import {
+  Entity,
+  LabelTrait,
+  applyMixins,
+  OwnershipTrait,
+  IdentityTrait
+} from "../traits"
 import { ParentTrait } from "../traits/parent"
 import { ChildTrait } from "../traits/child"
 import { LocationTrait } from "../traits/location"
@@ -7,6 +13,7 @@ import { LocationTrait } from "../traits/location"
 @canBeChild
 @containsChildren()
 @applyMixins([
+  IdentityTrait,
   LabelTrait,
   ChildTrait,
   ParentTrait,
@@ -21,7 +28,8 @@ export class Container extends Entity<ContainerOptions> {
 }
 
 interface Mixin
-  extends LabelTrait,
+  extends IdentityTrait,
+    LabelTrait,
     ChildTrait,
     ParentTrait,
     LocationTrait,

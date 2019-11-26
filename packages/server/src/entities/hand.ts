@@ -5,11 +5,18 @@ import { State } from "../state"
 import { ParentTrait } from "../traits/parent"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { LabelTrait, Entity, applyMixins, OwnershipTrait } from "../traits"
+import {
+  LabelTrait,
+  Entity,
+  applyMixins,
+  OwnershipTrait,
+  IdentityTrait
+} from "../traits"
 
 @canBeChild
 @containsChildren()
 @applyMixins([
+  IdentityTrait,
   LocationTrait,
   ChildTrait,
   ParentTrait,
@@ -43,7 +50,8 @@ export class Hand extends Entity<HandOptions> {
 }
 
 interface Mixin
-  extends LocationTrait,
+  extends IdentityTrait,
+    LocationTrait,
     ChildTrait,
     ParentTrait,
     LabelTrait,

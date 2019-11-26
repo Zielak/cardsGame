@@ -6,11 +6,17 @@ import { Entity, applyMixins } from "../traits/entity"
 import { ParentTrait } from "../traits/parent"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { LabelTrait } from "../traits"
+import { LabelTrait, IdentityTrait } from "../traits"
 
 @canBeChild
 @containsChildren()
-@applyMixins([LocationTrait, ChildTrait, ParentTrait, LabelTrait])
+@applyMixins([
+  IdentityTrait,
+  LocationTrait,
+  ChildTrait,
+  ParentTrait,
+  LabelTrait
+])
 export class Pile extends Entity<PileOptions> {
   create(state: State, options: PileOptions = {}) {
     this.name = def(options.name, "Pile")
@@ -18,7 +24,12 @@ export class Pile extends Entity<PileOptions> {
   }
 }
 
-interface Mixin extends LocationTrait, ChildTrait, ParentTrait, LabelTrait {}
+interface Mixin
+  extends IdentityTrait,
+    LocationTrait,
+    ChildTrait,
+    ParentTrait,
+    LabelTrait {}
 
 type PileOptions = Partial<ConstructorType<Mixin>>
 

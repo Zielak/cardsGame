@@ -16,7 +16,8 @@ import {
   ParentTrait,
   Entity,
   applyMixins,
-  OwnershipTrait
+  OwnershipTrait,
+  IdentityTrait
 } from "../traits"
 import { State } from "../state"
 
@@ -26,6 +27,7 @@ defineTypes(TopDeckElement, getAllChildrensTypes())
 @canBeChild
 @containsChildren(false)
 @applyMixins([
+  IdentityTrait,
   LocationTrait,
   ChildTrait,
   ParentTrait,
@@ -76,7 +78,8 @@ export class Deck extends Entity<DeckOptions> {
 }
 
 interface Mixin
-  extends LocationTrait,
+  extends IdentityTrait,
+    LocationTrait,
     ChildTrait,
     ParentTrait,
     LabelTrait,
