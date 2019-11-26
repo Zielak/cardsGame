@@ -1,4 +1,6 @@
 import { Client, Room as colRoom } from "colyseus"
+import { BroadcastOptions } from "colyseus/lib/Room"
+
 import {
   logs,
   chalk,
@@ -7,13 +9,13 @@ import {
   mapRemoveEntry,
   IS_CHROME
 } from "@cardsgame/utils"
+
 import { CommandsManager } from "./commandsManager"
 import { State } from "./state"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
 import { populatePlayerEvent } from "./utils"
-import { BroadcastOptions } from "colyseus/lib/Room"
-import { LabelTrait, hasLabel } from "./traits"
+import { LabelTrait, hasLabel } from "./traits/label"
 import { Command } from "./command"
 
 export class Room<S extends State> extends colRoom<S> {
@@ -24,7 +26,7 @@ export class Room<S extends State> extends colRoom<S> {
 
   possibleActions: ActionsSet<S>
 
-  onCreate(options: any) {
+  onCreate(options?: any) {
     logs.info(`Room:${this.name}`, "creating new room")
 
     if (!this.possibleActions) {

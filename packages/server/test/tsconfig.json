@@ -4,6 +4,7 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "lib": ["es6", "es2016"],
+    "target": "esnext",
     "types": ["@cardsgame/types", "jest", "node"]
   }
 }
