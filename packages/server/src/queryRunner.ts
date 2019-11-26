@@ -6,8 +6,11 @@ import {
   LabelTrait,
   LocationTrait,
   OwnershipTrait,
-  SelectableChildrenTrait,
-  TwoSidedTrait
+  // SelectableChildrenTrait,
+  TwoSidedTrait,
+  IdentityTrait,
+  hasIdentity,
+  isChild
 } from "./traits"
 
 type EveryTrait = BoxModelTrait &
@@ -17,7 +20,7 @@ type EveryTrait = BoxModelTrait &
   LabelTrait &
   LocationTrait &
   OwnershipTrait &
-  SelectableChildrenTrait &
+  // SelectableChildrenTrait &
   TwoSidedTrait
 
 export interface QuerableProps
@@ -42,13 +45,25 @@ export interface QuerableProps
       | "faceUp"
     >
   > {
-  parent?: EntityID | QuerableProps
+  parent?: QuerableProps
 }
 
-export const queryRunner = (props: QuerableProps) => entity => {
+export const queryRunner = <T>(props: QuerableProps) => (entity: T) => {
+  if (!isChild(entity)) return false
+
   const propKeys = Object.keys(props)
 
   return propKeys.every(propName => {
-    return entity[propName] === props[propName]
+    if (propName === "parent") {
+      // Must have an identity AND be a child
+      if (!hasIdentity(entity.parent)) return false
+      if (!isChild(entity.parent)) return false
+      // It's in root state...
+      if (entity.parent.id === -1) return false
+
+      return queryRunner(props.parent)(entity.parent)
+    } else {
+      return entity[propName] === props[propName]
+    }
   })
 }

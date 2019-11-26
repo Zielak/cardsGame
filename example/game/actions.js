@@ -8,9 +8,9 @@ const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
  * @param {ServerPlayerEvent} event
  */
 const PlayCardWithAnte = (state, event) => {
-  const container = state.find({ owner: event.player })
-  const deck = container.find({ type: "deck" })
-  const pile = container.find({ type: "pile" })
+  const container = state.query({ owner: event.player })
+  const deck = container.query({ type: "deck" })
+  const pile = container.query({ type: "pile" })
 
   const ante =
     state.ante > 0 ? deck.getChildren().splice(-state.ante - 1, state.ante) : []

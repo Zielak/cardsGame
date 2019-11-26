@@ -52,19 +52,17 @@ module.exports.Battle = class Battle extends Command {
   }
   async execute(state) {
     // TODO: maybe prepare it for more than 2 players setup?
-    const containerA = state.find({
+    const containerA = state.query({
       type: "container",
       owner: state.players[0]
     })
-    const containerB = state.find({
+    const containerB = state.query({
       type: "container",
       owner: state.players[1]
     })
 
-    const containers = [containerA, containerB]
-
-    const topA = containerA.find({ type: "pile" }).getTop()
-    const topB = containerB.find({ type: "pile" }).getTop()
+    const topA = containerA.query({ type: "pile" }).getTop()
+    const topB = containerB.query({ type: "pile" }).getTop()
 
     const data = {
       outcome: "",
@@ -92,14 +90,23 @@ module.exports.Battle = class Battle extends Command {
 
     if (data.outcome !== "tie") {
       const losersCards = state
-        .find({ ownerID: data.loser }, { type: "pile" })
+        .query({
+          type: "pile",
+          parent: { ownerID: data.loser }
+        })
         .getChildren()
 
       const winnersCards = state
-        .find({ ownerID: data.winner }, { type: "pile" })
+        .query({
+          type: "pile",
+          parent: { ownerID: data.winner }
+        })
         .getChildren()
 
-      const winnersDeck = state.find({ ownerID: data.winner }, { type: "deck" })
+      const winnersDeck = state.query({
+        type: "deck",
+        parent: { ownerID: data.winner }
+      })
 
       subCommands.push(
         new commands.FaceDown([...losersCards, ...winnersCards]),

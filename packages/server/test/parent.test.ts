@@ -72,6 +72,7 @@ describe("#removeChild", () => {
     ).toMatchSnapshot()
   })
 })
+
 describe("#moveChildTo", () => {
   let parent
   const mapChildren = parent => parent.getChildren().map(e => e.id)
@@ -154,6 +155,7 @@ test("#getTop", () => {
 
   expect(parent.getTop()).toBe(entity)
 })
+
 test("#getBottom", () => {
   const parent = new DumbParent(state)
   const entity = new DumbEntity(state, { parent })
@@ -167,8 +169,85 @@ test("#getBottom", () => {
 test.todo("#getDescendants")
 
 describe("queryRunner functions", () => {
-  describe("#find", () => {
-    test.todo("finds")
-    test.todo("throws")
+  let parentA
+  let parentB
+  let targetA
+  let targetB
+  let parentC
+  let targetC
+
+  beforeEach(() => {
+    state = new State()
+
+    parentA = new SmartParent(state, { name: "parentA" })
+    parentB = new SmartParent(state, { name: "parentB" })
+
+    // Parent A
+    new SmartEntity(state, { type: "foo", parent: parentA })
+    new SmartEntity(state, { type: "baz", parent: parentA })
+    new SmartEntity(state, { type: "foo", parent: parentA })
+    targetA = new SmartEntity(state, {
+      type: "bar",
+      name: "targetA",
+      parent: parentA
+    })
+
+    // Parent B
+    targetB = new SmartEntity(state, {
+      type: "bar",
+      name: "targetB",
+      parent: parentB
+    })
+    new SmartEntity(state, { type: "foo", parent: parentB })
+    new SmartEntity(state, { name: "bar", parent: parentB })
+    parentC = new SmartParent(state, {
+      name: "parentC",
+      type: "baz",
+      parent: parentB
+    })
+    new SmartEntity(state, { type: "foo", parent: parentB })
+
+    // Parent C
+    new SmartEntity(state, { type: "foo", parent: parentC })
+    targetC = new SmartEntity(state, {
+      type: "bar",
+      name: "targetC",
+      parent: parentC
+    })
+    new SmartEntity(state, { type: "foo", parent: parentC })
+    new SmartEntity(state, { type: "foo", parent: parentC })
+    new SmartEntity(state, { type: "foo", parent: parentC })
+  })
+
+  describe("#query, simple", () => {
+    test("starting from state, finds deeply anywhere", () => {
+      expect(state.query({ name: "parentA" })).toBe(parentA)
+      expect(state.query({ name: "parentB" })).toBe(parentB)
+      expect(state.query({ name: "parentC" })).toBe(parentC)
+
+      expect(state.query({ name: "targetA" })).toBe(targetA)
+      expect(state.query({ name: "targetB" })).toBe(targetB)
+      expect(state.query({ name: "targetC" })).toBe(targetC)
+    })
+
+    test("starting from given parent, finds in it and deeply", () => {
+      expect(parentB.query({ name: "parentC" })).toBe(parentC)
+      expect(parentB.query({ type: "baz" })).toBe(parentC)
+      expect(parentB.query({ type: "baz", name: "parentC" })).toBe(parentC)
+
+      expect(parentB.query({ name: "targetB" })).toBe(targetB)
+      expect(parentB.query({ type: "bar" })).toBe(targetB)
+      expect(parentB.query({ type: "bar", name: "targetB" })).toBe(targetB)
+    })
+  })
+  describe("#query, with parent", () => {
+    test("starting from state, finds deeply anywhere", () => {
+      expect(state.query({ type: "baz", parent: { name: "parentB" } })).toBe(
+        parentC
+      )
+      expect(state.query({ type: "bar", parent: { type: "baz" } })).toBe(
+        targetC
+      )
+    })
   })
 })

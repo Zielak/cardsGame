@@ -8,6 +8,7 @@ import { registeredChildren } from "../annotations"
 
 export function isParent(entity: any): entity is ParentTrait {
   return (
+    typeof entity == "object" &&
     typeof (entity as ParentTrait).addChild !== "undefined" &&
     typeof (entity as ParentTrait).getChildren !== "undefined"
   )
@@ -248,18 +249,52 @@ export class ParentTrait {
   }
 
   /**
-   * ~~Deeply~~ looks for only first matching entity
+   * Find one item matching props.
+   * @param props
    */
-  find<T>(...props: QuerableProps[]): T {
-    if (props.length === 0) return
+  query<T extends ChildTrait>(props: QuerableProps): T {
+    // Grab all current children
+    const children = this.getChildren()
 
-    const newTarget = this.getChildren().find(queryRunner(props[0]))
+    // Check if maybe some of them match the query
+    const firstLevel = children.find(queryRunner(props))
 
-    if (newTarget && props.length === 1) {
-      return newTarget as ChildTrait & T
-    } else if (isParent(newTarget) && props.length > 1) {
-      return newTarget.find(...props.slice(1))
+    if (firstLevel) {
+      return firstLevel as ChildTrait & T
     }
+
+    // Keep querying for the same props in children if they're also parents
+
+    for (const entity of children) {
+      if (!isParent(entity)) continue
+
+      const result = entity.query(props)
+      if (result) {
+        return result as ChildTrait & T
+      }
+    }
+  }
+
+  /**
+   * Looks for every matching entity here and deeper
+   */
+  queryAll<T extends ChildTrait>(props: QuerableProps): T[] {
+    const result: (ChildTrait & T)[] = []
+
+    // Grab all current children
+    const children = this.getChildren<T>()
+
+    // Check if maybe some of them match the query
+    result.push(...children.filter(queryRunner<T>(props)))
+
+    // Keep querying for the same props in children if they're also parents
+    for (const entity of children) {
+      if (!isParent(entity)) continue
+
+      result.push(...entity.queryAll<T>(props))
+    }
+
+    return result
   }
 
   /**

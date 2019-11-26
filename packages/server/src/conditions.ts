@@ -224,19 +224,22 @@ class Conditions<S extends State> {
    * con.get('deck', {rank: 'K'})
    * ```
    */
-  get(alias: string | QuerableProps, ...args: QuerableProps[]): this {
+  get(props: QuerableProps)
+  get(alias: string, props?: QuerableProps)
+  get(aliasOrProps: string | QuerableProps, props?: QuerableProps): this {
     let newSubject
-    if (typeof alias === "string") {
-      if (args.length > 0) {
-        // find child of subject by alias
-        newSubject = this._refs.get(alias).find(...args)
+    if (typeof aliasOrProps === "string") {
+      const alias = aliasOrProps
+      if (props) {
+        // find child of aliased subject
+        newSubject = this._refs.get(alias).query(props)
       } else {
-        // get subject by alias
+        // get just subject by alias
         newSubject = this._refs.get(alias)
       }
     } else {
       // find subject in State tree
-      newSubject = this._state.find(alias, ...args)
+      newSubject = this._state.query(props)
     }
 
     flag(this, "subject", newSubject)

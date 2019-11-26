@@ -29,9 +29,13 @@ const MyAction: ActionTemplate<MyGameState> = {
 
 ## getInteractions
 
-_With that elements is this action related to?_
+_With what elements is this action related to?_
 
-Return an array of `InteractionDefinition` objects. In each object describe either an entity, of which you want to capture an interaction, or provide a `command` name. An entity can be describe by any of its props, matched only strictly.
+Describe what kind of elements relate to this actions. Don't mind about player's event and ownerships here. This is just the first place to quickly filter out unwanted actions.
+
+Return an array of `InteractionDefinition` objects. In each object describe either an entity, of which you want to capture an interaction, or provide a `command` name.
+
+An entity can be described by any of its props. You can also describe `parent` of each entity the same way.
 
 ```typescript
 // Interaction with any deck
