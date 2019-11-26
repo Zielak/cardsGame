@@ -88,15 +88,13 @@ getConditions: con => {
   // Grab current player's `hand` and remember it
   // under alias "chosenCards"
   con
-    .get(
-      {
+    .get({
+      type: "hand",
+      parent: {
         owner: con.getPlayer(),
         type: "container"
-      },
-      {
-        type: "hand"
       }
-    )
+    })
     .as("chosenCards")
 
   // Change subject to previously remembered "chosenCards"

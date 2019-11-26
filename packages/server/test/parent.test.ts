@@ -75,7 +75,7 @@ describe("#removeChild", () => {
 
 describe("#moveChildTo", () => {
   let parent
-  const mapChildren = parent => parent.getChildren().map(e => e.id)
+  const mapChildren = p => p.getChildren().map(e => e.id)
   beforeEach(() => {
     parent = new DumbParent(state)
     new DumbEntity(state, { parent })
@@ -169,12 +169,7 @@ test("#getBottom", () => {
 test.todo("#getDescendants")
 
 describe("queryRunner functions", () => {
-  let parentA
-  let parentB
-  let targetA
-  let targetB
-  let parentC
-  let targetC
+  let parentA, parentB, targetA, targetB, parentC, targetC
 
   beforeEach(() => {
     state = new State()
@@ -246,6 +241,39 @@ describe("queryRunner functions", () => {
         parentC
       )
       expect(state.query({ type: "bar", parent: { type: "baz" } })).toBe(
+        targetC
+      )
+    })
+  })
+
+  describe("#queryAll, simple", () => {
+    test("starting from state, finds deeply anywhere", () => {
+      expect(state.queryAll({ type: "foo" }).length).toBe(8)
+      expect(state.queryAll({ type: "bar" }).length).toBe(3)
+    })
+    test("starting from state, target one entity", () => {
+      expect(state.queryAll({ name: "targetA" }).length).toBe(1)
+      expect(state.queryAll({ name: "targetB" }).length).toBe(1)
+      expect(state.queryAll({ name: "targetC" }).length).toBe(1)
+
+      expect(state.queryAll({ name: "targetA" })[0]).toBe(targetA)
+      expect(state.queryAll({ name: "targetB" })[0]).toBe(targetB)
+      expect(state.queryAll({ name: "targetC" })[0]).toBe(targetC)
+    })
+    test("starting from given parent, finds in it and deeply", () => {
+      expect(parentB.queryAll({ type: "foo" }).length).toBe(6)
+    })
+    test("starting from given parent, target one entity", () => {
+      expect(parentB.queryAll({ name: "parentC" })[0]).toBe(parentC)
+      expect(parentB.queryAll({ name: "targetB" })[0]).toBe(targetB)
+    })
+  })
+  describe("#queryAll, with parent", () => {
+    test("starting from state, finds deeply anywhere", () => {
+      expect(
+        state.queryAll({ type: "baz", parent: { name: "parentB" } })[0]
+      ).toBe(parentC)
+      expect(state.queryAll({ type: "bar", parent: { type: "baz" } })[0]).toBe(
         targetC
       )
     })

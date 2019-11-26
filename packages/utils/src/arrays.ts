@@ -2,11 +2,11 @@ export const mapCompose = (
   array: any[],
   ...functions: ((...args) => any)[]
 ) => {
-  return functions.reduce((array, fn) => {
+  return functions.reduce((prevArr, fn) => {
     if (typeof fn === "function") {
-      return array.map(fn)
+      return prevArr.map(fn)
     } else if (typeof fn === "undefined") {
-      return array
+      return prevArr
     } else {
       throw new Error(
         `utils/compose, I expected a function here, got "${typeof fn}" instead...`

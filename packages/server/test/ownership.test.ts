@@ -24,7 +24,6 @@ describe(`entity properties`, () => {
 
 describe(`getOwner`, () => {
   test(`entity's direct owner`, () => {
-    let parent = new OwnableParent(state)
     let entity = new OwnableEntity(state, { owner: player })
 
     expect(entity.getOwner()).toBe(player)

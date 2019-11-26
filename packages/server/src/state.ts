@@ -220,7 +220,6 @@ export class State extends Entity<{}> {
           const owner = hasOwnership(child) ? child.getOwner() : undefined
 
           // const lastChild = entities.length - 1 === idx
-          const sIdx = idx === child.idx ? `${idx}` : `e${child.idx}:s${idx}`
           const idxPath = child.getIdxPath()
 
           const childrenCount = isParent(child) ? child.countChildren() : "~~"

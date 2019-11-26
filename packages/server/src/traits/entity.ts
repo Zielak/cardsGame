@@ -52,7 +52,7 @@ export const applyMixins = (baseCtors: any[]) => (derivedCtor: Function) => {
   baseCtors.forEach(baseCtor => {
     Object.getOwnPropertyNames(baseCtor.prototype)
       .filter(name => name !== "constructor")
-      .map(name => {
+      .forEach(name => {
         Object.defineProperty(
           derivedCtor.prototype,
           name,
@@ -60,7 +60,7 @@ export const applyMixins = (baseCtors: any[]) => (derivedCtor: Function) => {
         )
       })
 
-    Object.getOwnPropertyNames(baseCtor).map(name => {
+    Object.getOwnPropertyNames(baseCtor).forEach(name => {
       if (name === "typeDef") {
         for (var field in baseCtor.typeDef) {
           type(baseCtor.typeDef[field])(derivedCtor.prototype, field)

@@ -24,19 +24,19 @@ export const getAllChildrensTypes = () => {
 }
 
 export function type(
-  type: DefinitionType,
+  typeDef: DefinitionType,
   context?: Context
 ): PropertyDecorator {
   return function(target: typeof Schema, field: string) {
     const constructor = target.constructor as typeof Schema
 
-    let logType: any = `"${type}"`
-    if (Array.isArray(type)) {
-      logType = `(${typeof type}) [${typeof type}]`
-    } else if (typeof type === "function") {
-      logType = `(${typeof type}) "${type.name}"`
-    } else if (typeof type === "object") {
-      logType = `(${typeof type}) ${type}`
+    let logType: any = `"${typeDef}"`
+    if (Array.isArray(typeDef)) {
+      logType = `(${typeof typeDef}) [${typeof typeDef}]`
+    } else if (typeof typeDef === "function") {
+      logType = `(${typeof typeDef}) "${typeDef.name}"`
+    } else if (typeof typeDef === "object") {
+      logType = `(${typeof typeDef}) ${typeDef}`
     }
 
     // Interecept type definition
@@ -45,10 +45,10 @@ export function type(
         registeredTypeDefinitions.set(constructor.name, new Map())
       }
       logs.verbose("child type:", `${constructor.name}.${field} ${logType}`)
-      registeredTypeDefinitions.get(constructor.name).set(field, type)
+      registeredTypeDefinitions.get(constructor.name).set(field, typeDef)
     }
 
-    return colType(type, context)(target, field)
+    return colType(typeDef, context)(target, field)
   }
 }
 
@@ -131,7 +131,7 @@ export function canBeChild(childConstructor: Function) {
  * @param childrenSynced set `false` to keep the children secret from clients
  */
 export function containsChildren(childrenSynced = true) {
-  return function containsChildren(parentConstructor: typeof Schema) {
+  return function containsChildrenDec(parentConstructor: typeof Schema) {
     // Remember this parent
     registeredParents.push({
       con: parentConstructor,

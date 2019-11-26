@@ -73,13 +73,13 @@ export class DealCards extends Command {
       }
 
       if (childrenLeft === 0 && targetI < maxDeals && maxDeals !== Infinity) {
-        const cmds = this.onDeckEmptied && this.onDeckEmptied()
-        if (!cmds) {
+        const emptiedCmds = this.onDeckEmptied && this.onDeckEmptied()
+        if (!emptiedCmds) {
           throw new Error(
             `Source emptied before dealing every requested card. Add onDeckEmptied in options to for example refill the source with new elements.`
           )
         }
-        const cmd = new Command(cmds)
+        const cmd = new Command(emptiedCmds)
         await cmd.execute(state, room)
         this.addSubCommand(cmd)
       }

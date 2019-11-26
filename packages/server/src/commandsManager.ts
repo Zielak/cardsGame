@@ -142,24 +142,24 @@ export class CommandsManager<S extends State> {
 
       const conditionsChecker = new Conditions(state, event)
 
-      let result = true
+      let subResult = true
       let message = ""
       try {
         action.getConditions(conditionsChecker)
       } catch (e) {
-        result = false
+        subResult = false
         message = (e as Error).message
       }
 
       if (message) {
         logs.verbose("\t", message)
       }
-      logs.verbose(`result: ${result}`)
+      logs.verbose(`result: ${subResult}`)
 
       // logConditionResults(logsResults)
       logs.groupEnd()
 
-      return result
+      return subResult
     })
 
     logs.groupEnd()

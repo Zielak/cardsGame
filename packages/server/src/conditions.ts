@@ -5,7 +5,7 @@ import { ServerPlayerEvent, Player } from "./player"
 import { State } from "./state"
 import { hasOwnership } from "./traits/ownership"
 import { QuerableProps } from "./queryRunner"
-import { isParent } from "./traits"
+import { isParent } from "./traits/parent"
 
 // export interface ExpandableConditions<S extends State> {
 //   [key: string]: (this: Conditions<S>) => Conditions<S>
@@ -224,22 +224,22 @@ class Conditions<S extends State> {
    * con.get('deck', {rank: 'K'})
    * ```
    */
-  get(props: QuerableProps)
-  get(alias: string, props?: QuerableProps)
-  get(aliasOrProps: string | QuerableProps, props?: QuerableProps): this {
+  get(props: QuerableProps): this
+  get(alias: string, props?: QuerableProps): this
+  get(arg0: string | QuerableProps, arg1?: QuerableProps): this {
     let newSubject
-    if (typeof aliasOrProps === "string") {
-      const alias = aliasOrProps
-      if (props) {
+    if (typeof arg0 === "string") {
+      const alias = arg0
+      if (arg1) {
         // find child of aliased subject
-        newSubject = this._refs.get(alias).query(props)
+        newSubject = this._refs.get(alias).query(arg1)
       } else {
         // get just subject by alias
         newSubject = this._refs.get(alias)
       }
     } else {
       // find subject in State tree
-      newSubject = this._state.query(props)
+      newSubject = this._state.query(arg0)
     }
 
     flag(this, "subject", newSubject)
@@ -299,7 +299,7 @@ class Conditions<S extends State> {
   nthChild(index: number): this {
     const subject = flag(this, "subject")
 
-    ensure(typeof subject === "object", `nthChild | Subject must be an objec`)
+    ensure(typeof subject === "object", `nthChild | Subject must be an object`)
 
     if (isParent(subject)) {
       flag(this, "subject", subject.getChild(index))
@@ -528,27 +528,27 @@ class Conditions<S extends State> {
     return this
   }
 
-  /**
-   * @asserts that subject's length is equal to expected.
-   */
-  lengthOf(value: number): this {
-    const subject = flag(this, "subject")
+  // /**
+  //  * @asserts that subject's length is equal to expected.
+  //  */
+  // lengthOf(value: number): this {
+  //   const subject = flag(this, "subject")
 
-    ensure(
-      typeof subject === "object",
-      `lengthOf | Subject expected to be an object (typeof)`
-    )
+  //   ensure(
+  //     typeof subject === "object",
+  //     `lengthOf | Subject expected to be an object (typeof)`
+  //   )
 
-    this.assert(
-      subject.length === value,
-      `subject[#{act}] doesn't contain exactly #{exp} items`,
-      `subject[#{act}] contains exactly #{exp}, but shouldn't`,
-      value,
-      subject.length
-    )
+  //   this.assert(
+  //     subject.length === value,
+  //     `subject[#{act}] doesn't contain exactly #{exp} items`,
+  //     `subject[#{act}] contains exactly #{exp}, but shouldn't`,
+  //     value,
+  //     subject.length
+  //   )
 
-    return this
-  }
+  //   return this
+  // }
 
   /**
    * @asserts
@@ -613,7 +613,7 @@ class Conditions<S extends State> {
       // 1. uiKey needs to exist
       ensure(
         uiKey in ui,
-        `revealedUI | this UI doens't have "${uiKey}" key defined`
+        `revealedUI | this UI doesn't have "${uiKey}" key defined`
       )
 
       // 2. Current client has to be on the list
@@ -681,7 +681,7 @@ class Conditions<S extends State> {
   }
 
   /**
-   * @asserts that player is intereactin with an entity which belongs to them
+   * @asserts that player is interacting with an entity which belongs to them
    */
   get owner(): this {
     const entity = this._event.entity

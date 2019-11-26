@@ -7,21 +7,35 @@ let state: State
 let event: ServerPlayerEvent
 let parent: SmartParent
 let child: SmartEntity
+let top: SmartEntity
+let bottom: SmartEntity
 let con: Conditions<State>
 
 beforeEach(() => {
   state = new State()
+  parent = new SmartParent(state, { name: "parent" })
+
+  bottom = new SmartEntity(state, { parent, name: "childTop" })
+  new SmartEntity(state, { parent, name: "child" })
+  child = new SmartEntity(state, { parent, name: "child" })
+  new SmartEntity(state, { parent, name: "child" })
+  top = new SmartEntity(state, { parent, name: "childBottom" })
+
   event = {
     player: new Player({ clientID: "123" }),
-    entity: new SmartEntity(state)
+    entity: top
   }
-  parent = new SmartParent(state, { name: "parent" })
-  child = new SmartEntity(state, { parent, name: "child" })
 
   con = new Conditions<State>(state, event)
 })
 
-// describe('chainers')
+test("all chainers", () => {
+  expect(con.has).toBe(con)
+  expect(con.to).toBe(con)
+  expect(con.be).toBe(con)
+  expect(con.is).toBe(con)
+  expect(con.and).toBe(con)
+})
 
 describe("constructor", () => {
   it("defines all props", () => {
@@ -44,6 +58,16 @@ describe("references/aliases", () => {
     con.get("parent")
     expect(flag(con, "subject")).toBe(parent)
   })
+
+  test("internal _player reference", () => {
+    expect(con._player).toBe(event.player)
+  })
+
+  test("get functions", () => {
+    expect(con.getEvent()).toBe(event)
+    expect(con.getPlayer()).toBe(event.player)
+    expect(con.getState()).toBe(state)
+  })
 })
 
 describe("subject changing", () => {
@@ -60,7 +84,7 @@ describe("subject changing", () => {
 
     const subject = flag(con, "subject")
     expect(Array.isArray(subject)).toBeTruthy()
-    expect(subject.length).toBe(1)
+    expect(subject.length).toBe(5)
     expect(subject).toContain(child)
   })
 
@@ -130,6 +154,75 @@ describe("subject changing", () => {
       }).toThrow()
     })
   })
+
+  test("player", () => {
+    expect(flag(con, "subject")).toBe(state)
+    con.player
+    expect(flag(con, "subject")).toBe(event.player)
+  })
+})
+
+test("nthChild", () => {
+  con.get({ name: "parent" }).as("parent")
+
+  // Entities
+  expect(() =>
+    con
+      .get("parent")
+      .nthChild(0)
+      .equals(bottom)
+  ).not.toThrow()
+  expect(() =>
+    con
+      .get("parent")
+      .nthChild(2)
+      .equals(child)
+  ).not.toThrow()
+  expect(() =>
+    con
+      .get("parent")
+      .nthChild(4)
+      .equals(top)
+  ).not.toThrow()
+
+  // Simple array
+  expect(() =>
+    con
+      .set([0, 1, 2, 3])
+      .nthChild(0)
+      .equals(0)
+  ).not.toThrow()
+  expect(() =>
+    con
+      .set([0, 1, 2, 3])
+      .nthChild(0)
+      .equals(3)
+  ).toThrow()
+})
+
+test("bottom", () => {
+  con.get({ name: "parent" }).as("parent")
+  expect(() => con.get("parent").bottom.equals(bottom)).not.toThrow()
+  expect(() => con.get("parent").bottom.equals(top)).toThrow()
+
+  expect(() => con.set([0, 1, 2, 3]).bottom.equals(0)).not.toThrow()
+  expect(() => con.set([0, 1, 2, 3]).bottom.equals(3)).toThrow()
+})
+test("top", () => {
+  con.get({ name: "parent" }).as("parent")
+  expect(() => con.get("parent").top.equals(top)).not.toThrow()
+  expect(() => con.get("parent").top.equals(bottom)).toThrow()
+
+  expect(() => con.set([0, 1, 2, 3]).top.equals(3)).not.toThrow()
+  expect(() => con.set([0, 1, 2, 3]).top.equals(0)).toThrow()
+})
+test("length", () => {
+  expect(() => con.set("12345").length.equals(5)).not.toThrow()
+  expect(() => con.set(["a", "b", "c"]).length.equals(3)).not.toThrow()
+})
+test("childrenCount", () => {
+  con.get({ name: "parent" }).as("parent")
+  expect(() => con.get("parent").childrenCount.equals(5)).not.toThrow()
 })
 
 describe("equals", () => {
@@ -245,6 +338,7 @@ describe("each", () => {
 describe("empty", () => {
   it("passes", () => {
     expect(() => con.set([]).empty).not.toThrow()
+    expect(() => con.set({}).empty).not.toThrow()
     expect(() => con.set("").empty).not.toThrow()
     expect(() => con.set(new Map()).empty).not.toThrow()
     expect(() => con.set(new Set()).empty).not.toThrow()
@@ -252,6 +346,7 @@ describe("empty", () => {
 
   it("fails as expected", () => {
     expect(() => con.set(["foo"]).empty).toThrow()
+    expect(() => con.set({ key1: 1 }).empty).toThrow()
     expect(() => con.set("foo").empty).toThrow()
     expect(() => con.set(new Map([["foo", "bar"]])).empty).toThrow()
     expect(() => con.set(new Set(["foo"])).empty).toThrow()
@@ -281,5 +376,13 @@ describe("either", () => {
         )
       }).not.toThrow()
     })
+  })
+})
+
+describe("flag", () => {
+  it("throws with invalid target", () => {
+    expect(() => {
+      flag({}, "test", "foo")
+    }).toThrowError(/Incompatible target/)
   })
 })

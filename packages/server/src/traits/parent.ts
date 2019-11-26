@@ -1,5 +1,5 @@
 import { ArraySchema } from "@colyseus/schema"
-import { logs, def } from "@cardsgame/utils"
+import { logs } from "@cardsgame/utils"
 
 import { ChildTrait } from "./child"
 import { State } from "../state"
@@ -240,7 +240,7 @@ export class ParentTrait {
       (prev, entity: ParentTrait | ChildTrait) => {
         prev.push(entity)
         if (isParent(entity)) {
-          prev.concat(entity.getDescendants())
+          return prev.concat(entity.getDescendants())
         }
         return prev
       },
