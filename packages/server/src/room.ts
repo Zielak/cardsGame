@@ -148,6 +148,7 @@ export class Room<S extends State> extends colRoom<S> {
 
   /**
    * Will be called right after the game room is created.
+   * Create your game state here: `this.setState(new MyState())`.
    * Prepare your play area now.
    * @param state
    */
