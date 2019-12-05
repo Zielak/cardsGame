@@ -1,14 +1,14 @@
+import { def } from "@cardsgame/utils"
+
 import { canBeChild, containsChildren } from "../annotations"
-import {
-  Entity,
-  ParentTrait,
-  LabelTrait,
-  applyMixins,
-  IdentityTrait,
-  SelectableChildrenTrait
-} from "../traits"
+import { Entity, applyMixins } from "../traits/entity"
+import { ParentTrait } from "../traits/parent"
+import { LabelTrait } from "../traits/label"
+import { IdentityTrait } from "../traits/identity"
+import { SelectableChildrenTrait } from "../traits/selectableChildren"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
+import { State } from "../state"
 
 /**
  * Row or column of set number of cards.
@@ -26,7 +26,14 @@ import { ChildTrait } from "../traits/child"
   SelectableChildrenTrait
 ])
 export class Line extends Entity<LineOptions> {
-  create() {}
+  spots: number
+
+  create(state: State, options: LineOptions = {}) {
+    this.name = def(options.name, "Line")
+    this.type = def(options.type, "line")
+
+    this.spots = options.spots
+  }
 }
 
 interface Mixin
@@ -37,6 +44,10 @@ interface Mixin
     LabelTrait,
     SelectableChildrenTrait {}
 
-type LineOptions = Partial<ConstructorType<Mixin>>
+type LineOptions = Partial<
+  ConstructorType<Mixin> & {
+    spots: number
+  }
+>
 
 export interface Line extends Mixin {}

@@ -1,16 +1,15 @@
 import {
   BoxModelTrait,
   ChildTrait,
-  ParentTrait,
   FlexyTrait,
+  hasIdentity,
+  isChild,
   LabelTrait,
   LocationTrait,
   OwnershipTrait,
-  // SelectableChildrenTrait,
-  TwoSidedTrait,
-  IdentityTrait,
-  hasIdentity,
-  isChild
+  ParentTrait,
+  SelectableChildrenTrait,
+  TwoSidedTrait
 } from "./traits"
 
 type EveryTrait = BoxModelTrait &
@@ -20,7 +19,7 @@ type EveryTrait = BoxModelTrait &
   LabelTrait &
   LocationTrait &
   OwnershipTrait &
-  // SelectableChildrenTrait &
+  SelectableChildrenTrait &
   TwoSidedTrait
 
 export interface QuerableProps

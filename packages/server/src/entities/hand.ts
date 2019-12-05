@@ -5,14 +5,11 @@ import { State } from "../state"
 import { ParentTrait } from "../traits/parent"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import {
-  LabelTrait,
-  Entity,
-  applyMixins,
-  OwnershipTrait,
-  IdentityTrait,
-  SelectableChildrenTrait
-} from "../traits"
+import { Entity, applyMixins } from "../traits/entity"
+import { LabelTrait } from "../traits/label"
+import { OwnershipTrait } from "../traits/ownership"
+import { IdentityTrait } from "../traits/identity"
+import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
 @canBeChild
 @containsChildren()

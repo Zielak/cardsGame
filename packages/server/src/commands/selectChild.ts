@@ -1,7 +1,7 @@
 import { Command } from "../command"
 import { State } from "../state"
 import { Room } from "../room"
-import { SelectableChildrenTrait } from "../traits"
+import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
 export class Select extends Command {
   constructor(private parent: SelectableChildrenTrait, private idx: number) {

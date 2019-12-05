@@ -26,3 +26,28 @@ All props in `QuerableProps` are written by hand. Keep them updated with any cha
 All dimensional units are in **centimeters**, to be as close to reality as possible.
 
 The client-side would have to decide how to scale it and present on any devices. Sometimes it would be needed to ignore some units, for example: table size on small mobile devices. Package `@cardsgame/utils` contains 2 useful methods for conversion: `cm2px()` and `px2cm()`
+
+---
+
+# TODO?
+
+Client
+
+Client-side games expect to export
+{
+UI: React component while in-game
+entities: [] array of custom game-related React components
+... I should add:
+OptionsView? Intro? Manual?
+
+- Name
+- Description
+- Rules
+- Variants Options
+  }
+
+Client.join({ all the variants })
+
+Server room, onCreate(options)
+
+- pass options so Actions can see them?

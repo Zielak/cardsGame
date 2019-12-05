@@ -1,11 +1,14 @@
 import chalk from "chalk"
+
 import { logs, IS_CHROME } from "@cardsgame/utils"
 
 import { ServerPlayerEvent, Player } from "./player"
-import { State } from "./state"
-import { hasOwnership } from "./traits/ownership"
 import { QuerableProps } from "./queryRunner"
+import { State } from "./state"
+import { isChild } from "./traits/child"
+import { hasOwnership } from "./traits/ownership"
 import { isParent } from "./traits/parent"
+import { hasSelectableChildren } from "./traits/selectableChildren"
 
 // export interface ExpandableConditions<S extends State> {
 //   [key: string]: (this: Conditions<S>) => Conditions<S>
@@ -159,6 +162,9 @@ class Conditions<S extends State> {
     return this
   }
   get is(): this {
+    return this
+  }
+  get can(): this {
     return this
   }
   get be(): this {
@@ -571,6 +577,42 @@ class Conditions<S extends State> {
       expected,
       subject
     )
+
+    return this
+  }
+
+  /**
+   * @asserts if entity can be selected. Checks if parent extends `SelectableChildrenTrait`
+   */
+  selectable(): this {
+    const subject = flag(this, "subject")
+
+    if (!isChild(subject)) {
+      this.assert(false, `selectable | applies only on child entities`)
+      return this
+    }
+
+    this.assert(
+      hasSelectableChildren(subject.parent),
+      `selectable | subject's parent can't have children selected`,
+      `selectable | subject's parent can have children selected, but shouldn't`
+    )
+    return this
+  }
+
+  selected(): this {
+    const subject = flag(this, "subject")
+
+    if (!isChild(subject)) {
+      this.assert(false, `isSelected | is not a child`)
+      return this
+    }
+
+    const result = hasSelectableChildren(subject.parent)
+      ? subject.parent.isChildSelected(subject.idx)
+      : false
+
+    this.assert(result, `isSelected | subject is not selected`)
 
     return this
   }

@@ -6,7 +6,6 @@ import { type } from "../annotations"
 import { State } from "../state"
 
 export function executeHook(hookName: string, ...args) {
-  logs.verbose("executeHook", hookName)
   const proto = Object.getPrototypeOf(this)
   const { hooks } = proto
 

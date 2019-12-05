@@ -1,4 +1,5 @@
 import { ChildTrait } from "./child"
+import { ArraySchema } from "@colyseus/schema"
 
 // TODO: React on child removed(!)/added(~?)
 
@@ -15,7 +16,7 @@ export class SelectableChildrenTrait {
   // This hopefully is available by mixing in ParentTrait.
   childrenPointers: string[]
 
-  selectedChildren: boolean[]
+  selectedChildren: ArraySchema<boolean>
 
   /**
    * Select child
@@ -31,6 +32,10 @@ export class SelectableChildrenTrait {
   deselectChildAt(index: number) {
     this.ensureIndex(index)
     this.selectedChildren[index] = false
+  }
+
+  isChildSelected(index: number): boolean {
+    return this.selectedChildren[index]
   }
 
   protected ensureIndex(index: number) {
@@ -49,7 +54,10 @@ export class SelectableChildrenTrait {
 }
 
 ;(SelectableChildrenTrait as any).trait = function SelectableChildrenTrait() {
-  this.selectedChildren = []
+  this.selectedChildren = new ArraySchema()
+}
+;(SelectableChildrenTrait as any).typeDef = {
+  selectedChildren: ["boolean"]
 }
 ;(SelectableChildrenTrait as any).hooks = {
   childAdded: function(this: SelectableChildrenTrait, child: ChildTrait) {

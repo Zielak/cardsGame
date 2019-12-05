@@ -3,19 +3,15 @@ import { logs } from "@cardsgame/utils"
 import { mapCount } from "@cardsgame/utils"
 
 import { type, containsChildren } from "./annotations"
-import { isParent, ParentTrait } from "./traits/parent"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
-import {
-  Entity,
-  LabelTrait,
-  hasLabel,
-  applyMixins,
-  IdentityTrait,
-  hasChildren
-} from "./traits"
+
 import { ChildTrait, isChild } from "./traits/child"
+import { Entity, applyMixins } from "./traits/entity"
+import { IdentityTrait } from "./traits/identity"
+import { LabelTrait, hasLabel } from "./traits/label"
 import { hasOwnership } from "./traits/ownership"
+import { isParent, hasChildren, ParentTrait } from "./traits/parent"
 
 @containsChildren()
 @applyMixins([IdentityTrait, LabelTrait, ParentTrait])

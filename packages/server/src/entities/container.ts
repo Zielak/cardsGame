@@ -1,11 +1,8 @@
 import { containsChildren, canBeChild } from "../annotations"
-import {
-  Entity,
-  LabelTrait,
-  applyMixins,
-  OwnershipTrait,
-  IdentityTrait
-} from "../traits"
+import { LabelTrait } from "../traits/label"
+import { OwnershipTrait } from "../traits/ownership"
+import { IdentityTrait } from "../traits/identity"
+import { Entity, applyMixins } from "../traits/entity"
 import { ParentTrait } from "../traits/parent"
 import { ChildTrait } from "../traits/child"
 import { LocationTrait } from "../traits/location"

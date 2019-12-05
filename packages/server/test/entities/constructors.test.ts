@@ -1,4 +1,5 @@
-import { Container, Deck, Hand, Line, Pile, Row } from "../../src/entities"
+import { Deck, Hand, Line, Pile } from "../../src/entities/index"
+import { Container } from "../../src/entities/container"
 import { State } from "../../src/state"
 
 let state: State
@@ -13,5 +14,4 @@ test("All constructors", () => {
   expect(() => new Hand(state)).not.toThrow()
   expect(() => new Line(state)).not.toThrow()
   expect(() => new Pile(state)).not.toThrow()
-  expect(() => new Row(state)).not.toThrow()
 })

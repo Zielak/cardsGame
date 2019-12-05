@@ -6,7 +6,8 @@ import { Entity, applyMixins } from "../traits/entity"
 import { ParentTrait } from "../traits/parent"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { LabelTrait, IdentityTrait } from "../traits"
+import { LabelTrait } from "../traits/label"
+import { IdentityTrait } from "../traits/identity"
 
 @canBeChild
 @containsChildren()

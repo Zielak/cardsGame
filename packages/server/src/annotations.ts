@@ -32,7 +32,7 @@ export function type(
 
     let logType: any = `"${typeDef}"`
     if (Array.isArray(typeDef)) {
-      logType = `(${typeof typeDef}) [${typeof typeDef}]`
+      logType = `(array) [${typeDef[0]}]`
     } else if (typeof typeDef === "function") {
       logType = `(${typeof typeDef}) "${typeDef.name}"`
     } else if (typeof typeDef === "object") {

@@ -1,8 +1,13 @@
-import { State } from "./state"
 import { Client } from "colyseus"
-import { ServerPlayerEvent, Player } from "./player"
+
 import { map2Array } from "@cardsgame/utils"
-import { isChild, hasLabel, hasIdentity } from "./traits"
+
+import { ServerPlayerEvent, Player } from "./player"
+import { State } from "./state"
+
+import { isChild } from "./traits/child"
+import { hasIdentity } from "./traits/identity"
+import { hasLabel } from "./traits/label"
 
 export const populatePlayerEvent = (
   state: State,

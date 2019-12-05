@@ -5,7 +5,7 @@ import { ChildTrait } from "./child"
 import { State } from "../state"
 import { QuerableProps, queryRunner } from "../queryRunner"
 import { registeredChildren } from "../annotations"
-import { executeHook } from "../traits"
+import { executeHook } from "../traits/entity"
 
 export function isParent(entity: any): entity is ParentTrait {
   return (

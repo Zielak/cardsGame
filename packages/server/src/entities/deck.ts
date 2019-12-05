@@ -11,14 +11,11 @@ import {
 } from "../annotations"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import {
-  LabelTrait,
-  ParentTrait,
-  Entity,
-  applyMixins,
-  OwnershipTrait,
-  IdentityTrait
-} from "../traits"
+import { Entity, applyMixins } from "../traits/entity"
+import { LabelTrait } from "../traits/label"
+import { ParentTrait } from "../traits/parent"
+import { OwnershipTrait } from "../traits/ownership"
+import { IdentityTrait } from "../traits/identity"
 import { State } from "../state"
 
 class TopDeckElement extends Schema {}

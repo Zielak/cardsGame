@@ -22,3 +22,8 @@ export class FlexyTrait {
   this.directionReverse = def(options.directionReverse, false)
   this.justifyContent = def(options.justifyContent, "start")
 }
+;(FlexyTrait as any).typeDef = {
+  alignItems: "string",
+  directionReverse: "boolean",
+  justifyContent: "string"
+}
