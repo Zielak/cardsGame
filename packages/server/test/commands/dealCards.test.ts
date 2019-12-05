@@ -1,8 +1,9 @@
+import { times } from "@cardsgame/utils"
+
 import { State } from "../../src/state"
 import { DealCards, ChangeParent } from "../../src/commands"
 import { LabeledEntity, LabeledParent } from "../helpers/labeledEntities"
 import { RoomMock } from "../helpers/roomMock"
-import { times } from "@cardsgame/utils"
 
 let state: State
 let entity: LabeledEntity

@@ -9,7 +9,8 @@ import {
   Target
 } from "../command"
 import { ChildTrait } from "../traits/child"
-import { ParentTrait, hasLabel } from "../traits"
+import { ParentTrait } from "../traits/parent"
+import { hasLabel } from "../traits/label"
 
 export class ChangeParent extends Command {
   private entities: TargetsHolder<ChildTrait>
@@ -29,14 +30,13 @@ export class ChangeParent extends Command {
     this.sources = []
     this.target = new TargetHolder<ParentTrait>(target)
     this.prepend = prepend
-
-    if (!this.target) {
-      throw new Error(`Target is required.`)
-    }
   }
 
   async execute(state: State) {
     const _ = this.constructor.name
+    if (!this.target.get()) {
+      throw new Error(`ChangeParent command. Target is required.`)
+    }
     if (this.entities.get().length < 1) {
       logs.error("ChangeParent command", `I don't have an entity to move!`)
       return

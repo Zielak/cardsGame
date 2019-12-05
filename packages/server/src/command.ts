@@ -1,6 +1,7 @@
+import { logs } from "@cardsgame/utils"
+
 import { State } from "./state"
 import { Room } from "./room"
-import { logs } from "@cardsgame/utils"
 
 export interface Command {
   execute(state: State, room: Room<any>): Promise<void | Command>
@@ -18,7 +19,7 @@ export class Command {
    * @param subCommands
    */
   constructor(name?: string, subCommands?: Command[]) {
-    this._name = this.constructor.name
+    this._name = name || this.constructor.name
 
     this._subCommands = subCommands
       ? subCommands.filter(c => typeof c === "object")
@@ -55,11 +56,11 @@ export class Command {
     }
 
     logs.group(`Commands group: ${this.name}.undo()`)
-    for (let i = this._subCommands.length; i > 0; i--) {
+    for (let i = this._subCommands.length - 1; i >= 0; i--) {
       const command = this._subCommands[i]
       if (command.undo) {
         logs.notice(`- ${command.name}: undoing`)
-        command.undo(state, room)
+        await command.undo(state, room)
       } else {
         logs.warn(`- ${command.name} doesn't have undo()!`)
       }
@@ -69,6 +70,7 @@ export class Command {
 
   /**
    * Execute a sub command.
+   * Call ONLY during your commands `execute` method.
    * Will also remember it internally for undoing.
    */
   protected async subExecute(state: State, room: Room<any>, command: Command) {
