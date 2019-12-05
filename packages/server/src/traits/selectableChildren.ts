@@ -1,39 +1,61 @@
-// import { ParentTrait } from "./parent"
+import { ChildTrait } from "./child"
 
 // TODO: React on child removed(!)/added(~?)
 
-// export class SelectableChildrenTrait extends ParentTrait {
-//   selectedChildren: boolean[]
+export function hasSelectableChildren(
+  entity: any
+): entity is SelectableChildrenTrait {
+  return (
+    typeof entity == "object" &&
+    typeof (entity as SelectableChildrenTrait).selectedChildren !== "undefined"
+  )
+}
 
-//   selectChildAt(index: number) {
-//     this.ensureIndex(index)
-//     this.selectedChildren[index] = true
-//   }
+export class SelectableChildrenTrait {
+  // This hopefully is available by mixing in ParentTrait.
+  childrenPointers: string[]
 
-//   deSelectChildAt(index: number) {
-//     this.ensureIndex(index)
-//     this.selectedChildren[index] = false
-//   }
+  selectedChildren: boolean[]
 
-//   toggleSelectionChildAt(index: number) {
-//     this.ensureIndex(index)
-//     this.selectedChildren[index] = !this.selectedChildren[index]
-//   }
+  /**
+   * Select child
+   */
+  selectChildAt(index: number) {
+    this.ensureIndex(index)
+    this.selectedChildren[index] = true
+  }
 
-//   protected ensureIndex(index: number) {
-//     if (typeof index !== "number")
-//       throw new Error("selectChildAt | should be a number!")
-//     if (this.countChildren() - 1 < index)
-//       throw new Error(
-//         `selectChildAt | this parent doesn't have child at index ${index}`
-//       )
-//   }
-// }
+  /**
+   * Deselect child
+   */
+  deselectChildAt(index: number) {
+    this.ensureIndex(index)
+    this.selectedChildren[index] = false
+  }
 
-// ;(SelectableChildrenTrait as any).trait = function SelectableChildrenTrait(
-//   state,
-//   options
-// ) {
-//   // ParentTrait.trait(state, options)
-//   this.selectedChildren = []
-// }
+  protected ensureIndex(index: number) {
+    if (typeof index !== "number")
+      throw new Error("selectChildAt | should be a number!")
+
+    if (this.countChildren() - 1 < index)
+      throw new Error(
+        `selectChildAt | this parent doesn't have child at index ${index}`
+      )
+  }
+
+  countChildren(): number {
+    return this.childrenPointers.length
+  }
+}
+
+;(SelectableChildrenTrait as any).trait = function SelectableChildrenTrait() {
+  this.selectedChildren = []
+}
+;(SelectableChildrenTrait as any).hooks = {
+  childAdded: function(this: SelectableChildrenTrait, child: ChildTrait) {
+    this.selectedChildren.splice(child.idx, 0, false)
+  },
+  childRemoved: function(this: SelectableChildrenTrait, idx: number) {
+    this.selectedChildren.splice(idx, 1)
+  }
+}

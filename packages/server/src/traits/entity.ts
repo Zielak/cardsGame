@@ -1,31 +1,41 @@
 import { Schema } from "@colyseus/schema"
 
+import { logs } from "@cardsgame/utils"
+
 import { type } from "../annotations"
 import { State } from "../state"
-import { logs } from "@cardsgame/utils"
+
+export function executeHook(hookName: string, ...args) {
+  logs.verbose("executeHook", hookName)
+  const proto = Object.getPrototypeOf(this)
+  const { hooks } = proto
+
+  if (hooks && hooks.has(hookName)) {
+    hooks.get(hookName).forEach(fn => fn.apply(this, args))
+  }
+}
 
 export class Entity<T> extends Schema {
   constructor(state: State, options: Partial<T> = {}) {
     super()
 
-    const postConstructor: Function[] = []
+    const proto = Object.getPrototypeOf(this)
 
     // First, apply all traits and their "constructors"
-    Object.getPrototypeOf(this).traitsConstructors.forEach(fun => {
-      const callback = fun.call(this, state, options)
-
-      // Gather every callback of traits, if they provided any
-      if (callback && typeof callback === "function") {
-        postConstructor.push(callback)
-      }
-    }, this)
+    if (proto.traitsConstructors) {
+      proto.traitsConstructors.forEach(fun => {
+        fun.call(this, state, options)
+      }, this)
+    }
 
     // Execute our Entity's `create` "constructor"
     this.create(state, options)
 
-    // Execute callbacks from traits
-    postConstructor.forEach(cb => cb())
+    // Execute `postConstructor` hooks
+    this._executeHook("postConstructor", state, options)
   }
+
+  _executeHook = executeHook
 
   create(state: State, options: Partial<T> = {}) {
     logs.warn(
@@ -43,9 +53,16 @@ export class Entity<T> extends Schema {
  * @param baseCtors
  */
 export const applyMixins = (baseCtors: any[]) => (derivedCtor: Function) => {
-  if (!derivedCtor.prototype.hasOwnProperty("traitsConstructors")) {
-    Object.defineProperty(derivedCtor.prototype, "traitsConstructors", {
+  const derived = derivedCtor.prototype
+
+  if (!derived.hasOwnProperty("traitsConstructors")) {
+    Object.defineProperty(derived, "traitsConstructors", {
       value: []
+    })
+  }
+  if (!derived.hasOwnProperty("hooks")) {
+    Object.defineProperty(derived, "hooks", {
+      value: new Map()
     })
   }
 
@@ -54,7 +71,7 @@ export const applyMixins = (baseCtors: any[]) => (derivedCtor: Function) => {
       .filter(name => name !== "constructor")
       .forEach(name => {
         Object.defineProperty(
-          derivedCtor.prototype,
+          derived,
           name,
           Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
         )
@@ -63,10 +80,17 @@ export const applyMixins = (baseCtors: any[]) => (derivedCtor: Function) => {
     Object.getOwnPropertyNames(baseCtor).forEach(name => {
       if (name === "typeDef") {
         for (var field in baseCtor.typeDef) {
-          type(baseCtor.typeDef[field])(derivedCtor.prototype, field)
+          type(baseCtor.typeDef[field])(derived, field)
         }
       } else if (name === "trait") {
-        derivedCtor.prototype.traitsConstructors.push(baseCtor.trait)
+        derived.traitsConstructors.push(baseCtor.trait)
+      } else if (name === "hooks" && typeof baseCtor.hooks === "object") {
+        Object.keys(baseCtor.hooks).forEach(hookKey => {
+          if (!derived.hooks.has(hookKey)) {
+            derived.hooks.set(hookKey, [])
+          }
+          derived.hooks.get(hookKey).push(baseCtor.hooks[hookKey])
+        })
       }
     })
   })

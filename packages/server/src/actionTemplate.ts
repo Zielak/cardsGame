@@ -13,7 +13,7 @@ export type ActionTemplate<S extends State> = {
 
   getInteractions(): InteractionDefinition[]
   getConditions(con: Conditions<S>): void
-  getCommands: (state: State, event: ServerPlayerEvent) => Command | Command[]
+  getCommands: (state: S, event: ServerPlayerEvent) => Command | Command[]
 }
 
 export type ActionsSet<S extends State> = Set<ActionTemplate<S>>

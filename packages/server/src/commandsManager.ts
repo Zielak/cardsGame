@@ -31,7 +31,7 @@ export class CommandsManager<S extends State> {
       )
     }
 
-    let actions = this.filterActionsByInteraction(state, event)
+    let actions = this.filterActionsByInteraction(event)
     actions = this.filterActionsByConditions(actions, state, event)
 
     if (actions.length === 0) {
@@ -56,10 +56,7 @@ export class CommandsManager<S extends State> {
    * Gets you a list of all possible game actions
    * that match with player's interaction
    */
-  filterActionsByInteraction(
-    state: State,
-    event: ServerPlayerEvent
-  ): ActionTemplate<S>[] {
+  filterActionsByInteraction(event: ServerPlayerEvent): ActionTemplate<S>[] {
     logs.groupCollapsed(`Filter out actions by INTERACTIONS`)
     logs.info(`getActionsByInteraction()`)
 
@@ -134,7 +131,11 @@ export class CommandsManager<S extends State> {
     return actions
   }
 
-  filterActionsByConditions(actions, state: S, event: ServerPlayerEvent) {
+  filterActionsByConditions(
+    actions: ActionTemplate<S>[],
+    state: S,
+    event: ServerPlayerEvent
+  ) {
     logs.group(`Filter out actions by CONDITIONS`)
 
     const result = actions.filter(action => {
@@ -173,7 +174,7 @@ export class CommandsManager<S extends State> {
    * @param event incoming user's event
    */
   async parseAction(
-    state: State,
+    state: S,
     action: ActionTemplate<S>,
     event: ServerPlayerEvent
   ): Promise<boolean> {
@@ -184,7 +185,7 @@ export class CommandsManager<S extends State> {
     try {
       let cmd = action.getCommands(state, event)
       if (Array.isArray(cmd)) {
-        cmd = new Command(cmd)
+        cmd = new Command(`${action.name}Command`, cmd)
       }
 
       await this.execute(state, cmd)
@@ -204,7 +205,7 @@ export class CommandsManager<S extends State> {
     return true
   }
 
-  async execute(state: State, command: Command) {
+  async execute(state: S, command: Command) {
     this.currentCommand = command
     const commandName = command.name
 

@@ -1,16 +1,27 @@
 import { State } from "../src/state"
-import { DumbEntity } from "./helpers/dumbEntities"
+import { Entity, applyMixins } from "../src/traits/index"
 
-let entity: DumbEntity
 let state: State
 
 beforeEach(() => {
   state = new State()
-  entity = new DumbEntity(state)
 })
 
-describe(`constructor`, () => {
-  test.todo(`doesn't throw up`)
-})
+describe("hooks", () => {
+  it("calls postConstructor hook with state reference", () => {
+    class HookTestTrait {}
+    ;(HookTestTrait as any).hooks = {
+      postConstructor: jest.fn()
+    }
+    class HookTestEntity extends Entity<{}> {}
 
-describe(`isInteractive`, () => {})
+    applyMixins([HookTestTrait])(HookTestEntity)
+
+    new HookTestEntity(state)
+
+    expect((HookTestTrait as any).hooks.postConstructor).toBeCalledTimes(1)
+    expect((HookTestTrait as any).hooks.postConstructor.mock.calls[0][0]).toBe(
+      state
+    )
+  })
+})

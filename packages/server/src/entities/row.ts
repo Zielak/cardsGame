@@ -2,7 +2,13 @@ import { def } from "@cardsgame/utils"
 
 import { canBeChild, containsChildren } from "../annotations"
 import { State } from "../state"
-import { LabelTrait, Entity, applyMixins, IdentityTrait } from "../traits"
+import {
+  LabelTrait,
+  Entity,
+  applyMixins,
+  IdentityTrait,
+  SelectableChildrenTrait
+} from "../traits"
 import { ParentTrait } from "../traits/parent"
 import { FlexyTrait } from "../traits/flexyContainer"
 import { LocationTrait } from "../traits/location"
@@ -16,7 +22,8 @@ import { ChildTrait } from "../traits/child"
   ChildTrait,
   ParentTrait,
   LabelTrait,
-  FlexyTrait
+  FlexyTrait,
+  SelectableChildrenTrait
 ])
 export class Row extends Entity<RowOptions> {
   create(state: State, options: RowOptions = {}) {
@@ -31,7 +38,8 @@ interface Mixin
     ChildTrait,
     ParentTrait,
     LabelTrait,
-    FlexyTrait {}
+    FlexyTrait,
+    SelectableChildrenTrait {}
 
 type RowOptions = Partial<ConstructorType<Mixin>>
 

@@ -1,4 +1,5 @@
 import { def } from "@cardsgame/utils"
+
 import { State } from "../state"
 
 export class FlexyTrait {

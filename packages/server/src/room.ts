@@ -126,7 +126,7 @@ export class Room<S extends State> extends colRoom<S> {
 
       if (postStartCommands) {
         this.commandsManager
-          .execute(this.state, new Command(postStartCommands))
+          .execute(this.state, new Command("onStartGame", postStartCommands))
           .then(() => {
             this.onPlayerTurnStarted(this.state.currentPlayer)
           })
@@ -169,7 +169,7 @@ export class Room<S extends State> extends colRoom<S> {
   /**
    * Invoked when players turn starts
    */
-  onPlayerTurnStarted(player: Player) {
+  onPlayerTurnStarted(player: Player): void | Command[] {
     if (!this.state.turnBased) {
       logs.error("Room", `onPlayerTurnStarted is not implemented!`)
     }
@@ -178,7 +178,7 @@ export class Room<S extends State> extends colRoom<S> {
   /**
    * Invoked when players turn ends
    */
-  onPlayerTurnEnded(player: Player) {
+  onPlayerTurnEnded(player: Player): void | Command[] {
     if (!this.state.turnBased) {
       logs.error("Room", `onPlayerTurnEnded is not implemented!`)
     }
@@ -187,7 +187,7 @@ export class Room<S extends State> extends colRoom<S> {
   /**
    * Invoked when each round starts.
    */
-  onRoundStart() {
+  onRoundStart(): void | Command[] {
     logs.error(
       "Room",
       `"nextRound" action was called, but "room.onRoundStart()" is not implemented!`
@@ -197,7 +197,7 @@ export class Room<S extends State> extends colRoom<S> {
   /**
    * Invoked when a round is near completion.
    */
-  onRoundEnd() {
+  onRoundEnd(): void | Command[] {
     logs.error(
       "Room",
       `"nextRound" action was called, but "room.onRoundEnd()" is not implemented!`

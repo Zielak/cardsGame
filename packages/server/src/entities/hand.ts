@@ -10,7 +10,8 @@ import {
   Entity,
   applyMixins,
   OwnershipTrait,
-  IdentityTrait
+  IdentityTrait,
+  SelectableChildrenTrait
 } from "../traits"
 
 @canBeChild
@@ -21,7 +22,8 @@ import {
   ChildTrait,
   ParentTrait,
   LabelTrait,
-  OwnershipTrait
+  OwnershipTrait,
+  SelectableChildrenTrait
 ])
 export class Hand extends Entity<HandOptions> {
   autoSort: SortingFunction
@@ -33,18 +35,18 @@ export class Hand extends Entity<HandOptions> {
     this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, false)
 
     this.autoSort = options.autoSort
-  }
 
-  childAdded(child: ChildTrait) {
-    if (!this.autoSort) return
-    const count = this.countChildren()
-    for (let idx = 0; idx < count; idx++) {
-      if (this.autoSort(child, this.getChild(idx)) > 0) {
-        continue
+    this.childAdded = (child: ChildTrait) => {
+      if (!this.autoSort) return
+      const count = this.countChildren()
+      for (let idx = 0; idx < count; idx++) {
+        if (this.autoSort(child, this.getChild(idx)) > 0) {
+          continue
+        }
+        // I shall drop incoming child right here
+        this.moveChildTo(child.idx, idx)
+        break
       }
-      // I shall drop incomming child right here
-      this.moveChildTo(child.idx, idx)
-      break
     }
   }
 }
@@ -55,7 +57,8 @@ interface Mixin
     ChildTrait,
     ParentTrait,
     LabelTrait,
-    OwnershipTrait {}
+    OwnershipTrait,
+    SelectableChildrenTrait {}
 
 type HandOptions = Partial<
   ConstructorType<Mixin> & {

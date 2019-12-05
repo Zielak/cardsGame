@@ -12,6 +12,10 @@ import { ParentTrait } from "../traits/parent"
 import { ChangeParent } from "./changeParent"
 import { Room } from "../room"
 
+/**
+ * A command which by itself changes nothing,
+ * but applies subCommands and executes these instead.
+ */
 export class DealCards extends Command {
   source: TargetHolder<ParentTrait>
   targets: TargetsHolder<ParentTrait>
@@ -62,9 +66,11 @@ export class DealCards extends Command {
       const currentTarget = targets[targetI % targets.length]
 
       // This command thing moves the entity
-      const cmd = new ChangeParent(() => source.getTop(), currentTarget)
-      await cmd.execute(state)
-      this.addSubCommand(cmd)
+      await this.subExecute(
+        state,
+        room,
+        new ChangeParent(() => source.getTop(), currentTarget)
+      )
       childrenLeft = source.countChildren()
 
       // Pick next target if we dealt `this.step` cards to current target
@@ -79,9 +85,11 @@ export class DealCards extends Command {
             `Source emptied before dealing every requested card. Add onDeckEmptied in options to for example refill the source with new elements.`
           )
         }
-        const cmd = new Command(emptiedCmds)
-        await cmd.execute(state, room)
-        this.addSubCommand(cmd)
+        await this.subExecute(
+          state,
+          room,
+          new Command("onDeckEmptied", emptiedCmds)
+        )
       }
     } while (
       (maxDeals === Infinity && childrenLeft > 0) ||

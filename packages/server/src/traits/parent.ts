@@ -5,6 +5,7 @@ import { ChildTrait } from "./child"
 import { State } from "../state"
 import { QuerableProps, queryRunner } from "../queryRunner"
 import { registeredChildren } from "../annotations"
+import { executeHook } from "../traits"
 
 export function isParent(entity: any): entity is ParentTrait {
   return (
@@ -25,28 +26,9 @@ const sortByIdx = (a: ChildTrait, b: ChildTrait) => a.idx - b.idx
 
 export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void
-// export type EmptiedHandler = () => void
-
-// export interface ParentTrait {
-//   /**
-//    * User defined function, for this instance.
-//    * Will be called after container gets new child.
-//    */
-//   onChildAdded: ChildAddedHandler
-//   /**
-//    * User defined function, for this instance.
-//    * Will be called after container's child gets removed.
-//    */
-//   onChildRemoved: ChildRemovedHandler
-//   /**
-//    * User defined function, for this instance.
-//    * Will be called after container gets emptied.
-//    */
-//   onEmptied: EmptiedHandler
-// }
 
 export class ParentTrait {
-  protected childrenPointers: string[]
+  childrenPointers: string[]
   hijacksInteractionTarget: boolean
 
   childAdded: ChildAddedHandler
@@ -95,7 +77,7 @@ export class ParentTrait {
       1
     )[0] as ChildTrait
 
-    this.childRemoved && this.childRemoved(idx)
+    executeHook.call(this, "childRemoved", idx)
     this.updateIndexes()
 
     if (removedChild !== child) {
@@ -128,9 +110,7 @@ export class ParentTrait {
     entity.parent = this
     this.childrenPointers[prepend ? "unshift" : "push"](con.name)
 
-    if (this.childAdded) {
-      this.childAdded(entity)
-    }
+    executeHook.call(this, "childAdded", entity)
   }
 
   moveChildTo(from: number, to: number) {
@@ -339,8 +319,16 @@ export class ParentTrait {
       this[`children${con.name}`] = new ArraySchema()
     }
   })
-
-  // this.onChildAdded = def(options.onChildAdded, undefined)
-  // this.onChildRemoved = def(options.onChildRemoved, undefined)
-  // this.onEmptied = def(options.onEmptied, undefined)
+}
+;(ParentTrait as any).hooks = {
+  childAdded: function(this: ParentTrait, child: ChildTrait) {
+    if (this.childAdded) {
+      this.childAdded(child)
+    }
+  },
+  childRemoved: function(this: ParentTrait, idx: number) {
+    if (this.childRemoved) {
+      this.childRemoved(idx)
+    }
+  }
 }

@@ -1,5 +1,6 @@
-import { State } from "../state"
 import { def } from "@cardsgame/utils"
+
+import { State } from "../state"
 
 export class LocationTrait {
   x: number

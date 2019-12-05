@@ -4,7 +4,8 @@ import {
   ParentTrait,
   LabelTrait,
   applyMixins,
-  IdentityTrait
+  IdentityTrait,
+  SelectableChildrenTrait
 } from "../traits"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
@@ -21,7 +22,8 @@ import { ChildTrait } from "../traits/child"
   LocationTrait,
   ChildTrait,
   ParentTrait,
-  LabelTrait
+  LabelTrait,
+  SelectableChildrenTrait
 ])
 export class Line extends Entity<LineOptions> {
   create() {}
@@ -32,7 +34,8 @@ interface Mixin
     LocationTrait,
     ChildTrait,
     ParentTrait,
-    LabelTrait {}
+    LabelTrait,
+    SelectableChildrenTrait {}
 
 type LineOptions = Partial<ConstructorType<Mixin>>
 

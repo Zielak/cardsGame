@@ -13,14 +13,39 @@ export class Command {
     return this._name
   }
 
-  constructor(subCommands?: Command[]) {
+  /**
+   * @param name provide only if you're using `new Command()` syntax. If you're extending command, just leave it empty - the name will be grabbed from class name.
+   * @param subCommands
+   */
+  constructor(name?: string, subCommands?: Command[]) {
     this._name = this.constructor.name
 
-    this._setSubCommands(subCommands)
+    this._subCommands = subCommands
+      ? subCommands.filter(c => typeof c === "object")
+      : []
   }
 
+  /**
+   * Run only registered sub commands.
+   * Commands extending from this class should override
+   * this function and NOT call super() to here.
+   * @param state
+   * @param room
+   */
   async execute(state: State, room: Room<any>): Promise<void> {
-    this._executeSubCommands(state, room)
+    if (!this._subCommands) {
+      return
+    }
+
+    logs.group(`Commands group: ${this.name}._executeSubCommands()`)
+    for (let i = 0; i < this._subCommands.length; i++) {
+      const command = this._subCommands[i]
+
+      logs.notice(`- ${command.name}: executing`)
+
+      await command.execute(state, room)
+    }
+    logs.groupEnd()
   }
 
   async undo(state: State, room: Room<any>) {
@@ -43,52 +68,12 @@ export class Command {
   }
 
   /**
-   * Call this to execute sub commands.
-   * Will remember them internally here and execute them in place.
-   * @param state
-   * @param room
-   * @param commands
+   * Execute a sub command.
+   * Will also remember it internally for undoing.
    */
-  async subExecute(state: State, room: Room<any>, commands: Command[]) {
-    this._setSubCommands(commands)
-    await this._executeSubCommands(state, room)
-  }
-
-  /**
-   * Set the list of sub commands, filter out any dirt.
-   * @private
-   * @param commands
-   */
-  private _setSubCommands(commands: Command[]) {
-    this._subCommands = commands
-      ? commands.filter(c => typeof c === "object")
-      : []
-  }
-
-  protected addSubCommand(command: Command) {
+  protected async subExecute(state: State, room: Room<any>, command: Command) {
     this._subCommands.push(command)
-  }
-
-  /**
-   * Executes every planned sub commands.
-   * @private
-   * @param state
-   * @param room
-   */
-  private async _executeSubCommands(state: State, room: Room<any>) {
-    if (!this._subCommands) {
-      return
-    }
-
-    logs.group(`Commands group: ${this.name}._executeSubCommands()`)
-    for (let i = 0; i < this._subCommands.length; i++) {
-      const command = this._subCommands[i]
-
-      logs.notice(`- ${command.name}: executing`)
-
-      await command.execute(state, room)
-    }
-    logs.groupEnd()
+    await command.execute(state, room)
   }
 }
 

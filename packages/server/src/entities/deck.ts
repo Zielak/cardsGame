@@ -45,27 +45,15 @@ export class Deck extends Entity<DeckOptions> {
 
     this.childCount = 0
     this.topDeck = new TopDeckElement()
-  }
 
-  // TODO: deck may display its topmost card, if it's `faceUp`
-
-  childAdded(child: ChildTrait) {
-    this.childCount++
-    this.updateTopElement(child)
-    // if (this.onChildAdded) {
-    //   this.onChildAdded(child)
-    // }
-  }
-  childRemoved(idx: number) {
-    this.childCount--
-    // if (this.onChildAdded) {
-    //   this.onChildRemoved(idx)
-    // }
-    // if (this.childCount === 0 && this.onEmptied) {
-    //   this.onEmptied()
-    // } else {
-    this.updateTopElement(this.getTop())
-    // }
+    this.childAdded = (child: ChildTrait) => {
+      this.childCount++
+      this.updateTopElement(child)
+    }
+    this.childRemoved = (idx: number) => {
+      this.childCount--
+      this.updateTopElement(this.getTop())
+    }
   }
 
   updateTopElement(child: { [key: string]: any }) {

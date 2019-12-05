@@ -1,4 +1,5 @@
 import { def } from "@cardsgame/utils"
+
 import { State } from "../state"
 import { ParentTrait } from "./parent"
 
@@ -60,15 +61,12 @@ export class ChildTrait {
 }
 
 ;(ChildTrait as any).typeDef = { idx: "number" }
-;(ChildTrait as any).trait = function ChildTrait(
-  state: State,
-  options: Partial<ChildTrait> = {}
-) {
-  return () => {
+;(ChildTrait as any).hooks = {
+  postConstructor: function(state: State, options: ChildTrait) {
     def(options.parent, state).addChild(this)
 
-    if (typeof options.idx === "number") {
-      this.parent.moveChildTo(this.idx, options.idx)
+    if (typeof this.idx === "number") {
+      this.parent.moveChildTo(this.idx, this.idx)
     }
   }
 }

@@ -2,7 +2,7 @@ import { Entity, applyMixins } from "../../src/traits/entity"
 import { ParentTrait } from "../../src/traits/parent"
 import { canBeChild, containsChildren } from "../../src/annotations"
 import { ChildTrait } from "../../src/traits/child"
-import { IdentityTrait } from "../../src/traits"
+import { IdentityTrait } from "../../src/traits/identity"
 
 @canBeChild
 @containsChildren()
