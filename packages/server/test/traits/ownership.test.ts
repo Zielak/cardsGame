@@ -1,10 +1,10 @@
-import { Player } from "../src/player"
-import { OwnableParent, OwnableEntity } from "./helpers/ownableEntities"
-import { State } from "../src/state"
-import { hasOwnership } from "../src/traits"
-import { DumbParent, DumbEntity } from "./helpers/dumbEntities"
-import { LabeledEntity, LabeledParent } from "./helpers/labeledEntities"
-import { SmartParent, SmartEntity } from "./helpers/smartEntities"
+import { Player } from "../../src/player"
+import { OwnableParent, OwnableEntity } from "../helpers/ownableEntities"
+import { State } from "../../src/state"
+import { hasOwnership } from "../../src/traits/ownership"
+import { DumbParent, DumbEntity } from "../helpers/dumbEntities"
+import { LabeledEntity, LabeledParent } from "../helpers/labeledEntities"
+import { SmartParent, SmartEntity } from "../helpers/smartEntities"
 
 let player: Player
 let state: State

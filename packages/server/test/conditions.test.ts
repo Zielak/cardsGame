@@ -35,6 +35,7 @@ test("all chainers", () => {
   expect(con.be).toBe(con)
   expect(con.is).toBe(con)
   expect(con.and).toBe(con)
+  expect(con.can).toBe(con)
 })
 
 describe("constructor", () => {
@@ -162,42 +163,49 @@ describe("subject changing", () => {
   })
 })
 
-test("nthChild", () => {
-  con.get({ name: "parent" }).as("parent")
+describe("nthChild", () => {
+  test("valid cases", () => {
+    con.get({ name: "parent" }).as("parent")
 
-  // Entities
-  expect(() =>
-    con
-      .get("parent")
-      .nthChild(0)
-      .equals(bottom)
-  ).not.toThrow()
-  expect(() =>
-    con
-      .get("parent")
-      .nthChild(2)
-      .equals(child)
-  ).not.toThrow()
-  expect(() =>
-    con
-      .get("parent")
-      .nthChild(4)
-      .equals(top)
-  ).not.toThrow()
+    // Entities
+    expect(() =>
+      con
+        .get("parent")
+        .nthChild(0)
+        .equals(bottom)
+    ).not.toThrow()
+    expect(() =>
+      con
+        .get("parent")
+        .nthChild(2)
+        .equals(child)
+    ).not.toThrow()
+    expect(() =>
+      con
+        .get("parent")
+        .nthChild(4)
+        .equals(top)
+    ).not.toThrow()
 
-  // Simple array
-  expect(() =>
-    con
-      .set([0, 1, 2, 3])
-      .nthChild(0)
-      .equals(0)
-  ).not.toThrow()
-  expect(() =>
-    con
-      .set([0, 1, 2, 3])
-      .nthChild(0)
-      .equals(3)
-  ).toThrow()
+    // Simple array
+    expect(() =>
+      con
+        .set([0, 1, 2, 3])
+        .nthChild(0)
+        .equals(0)
+    ).not.toThrow()
+    expect(() =>
+      con
+        .set([0, 1, 2, 3])
+        .nthChild(0)
+        .equals(3)
+    ).toThrow()
+  })
+
+  test("invalid cases", () => {
+    // Error
+    expect(() => con.set("string").nthChild(1)).toThrow()
+  })
 })
 
 test("bottom", () => {
@@ -207,7 +215,12 @@ test("bottom", () => {
 
   expect(() => con.set([0, 1, 2, 3]).bottom.equals(0)).not.toThrow()
   expect(() => con.set([0, 1, 2, 3]).bottom.equals(3)).toThrow()
+
+  expect(() => con.set("string").bottom).toThrow()
+  expect(() => con.set(10).bottom).toThrow()
+  expect(() => con.set(null).bottom).toThrow()
 })
+
 test("top", () => {
   con.get({ name: "parent" }).as("parent")
   expect(() => con.get("parent").top.equals(top)).not.toThrow()
@@ -215,10 +228,18 @@ test("top", () => {
 
   expect(() => con.set([0, 1, 2, 3]).top.equals(3)).not.toThrow()
   expect(() => con.set([0, 1, 2, 3]).top.equals(0)).toThrow()
+
+  expect(() => con.set("string").top).toThrow()
+  expect(() => con.set(10).top).toThrow()
+  expect(() => con.set(null).top).toThrow()
 })
+
 test("length", () => {
   expect(() => con.set("12345").length.equals(5)).not.toThrow()
   expect(() => con.set(["a", "b", "c"]).length.equals(3)).not.toThrow()
+
+  expect(() => con.set(function() {}).length.equals(0)).not.toThrow()
+  expect(() => con.set(500).length).toThrow()
 })
 test("childrenCount", () => {
   con.get({ name: "parent" }).as("parent")
@@ -237,6 +258,29 @@ describe("equals", () => {
       con.state.its("tableWidth").equals(80)
     }).toThrow()
   })
+})
+
+test("above", () => {
+  expect(() => con.set(5).above(0)).not.toThrow()
+  expect(() => con.set(-5).above(-10)).not.toThrow()
+  expect(() => con.set(0).above(-Infinity)).not.toThrow()
+  expect(() => con.set(Infinity).above(-Infinity)).not.toThrow()
+
+  expect(() => con.set(0).above(0)).toThrow()
+  expect(() => con.set(0).above(10)).toThrow()
+
+  expect(() => con.set("whoop").above(0)).toThrow()
+})
+test("below", () => {
+  expect(() => con.set(5).below(100)).not.toThrow()
+  expect(() => con.set(-10).below(0)).not.toThrow()
+  expect(() => con.set(0).below(Infinity)).not.toThrow()
+  expect(() => con.set(-Infinity).below(Infinity)).not.toThrow()
+
+  expect(() => con.set(0).below(0)).toThrow()
+  expect(() => con.set(0).below(-10)).toThrow()
+
+  expect(() => con.set("whoop").below(0)).toThrow()
 })
 
 describe("oneOf", () => {

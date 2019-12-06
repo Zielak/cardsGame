@@ -10,10 +10,6 @@ import { hasOwnership } from "./traits/ownership"
 import { isParent } from "./traits/parent"
 import { hasSelectableChildren } from "./traits/selectableChildren"
 
-// export interface ExpandableConditions<S extends State> {
-//   [key: string]: (this: Conditions<S>) => Conditions<S>
-// }
-
 export type ConditionsConstructor<S extends State> = new (
   state: S,
   event: ServerPlayerEvent
@@ -41,12 +37,6 @@ function flag(target, flagName, value?) {
 }
 
 export { flag as getConditionFlag }
-
-const ensure = (expression, errorMessage) => {
-  if (!expression) {
-    throw new Error(errorMessage)
-  }
-}
 
 const resetNegation = target => {
   target._flags.set("not", false)
@@ -305,7 +295,9 @@ class Conditions<S extends State> {
   nthChild(index: number): this {
     const subject = flag(this, "subject")
 
-    ensure(typeof subject === "object", `nthChild | Subject must be an object`)
+    if (typeof subject !== "object") {
+      throw new Error(`nthChild | Subject must be an object`)
+    }
 
     if (isParent(subject)) {
       flag(this, "subject", subject.getChild(index))
@@ -322,15 +314,18 @@ class Conditions<S extends State> {
   get bottom(): this {
     const subject = flag(this, "subject")
 
-    ensure(
-      typeof subject === "object",
-      `bottom | Can't get the "bottom" of something else than an object`
-    )
+    if (typeof subject !== "object") {
+      throw new Error(
+        `bottom | Can't get the "bottom" of something other than an object`
+      )
+    }
 
     if ("length" in subject) {
       flag(this, "subject", subject[0])
-    } else {
+    } else if (isParent(subject)) {
       flag(this, "subject", subject.getBottom())
+    } else {
+      throw new Error(`bottom | Couldn't decide how to get the "bottom" value`)
     }
 
     return this
@@ -342,15 +337,18 @@ class Conditions<S extends State> {
   get top(): this {
     const subject = flag(this, "subject")
 
-    ensure(
-      typeof subject === "object",
-      `top | Can't get the "top" of something else than an object`
-    )
+    if (typeof subject !== "object") {
+      throw new Error(
+        `top | Can't get the "top" of something other than an object`
+      )
+    }
 
     if ("length" in subject) {
       flag(this, "subject", subject[subject.length - 1])
-    } else {
+    } else if (isParent(subject)) {
       flag(this, "subject", subject.getTop())
+    } else {
+      throw new Error(`top | Couldn't decide how to get the "top" value`)
     }
 
     return this
@@ -362,10 +360,9 @@ class Conditions<S extends State> {
   get length(): this {
     const subject = flag(this, "subject")
 
-    ensure(
-      subject.length !== undefined,
-      `length | Subject doesn't have "length" property`
-    )
+    if (subject.length === undefined) {
+      throw new Error(`length | Subject doesn't have "length" property`)
+    }
 
     flag(this, "subject", subject.length)
     return this
@@ -377,12 +374,51 @@ class Conditions<S extends State> {
   get childrenCount(): this {
     const subject = flag(this, "subject")
 
-    ensure(
-      typeof subject === "object",
-      `childrenCount | Expected "subject" to be an object`
-    )
+    if (!isParent(subject)) {
+      throw new Error(`childrenCount | Expected subject to be a parent`)
+    }
 
-    const count = flag(this, "subject").countChildren()
+    const count = subject.countChildren()
+    flag(this, "subject", count)
+
+    return this
+  }
+
+  /**
+   * @yields {number} number of selected children if subject is parent
+   */
+  get selectedChildrenCount(): this {
+    const subject = flag(this, "subject")
+
+    if (!isParent(subject)) {
+      throw new Error(`childrenCount | Expected subject to be parent`)
+    }
+    if (!hasSelectableChildren(subject)) {
+      throw new Error(`childrenCount | Subjects children are not selectable`)
+    }
+
+    const count = subject.countSelectedChildren()
+    flag(this, "subject", count)
+
+    return this
+  }
+
+  /**
+   * @yields {number} number of selected children if subject is parent
+   */
+  get unselectedChildrenCount(): this {
+    const subject = flag(this, "subject")
+
+    if (!isParent(subject)) {
+      throw new Error(`unselectedChildrenCount | Expected subject to be parent`)
+    }
+    if (!hasSelectableChildren(subject)) {
+      throw new Error(
+        `unselectedChildrenCount | Subjects children are not selectable`
+      )
+    }
+
+    const count = subject.countUnselectedChildren()
     flag(this, "subject", count)
 
     return this
@@ -411,7 +447,9 @@ class Conditions<S extends State> {
   ): this {
     const subject = flag(this, "subject")
 
-    ensure(Array.isArray(subject), `each | Expected subject to be an array`)
+    if (!Array.isArray(subject)) {
+      throw new Error(`each | Expected subject to be an array`)
+    }
 
     subject.forEach((item, index) => {
       const con = new Conditions<S>(this._state, this._event)
@@ -534,38 +572,17 @@ class Conditions<S extends State> {
     return this
   }
 
-  // /**
-  //  * @asserts that subject's length is equal to expected.
-  //  */
-  // lengthOf(value: number): this {
-  //   const subject = flag(this, "subject")
-
-  //   ensure(
-  //     typeof subject === "object",
-  //     `lengthOf | Subject expected to be an object (typeof)`
-  //   )
-
-  //   this.assert(
-  //     subject.length === value,
-  //     `subject[#{act}] doesn't contain exactly #{exp} items`,
-  //     `subject[#{act}] contains exactly #{exp}, but shouldn't`,
-  //     value,
-  //     subject.length
-  //   )
-
-  //   return this
-  // }
-
   /**
    * @asserts
    */
   matchesPropOf(ref: string | Symbol): this {
     // TODO: accept queryProps?
 
-    ensure(
-      this._propParent,
-      `matchesPropOf | Needs to be preceded with ".its" to pick a prop name`
-    )
+    if (!this._propParent) {
+      throw new Error(
+        `matchesPropOf | Needs to be preceded with ".its" to pick a prop name`
+      )
+    }
 
     const subject = flag(this, "subject")
     const expected = this._refs.get(ref)[this._propName]
@@ -653,10 +670,11 @@ class Conditions<S extends State> {
 
     if (uiKey) {
       // 1. uiKey needs to exist
-      ensure(
-        uiKey in ui,
-        `revealedUI | this UI doesn't have "${uiKey}" key defined`
-      )
+      if (!(uiKey in ui)) {
+        throw new Error(
+          `revealedUI | this UI doesn't have "${uiKey}" key defined`
+        )
+      }
 
       // 2. Current client has to be on the list
       const uiValues = Array.isArray(ui[uiKey]) ? ui[uiKey] : [ui[uiKey]]
@@ -693,13 +711,7 @@ class Conditions<S extends State> {
     const subject = flag(this, "subject")
     const propName = this._propName ? `'${this._propName}' = ` : ""
 
-    ensure(
-      (typeof subject === "object" && subject !== null) ||
-        typeof subject === "string",
-      `.empty | Given an invalid subject: ${subject}`
-    )
-
-    if (subject.length !== undefined) {
+    if (subject.length !== undefined && typeof subject !== "function") {
       this.assert(
         subject.length === 0,
         `subject ${propName}(iterable) has some items.`,
@@ -711,12 +723,14 @@ class Conditions<S extends State> {
         `subject ${propName}(map/set) has some items.`,
         `subject ${propName}(map/set) is empty, but shouldn't.`
       )
-    } else if (typeof subject === "object") {
+    } else if (typeof subject === "object" && subject !== null) {
       this.assert(
         Object.keys(subject).length === 0,
         `subject ${propName}(object) has some items.`,
         `subject ${propName}(object) is empty, but shouldn't.`
       )
+    } else {
+      throw new Error(`.empty | Given an invalid subject: ${subject}`)
     }
 
     return this

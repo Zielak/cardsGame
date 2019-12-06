@@ -1,7 +1,7 @@
-import { ChildTrait } from "./child"
 import { ArraySchema } from "@colyseus/schema"
 
-// TODO: React on child removed(!)/added(~?)
+import { ChildTrait } from "./child"
+import { isParent } from "./parent"
 
 export function hasSelectableChildren(
   entity: any
@@ -38,9 +38,47 @@ export class SelectableChildrenTrait {
     return this.selectedChildren[index]
   }
 
+  /**
+   * Number of selected child elements
+   */
+  countSelectedChildren(): number {
+    return this.selectedChildren.filter(val => val === true).length
+  }
+
+  /**
+   * Number of not selected child elements
+   */
+  countUnselectedChildren(): number {
+    return this.selectedChildren.filter(val => val === false).length
+  }
+
+  getSelectedChildren<T extends ChildTrait>(): T[] {
+    if (!isParent(this)) {
+      return []
+    }
+
+    return this.getChildren<T>().filter(
+      child => this.selectedChildren[child.idx]
+    )
+  }
+
+  getUnselectedChildren<T extends ChildTrait>(): T[] {
+    if (!isParent(this)) {
+      return []
+    }
+
+    return this.getChildren<T>().filter(
+      child => !this.selectedChildren[child.idx]
+    )
+  }
+
   protected ensureIndex(index: number) {
     if (typeof index !== "number")
       throw new Error("selectChildAt | should be a number!")
+
+    if (index < 0) {
+      throw new Error(`selectChildAt | can't go negative on me: ${index}`)
+    }
 
     if (this.countChildren() - 1 < index)
       throw new Error(
