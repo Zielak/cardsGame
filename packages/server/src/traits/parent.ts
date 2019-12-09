@@ -21,8 +21,9 @@ export const hasChildren = entity =>
 const getKnownConstructor = (entity: ChildTrait) =>
   registeredChildren.find(con => entity instanceof con)
 
-const pickByIdx = (idx: number) => (child: ChildTrait) => child.idx === idx
-const sortByIdx = (a: ChildTrait, b: ChildTrait) => a.idx - b.idx
+export const pickByIdx = (idx: number) => (child: ChildTrait) =>
+  child.idx === idx
+export const sortByIdx = (a: ChildTrait, b: ChildTrait) => a.idx - b.idx
 
 export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void
@@ -68,7 +69,7 @@ export class ParentTrait {
 
     this.childrenPointers.splice(idx, 1)
 
-    // TODO: after colyseus/schema geets fixed:
+    // TODO: after colyseus/schema gets fixed:
     // https://github.com/colyseus/schema/issues/17
     // https://discordapp.com/channels/525739117951320081/526083188108296202/573204615290683392
     // this[targetArrayName] = targetArray.filter(el => el !== child)
@@ -297,10 +298,17 @@ export class ParentTrait {
 
   protected updateIndexes() {
     this.childrenPointers = []
+
     this.getChildren().forEach((child, newIdx) => {
       const con = registeredChildren.find(con => child instanceof con)
+      const prevIndex = child.idx
+
       this.childrenPointers[newIdx] = con.name
+
       child.idx = newIdx
+      if (prevIndex !== newIdx) {
+        executeHook.call(this, "childIndexUpdated", prevIndex, newIdx)
+      }
     })
   }
 }

@@ -60,7 +60,6 @@ export class CommandsManager<S extends State> {
    */
   filterActionsByInteraction(event: ServerPlayerEvent): ActionTemplate<S>[] {
     logs.groupCollapsed(`Filter out actions by INTERACTIONS`)
-    logs.info(`getActionsByInteraction()`)
 
     const actions = Array.from(this.possibleActions.values()).filter(action => {
       const interactions = action.getInteractions()

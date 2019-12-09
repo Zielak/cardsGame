@@ -75,6 +75,7 @@ export class Room<S extends State> extends colRoom<S> {
   }
 
   onMessage(client: Client, event: ClientPlayerEvent) {
+    logs.verbose("\n==================================\n")
     if (this.state.isGameOver) {
       logs.info(
         "onMessage",

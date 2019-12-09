@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@colyseus/schema": "^0.5.11",
+    "@colyseus/schema": "^0.5.12",
     "chalk": "^3.0.0"
   }
 }

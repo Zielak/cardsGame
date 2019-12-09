@@ -5,6 +5,9 @@ function RoomMock() {
   this.commandsManager = {
     execute: noop
   }
+
+  this.onPlayerTurnEnded = jest.fn()
+  this.onPlayerTurnStarted = jest.fn()
 }
 
 export { RoomMock }

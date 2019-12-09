@@ -28,11 +28,9 @@ describe("constructor", () => {
 describe("selectChildAt", () => {
   it("changes", () => {
     parent.selectChildAt(0)
-    expect(parent.selectedChildren[0]).toBeTruthy()
     expect(parent.isChildSelected(0)).toBeTruthy()
 
     parent.selectChildAt(4)
-    expect(parent.selectedChildren[4]).toBeTruthy()
     expect(parent.isChildSelected(4)).toBeTruthy()
   })
 
@@ -47,11 +45,10 @@ describe("selectChildAt", () => {
 
 describe("deselectChildAt", () => {
   it("changes", () => {
-    parent.selectedChildren[0] = true
+    parent.selectChildAt(0)
     expect(parent.isChildSelected(0)).toBeTruthy()
 
     parent.deselectChildAt(0)
-    expect(parent.selectedChildren[0]).toBeFalsy()
     expect(parent.isChildSelected(0)).toBeFalsy()
   })
 
@@ -64,10 +61,41 @@ describe("deselectChildAt", () => {
   })
 })
 
-it("counts", () => {
-  parent.selectedChildren[0] = true
-  parent.selectedChildren[4] = true
+describe("getSelectedChildren", () => {
+  it("works", () => {
+    parent.selectChildAt(1)
+    parent.selectChildAt(4)
+    const selected = parent.getSelectedChildren()
 
-  expect(parent.countSelectedChildren()).toBe(2)
-  expect(parent.countUnselectedChildren()).toBe(3)
+    expect(selected.length).toBe(2)
+    expect(selected[0].idx).toBe(1)
+    expect(selected[1].idx).toBe(4)
+  })
+})
+
+describe("getUnselectedChildren", () => {
+  it("works", () => {
+    parent.selectChildAt(1)
+    parent.selectChildAt(3)
+    const unselected = parent.getUnselectedChildren()
+
+    expect(unselected.length).toBe(3)
+    expect(unselected[0].idx).toBe(0)
+    expect(unselected[1].idx).toBe(2)
+    expect(unselected[2].idx).toBe(4)
+  })
+})
+
+describe("counting", () => {
+  it("counts", () => {
+    parent.selectChildAt(0)
+    parent.selectChildAt(4)
+
+    expect(parent.countSelectedChildren()).toBe(2)
+    expect(parent.countUnselectedChildren()).toBe(3)
+  })
+
+  // it('throws', () => {
+
+  // })
 })

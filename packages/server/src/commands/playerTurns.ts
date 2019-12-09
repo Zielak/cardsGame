@@ -4,7 +4,7 @@ import { Command } from "../command"
 import { State } from "../state"
 import { Room } from "../room"
 
-export class SetCurrentPlayer extends Command {
+class SetCurrentPlayer extends Command {
   private lastIdx: number
   constructor(private idx: number) {
     super()

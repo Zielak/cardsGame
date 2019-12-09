@@ -1,5 +1,5 @@
 import { State } from "../../src/state"
-import { Entity, applyMixins } from "../../src/traits/index"
+import { Entity, applyMixins } from "../../src/traits/entity"
 
 let state: State
 

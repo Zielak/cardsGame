@@ -46,7 +46,7 @@ export class ChangeParent extends Command {
       "moving",
       this.entities.get().map(e => (hasLabel(e) ? e.name : "")),
       "entities to",
-      chalk.yellow(this.target["name"] || "ROOT")
+      chalk.yellow(this.target.get()["name"] || "ROOT")
     )
 
     this.entities.get().forEach((entity, idx) => {

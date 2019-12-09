@@ -1,7 +1,19 @@
-import { ArraySchema } from "@colyseus/schema"
+import { ArraySchema, Schema } from "@colyseus/schema"
 
 import { ChildTrait } from "./child"
 import { isParent } from "./parent"
+import { type } from "../annotations"
+
+class SelectedChildData extends Schema {
+  @type("uint16") childIndex: number
+  @type("uint8") selectionIndex: number
+
+  constructor(childIndex: number, selectionIndex: number) {
+    super()
+    this.childIndex = childIndex
+    this.selectionIndex = selectionIndex
+  }
+}
 
 export function hasSelectableChildren(
   entity: any
@@ -16,78 +28,102 @@ export class SelectableChildrenTrait {
   // This hopefully is available by mixing in ParentTrait.
   childrenPointers: string[]
 
-  selectedChildren: ArraySchema<boolean>
+  selectedChildren: ArraySchema<SelectedChildData>
 
   /**
    * Select child
    */
-  selectChildAt(index: number) {
-    this.ensureIndex(index)
-    this.selectedChildren[index] = true
+  selectChildAt(childIndex: number) {
+    this.ensureIndex(childIndex)
+
+    // Also ensure we won't push duplicate here
+    const alreadyThere = this.selectedChildren.find(
+      data => data.childIndex === childIndex
+    )
+    if (!alreadyThere) {
+      this.selectedChildren.push(
+        new SelectedChildData(childIndex, this.countSelectedChildren())
+      )
+    }
   }
 
   /**
    * Deselect child
    */
-  deselectChildAt(index: number) {
-    this.ensureIndex(index)
-    this.selectedChildren[index] = false
+  deselectChildAt(childIndex: number) {
+    this.ensureIndex(childIndex)
+
+    const dataIdx = this.selectedChildren.findIndex(
+      data => data.childIndex === childIndex
+    )
+    if (dataIdx >= 0) {
+      this.selectedChildren.splice(dataIdx, 1)
+    }
+    // Ensure selectedIndexes are right
+    this.selectedChildren.forEach((data, idx) => {
+      data.selectionIndex = idx
+    })
   }
 
-  isChildSelected(index: number): boolean {
-    return this.selectedChildren[index]
+  isChildSelected(childIndex: number): boolean {
+    return this.selectedChildren.some(data => data.childIndex === childIndex)
   }
 
   /**
    * Number of selected child elements
    */
   countSelectedChildren(): number {
-    return this.selectedChildren.filter(val => val === true).length
+    return this.selectedChildren.length
   }
 
   /**
    * Number of not selected child elements
    */
   countUnselectedChildren(): number {
-    return this.selectedChildren.filter(val => val === false).length
+    const me = this
+    if (!isParent(me)) {
+      return 0
+    }
+    return me.countChildren() - this.countSelectedChildren()
   }
 
   getSelectedChildren<T extends ChildTrait>(): T[] {
-    if (!isParent(this)) {
+    const me = this
+    if (!isParent(me)) {
       return []
     }
 
-    return this.getChildren<T>().filter(
-      child => this.selectedChildren[child.idx]
-    )
+    return Array.from(me.selectedChildren)
+      .sort((a, b) => a.selectionIndex - b.selectionIndex)
+      .map(data => me.getChild(data.childIndex))
   }
 
   getUnselectedChildren<T extends ChildTrait>(): T[] {
-    if (!isParent(this)) {
+    const me = this
+    if (!isParent(me)) {
       return []
     }
 
-    return this.getChildren<T>().filter(
-      child => !this.selectedChildren[child.idx]
-    )
+    return me.getChildren<T>().filter(child => !this.isChildSelected(child.idx))
   }
 
   protected ensureIndex(index: number) {
-    if (typeof index !== "number")
-      throw new Error("selectChildAt | should be a number!")
-
-    if (index < 0) {
-      throw new Error(`selectChildAt | can't go negative on me: ${index}`)
+    const me = this
+    if (!isParent(me)) {
+      throw new Error(`ensureIndex | I'm not a parent!`)
     }
 
-    if (this.countChildren() - 1 < index)
-      throw new Error(
-        `selectChildAt | this parent doesn't have child at index ${index}`
-      )
-  }
+    if (typeof index !== "number")
+      throw new Error(`ensureIndex | should be a number!`)
 
-  countChildren(): number {
-    return this.childrenPointers.length
+    if (index < 0) {
+      throw new Error(`ensureIndex | can't go negative on me: ${index}`)
+    }
+
+    if (me.countChildren() - 1 < index)
+      throw new Error(
+        `ensureIndex | this parent doesn't have child at index ${index}`
+      )
   }
 }
 
@@ -95,13 +131,27 @@ export class SelectableChildrenTrait {
   this.selectedChildren = new ArraySchema()
 }
 ;(SelectableChildrenTrait as any).typeDef = {
-  selectedChildren: ["boolean"]
+  selectedChildren: [SelectedChildData]
 }
 ;(SelectableChildrenTrait as any).hooks = {
-  childAdded: function(this: SelectableChildrenTrait, child: ChildTrait) {
-    this.selectedChildren.splice(child.idx, 0, false)
+  childRemoved: function(this: SelectableChildrenTrait, childIndex: number) {
+    const index = this.selectedChildren.findIndex(
+      data => data.childIndex === childIndex
+    )
+    if (index >= 0) {
+      this.selectedChildren.splice(index, 1)
+    }
   },
-  childRemoved: function(this: SelectableChildrenTrait, idx: number) {
-    this.selectedChildren.splice(idx, 1)
+  childIndexUpdated: function(
+    this: SelectableChildrenTrait,
+    oldIdx: number,
+    newIdx: number
+  ) {
+    const data = this.selectedChildren.find(
+      data => data.selectionIndex === oldIdx
+    )
+    if (data) {
+      data.selectionIndex = newIdx
+    }
   }
 }

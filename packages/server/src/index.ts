@@ -16,7 +16,19 @@ export * from "./conditions"
 export * from "./actionTemplate"
 export * from "./player"
 
-export * from "./traits"
+// export * from "./traits"
+export * from "./traits/boxModel"
+export * from "./traits/child"
+export * from "./traits/entity"
+export * from "./traits/flexyContainer"
+export * from "./traits/identity"
+export * from "./traits/label"
+export * from "./traits/location"
+export * from "./traits/ownership"
+export * from "./traits/parent"
+export * from "./traits/selectableChildren"
+export * from "./traits/twoSided"
+
 export * from "./entities"
 
 // Useful for testing

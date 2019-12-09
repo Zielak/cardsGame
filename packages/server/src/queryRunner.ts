@@ -1,16 +1,13 @@
-import {
-  BoxModelTrait,
-  ChildTrait,
-  FlexyTrait,
-  hasIdentity,
-  isChild,
-  LabelTrait,
-  LocationTrait,
-  OwnershipTrait,
-  ParentTrait,
-  SelectableChildrenTrait,
-  TwoSidedTrait
-} from "./traits"
+import { BoxModelTrait } from "./traits/boxModel"
+import { ChildTrait, isChild } from "./traits/child"
+import { FlexyTrait } from "./traits/flexyContainer"
+import { hasIdentity } from "./traits/identity"
+import { LabelTrait } from "./traits/label"
+import { LocationTrait } from "./traits/location"
+import { OwnershipTrait } from "./traits/ownership"
+import { ParentTrait } from "./traits/parent"
+import { SelectableChildrenTrait } from "./traits/selectableChildren"
+import { TwoSidedTrait } from "./traits/twoSided"
 
 type EveryTrait = BoxModelTrait &
   ChildTrait &

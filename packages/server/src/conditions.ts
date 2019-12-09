@@ -369,6 +369,44 @@ class Conditions<S extends State> {
   }
 
   /**
+   * @yields all selected children
+   */
+  get selectedChildren(): this {
+    const subject = flag(this, "subject")
+
+    if (!isParent(subject)) {
+      throw new Error(`selectedChildren | Expected subject to be parent`)
+    }
+    if (!hasSelectableChildren(subject)) {
+      throw new Error(`selectedChildren | Subjects children are not selectable`)
+    }
+
+    flag(this, "subject", subject.getSelectedChildren())
+
+    return this
+  }
+
+  /**
+   * @yields all selected children
+   */
+  get unselectedChildren(): this {
+    const subject = flag(this, "subject")
+
+    if (!isParent(subject)) {
+      throw new Error(`unselectedChildren | Expected subject to be parent`)
+    }
+    if (!hasSelectableChildren(subject)) {
+      throw new Error(
+        `unselectedChildren | Subjects children are not selectable`
+      )
+    }
+
+    flag(this, "subject", subject.getUnselectedChildren())
+
+    return this
+  }
+
+  /**
    * @yields {number} children count if `subject` is a `Parent`
    */
   get childrenCount(): this {
