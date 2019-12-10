@@ -22,6 +22,11 @@ describe("NextPlayer", () => {
     new NextPlayer().execute(state, room)
     expect(state.currentPlayerIdx).toBe(1)
   })
+
+  it("throws on non-turn based games", () => {
+    state.turnBased = false
+    expect(new NextPlayer().execute(state, room)).rejects.toThrow()
+  })
 })
 
 describe("PreviousPlayer", () => {
@@ -29,5 +34,9 @@ describe("PreviousPlayer", () => {
     expect(state.currentPlayerIdx).toBe(0)
     new PreviousPlayer().execute(state, room)
     expect(state.currentPlayerIdx).toBe(3)
+  })
+  it("throws on non-turn based games", () => {
+    state.turnBased = false
+    expect(new PreviousPlayer().execute(state, room)).rejects.toThrow()
   })
 })

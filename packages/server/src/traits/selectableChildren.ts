@@ -70,6 +70,15 @@ export class SelectableChildrenTrait {
   }
 
   /**
+   * In which order was nth child selected
+   * @param childIndex
+   */
+  getSelectionIndex(childIndex: number): number {
+    return this.selectedChildren.find(data => data.childIndex === childIndex)
+      .selectionIndex
+  }
+
+  /**
    * Number of selected child elements
    */
   countSelectedChildren(): number {

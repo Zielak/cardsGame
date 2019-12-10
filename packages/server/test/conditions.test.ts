@@ -2,6 +2,8 @@ import { Conditions, getConditionFlag as flag } from "../src/conditions"
 import { State } from "../src/state"
 import { ServerPlayerEvent, Player } from "../src/player"
 import { SmartEntity, SmartParent } from "./helpers/smartEntities"
+import { Hand } from "../src/entities/hand"
+import { ClassicCard } from "../src/entities/index"
 
 let state: State
 let event: ServerPlayerEvent
@@ -241,6 +243,95 @@ test("length", () => {
   expect(() => con.set(function() {}).length.equals(0)).not.toThrow()
   expect(() => con.set(500).length).toThrow()
 })
+
+describe("selection", () => {
+  beforeEach(() => {
+    let hand = new Hand(state)
+    new ClassicCard(state, { parent: hand })
+    new ClassicCard(state, { parent: hand })
+    new ClassicCard(state, { parent: hand })
+    hand.selectChildAt(0)
+    hand.selectChildAt(2)
+  })
+  describe("selectedChildren", () => {
+    it("works with proper setup", () => {
+      expect(() =>
+        con.get({ type: "hand" }).selectedChildren.length.equals(2)
+      ).not.toThrow()
+      expect(() =>
+        con.get({ type: "hand" }).selectedChildren.length.equals(0)
+      ).toThrow()
+    })
+
+    it("throws with incorrect setup", () => {
+      expect(() => con.set([1, 2, 3]).selectedChildren).toThrow(/to be parent/)
+      expect(() => con.set(parent).selectedChildren).toThrow(
+        /are not selectable/
+      )
+    })
+  })
+
+  describe("unselectedChildren", () => {
+    it("works with proper setup", () => {
+      expect(() =>
+        con.get({ type: "hand" }).unselectedChildren.length.equals(1)
+      ).not.toThrow()
+      expect(() =>
+        con.get({ type: "hand" }).unselectedChildren.length.equals(0)
+      ).toThrow()
+    })
+
+    it("throws with incorrect setup", () => {
+      expect(() => con.set([1, 2, 3]).unselectedChildren).toThrow(
+        /to be parent/
+      )
+      expect(() => con.set(parent).unselectedChildren).toThrow(
+        /are not selectable/
+      )
+    })
+  })
+
+  describe("selectedChildrenCount", () => {
+    it("works with proper setup", () => {
+      expect(() =>
+        con.get({ type: "hand" }).selectedChildrenCount.equals(2)
+      ).not.toThrow()
+      expect(() =>
+        con.get({ type: "hand" }).selectedChildrenCount.equals(0)
+      ).toThrow()
+    })
+
+    it("throws with incorrect setup", () => {
+      expect(() => con.set([1, 2, 3]).selectedChildrenCount).toThrow(
+        /to be parent/
+      )
+      expect(() => con.set(parent).selectedChildrenCount).toThrow(
+        /are not selectable/
+      )
+    })
+  })
+
+  describe("unselectedChildrenCount", () => {
+    it("works with proper setup", () => {
+      expect(() =>
+        con.get({ type: "hand" }).unselectedChildrenCount.equals(1)
+      ).not.toThrow()
+      expect(() =>
+        con.get({ type: "hand" }).unselectedChildrenCount.equals(0)
+      ).toThrow()
+    })
+
+    it("throws with incorrect setup", () => {
+      expect(() => con.set([1, 2, 3]).unselectedChildrenCount).toThrow(
+        /to be parent/
+      )
+      expect(() => con.set(parent).unselectedChildrenCount).toThrow(
+        /are not selectable/
+      )
+    })
+  })
+})
+
 test("childrenCount", () => {
   con.get({ name: "parent" }).as("parent")
   expect(() => con.get("parent").childrenCount.equals(5)).not.toThrow()
@@ -375,6 +466,12 @@ describe("each", () => {
           con.is.above(6)
         })
       ).toThrow()
+    })
+
+    test("incorrect subject", () => {
+      expect(() => con.set("whoops").each(con => con.empty)).toThrow(
+        /to be an array/
+      )
     })
   })
 })

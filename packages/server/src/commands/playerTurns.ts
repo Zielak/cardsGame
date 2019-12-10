@@ -11,9 +11,6 @@ class SetCurrentPlayer extends Command {
   }
 
   async execute(state: State) {
-    if (!state.turnBased)
-      throw new Error(`Can't use SetCurrentPlayer in non turn based game.`)
-
     this.lastIdx = state.currentPlayerIdx
     state.currentPlayerIdx = this.idx
   }
