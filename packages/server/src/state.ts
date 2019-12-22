@@ -11,10 +11,11 @@ import { Entity, applyMixins } from "./traits/entity"
 import { IdentityTrait } from "./traits/identity"
 import { LabelTrait, hasLabel } from "./traits/label"
 import { hasOwnership } from "./traits/ownership"
-import { isParent, hasChildren, ParentTrait } from "./traits/parent"
+import { ParentTrait, isParent, hasChildren } from "./traits/parent"
+import { ParentArrayTrait } from "./traits/parentArray"
 
 @containsChildren()
-@applyMixins([IdentityTrait, LabelTrait, ParentTrait])
+@applyMixins([IdentityTrait, LabelTrait, ParentArrayTrait])
 export class State extends Entity<{}> {
   type = "state"
 
@@ -237,12 +238,7 @@ export class State extends Entity<{}> {
     }
 
     if (!startingPoint) {
-      logger.group(
-        "ROOT",
-        "(" + this.countChildren() + " direct children,",
-        this.getDescendants().length,
-        "in total)"
-      )
+      logger.group("ROOT", "(" + this.countChildren() + " direct children")
     } else {
       const count = isChild(startingPoint) ? `[${startingPoint.idx}] ` : ""
       const name = hasLabel(startingPoint)
@@ -255,7 +251,7 @@ export class State extends Entity<{}> {
   }
 }
 
-interface Mixin extends IdentityTrait, LabelTrait, ParentTrait {}
+interface Mixin extends IdentityTrait, LabelTrait, ParentArrayTrait {}
 
 export interface State extends Mixin {}
 

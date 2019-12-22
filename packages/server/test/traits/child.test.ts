@@ -1,4 +1,4 @@
-import { DumbParent, DumbEntity } from "../helpers/dumbEntities"
+import { DumbArrayParent, DumbEntity } from "../helpers/dumbEntities"
 import { State } from "../../src/state"
 
 let state: State
@@ -9,7 +9,7 @@ beforeEach(() => {
 
 describe(`parent`, () => {
   it("gets correct parent", () => {
-    let parent = new DumbParent(state)
+    let parent = new DumbArrayParent(state)
     let entity = new DumbEntity(state, { parent })
 
     expect(entity.parent).toBe(parent)
@@ -23,9 +23,9 @@ describe(`parent`, () => {
 })
 
 describe(`addChild`, () => {
-  let parent: DumbParent, entity: DumbEntity
+  let parent: DumbArrayParent, entity: DumbEntity
   beforeEach(() => {
-    parent = new DumbParent(state)
+    parent = new DumbArrayParent(state)
   })
   test(`adds new child to empty parent`, () => {
     entity = new DumbEntity(state)
@@ -57,11 +57,11 @@ describe(`addChild`, () => {
 describe(`getIdxPath`, () => {
   test.todo(`top level entity`)
   test(`nested entities`, () => {
-    const parentA = new DumbParent(state)
+    const parentA = new DumbArrayParent(state)
     new DumbEntity(state, { parent: parentA })
     new DumbEntity(state, { parent: parentA })
 
-    const parentB = new DumbParent(state, { parent: parentA })
+    const parentB = new DumbArrayParent(state, { parent: parentA })
 
     new DumbEntity(state, { parent: parentA })
     new DumbEntity(state, { parent: parentA })

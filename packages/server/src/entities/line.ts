@@ -1,19 +1,19 @@
 import { def } from "@cardsgame/utils"
 
 import { canBeChild, containsChildren } from "../annotations"
-import { Entity, applyMixins } from "../traits/entity"
-import { ParentTrait } from "../traits/parent"
-import { LabelTrait } from "../traits/label"
-import { IdentityTrait } from "../traits/identity"
-import { SelectableChildrenTrait } from "../traits/selectableChildren"
-import { LocationTrait } from "../traits/location"
-import { ChildTrait } from "../traits/child"
 import { State } from "../state"
 
+import { ChildTrait } from "../traits/child"
+import { Entity, applyMixins } from "../traits/entity"
+import { IdentityTrait } from "../traits/identity"
+import { LabelTrait } from "../traits/label"
+import { LocationTrait } from "../traits/location"
+import { OwnershipTrait } from "../traits/ownership"
+import { ParentArrayTrait } from "../traits/parentArray"
+import { SelectableChildrenTrait } from "../traits/selectableChildren"
+
 /**
- * Row or column of set number of cards.
- * It contains maximum number of spots for cards.
- * A spot can be empty.
+ * A container of items to be placed in linear fashion
  */
 @canBeChild
 @containsChildren()
@@ -21,32 +21,70 @@ import { State } from "../state"
   IdentityTrait,
   LocationTrait,
   ChildTrait,
-  ParentTrait,
+  ParentArrayTrait,
   LabelTrait,
+  OwnershipTrait,
   SelectableChildrenTrait
 ])
 export class Line extends Entity<LineOptions> {
-  spots: number
+  /**
+   * 0 by default, sets the point of overflow.
+   */
+  length: number
+
+  align: LineAlign
+  wrap: boolean
+
+  /**
+   * An angle at which items are rotated by default.
+   * Line looks like a row by default. To make a column
+   */
+  itemAngle: number
+  /**
+   * Margin or overlapping (negative values) between items
+   */
+  itemSpacing: number
 
   create(state: State, options: LineOptions = {}) {
     this.name = def(options.name, "Line")
     this.type = def(options.type, "line")
 
-    this.spots = options.spots
+    this.length = def(options.length, 0)
+
+    this.wrap = def(options.wrap, false)
+
+    if (options.lineType == "column") {
+      this.itemAngle = def(options.itemAngle, 270)
+      this.angle = def(options.angle, 90)
+    } else {
+      this.itemAngle = def(options.itemAngle, 0)
+      this.angle = def(options.angle, 0)
+    }
+
+    this.itemSpacing = def(options.itemSpacing, 0)
   }
 }
+
+type LineAlign = "start" | "end"
+type LineType = "row" | "column"
 
 interface Mixin
   extends IdentityTrait,
     LocationTrait,
     ChildTrait,
-    ParentTrait,
+    ParentArrayTrait,
     LabelTrait,
+    OwnershipTrait,
     SelectableChildrenTrait {}
 
 type LineOptions = Partial<
   ConstructorType<Mixin> & {
-    spots: number
+    lineType: LineType
+    length: number
+    align: LineAlign
+    wrap: boolean
+    itemAngle: number
+    itemSpacing: number
   }
 >
 

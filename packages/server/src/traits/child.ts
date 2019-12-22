@@ -65,8 +65,8 @@ export class ChildTrait {
   postConstructor: function(state: State, options: ChildTrait) {
     def(options.parent, state).addChild(this)
 
-    if (typeof this.idx === "number") {
-      this.parent.moveChildTo(this.idx, this.idx)
+    if (typeof options.idx === "number") {
+      this.parent.moveChildTo(this.idx, options.idx)
     }
   }
 }

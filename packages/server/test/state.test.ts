@@ -1,5 +1,5 @@
 import { State } from "../src/state"
-import { DumbParent, DumbEntity } from "./helpers/dumbEntities"
+import { DumbArrayParent, DumbEntity } from "./helpers/dumbEntities"
 
 let state: State
 
@@ -33,18 +33,18 @@ describe(`State`, () => {
     })
 
     test(`child of parent, by ID`, () => {
-      const p = new DumbParent(state, {})
+      const p = new DumbArrayParent(state, {})
       const e = new DumbEntity(state, { parent: p })
 
       expect(state.getEntity(e.id)).toBe(e)
     })
     test(`child of parent, by path`, () => {
-      const p = new DumbParent(state)
+      const p = new DumbArrayParent(state)
       const e = new DumbEntity(state, { parent: p })
       expect(state.getEntity([0, 0])).toBe(e)
     })
     test(`child of fat parent, by path`, () => {
-      const p = new DumbParent(state, {})
+      const p = new DumbArrayParent(state, {})
       new DumbEntity(state, { parent: p })
       const e = new DumbEntity(state, { parent: p })
       new DumbEntity(state, { parent: p })
@@ -54,10 +54,10 @@ describe(`State`, () => {
 
     test(`deeply nested child, by ID`, () => {
       new DumbEntity(state)
-      const parentA = new DumbParent(state)
+      const parentA = new DumbArrayParent(state)
       new DumbEntity(state)
 
-      const parentB = new DumbParent(state, { parent: parentA })
+      const parentB = new DumbArrayParent(state, { parent: parentA })
       new DumbEntity(state, { parent: parentA })
       new DumbEntity(state, { parent: parentA })
 
@@ -70,10 +70,10 @@ describe(`State`, () => {
     })
     test(`deeply nested child, by path`, () => {
       new DumbEntity(state)
-      const a = new DumbParent(state)
+      const a = new DumbArrayParent(state)
       new DumbEntity(state)
 
-      const b = new DumbParent(state, { parent: a })
+      const b = new DumbArrayParent(state, { parent: a })
       new DumbEntity(state, { parent: a })
       new DumbEntity(state, { parent: a })
 

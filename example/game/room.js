@@ -91,7 +91,7 @@ class WarGame extends Room {
     state.ante = Math.floor(state.round / 2)
 
     const winningDeck = state
-      .findAll({ name: "playersDeck" })
+      .queryAll({ name: "playersDeck" })
       .find(deck => deck.countChildren() === 0)
 
     if (winningDeck) {

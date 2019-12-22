@@ -1,11 +1,11 @@
 import { State } from "../../src/state"
 import { ChangeParent } from "../../src/commands/changeParent"
-import { DumbEntity, DumbParent } from "../helpers/dumbEntities"
+import { DumbEntity, DumbArrayParent } from "../helpers/dumbEntities"
 
 let state: State
 let entity: DumbEntity
 let entities: DumbEntity[]
-let parent: DumbParent
+let parent: DumbArrayParent
 
 beforeEach(() => {
   state = new State()
@@ -15,7 +15,7 @@ beforeEach(() => {
     new DumbEntity(state),
     new DumbEntity(state)
   ]
-  parent = new DumbParent(state)
+  parent = new DumbArrayParent(state)
 })
 
 it("moves one entity", () => {

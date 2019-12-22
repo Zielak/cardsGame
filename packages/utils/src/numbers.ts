@@ -1,6 +1,7 @@
 export const limit = (val, min = 0, max = 1) =>
   val < min ? min : val > max ? max : val
 
+// TODO: maybe allow negative values as min?
 export const wrap = (val: number, max = 1) => ((val % max) + max) % max
 
 export const rad2deg = angle => {

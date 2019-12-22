@@ -1,5 +1,5 @@
 import { Entity, applyMixins } from "../../src/traits/entity"
-import { ParentTrait } from "../../src/traits/parent"
+import { ParentArrayTrait } from "../../src/traits/parentArray"
 import { ChildTrait } from "../../src/traits/child"
 import { LabelTrait } from "../../src/traits/label"
 import { IdentityTrait } from "../../src/traits/identity"
@@ -10,7 +10,7 @@ import { canBeChild, containsChildren } from "../../src/annotations"
 @containsChildren()
 @applyMixins([
   IdentityTrait,
-  ParentTrait,
+  ParentArrayTrait,
   ChildTrait,
   LabelTrait,
   OwnershipTrait
@@ -19,7 +19,7 @@ export class SmartParent extends Entity<SmartParentOptions> {}
 
 interface ParentMixin
   extends IdentityTrait,
-    ParentTrait,
+    ParentArrayTrait,
     ChildTrait,
     LabelTrait,
     OwnershipTrait {}

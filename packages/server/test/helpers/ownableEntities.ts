@@ -1,5 +1,5 @@
 import { Entity, applyMixins } from "../../src/traits/entity"
-import { ParentTrait } from "../../src/traits/parent"
+import { ParentArrayTrait } from "../../src/traits/parentArray"
 import { ChildTrait } from "../../src/traits/child"
 import { IdentityTrait } from "../../src/traits/identity"
 import { OwnershipTrait } from "../../src/traits/ownership"
@@ -7,12 +7,12 @@ import { canBeChild, containsChildren } from "../../src/annotations"
 
 @canBeChild
 @containsChildren()
-@applyMixins([IdentityTrait, ParentTrait, ChildTrait, OwnershipTrait])
+@applyMixins([IdentityTrait, ParentArrayTrait, ChildTrait, OwnershipTrait])
 export class OwnableParent extends Entity<OwnableParent> {}
 
 export interface OwnableParent
   extends IdentityTrait,
-    ParentTrait,
+    ParentArrayTrait,
     ChildTrait,
     OwnershipTrait {}
 

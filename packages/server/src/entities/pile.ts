@@ -3,7 +3,7 @@ import { def } from "@cardsgame/utils"
 import { canBeChild, containsChildren } from "../annotations"
 import { State } from "../state"
 import { Entity, applyMixins } from "../traits/entity"
-import { ParentTrait } from "../traits/parent"
+import { ParentArrayTrait } from "../traits/parentArray"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
 import { LabelTrait } from "../traits/label"
@@ -15,7 +15,7 @@ import { IdentityTrait } from "../traits/identity"
   IdentityTrait,
   LocationTrait,
   ChildTrait,
-  ParentTrait,
+  ParentArrayTrait,
   LabelTrait
 ])
 export class Pile extends Entity<PileOptions> {
@@ -29,7 +29,7 @@ interface Mixin
   extends IdentityTrait,
     LocationTrait,
     ChildTrait,
-    ParentTrait,
+    ParentArrayTrait,
     LabelTrait {}
 
 type PileOptions = Partial<ConstructorType<Mixin>>

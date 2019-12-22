@@ -9,14 +9,15 @@ import {
   getAllChildrensTypes,
   type
 } from "../annotations"
-import { LocationTrait } from "../traits/location"
+import { State } from "../state"
+
 import { ChildTrait } from "../traits/child"
 import { Entity, applyMixins } from "../traits/entity"
-import { LabelTrait } from "../traits/label"
-import { ParentTrait } from "../traits/parent"
-import { OwnershipTrait } from "../traits/ownership"
 import { IdentityTrait } from "../traits/identity"
-import { State } from "../state"
+import { LabelTrait } from "../traits/label"
+import { LocationTrait } from "../traits/location"
+import { OwnershipTrait } from "../traits/ownership"
+import { ParentArrayTrait } from "../traits/parentArray"
 
 class TopDeckElement extends Schema {}
 defineTypes(TopDeckElement, getAllChildrensTypes())
@@ -27,7 +28,7 @@ defineTypes(TopDeckElement, getAllChildrensTypes())
   IdentityTrait,
   LocationTrait,
   ChildTrait,
-  ParentTrait,
+  ParentArrayTrait,
   LabelTrait,
   OwnershipTrait
 ])
@@ -66,7 +67,7 @@ interface Mixin
   extends IdentityTrait,
     LocationTrait,
     ChildTrait,
-    ParentTrait,
+    ParentArrayTrait,
     LabelTrait,
     OwnershipTrait {}
 

@@ -1,11 +1,12 @@
 import { containsChildren, canBeChild } from "../annotations"
-import { LabelTrait } from "../traits/label"
-import { OwnershipTrait } from "../traits/ownership"
-import { IdentityTrait } from "../traits/identity"
-import { Entity, applyMixins } from "../traits/entity"
-import { ParentTrait } from "../traits/parent"
+
 import { ChildTrait } from "../traits/child"
+import { Entity, applyMixins } from "../traits/entity"
+import { IdentityTrait } from "../traits/identity"
+import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
+import { OwnershipTrait } from "../traits/ownership"
+import { ParentArrayTrait } from "../traits/parentArray"
 
 @canBeChild
 @containsChildren()
@@ -13,14 +14,14 @@ import { LocationTrait } from "../traits/location"
   IdentityTrait,
   LabelTrait,
   ChildTrait,
-  ParentTrait,
+  ParentArrayTrait,
   LocationTrait,
   OwnershipTrait
 ])
 export class Container extends Entity<ContainerOptions> {
+  hijacksInteractionTarget = false
   create() {
     this.type = "container"
-    this.hijacksInteractionTarget = false
   }
 }
 
@@ -28,7 +29,7 @@ interface Mixin
   extends IdentityTrait,
     LabelTrait,
     ChildTrait,
-    ParentTrait,
+    ParentArrayTrait,
     LocationTrait,
     OwnershipTrait {}
 

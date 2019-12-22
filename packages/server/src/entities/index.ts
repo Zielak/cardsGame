@@ -1,6 +1,7 @@
 export * from "./classicCard"
 export * from "./container"
 export * from "./deck"
+export * from "./grid"
 export * from "./hand"
 export * from "./line"
 export * from "./pile"

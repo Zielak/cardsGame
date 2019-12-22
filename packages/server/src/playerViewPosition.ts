@@ -14,7 +14,7 @@ export class PlayerViewPosition extends Schema implements IPlayerViewPosition {
 
     this.alignX = def(options.alignX, "center")
     this.alignY = def(options.alignY, "bottom")
-    this.paddingX = def(limit(options.paddingX, 0, 100), 0)
-    this.paddingY = def(limit(options.paddingY, 0, 100), -10)
+    this.paddingX = def(options.paddingX, 0)
+    this.paddingY = def(options.paddingY, -10)
   }
 }

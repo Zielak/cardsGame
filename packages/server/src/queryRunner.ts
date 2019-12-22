@@ -5,13 +5,15 @@ import { hasIdentity } from "./traits/identity"
 import { LabelTrait } from "./traits/label"
 import { LocationTrait } from "./traits/location"
 import { OwnershipTrait } from "./traits/ownership"
-import { ParentTrait } from "./traits/parent"
+import { ParentArrayTrait } from "./traits/parentArray"
+import { ParentMapTrait } from "./traits/parentMap"
 import { SelectableChildrenTrait } from "./traits/selectableChildren"
 import { TwoSidedTrait } from "./traits/twoSided"
 
 type EveryTrait = BoxModelTrait &
   ChildTrait &
-  ParentTrait &
+  ParentArrayTrait &
+  ParentMapTrait &
   FlexyTrait &
   LabelTrait &
   LocationTrait &
@@ -19,28 +21,28 @@ type EveryTrait = BoxModelTrait &
   SelectableChildrenTrait &
   TwoSidedTrait
 
-export interface QuerableProps
-  extends Partial<
-    Pick<
-      EveryTrait,
-      | "width"
-      | "height"
-      | "idx"
-      | "alignItems"
-      | "directionReverse"
-      | "justifyContent"
-      | "name"
-      | "type"
-      | "x"
-      | "y"
-      | "angle"
-      | "owner"
-      | "ownerID"
-      | "isInOwnersView"
-      | "hijacksInteractionTarget"
-      | "faceUp"
-    >
-  > {
+export type EveryTraitsOptionsKeys =
+  | "width"
+  | "height"
+  | "idx"
+  | "alignItems"
+  | "directionReverse"
+  | "justifyContent"
+  | "name"
+  | "type"
+  | "x"
+  | "y"
+  | "angle"
+  | "owner"
+  | "ownerID"
+  | "isInOwnersView"
+  | "hijacksInteractionTarget"
+  | "maxChildren"
+  | "faceUp"
+
+export type EntityOptions = Partial<Pick<EveryTrait, EveryTraitsOptionsKeys>>
+
+export interface QuerableProps extends EntityOptions {
   parent?: QuerableProps
 }
 

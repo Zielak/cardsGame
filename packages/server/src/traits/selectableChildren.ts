@@ -25,9 +25,6 @@ export function hasSelectableChildren(
 }
 
 export class SelectableChildrenTrait {
-  // This hopefully is available by mixing in ParentTrait.
-  childrenPointers: string[]
-
   selectedChildren: ArraySchema<SelectedChildData>
 
   /**

@@ -39,12 +39,12 @@ export function type(
       logType = `(${typeof typeDef}) ${typeDef}`
     }
 
-    // Interecept type definition
+    // Intercept type definition
     if (field.indexOf("children") !== 0) {
       if (!registeredTypeDefinitions.has(constructor.name)) {
         registeredTypeDefinitions.set(constructor.name, new Map())
       }
-      logs.verbose("child type:", `${constructor.name}.${field} ${logType}`)
+      // logs.verbose("child type:", `${constructor.name}.${field} ${logType}`)
       registeredTypeDefinitions.get(constructor.name).set(field, typeDef)
     }
 
@@ -119,9 +119,6 @@ export function canBeChild(childConstructor: Function) {
       allChildrensTypes[key] = val
     }
   })
-
-  logs.verbose("allChildrensTypes after current child:")
-  logs.verbose(JSON.stringify(allChildrensTypes, null, 2))
 }
 
 /**

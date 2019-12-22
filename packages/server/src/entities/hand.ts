@@ -2,7 +2,7 @@ import { def } from "@cardsgame/utils"
 
 import { canBeChild, containsChildren } from "../annotations"
 import { State } from "../state"
-import { ParentTrait } from "../traits/parent"
+import { ParentArrayTrait } from "../traits/parentArray"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
 import { Entity, applyMixins } from "../traits/entity"
@@ -17,7 +17,7 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
   IdentityTrait,
   LocationTrait,
   ChildTrait,
-  ParentTrait,
+  ParentArrayTrait,
   LabelTrait,
   OwnershipTrait,
   SelectableChildrenTrait
@@ -25,11 +25,11 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
 export class Hand extends Entity<HandOptions> {
   autoSort: SortingFunction
 
+  hijacksInteractionTarget = false
+
   create(state: State, options: HandOptions = {}) {
     this.name = def(options.name, "Hand")
     this.type = def(options.type, "hand")
-
-    this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, false)
 
     this.autoSort = options.autoSort
 
@@ -52,7 +52,7 @@ interface Mixin
   extends IdentityTrait,
     LocationTrait,
     ChildTrait,
-    ParentTrait,
+    ParentArrayTrait,
     LabelTrait,
     OwnershipTrait,
     SelectableChildrenTrait {}
