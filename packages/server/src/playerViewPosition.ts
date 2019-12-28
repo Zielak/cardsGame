@@ -1,5 +1,5 @@
 import { Schema } from "@colyseus/schema"
-import { def, limit } from "@cardsgame/utils"
+import { def } from "@cardsgame/utils"
 
 import { type } from "./annotations"
 

@@ -1,6 +1,6 @@
 import { def } from "@cardsgame/utils"
 
-import { canBeChild, containsChildren } from "../annotations"
+import { canBeChild, containsChildren, type } from "../annotations"
 import { State } from "../state"
 
 import { ChildTrait } from "../traits/child"
@@ -27,23 +27,26 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
   SelectableChildrenTrait
 ])
 export class Line extends Entity<LineOptions> {
+  hijacksInteractionTarget = false
+
   /**
    * 0 by default, sets the point of overflow.
    */
-  length: number
+  @type("float32") length: number
 
-  align: LineAlign
-  wrap: boolean
+  @type("string") align: LineAlign
+  @type("boolean") wrap: boolean
 
   /**
    * An angle at which items are rotated by default.
    * Line looks like a row by default. To make a column
    */
-  itemAngle: number
+  @type("float32") itemAngle: number
+
   /**
    * Margin or overlapping (negative values) between items
    */
-  itemSpacing: number
+  @type("float32") itemSpacing: number
 
   create(state: State, options: LineOptions = {}) {
     this.name = def(options.name, "Line")
