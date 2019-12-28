@@ -30,12 +30,25 @@ export class Line extends Entity<LineOptions> {
   hijacksInteractionTarget = false
 
   /**
-   * 0 by default, sets the point of overflow.
+   * 0cm by default, sets the point of overflow.
    */
   @type("float32") length: number
 
+  /**
+   * Should the items overflow over the edge,
+   * or squeeze in and keep in the Lines length?
+   * Remember, items don't "wrap" to "the next line".
+   * Default value depends on `length`:
+   * - length=0 -> overflow=true
+   * - length>0 -> overflow=false
+   */
+  @type("boolean") overflow: boolean
+
+  /**
+   * How should items align within the container.
+   * In zero-length container only "start" and "end" values make sense.
+   */
   @type("string") align: LineAlign
-  @type("boolean") wrap: boolean
 
   /**
    * An angle at which items are rotated by default.
@@ -54,7 +67,9 @@ export class Line extends Entity<LineOptions> {
 
     this.length = def(options.length, 0)
 
-    this.wrap = def(options.wrap, false)
+    this.overflow = def(options.overflow, this.length === 0)
+
+    this.align = def(options.align, "start")
 
     if (options.lineType == "column") {
       this.itemAngle = def(options.itemAngle, 270)
@@ -68,7 +83,8 @@ export class Line extends Entity<LineOptions> {
   }
 }
 
-type LineAlign = "start" | "end"
+// TODO: maybe enum that (thinner messages)
+type LineAlign = "start" | "end" | "justify"
 type LineType = "row" | "column"
 
 interface Mixin
@@ -85,7 +101,7 @@ type LineOptions = Partial<
     lineType: LineType
     length: number
     align: LineAlign
-    wrap: boolean
+    overflow: boolean
     itemAngle: number
     itemSpacing: number
   }
