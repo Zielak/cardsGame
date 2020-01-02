@@ -4,8 +4,8 @@
   "description": "",
   "author": "",
   "license": "ISC",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/cardsgameClient.js",
+  "types": "lib/cardsgameClient.d.ts",
   "files": [
     "lib"
   ],

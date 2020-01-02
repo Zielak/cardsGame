@@ -11,12 +11,12 @@ const getPlugins = env => {
       openAnalyzer: false
     })
   ]
-  plugins.push(
-    new SourceMapDevToolPlugin({
-      filename: "[file].map",
-      append: "\n//# sourceMappingURL=[url]"
-    })
-  )
+  // plugins.push(
+  //   new SourceMapDevToolPlugin({
+  //     filename: "[file].map",
+  //     append: "\n//# sourceMappingURL=[url]"
+  //   })
+  // )
 
   return plugins
 }
@@ -31,9 +31,8 @@ module.exports = env => {
       index: "./src/index.ts"
     },
     output: {
-      filename: "[name].js",
-      chunkFilename: "cardsGame.[name].js",
       path: path.resolve(__dirname, "lib"),
+      filename: "cardsgameClient.js",
       library: "cardsgameClient",
       libraryTarget: "umd"
     },
@@ -47,11 +46,7 @@ module.exports = env => {
         }
       ]
     },
-    // optimization: {
-    //   splitChunks: {
-    //     chunks: "all"
-    //   }
-    // },
+    devtool: "source-map",
     plugins: getPlugins(env),
     resolve: {
       extensions: [".ts", ".js"]

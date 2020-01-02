@@ -5,7 +5,7 @@
   },
   "files.exclude": {
     "**/dist": true,
-    "**/lib": true,
+    "**/lib": false,
     "**/node_modules": true
   }
 }
