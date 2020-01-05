@@ -79,6 +79,12 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run: npm run build:utils
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - node_modules
+            - packages/*/lib
+            - packages/*/node_modules
 
   build-server-client:
     executor: my-executor
@@ -141,12 +147,12 @@ workflows:
 
       - coverage:
           requires:
-            - install
+            - build-utils
 
       - sonarcloud:
           context: SonarCloud
           requires:
-            - install
+            - build-utils
 
       - publish:
           requires:
