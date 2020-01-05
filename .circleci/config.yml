@@ -86,6 +86,8 @@ jobs:
             - packages/*/lib
             - packages/*/node_modules
 
+  # Last step, right before publishing.
+  # So only built /lib is actually required, no node_modules.
   build-server-client:
     executor: my-executor
     steps:
@@ -97,6 +99,10 @@ jobs:
           command: |
             npm run build:server
             npm run build:client
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - packages/*/lib
 
   coverage:
     executor: my-executor
