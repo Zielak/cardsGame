@@ -10,9 +10,8 @@ executors:
     working_directory: ~/repo
 
 jobs:
-  build-and-test:
+  install:
     executor: my-executor
-
     steps:
       - checkout
 
@@ -40,7 +39,7 @@ jobs:
             - v1-utilsDeps-
 
       - run: npm install
-      - run: npm run bootstrap
+      - run: npm run bootstrap:ci
 
       - save_cache:
           name: Save cache for root dependencies
@@ -63,19 +62,6 @@ jobs:
           paths:
             - packages/utils/node_modules
 
-      - run:
-          name: Build everything
-          command: |
-            npm run build:utils
-            npm run build:server
-            npm run build:client
-
-      - run:
-          name: Test & Coverage report
-          command: npm run test:ci
-
-      - sonarcloud/scan
-
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
           # taken to be the root directory of the workspace.
@@ -86,9 +72,46 @@ jobs:
             - packages/*/lib
             - packages/*/node_modules
 
+  build-utils:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run: npm run build:utils
+
+  build-server-client:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Build Server and Client
+          command: |
+            npm run build:server
+            npm run build:client
+
+  coverage:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Test & Coverage report
+          command: npm run test:ci
+
+  sonarcloud:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - sonarcloud/scan
+
   publish:
     executor: my-executor
-
     steps:
       - checkout
       - attach_workspace:
@@ -106,11 +129,31 @@ workflows:
   version: 2
   build-test-and-publish:
     jobs:
-      - build-and-test:
+      - install
+
+      - build-utils:
+          requires:
+            - install
+
+      - build-server-client:
+          requires:
+            - build-utils
+
+      - coverage:
+          requires:
+            - install
+
+      - sonarcloud:
           context: SonarCloud
+          requires:
+            - install
+
       - publish:
           requires:
-            - build-and-test
+            - install
+            - build-utils
+            - build-server-client
+            - coverage
           filters:
             branches:
               only: master
