@@ -1,4 +1,4 @@
-const { Game, Room } = require("@cardsgame/client")
+const { Game } = require("@cardsgame/client")
 
 const EL = {
   gameView: document.querySelector(".gameView"),

@@ -1,4 +1,6 @@
 import { Room } from "../src/room"
+import { State } from "../src/state"
+import { Schema } from "@colyseus/schema"
 
 let room: Room<any>
 
@@ -28,4 +30,16 @@ describe("onCreate", () => {
     room.onCreate()
     expect(room.possibleActions instanceof Set).toBe(true)
   })
+})
+
+test("setState", () => {
+  expect(room["setState"]).toBeDefined()
+
+  const newState = new State()
+
+  expect(newState instanceof Schema).toBeTruthy()
+
+  expect(() => {
+    room["setState"](newState)
+  }).not.toThrow()
 })

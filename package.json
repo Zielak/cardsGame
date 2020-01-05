@@ -5,8 +5,8 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "bootstrap": "lerna exec --concurrency 1 npm install && lerna bootstrap",
-    "linkup": "scripts/linkup.sh",
+    "bootstrap": "lerna exec --concurrency 1 npm install && lerna bootstrap && scripts/linkup.sh",
+    "linkup:colyseus": "scripts/linkupColyseus.sh",
     "start": "npm run build:examples:server-w | npm run build:examples:client-w",
     "test": "jest --silent",
     "test:watch": "jest --silent --watch",
