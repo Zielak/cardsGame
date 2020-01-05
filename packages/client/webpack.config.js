@@ -11,12 +11,6 @@ const getPlugins = env => {
       openAnalyzer: false
     })
   ]
-  // plugins.push(
-  //   new SourceMapDevToolPlugin({
-  //     filename: "[file].map",
-  //     append: "\n//# sourceMappingURL=[url]"
-  //   })
-  // )
 
   return plugins
 }

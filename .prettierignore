@@ -1,5 +1,4 @@
 packages/**/lib
 packages/**/.cache
-packages/**/dist
 package-lock.json
 coverage/
