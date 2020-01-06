@@ -84,7 +84,7 @@ export class State extends Entity<{}> {
    * A construct describing how should player's main items
    * be positioned in his view. Containers of other players
    * will not follow these rules.
-   * Default is: center/bottom, +10 px up.
+   * Default is: center/bottom.
    */
   @type(PlayerViewPosition) playerViewPosition = new PlayerViewPosition()
 

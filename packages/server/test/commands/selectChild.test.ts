@@ -23,52 +23,52 @@ beforeEach(() => {
   new ClassicCard(state, { parent: hand })
 })
 
-describe("undo", () => {
-  describe("Select", () => {
-    test("single", () => {
-      const cmd = new Select(hand, 1)
+describe("Select", () => {
+  test("single", () => {
+    const cmd = new Select(hand, 1)
 
-      cmd.execute(state, room)
-      expect(hand.isChildSelected(1)).toBe(true)
+    cmd.execute(state, room)
+    expect(hand.isChildSelected(1)).toBe(true)
 
-      cmd.undo(state, room)
-      expect(hand.isChildSelected(1)).toBe(false)
-    })
-
-    test("multiple", () => {
-      const cmd = new Select(hand, [0, 2, 3])
-
-      cmd.execute(state, room)
-      expect(hand.isChildSelected(0)).toBe(true)
-      expect(hand.isChildSelected(1)).toBe(false)
-      expect(hand.isChildSelected(2)).toBe(true)
-      expect(hand.isChildSelected(3)).toBe(true)
-
-      cmd.undo(state, room)
-      expect(hand.isChildSelected(0)).toBe(false)
-      expect(hand.isChildSelected(1)).toBe(false)
-      expect(hand.isChildSelected(2)).toBe(false)
-      expect(hand.isChildSelected(3)).toBe(false)
-    })
-
-    test("all", () => {
-      const cmd = new Select(hand)
-
-      cmd.execute(state, room)
-      expect(hand.isChildSelected(0)).toBe(true)
-      expect(hand.isChildSelected(1)).toBe(true)
-      expect(hand.isChildSelected(2)).toBe(true)
-      expect(hand.isChildSelected(3)).toBe(true)
-
-      cmd.undo(state, room)
-      expect(hand.isChildSelected(0)).toBe(false)
-      expect(hand.isChildSelected(1)).toBe(false)
-      expect(hand.isChildSelected(2)).toBe(false)
-      expect(hand.isChildSelected(3)).toBe(false)
-    })
+    cmd.undo(state, room)
+    expect(hand.isChildSelected(1)).toBe(false)
   })
 
-  describe("Deselect", () => {
+  test("multiple", () => {
+    const cmd = new Select(hand, [0, 2, 3])
+
+    cmd.execute(state, room)
+    expect(hand.isChildSelected(0)).toBe(true)
+    expect(hand.isChildSelected(1)).toBe(false)
+    expect(hand.isChildSelected(2)).toBe(true)
+    expect(hand.isChildSelected(3)).toBe(true)
+
+    cmd.undo(state, room)
+    expect(hand.isChildSelected(0)).toBe(false)
+    expect(hand.isChildSelected(1)).toBe(false)
+    expect(hand.isChildSelected(2)).toBe(false)
+    expect(hand.isChildSelected(3)).toBe(false)
+  })
+
+  test("all", () => {
+    const cmd = new Select(hand)
+
+    cmd.execute(state, room)
+    expect(hand.isChildSelected(0)).toBe(true)
+    expect(hand.isChildSelected(1)).toBe(true)
+    expect(hand.isChildSelected(2)).toBe(true)
+    expect(hand.isChildSelected(3)).toBe(true)
+
+    cmd.undo(state, room)
+    expect(hand.isChildSelected(0)).toBe(false)
+    expect(hand.isChildSelected(1)).toBe(false)
+    expect(hand.isChildSelected(2)).toBe(false)
+    expect(hand.isChildSelected(3)).toBe(false)
+  })
+})
+
+describe("Deselect", () => {
+  describe("where all is initially selected", () => {
     beforeEach(() => {
       hand.selectChildAt(0)
       hand.selectChildAt(1)
@@ -116,6 +116,33 @@ describe("undo", () => {
       expect(hand.isChildSelected(1)).toBe(true)
       expect(hand.isChildSelected(2)).toBe(true)
       expect(hand.isChildSelected(3)).toBe(true)
+    })
+  })
+
+  describe("where some is initially selected", () => {
+    beforeEach(() => {
+      hand.selectChildAt(0)
+      hand.selectChildAt(1)
+      hand.selectChildAt(3)
+    })
+    test("all # case, where not everything is selected", () => {
+      const cmd = new Deselect(hand)
+
+      expect(hand.selectedChildren.length).toBe(3)
+
+      cmd.execute(state, room)
+      expect(hand.isChildSelected(0)).toBe(false)
+      expect(hand.isChildSelected(1)).toBe(false)
+      expect(hand.isChildSelected(2)).toBe(false)
+      expect(hand.isChildSelected(3)).toBe(false)
+      expect(hand.selectedChildren.length).toBe(0)
+
+      cmd.undo(state, room)
+      expect(hand.isChildSelected(0)).toBe(true)
+      expect(hand.isChildSelected(1)).toBe(true)
+      expect(hand.isChildSelected(2)).toBe(false)
+      expect(hand.isChildSelected(3)).toBe(true)
+      expect(hand.selectedChildren.length).toBe(3)
     })
   })
 })

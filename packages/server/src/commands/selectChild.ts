@@ -32,7 +32,7 @@ export class Select extends Command {
       this.indexes.forEach(idx => parent.selectChildAt(idx))
     } else {
       this.indexes = []
-      parent.getChildren().forEach(child => {
+      parent.getUnselectedChildren().forEach(child => {
         this.indexes.push(child.idx)
         parent.selectChildAt(child.idx)
       })
@@ -71,7 +71,7 @@ export class Deselect extends Command {
       this.indexes.forEach(idx => parent.deselectChildAt(idx))
     } else {
       this.indexes = []
-      parent.getChildren().forEach(child => {
+      parent.getSelectedChildren().forEach(child => {
         this.indexes.push(child.idx)
         parent.deselectChildAt(child.idx)
       })
