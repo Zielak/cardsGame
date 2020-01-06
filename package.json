@@ -20,7 +20,6 @@
     "build:client-w": "lerna run --stream --concurrency 1 --scope '*/client' build:watch",
     "build:utils": "lerna run --stream --concurrency 1 --scope '*/utils' build",
     "build:utils-w": "lerna run --stream --concurrency 1 --scope '*/utils' build:watch",
-    "preversion": "npm ci",
     "ci:publish": "lerna publish from-git --yes"
   },
   "husky": {
