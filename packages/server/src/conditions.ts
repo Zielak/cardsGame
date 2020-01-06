@@ -667,7 +667,11 @@ class Conditions<S extends State> {
       ? subject.parent.isChildSelected(subject.idx)
       : false
 
-    this.assert(result, `isSelected | subject is not selected`)
+    this.assert(
+      result,
+      `isSelected | subject is not selected`,
+      `isSelected | subject is selected, but shouldn't`
+    )
 
     return this
   }
