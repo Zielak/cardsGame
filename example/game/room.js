@@ -106,8 +106,6 @@ class WarGame extends Room {
   }
 }
 
-WarGame.prototype.name = "WarGame"
-
 // Just to help out your IDE with auto completion on State
 /** @type {WarState} */
 WarGame.prototype.state = {}

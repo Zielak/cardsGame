@@ -82,7 +82,7 @@ const synchChildrenArray = (
   arr.push(childrenConstructor)
 
   logs.verbose(
-    `adding  "children${childrenConstructor.name}" in ${parentConstructor.name}`
+    `\`- adding  "children${childrenConstructor.name}" in ${parentConstructor.name}`
   )
   type(arr)(parentConstructor.prototype, `children${childrenConstructor.name}`)
 }

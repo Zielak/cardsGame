@@ -19,12 +19,15 @@ import { LabelTrait, hasLabel } from "./traits/label"
 import { Command } from "./command"
 
 export class Room<S extends State> extends colRoom<S> {
-  name = "CardsGame test"
   patchRate = 100 // ms = 10FPS
 
   commandsManager: CommandsManager<S>
 
   possibleActions: ActionsSet<S>
+
+  get name() {
+    return this.constructor.name
+  }
 
   onCreate(options?: any) {
     logs.info(`Room:${this.name}`, "creating new room")
