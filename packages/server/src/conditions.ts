@@ -75,7 +75,7 @@ class Conditions<S extends State> {
 
   _propParent: any
   _propName: any
-  _refs = new Map<string | Symbol, any>()
+  _refs = new Map<string | symbol, any>()
 
   constructor(state: S, event: ServerPlayerEvent) {
     this._state = state
@@ -271,7 +271,7 @@ class Conditions<S extends State> {
    * con.get({name: 'deck'}).as('deck')
    * ```
    */
-  as(ref: string | Symbol): void {
+  as(ref: string | symbol): void {
     this._refs.set(ref, flag(this, "subject"))
 
     flag(this, "subject", this._state)
@@ -613,7 +613,7 @@ class Conditions<S extends State> {
   /**
    * @asserts
    */
-  matchesPropOf(ref: string | Symbol): this {
+  matchesPropOf(ref: string | symbol): this {
     // TODO: accept queryProps?
 
     if (!this._propParent) {
@@ -627,8 +627,14 @@ class Conditions<S extends State> {
 
     this.assert(
       subject === expected,
-      `subject's '${this._propName}' (#{act}) doesn't match with the same prop at '${ref}' (#{exp})`,
-      `subject's '${this._propName}' (#{act}) is equal with prop of '${ref}', but shouldn't (#{exp})`,
+      `subject's '${
+        this._propName
+      }' (#{act}) doesn't match with the same prop at '${String(
+        ref
+      )}' (#{exp})`,
+      `subject's '${this._propName}' (#{act}) is equal with prop of '${String(
+        ref
+      )}', but shouldn't (#{exp})`,
       expected,
       subject
     )

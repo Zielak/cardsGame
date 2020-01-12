@@ -18,25 +18,27 @@ describe(`entity properties`, () => {
   test(`owner points to correct player`, () => {
     const entity = new OwnableEntity(state, { owner: player })
 
-    expect(entity.owner)
+    expect(entity.owner).toBe(player)
   })
 })
 
 describe(`getOwner`, () => {
+  let entity: OwnableEntity
+  let parent: OwnableParent
   test(`entity's direct owner`, () => {
-    let entity = new OwnableEntity(state, { owner: player })
+    entity = new OwnableEntity(state, { owner: player })
 
     expect(entity.getOwner()).toBe(player)
   })
   test(`root entity, no owner`, () => {
-    let parent = new OwnableParent(state)
-    let entity = new OwnableEntity(state, { parent })
+    parent = new OwnableParent(state)
+    entity = new OwnableEntity(state, { parent })
 
     expect(entity.getOwner()).toBe(undefined)
   })
   test(`entity parent's owner`, () => {
-    let parent = new OwnableParent(state, { owner: player })
-    let entity = new OwnableEntity(state, { parent })
+    parent = new OwnableParent(state, { owner: player })
+    entity = new OwnableEntity(state, { parent })
 
     expect(entity.getOwner()).toBe(player)
   })

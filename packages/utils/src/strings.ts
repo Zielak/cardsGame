@@ -1,4 +1,4 @@
-export const trim = (string: string = "", maxLength: number = 7) => {
+export const trim = (string = "", maxLength = 7) => {
   if (typeof string !== "string") return
   return string.length <= maxLength
     ? string
@@ -10,13 +10,13 @@ export const randomName = () => {
   return randomLetter() + randomLetter() + randomLetter()
 }
 
-export const camelCase = (str: string = "") =>
+export const camelCase = (str = "") =>
   str
     .replace(/\s(.)/g, $1 => $1.toUpperCase())
     .replace(/\s/g, "")
     .replace(/^(.)/, $1 => $1.toLowerCase())
 
-export const sentenceCase = (str: string = "") =>
+export const sentenceCase = (str = "") =>
   str
     .replace(/\s(.)/g, $1 => $1.toUpperCase())
     .replace(/^(.)/, $1 => $1.toUpperCase())

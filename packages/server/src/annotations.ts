@@ -27,17 +27,17 @@ export function type(
   typeDef: DefinitionType,
   context?: Context
 ): PropertyDecorator {
-  return function(target: typeof Schema, field: string) {
+  return function(target: typeof Schema, field: string): void {
     const constructor = target.constructor as typeof Schema
 
-    let logType: any = `"${typeDef}"`
-    if (Array.isArray(typeDef)) {
-      logType = `(array) [${typeDef[0]}]`
-    } else if (typeof typeDef === "function") {
-      logType = `(${typeof typeDef}) "${typeDef.name}"`
-    } else if (typeof typeDef === "object") {
-      logType = `(${typeof typeDef}) ${typeDef}`
-    }
+    // let logType: any = `"${typeDef}"`
+    // if (Array.isArray(typeDef)) {
+    //   logType = `(array) [${typeDef[0]}]`
+    // } else if (typeof typeDef === "function") {
+    //   logType = `(${typeof typeDef}) "${typeDef.name}"`
+    // } else if (typeof typeDef === "object") {
+    //   logType = `(${typeof typeDef}) ${typeDef}`
+    // }
 
     // Intercept type definition
     if (field.indexOf("children") !== 0) {
@@ -56,8 +56,8 @@ export function defineTypes(
   target: typeof Schema,
   fields: { [property: string]: DefinitionType },
   context: Context = globalContext
-) {
-  for (let field in fields) {
+): typeof Schema {
+  for (const field in fields) {
     type(fields[field], context)(target.prototype, field)
   }
   return target
@@ -77,7 +77,7 @@ export const registeredChildren: Function[] = []
 const synchChildrenArray = (
   parentConstructor: typeof Schema,
   childrenConstructor: Function
-) => {
+): void => {
   const arr = []
   arr.push(childrenConstructor)
 
@@ -91,7 +91,7 @@ const synchChildrenArray = (
  * Decorator!
  * Register an entity class as possible child for any other parent entities.
  */
-export function canBeChild(childConstructor: Function) {
+export function canBeChild(childConstructor: Function): void {
   logs.verbose("canBeChild", childConstructor.name)
 
   // Remember this child type for future classes
@@ -128,7 +128,9 @@ export function canBeChild(childConstructor: Function) {
  * @param childrenSynced set `false` to keep the children secret from clients
  */
 export function containsChildren(childrenSynced = true) {
-  return function containsChildrenDec(parentConstructor: typeof Schema) {
+  return function containsChildrenDec(parentConstructor: typeof Schema): void {
+    logs.verbose("containsChildren", parentConstructor.name)
+
     // Remember this parent
     registeredParents.push({
       con: parentConstructor,

@@ -1,9 +1,5 @@
 import { State } from "../../src/state"
-import {
-  Select,
-  Deselect,
-  ToggleSelection
-} from "../../src/commands/selectChild"
+import { Select, Deselect } from "../../src/commands/selectChild"
 import { Hand } from "../../src/entities/hand"
 import { ClassicCard } from "../../src/entities/classicCard"
 import { RoomMock } from "../helpers/roomMock"

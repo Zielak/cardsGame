@@ -4,14 +4,17 @@
 export const def = <T>(...values: T[]): T =>
   values.find(value => typeof value !== "undefined")
 
-export const noop = () => {}
+export const noop = (): void => {}
 
 /**
  * Calls each function with the current argument
  * and its result is used for the next call
  * @param initial value to be passed through the pipeline
  */
-export const compose = (value: any, ...functions: ((...args) => any)[]) => {
+export const compose = (
+  value: any,
+  ...functions: ((...args) => any)[]
+): any => {
   return functions.reduce((arg, fn) => {
     if (typeof fn === "function") {
       return fn(arg)
@@ -27,15 +30,16 @@ export const compose = (value: any, ...functions: ((...args) => any)[]) => {
 
 /**
  * Executes function multiple times
- * @param length number of times function will be exetuced
+ * @param length number of times function will be executed
  * @param func a function
  */
-export const times = (length: number, func: (idx: number) => any) =>
+export const times = (length: number, func: (idx: number) => any): void => {
   Array.from({ length }, func)
+}
 
 /**
  * Simple delay of execution. Use like this: `await timeout(50)`
- * @param ms mili seconds
+ * @param ms milliseconds
  */
 export const timeout = (ms: number) =>
   new Promise(resolve => setTimeout(resolve, ms))

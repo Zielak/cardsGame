@@ -18,18 +18,28 @@ import { populatePlayerEvent } from "./utils"
 import { LabelTrait, hasLabel } from "./traits/label"
 import { Command } from "./command"
 
-export class Room<S extends State> extends colRoom<S> {
+export interface IRoom {
+  canGameStart(): boolean
+  onInitGame(options: any): void
+  onStartGame(state: State): void | Command[]
+  onPlayerTurnStarted(player: Player): void | Command[]
+  onPlayerTurnEnded(player: Player): void | Command[]
+  onRoundStart(): void | Command[]
+  onRoundEnd(): void | Command[]
+}
+
+export class Room<S extends State> extends colRoom<S> implements IRoom {
   patchRate = 100 // ms = 10FPS
 
   commandsManager: CommandsManager<S>
 
   possibleActions: ActionsSet<S>
 
-  get name() {
+  get name(): string {
     return this.constructor.name
   }
 
-  onCreate(options?: any) {
+  onCreate(options?: any): void {
     logs.info(`Room:${this.name}`, "creating new room")
 
     if (!this.possibleActions) {
@@ -65,7 +75,7 @@ export class Room<S extends State> extends colRoom<S> {
     logs.notice("onJoin", `client "${newClient.id}" joined`)
   }
 
-  onLeave(client: Client, consented: boolean) {
+  onLeave(client: Client, consented: boolean): void {
     if (consented || !this.state.isGameStarted) {
       mapRemoveEntry(this.state.clients, client.id)
       logs.notice("onLeave", `client "${client.id}" left permanently`)
@@ -77,7 +87,7 @@ export class Room<S extends State> extends colRoom<S> {
     }
   }
 
-  onMessage(client: Client, event: ClientPlayerEvent) {
+  onMessage(client: Client, event: ClientPlayerEvent): void {
     logs.verbose("\n==================================\n")
     if (this.state.isGameOver) {
       logs.info(
@@ -109,7 +119,7 @@ export class Room<S extends State> extends colRoom<S> {
       })
   }
 
-  handleGameStart() {
+  handleGameStart(): void {
     if (!this.state.isGameStarted) {
       if (this.canGameStart && !this.canGameStart()) {
         logs.notice(
@@ -146,7 +156,7 @@ export class Room<S extends State> extends colRoom<S> {
    * Override it to state your own conditions of whether the game can be started or not.
    * @returns {boolean}
    */
-  canGameStart() {
+  canGameStart(): boolean {
     return true
   }
 
@@ -156,7 +166,7 @@ export class Room<S extends State> extends colRoom<S> {
    * Prepare your play area now.
    * @param state
    */
-  onInitGame(options: any = {}) {
+  onInitGame(options: any = {}): void {
     logs.error("Room", `onInitGame is not implemented!`)
   }
 
@@ -209,11 +219,11 @@ export class Room<S extends State> extends colRoom<S> {
   }
 }
 
-const debugLogMessage = (newEvent: ServerPlayerEvent) => {
-  const minifyTarget = (e: LabelTrait) => {
+function debugLogMessage(newEvent: ServerPlayerEvent): void {
+  const minifyTarget = (e: LabelTrait): string => {
     return `${e.type}:${e.name}`
   }
-  const minifyPlayer = (p: Player) => {
+  const minifyPlayer = (p: Player): string => {
     return `${p.name}[${p.clientID}]`
   }
 

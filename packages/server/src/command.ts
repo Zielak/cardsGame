@@ -10,7 +10,7 @@ export interface Command {
 export class Command {
   private _subCommands: Command[]
   private _name: string
-  get name() {
+  get name(): string {
     return this._name
   }
 
@@ -49,7 +49,7 @@ export class Command {
     logs.groupEnd()
   }
 
-  async undo(state: State, room: Room<any>) {
+  async undo(state: State, room: Room<any>): Promise<void> {
     if (this._subCommands.length === 0) {
       logs.verbose(`${this.name}, nothing to undo.`)
       return
@@ -73,7 +73,11 @@ export class Command {
    * Call ONLY during your commands `execute` method.
    * Will also remember it internally for undoing.
    */
-  protected async subExecute(state: State, room: Room<any>, command: Command) {
+  protected async subExecute(
+    state: State,
+    room: Room<any>,
+    command: Command
+  ): Promise<void> {
     this._subCommands.push(command)
     await command.execute(state, room)
   }

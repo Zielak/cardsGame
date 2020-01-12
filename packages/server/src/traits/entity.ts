@@ -54,12 +54,12 @@ export class Entity<T> extends Schema {
 export const applyMixins = (baseCtors: any[]) => (derivedCtor: Function) => {
   const derived = derivedCtor.prototype
 
-  if (!derived.hasOwnProperty("traitsConstructors")) {
+  if (!Object.prototype.hasOwnProperty.call(derived, "traitsConstructors")) {
     Object.defineProperty(derived, "traitsConstructors", {
       value: []
     })
   }
-  if (!derived.hasOwnProperty("hooks")) {
+  if (!Object.prototype.hasOwnProperty.call(derived, "hooks")) {
     Object.defineProperty(derived, "hooks", {
       value: new Map()
     })
@@ -78,7 +78,7 @@ export const applyMixins = (baseCtors: any[]) => (derivedCtor: Function) => {
 
     Object.getOwnPropertyNames(baseCtor).forEach(name => {
       if (name === "typeDef") {
-        for (var field in baseCtor.typeDef) {
+        for (const field in baseCtor.typeDef) {
           type(baseCtor.typeDef[field])(derived, field)
         }
       } else if (name === "trait") {

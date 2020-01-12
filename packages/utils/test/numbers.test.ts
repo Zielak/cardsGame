@@ -32,26 +32,26 @@ describe("limit", () => {
   })
 })
 
-describe("wrap", () => {
+test("wrap", () => {
   expect(wrap(2, 1)).toBe(0)
   expect(wrap(1.5, 1)).toBe(0.5)
   expect(wrap(2, 10)).toBe(2)
   expect(wrap(-2, 10)).toBe(8)
 })
 
-describe("rad2deg", () => {
+test("rad2deg", () => {
   expect(rad2deg(Math.PI)).toBe(180)
   expect(rad2deg(-Math.PI / 2)).toBe(-90)
   expect(rad2deg(0)).toBe(0)
 })
 
-describe("deg2rad", () => {
+test("deg2rad", () => {
   expect(deg2rad(180)).toBe(Math.PI)
   expect(deg2rad(-90)).toBe(-Math.PI / 2)
   expect(deg2rad(0)).toBe(0)
 })
 
-describe("decimal", () => {
+test("decimal", () => {
   expect(decimal(10)).toBe(10)
   expect(decimal(1.1234)).toBe(1.12)
   expect(decimal(-0.11111111, 4)).toBe(-0.1111)

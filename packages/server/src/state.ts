@@ -42,19 +42,19 @@ export class State extends Entity<{}> {
    * Set this to `false` to allow simultaneous play.
    * Don't rely on `currentPlayer` value for non turn-based games.
    */
-  @type("boolean") turnBased: boolean = true
+  @type("boolean") turnBased = true
 
   /**
    * Current round number. Increased using `NextRound` command.
    */
-  @type("uint16") round: number = 0
+  @type("uint16") round = 0
 
   /**
    * List of player - game participants, after the game starts.
    */
   @type({ map: Player }) players = new MapSchema<Player>()
 
-  @type("uint8") currentPlayerIdx: number = 0
+  @type("uint8") currentPlayerIdx = 0
 
   get currentPlayer(): Player {
     return this.turnBased ? this.players[this.currentPlayerIdx] : null

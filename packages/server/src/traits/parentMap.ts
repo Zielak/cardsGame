@@ -244,7 +244,7 @@ ParentMapTrait.prototype.queryAll = queryAll
 
   registeredChildren.forEach(con => {
     if ((this as any).__syncChildren === false) {
-      this[`children${con.name}`] = new Array()
+      this[`children${con.name}`] = []
     } else {
       this[`children${con.name}`] = new ArraySchema()
     }

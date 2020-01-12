@@ -1,0 +1,6 @@
+coverage
+example
+node_modules
+lib
+packages/**/node_modules
+packages/**/lib

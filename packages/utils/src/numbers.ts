@@ -28,7 +28,7 @@ export const px2cm = (value: number) => value / 11.5
 /**
  * Limits the number of digits "after comma"
  */
-export const decimal = (value: number, maxZeroes: number = 2) => {
+export const decimal = (value: number, maxZeroes = 2) => {
   const pow = Math.pow(10, maxZeroes)
 
   return Math.round(value * pow) / pow

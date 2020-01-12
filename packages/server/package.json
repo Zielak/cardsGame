@@ -2,7 +2,7 @@
   "name": "@cardsgame/server",
   "version": "0.2.18",
   "description": "",
-  "author": "",
+  "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "ISC",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

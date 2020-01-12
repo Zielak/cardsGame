@@ -1,10 +1,10 @@
 const path = require("path")
-const { SourceMapDevToolPlugin } = require("webpack")
-const DeclarationBundler = require("webpack-plugin-typescript-declaration-bundler")
+// const { SourceMapDevToolPlugin } = require("webpack")
+// const DeclarationBundler = require("webpack-plugin-typescript-declaration-bundler")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin
 
-const getPlugins = env => {
+const getPlugins = () => {
   const plugins = [
     new BundleAnalyzerPlugin({
       analyzerMode: "static",

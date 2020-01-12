@@ -1,6 +1,4 @@
 import { Command, Target, TargetHolder } from "../command"
-import { State } from "../state"
-import { Room } from "../room"
 import { SelectableChildrenTrait } from "../traits/selectableChildren"
 import { ParentTrait } from "../traits/parent"
 
@@ -25,7 +23,7 @@ export class Select extends Command {
     }
   }
 
-  async execute(state: State, room: Room<any>) {
+  async execute(): Promise<void> {
     const parent = this.parent.get()
 
     if (this.indexes) {
@@ -38,7 +36,7 @@ export class Select extends Command {
       })
     }
   }
-  async undo(state: State, room: Room<any>) {
+  async undo(): Promise<void> {
     const parent = this.parent.get()
 
     this.indexes.forEach(idx => parent.deselectChildAt(idx))
@@ -64,7 +62,7 @@ export class Deselect extends Command {
     }
   }
 
-  async execute(state: State, room: Room<any>) {
+  async execute(): Promise<void> {
     const parent = this.parent.get()
 
     if (this.indexes) {
@@ -77,7 +75,7 @@ export class Deselect extends Command {
       })
     }
   }
-  async undo(state: State, room: Room<any>) {
+  async undo(): Promise<void> {
     const parent = this.parent.get()
 
     this.indexes.forEach(idx => parent.selectChildAt(idx))
@@ -105,7 +103,7 @@ export class ToggleSelection extends Command {
     }
   }
 
-  async execute(state: State, room: Room<any>) {
+  async execute(): Promise<void> {
     const parent = this.parent.get()
 
     if (!this.indexes) {
@@ -120,7 +118,7 @@ export class ToggleSelection extends Command {
       }
     })
   }
-  async undo(state: State, room: Room<any>) {
+  async undo(): Promise<void> {
     const parent = this.parent.get()
 
     this.indexes.forEach(idx => {

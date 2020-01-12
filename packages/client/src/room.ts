@@ -40,35 +40,19 @@ export class Room {
     logs.notice("client joined successfully")
   }
 
-  gameStateListeners(state) {
-    this.room.state.clients.onAdd = (client, key) => {
-      logs.verbose("new client joined", client)
-    }
-    this.room.state.clients.onRemove = (client, key) => {
-      logs.verbose("client left", client)
-    }
-
-    this.room.state.players.onAdd = (player, key) => {
-      logs.verbose("player created", key, player.name)
-    }
-    this.room.state.players.onRemove = (player, key) => {
-      logs.verbose("player removed", player.name)
-    }
-  }
-
   onMessage(message: ServerMessage) {}
-  onStateChange(state) {}
+  onStateChange(state: any) {}
   /**
    * @param {number} code webSocket shutdown code
    */
-  onLeave(code) {}
-  onError(message) {}
+  onLeave(code: number) {}
+  onError(message: string) {}
 
   /**
    * Send a message from client to server.
    * @param {ClientPlayerEvent} message
    */
-  send(message: ClientPlayerEvent) {
+  send(message: ClientPlayerEvent): void {
     logs.verbose("Sending:", JSON.stringify(message))
     this.room.send(message)
   }
@@ -79,7 +63,10 @@ export class Room {
    * @param {MouseEvent | TouchEvent} event mouse or touch event. `event.type` will be grabbed from it automatically.
    * @param {number[] entityIdxPath
    */
-  sendInteraction(event: MouseEvent | TouchEvent, entityIdxPath: number[]) {
+  sendInteraction(
+    event: MouseEvent | TouchEvent,
+    entityIdxPath: number[]
+  ): void {
     const playerEvent: ClientPlayerEvent = {
       command: "EntityInteraction",
       event: event.type,
@@ -88,38 +75,24 @@ export class Room {
     this.room.send(playerEvent)
   }
 
-  leave() {
+  leave(): void {
     this.room.leave()
   }
 
-  destroy() {
+  destroy(): void {
     this.room.removeAllListeners()
     this.room.leave()
   }
 
-  get state() {
+  get state(): any {
     return this.room ? this.room.state : undefined
   }
 
-  get sessionID() {
+  get sessionID(): string {
     return this.room.sessionId
   }
 
-  get id() {
+  get id(): string {
     return this.room.id
-  }
-
-  // TODO:
-  /** @deprecate */
-  static events = {
-    stateChange: Symbol("stateChange"),
-    message: Symbol("message"),
-    join: Symbol("join"),
-    leave: Symbol("leave"),
-    error: Symbol("error"),
-    clientJoined: Symbol("clientJoined"),
-    clientLeft: Symbol("clientLeft"),
-    playerAdded: Symbol("playerAdded"),
-    playerRemoved: Symbol("playerRemoved")
   }
 }

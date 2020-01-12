@@ -8,15 +8,16 @@ beforeEach(() => {
 })
 
 describe(`parent`, () => {
+  let parent: DumbArrayParent, entity: DumbEntity
   it("gets correct parent", () => {
-    let parent = new DumbArrayParent(state)
-    let entity = new DumbEntity(state, { parent })
+    parent = new DumbArrayParent(state)
+    entity = new DumbEntity(state, { parent })
 
     expect(entity.parent).toBe(parent)
   })
 
   it("gets state for root element", () => {
-    let entity = new DumbEntity(state)
+    entity = new DumbEntity(state)
 
     expect(entity.parent).toBe(state)
   })

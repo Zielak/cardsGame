@@ -4,9 +4,7 @@ import { DumbArrayParent, DumbEntity } from "./helpers/dumbEntities"
 let state: State
 
 describe(`State`, () => {
-  test(`creates proper Root element`, () => {
-    state = new State()
-  })
+  test.todo(`creates proper Root element`)
 
   test(`#registerEntity`, () => {
     state = new State()

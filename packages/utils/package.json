@@ -2,6 +2,8 @@
   "name": "@cardsgame/utils",
   "version": "0.2.14",
   "description": "",
+  "author": "Darek Greenly (https://darekgreenly.com)",
+  "license": "ISC",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -13,8 +15,6 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@colyseus/schema": "^0.5.19",
     "chalk": "^3.0.0"

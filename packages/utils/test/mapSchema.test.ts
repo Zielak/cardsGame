@@ -17,15 +17,12 @@ describe("map2Array", () => {
 
   test("empty map", () => {
     expect(map2Array(state.boxes)).toStrictEqual([])
+    expect(Object.keys(state.boxes).length).toBe(0)
   })
 
   test("one item in boxes", () => {
     state.boxes[0] = new Box()
     expect(map2Array(state.boxes).length).toBe(1)
-  })
-
-  test("empty map", () => {
-    expect(Object.keys(state.boxes).length).toBe(0)
   })
 })
 

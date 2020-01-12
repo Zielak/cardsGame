@@ -198,7 +198,7 @@ export class ParentArrayTrait implements ParentTrait {
     return this.getChild<T>(0)
   }
 
-  protected updateIndexes() {
+  protected updateIndexes(): void {
     this.childrenPointers = []
 
     this.getChildren().forEach((child, newIdx) => {
@@ -222,7 +222,7 @@ ParentArrayTrait.prototype.queryAll = queryAll
 ;(ParentArrayTrait as any).trait = function ParentArrayTrait(
   state: State,
   options: Partial<ParentArrayTrait> = {}
-) {
+): void {
   this.childrenPointers = []
 
   this.hijacksInteractionTarget = def(
@@ -233,19 +233,19 @@ ParentArrayTrait.prototype.queryAll = queryAll
 
   registeredChildren.forEach(con => {
     if ((this as any).__syncChildren === false) {
-      this[`children${con.name}`] = new Array()
+      this[`children${con.name}`] = []
     } else {
       this[`children${con.name}`] = new ArraySchema()
     }
   })
 }
 ;(ParentArrayTrait as any).hooks = {
-  childAdded: function(this: ParentArrayTrait, child: ChildTrait) {
+  childAdded: function(this: ParentArrayTrait, child: ChildTrait): void {
     if (this.childAdded) {
       this.childAdded(child)
     }
   },
-  childRemoved: function(this: ParentArrayTrait, idx: number) {
+  childRemoved: function(this: ParentArrayTrait, idx: number): void {
     if (this.childRemoved) {
       this.childRemoved(idx)
     }

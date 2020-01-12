@@ -11,7 +11,7 @@ beforeEach(() => {
 
 describe("ParentConstructor", () => {
   test("sets default properties", () => {
-    let parent = new DumbMapParent(state)
+    const parent = new DumbMapParent(state)
 
     expect(parent.countChildren()).toBe(0)
 
@@ -22,7 +22,7 @@ describe("ParentConstructor", () => {
     expect(parent.maxChildren).toBe(Infinity)
   })
   test("remembers custom values", () => {
-    let parent = new DumbMapParent(state, { maxChildren: 3 })
+    const parent = new DumbMapParent(state, { maxChildren: 3 })
 
     expect(parent.maxChildren).toBe(3)
   })

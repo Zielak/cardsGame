@@ -1,4 +1,3 @@
-import { State } from "../state"
 import { Command, TargetsHolder, Targets } from "../command"
 import { TwoSidedTrait } from "../traits/twoSided"
 
@@ -15,11 +14,11 @@ export class FaceUp extends Command {
     this.targets = new TargetsHolder<TwoSidedTrait>(entities)
   }
 
-  async execute(state: State) {
+  async execute(): Promise<void> {
     this.targets.get().forEach(e => e.flipUp())
   }
 
-  async undo(state: State) {
+  async undo(): Promise<void> {
     this.targets.get().forEach(e => e.flipDown())
   }
 }
@@ -35,11 +34,11 @@ export class FaceDown extends Command {
     this.targets = new TargetsHolder<TwoSidedTrait>(entities)
   }
 
-  async execute(state: State) {
+  async execute(): Promise<void> {
     this.targets.get().forEach(e => e.flipDown())
   }
 
-  async undo(state: State) {
+  async undo(): Promise<void> {
     this.targets.get().forEach(e => e.flipUp())
   }
 }
@@ -55,11 +54,11 @@ export class Flip extends Command {
     this.targets = new TargetsHolder<TwoSidedTrait>(entities)
   }
 
-  async execute(state: State) {
+  async execute(): Promise<void> {
     this.targets.get().forEach(e => e.flip())
   }
 
-  async undo(state: State) {
+  async undo(): Promise<void> {
     this.targets.get().forEach(e => e.flip())
   }
 }

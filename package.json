@@ -2,7 +2,7 @@
   "name": "cardsgame",
   "private": true,
   "main": "index.js",
-  "author": "",
+  "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "ISC",
   "scripts": {
     "bootstrap": "lerna exec --concurrency 1 npm install && lerna bootstrap && scripts/linkup.sh",
@@ -13,6 +13,7 @@
     "test:watch": "jest --silent --watch",
     "test:cover": "jest --silent --coverage",
     "test:ci": "jest --silent --coverage --coverageReporters=text-lcov --coverageReporters=lcovonly | coveralls",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
     "build:server": "lerna run --stream --concurrency 1 --scope '*/server' build",
     "build:server-w": "lerna run --stream --concurrency 1 --scope '*/server' build:watch",
@@ -31,13 +32,21 @@
     "*.{js,ts,tsx,json,html,scss,md}": [
       "prettier --write",
       "git add"
+    ],
+    "*.{js,jsx,ts,tsx}": [
+      "eslint"
     ]
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",
+    "@typescript-eslint/eslint-plugin": "^2.15.0",
+    "@typescript-eslint/parser": "^2.15.0",
     "chalk": "^3.0.0",
     "coveralls": "^3.0.9",
     "css-loader": "^3.4.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-jest": "^23.6.0",
     "husky": "^3.1.0",
     "jest": "^24.9.0",
     "lerna": "^3.20.0",

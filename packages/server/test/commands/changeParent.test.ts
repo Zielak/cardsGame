@@ -36,11 +36,13 @@ it("moves multiple entities", () => {
 })
 
 it("throws at empty target", async () => {
-  expect(new ChangeParent(undefined, undefined).execute(state)).rejects.toThrow(
-    /Target is required/
-  )
+  await expect(
+    new ChangeParent(undefined, undefined).execute(state)
+  ).rejects.toThrow(/Target is required/)
 })
 
-it("handles empty sources", () => {
-  expect(new ChangeParent([], parent).execute(state)).resolves.toBeUndefined()
+it("handles empty sources", async () => {
+  await expect(
+    new ChangeParent([], parent).execute(state)
+  ).resolves.toBeUndefined()
 })

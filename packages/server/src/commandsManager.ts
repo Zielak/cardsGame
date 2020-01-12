@@ -14,7 +14,7 @@ export class CommandsManager<S extends State> {
   history: Command[] = []
 
   currentCommand: Command
-  actionPending: boolean = false
+  actionPending = false
   currentAction: ActionTemplate<S>
 
   possibleActions: ActionsSet<S>

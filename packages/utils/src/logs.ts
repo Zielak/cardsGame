@@ -51,6 +51,8 @@ const setLogLevel = (val: string) => {
   console.log("setLogLevel", logLevel)
 }
 
+const minifyEntity = ({ type, name }): string => `${type}:${name}`
+
 const syntaxHighlight = (arg: any) => {
   if (IS_CHROME) return arg
   if (typeof arg === "string") {
@@ -67,10 +69,6 @@ const syntaxHighlight = (arg: any) => {
     return chalk.yellow(minifyEntity(arg))
   }
   return arg
-}
-
-const minifyEntity = ({ type, name }): string => {
-  return `${type}:${name}`
 }
 
 let indentLevel = 0

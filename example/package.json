@@ -2,14 +2,14 @@
   "name": "@cardsgame/example",
   "version": "0.2.3",
   "description": "Simplest implementation example of @cardsgame",
+  "author": "Darek Greenly (https://darekgreenly.com)",
+  "license": "MIT",
   "main": "app.js",
   "scripts": {
     "start": "NODE_ENV=development LOGS=verbose node app",
     "build": "webpack --mode=development --devtool eval",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "@cardsgame/client": "^0.2.3",
     "@cardsgame/server": "^0.2.3",

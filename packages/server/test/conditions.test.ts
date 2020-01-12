@@ -246,7 +246,7 @@ test("length", () => {
 
 describe("selection", () => {
   beforeEach(() => {
-    let hand = new Hand(state)
+    const hand = new Hand(state)
     new ClassicCard(state, { parent: hand })
     new ClassicCard(state, { parent: hand })
     new ClassicCard(state, { parent: hand })
@@ -432,11 +432,7 @@ describe("each", () => {
     new SmartEntity(state, { parent, name: "childC" })
   })
   describe("pass", () => {
-    // it('tests entities structure', () => {
-    //   con.get({ name: "parent" }).as("parent")
-
-    //   // con.get('parent').children.each()
-    // })
+    it.todo("tests entities structure")
 
     it("tests an array", () => {
       expect(() =>

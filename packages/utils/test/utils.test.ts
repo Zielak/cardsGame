@@ -1,5 +1,4 @@
 import { def, noop, times, isObject } from "../src/utils"
-import { MapSchema, ArraySchema } from "@colyseus/schema"
 
 describe("noop", () => {
   it(`is a function`, () => {

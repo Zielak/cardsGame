@@ -94,8 +94,4 @@ describe("counting", () => {
     expect(parent.countSelectedChildren()).toBe(2)
     expect(parent.countUnselectedChildren()).toBe(3)
   })
-
-  // it('throws', () => {
-
-  // })
 })

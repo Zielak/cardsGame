@@ -7,8 +7,8 @@ export class Player extends Schema {
   @type("string") clientID: string
   @type("string") name: string
 
-  @type("number") score: number = 0
-  @type("number") timeLeft: number = -1
+  @type("number") score = 0
+  @type("number") timeLeft = -1
 
   finishedPlaying = false
 
@@ -60,7 +60,7 @@ const randomPlayerNames = [
   "Yumi",
   "Zoltan"
 ]
-const getRandomName = (): string => {
+function getRandomName(): string {
   randomPlayerNames.sort(() => {
     return Math.floor(Math.random() * 3) - 1
   })

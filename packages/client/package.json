@@ -2,7 +2,7 @@
   "name": "@cardsgame/client",
   "version": "0.2.15",
   "description": "",
-  "author": "",
+  "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "ISC",
   "main": "lib/cardsgameClient.js",
   "types": "lib/cardsgameClient.d.ts",

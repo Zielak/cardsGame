@@ -15,7 +15,7 @@ beforeEach(() => {
 
 describe("ParentConstructor", () => {
   test("sets default properties", () => {
-    let parent = new DumbArrayParent(state)
+    const parent = new DumbArrayParent(state)
 
     expect(parent.countChildren()).toBe(0)
 
@@ -181,7 +181,7 @@ describe("#getChild", () => {
 
       expect(parent.getChild(1)).toBe(entity)
     })
-    it("gets nothing", () => {})
+    it.todo("gets nothing")
     it.todo("throws if idx out of range")
   })
 })

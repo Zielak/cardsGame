@@ -1,8 +1,11 @@
 import { ArraySchema, Schema } from "@colyseus/schema"
 
 import { ChildTrait } from "./child"
-import { isParent } from "./parent"
+import { isParent, ParentTrait } from "./parent"
 import { type } from "../annotations"
+
+// TODO: Thi trait is clearly dependant on ParentTrait
+// There should be a way of checking/ensuing this dependency is met
 
 class SelectedChildData extends Schema {
   @type("uint16") childIndex: number
@@ -30,8 +33,11 @@ export class SelectableChildrenTrait {
   /**
    * Select child
    */
-  selectChildAt(childIndex: number) {
-    this.ensureIndex(childIndex)
+  selectChildAt(
+    this: ParentTrait & SelectableChildrenTrait,
+    childIndex: number
+  ) {
+    this._selectableEnsureIndex(childIndex)
 
     // Also ensure we won't push duplicate here
     const alreadyThere = this.selectedChildren.find(
@@ -47,8 +53,11 @@ export class SelectableChildrenTrait {
   /**
    * Deselect child
    */
-  deselectChildAt(childIndex: number) {
-    this.ensureIndex(childIndex)
+  deselectChildAt(
+    this: ParentTrait & SelectableChildrenTrait,
+    childIndex: number
+  ) {
+    this._selectableEnsureIndex(childIndex)
 
     const dataIdx = this.selectedChildren.findIndex(
       data => data.childIndex === childIndex
@@ -85,37 +94,42 @@ export class SelectableChildrenTrait {
   /**
    * Number of not selected child elements
    */
-  countUnselectedChildren(): number {
-    const me = this
-    if (!isParent(me)) {
+  countUnselectedChildren(this: ParentTrait & SelectableChildrenTrait): number {
+    if (!isParent(this)) {
       return 0
     }
-    return me.countChildren() - this.countSelectedChildren()
+    return this.countChildren() - this.countSelectedChildren()
   }
 
-  getSelectedChildren<T extends ChildTrait>(): T[] {
-    const me = this
-    if (!isParent(me)) {
+  getSelectedChildren<T extends ChildTrait>(
+    this: ParentTrait & SelectableChildrenTrait
+  ): T[] {
+    if (!isParent(this)) {
       return []
     }
 
-    return Array.from(me.selectedChildren)
+    return Array.from(this.selectedChildren)
       .sort((a, b) => a.selectionIndex - b.selectionIndex)
-      .map(data => me.getChild(data.childIndex))
+      .map(data => this.getChild(data.childIndex))
   }
 
-  getUnselectedChildren<T extends ChildTrait>(): T[] {
-    const me = this
-    if (!isParent(me)) {
+  getUnselectedChildren<T extends ChildTrait>(
+    this: ParentTrait & SelectableChildrenTrait
+  ): T[] {
+    if (!isParent(this)) {
       return []
     }
 
-    return me.getChildren<T>().filter(child => !this.isChildSelected(child.idx))
+    return this.getChildren<T>().filter(
+      child => !this.isChildSelected(child.idx)
+    )
   }
 
-  protected ensureIndex(index: number) {
-    const me = this
-    if (!isParent(me)) {
+  _selectableEnsureIndex(
+    this: ParentTrait & SelectableChildrenTrait,
+    index: number
+  ) {
+    if (!isParent(this)) {
       throw new Error(`ensureIndex | I'm not a parent!`)
     }
 
@@ -126,7 +140,7 @@ export class SelectableChildrenTrait {
       throw new Error(`ensureIndex | can't go negative on me: ${index}`)
     }
 
-    if (me.countChildren() - 1 < index)
+    if (this.countChildren() - 1 < index)
       throw new Error(
         `ensureIndex | this parent doesn't have child at index ${index}`
       )

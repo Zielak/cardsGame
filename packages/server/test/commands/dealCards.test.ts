@@ -6,7 +6,6 @@ import { LabeledEntity, LabeledParent } from "../helpers/labeledEntities"
 import { RoomMock } from "../helpers/roomMock"
 
 let state: State
-let entity: LabeledEntity
 let entities: LabeledEntity[]
 let source: LabeledParent
 let sourceCount: number
@@ -18,7 +17,7 @@ const room = new RoomMock()
 
 beforeEach(() => {
   state = new State()
-  entity = new LabeledEntity(state, { name: "singleEntity" })
+  new LabeledEntity(state, { name: "singleEntity" })
   playerA = new LabeledParent(state, { name: "playerA" })
   playerB = new LabeledParent(state, { name: "playerB" })
   source = new LabeledParent(state, { name: "source" })
