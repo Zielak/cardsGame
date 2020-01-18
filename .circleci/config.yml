@@ -122,6 +122,16 @@ jobs:
           at: ~/repo
       - sonarcloud/scan
 
+  linting:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Linting
+          command: npm run lint
+
   publish:
     executor: my-executor
     steps:
@@ -147,6 +157,10 @@ workflows:
           requires:
             - install
 
+      - linting:
+          requires:
+            - install
+
       - build-server-client:
           requires:
             - build-utils
@@ -163,6 +177,7 @@ workflows:
       - publish:
           requires:
             - install
+            - linting
             - build-utils
             - build-server-client
             - coverage
