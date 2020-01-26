@@ -26,7 +26,7 @@ module.exports = env => {
     },
     output: {
       path: path.resolve(__dirname, "lib"),
-      filename: "cardsgameClient.js",
+      filename: "index.js",
       library: "cardsgameClient",
       libraryTarget: "umd"
     },
