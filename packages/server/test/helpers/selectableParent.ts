@@ -1,13 +1,13 @@
 import { canBeChild, containsChildren } from "../../src/annotations"
 import { ChildTrait } from "../../src/traits/child"
-import { Entity, applyMixins } from "../../src/traits/entity"
+import { Entity, applyTraitsMixins } from "../../src/traits/entity"
 import { IdentityTrait } from "../../src/traits/identity"
 import { ParentArrayTrait } from "../../src/traits/parentArray"
 import { SelectableChildrenTrait } from "../../src/traits/selectableChildren"
 
 @canBeChild
 @containsChildren()
-@applyMixins([
+@applyTraitsMixins([
   IdentityTrait,
   ParentArrayTrait,
   ChildTrait,

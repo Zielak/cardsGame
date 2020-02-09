@@ -2,7 +2,7 @@ import { def } from "@cardsgame/utils"
 
 import { canBeChild, containsChildren } from "../annotations"
 import { State } from "../state"
-import { Entity, applyMixins } from "../traits/entity"
+import { Entity, applyTraitsMixins } from "../traits/entity"
 import { ParentArrayTrait } from "../traits/parentArray"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
@@ -11,7 +11,7 @@ import { IdentityTrait } from "../traits/identity"
 
 @canBeChild
 @containsChildren()
-@applyMixins([
+@applyTraitsMixins([
   IdentityTrait,
   LocationTrait,
   ChildTrait,

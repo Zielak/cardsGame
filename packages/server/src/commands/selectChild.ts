@@ -1,6 +1,8 @@
 import { Command, Target, TargetHolder } from "../command"
 import { SelectableChildrenTrait } from "../traits/selectableChildren"
 import { ParentTrait } from "../traits/parent"
+import { State } from "../state"
+import { Room } from "../room"
 
 type ParentSelecta = SelectableChildrenTrait & ParentTrait
 
@@ -11,7 +13,7 @@ export class Select extends Command {
   /**
    * Mark items as selected
    * @param parent target parent of child elements you want to select
-   * @param idx single number or array of all indexes to select. Omit to SELECT ALL.
+   * @param idx single number or array of all entity indexes to select. Omit to SELECT ALL. These are not "selection indexes" but entity's index in its parent.
    */
   constructor(parent: Target<ParentSelecta>, idx?: number | number[]) {
     super()
@@ -23,7 +25,7 @@ export class Select extends Command {
     }
   }
 
-  async execute(): Promise<void> {
+  async execute(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()
 
     if (this.indexes) {
@@ -36,7 +38,7 @@ export class Select extends Command {
       })
     }
   }
-  async undo(): Promise<void> {
+  async undo(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()
 
     this.indexes.forEach(idx => parent.deselectChildAt(idx))
@@ -50,7 +52,7 @@ export class Deselect extends Command {
   /**
    * Clear selection marking from items
    * @param parent target parent of child elements you want to deselect
-   * @param idx single number or array of all indexes to deselect. Omit to DESELECT ALL.
+   * @param idx single number or array of all indexes to deselect. Omit to DESELECT ALL. These are not "selection indexes" but entity's index in its parent.
    */
   constructor(parent: Target<ParentSelecta>, idx?: number | number[]) {
     super()
@@ -62,7 +64,7 @@ export class Deselect extends Command {
     }
   }
 
-  async execute(): Promise<void> {
+  async execute(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()
 
     if (this.indexes) {
@@ -75,7 +77,7 @@ export class Deselect extends Command {
       })
     }
   }
-  async undo(): Promise<void> {
+  async undo(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()
 
     this.indexes.forEach(idx => parent.selectChildAt(idx))
@@ -90,7 +92,7 @@ export class ToggleSelection extends Command {
   /**
    * Toggle selection marking of items
    * @param parent target parent of child elements you want to toggle selection
-   * @param idx single number or array of all indexes to toggle. Omit to TOGGLE ALL.
+   * @param idx single number or array of all indexes to toggle. Omit to TOGGLE ALL. These are not "selection indexes" but entity's index in its parent.
    */
   constructor(parent: Target<ParentSelecta>, idx: number | number[]) {
     super()

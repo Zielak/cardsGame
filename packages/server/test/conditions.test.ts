@@ -1,4 +1,4 @@
-import { Conditions, getConditionFlag as flag } from "../src/conditions"
+import { Conditions, flag } from "../src/conditions/conditions"
 import { State } from "../src/state"
 import { ServerPlayerEvent, Player } from "../src/player"
 import { SmartEntity, SmartParent } from "./helpers/smartEntities"
@@ -42,8 +42,8 @@ test("all chainers", () => {
 
 describe("constructor", () => {
   it("defines all props", () => {
-    expect(con._state).toBe(state)
-    expect(con._event).toBe(event)
+    expect(con.getState()).toBe(state)
+    expect(con.getEvent()).toBe(event)
     expect(flag(con, "subject")).toBe(state)
   })
 })
@@ -63,7 +63,7 @@ describe("references/aliases", () => {
   })
 
   test("internal _player reference", () => {
-    expect(con._player).toBe(event.player)
+    expect(con.getPlayer()).toBe(event.player)
   })
 
   test("get functions", () => {
@@ -465,7 +465,7 @@ describe("each", () => {
     })
 
     test("incorrect subject", () => {
-      expect(() => con.set("whoops").each(con => con.empty)).toThrow(
+      expect(() => con.set("whoops").each(con => con.empty())).toThrow(
         /to be an array/
       )
     })
@@ -474,21 +474,21 @@ describe("each", () => {
 
 describe("empty", () => {
   it("passes", () => {
-    expect(() => con.set([]).empty).not.toThrow()
-    expect(() => con.set({}).empty).not.toThrow()
-    expect(() => con.set("").empty).not.toThrow()
-    expect(() => con.set(new Map()).empty).not.toThrow()
-    expect(() => con.set(new Set()).empty).not.toThrow()
+    expect(() => con.set([]).empty()).not.toThrow()
+    expect(() => con.set({}).empty()).not.toThrow()
+    expect(() => con.set("").empty()).not.toThrow()
+    expect(() => con.set(new Map()).empty()).not.toThrow()
+    expect(() => con.set(new Set()).empty()).not.toThrow()
   })
 
   it("fails as expected", () => {
-    expect(() => con.set(["foo"]).empty).toThrow()
-    expect(() => con.set({ key1: 1 }).empty).toThrow()
-    expect(() => con.set("foo").empty).toThrow()
-    expect(() => con.set(new Map([["foo", "bar"]])).empty).toThrow()
-    expect(() => con.set(new Set(["foo"])).empty).toThrow()
-    expect(() => con.set(function foo() {}).empty).toThrow()
-    expect(() => con.set(null).empty).toThrow()
+    expect(() => con.set(["foo"]).empty()).toThrow()
+    expect(() => con.set({ key1: 1 }).empty()).toThrow()
+    expect(() => con.set("foo").empty()).toThrow()
+    expect(() => con.set(new Map([["foo", "bar"]])).empty()).toThrow()
+    expect(() => con.set(new Set(["foo"])).empty()).toThrow()
+    expect(() => con.set(function foo() {}).empty()).toThrow()
+    expect(() => con.set(null).empty()).toThrow()
   })
 })
 
@@ -497,9 +497,9 @@ describe("either", () => {
     it("passes on first okay", () => {
       expect(() => {
         con.either(
-          () => con.set(1).to.equal(1),
-          () => con.set(0).to.equal(1),
-          () => con.set(0).to.equal(1)
+          () => con.set(1).equals(1),
+          () => con.set(0).equals(1),
+          () => con.set(0).equals(1)
         )
       }).not.toThrow()
     })
@@ -507,9 +507,9 @@ describe("either", () => {
     it("passes on other okay", () => {
       expect(() => {
         con.either(
-          () => con.set(0).to.equal(1),
-          () => con.set(0).to.equal(1),
-          () => con.set(1).to.equal(1)
+          () => con.set(0).equals(1),
+          () => con.set(0).equals(1),
+          () => con.set(1).equals(1)
         )
       }).not.toThrow()
     })

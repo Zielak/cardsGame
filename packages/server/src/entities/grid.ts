@@ -4,7 +4,7 @@ import { canBeChild, containsChildren } from "../annotations"
 import { State } from "../state"
 
 import { ChildTrait } from "../traits/child"
-import { Entity, applyMixins } from "../traits/entity"
+import { Entity, applyTraitsMixins } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
@@ -18,7 +18,7 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
  */
 @canBeChild
 @containsChildren()
-@applyMixins([
+@applyTraitsMixins([
   IdentityTrait,
   LocationTrait,
   ChildTrait,

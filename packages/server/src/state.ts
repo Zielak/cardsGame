@@ -7,7 +7,7 @@ import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
 
 import { ChildTrait, isChild } from "./traits/child"
-import { Entity, applyMixins } from "./traits/entity"
+import { Entity, applyTraitsMixins } from "./traits/entity"
 import { IdentityTrait } from "./traits/identity"
 import { LabelTrait, hasLabel } from "./traits/label"
 import { hasOwnership } from "./traits/ownership"
@@ -15,7 +15,7 @@ import { ParentTrait, isParent, hasChildren } from "./traits/parent"
 import { ParentArrayTrait } from "./traits/parentArray"
 
 @containsChildren()
-@applyMixins([IdentityTrait, LabelTrait, ParentArrayTrait])
+@applyTraitsMixins([IdentityTrait, LabelTrait, ParentArrayTrait])
 export class State extends Entity<{}> {
   type = "state"
 

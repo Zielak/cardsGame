@@ -1,4 +1,4 @@
-import { Entity, applyMixins } from "../../src/traits/entity"
+import { Entity, applyTraitsMixins } from "../../src/traits/entity"
 import { ParentArrayTrait } from "../../src/traits/parentArray"
 import { ChildTrait } from "../../src/traits/child"
 import { LabelTrait } from "../../src/traits/label"
@@ -8,7 +8,7 @@ import { canBeChild, containsChildren } from "../../src/annotations"
 
 @canBeChild
 @containsChildren()
-@applyMixins([
+@applyTraitsMixins([
   IdentityTrait,
   ParentArrayTrait,
   ChildTrait,
@@ -31,7 +31,7 @@ export interface SmartParent extends ParentMixin {}
 // ==================================
 
 @canBeChild
-@applyMixins([IdentityTrait, ChildTrait, LabelTrait, OwnershipTrait])
+@applyTraitsMixins([IdentityTrait, ChildTrait, LabelTrait, OwnershipTrait])
 export class SmartEntity extends Entity<SmartEntityOptions> {}
 
 interface EntityMixin

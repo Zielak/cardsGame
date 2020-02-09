@@ -41,7 +41,7 @@ Changes subject to an entity described by object of props ([`QuerableProps`](./t
 
 ```typescript
 con.get({ type: "deck" }).as("deck")
-con.get("deck").is.not.empty
+con.get("deck").is.not.empty()
 ```
 
 Such references can be used throughout whole `getConditions()` function. Once it ends, the main `conditions` object is destroyed and all references are lost. So you can't re-use the same alias in different Action Templates.

@@ -41,7 +41,7 @@ export const times = (length: number, func: (idx: number) => any): void => {
  * Simple delay of execution. Use like this: `await timeout(50)`
  * @param ms milliseconds
  */
-export const timeout = (ms: number) =>
+export const timeout = (ms: number): Promise<unknown> =>
   new Promise(resolve => setTimeout(resolve, ms))
 
 /**
@@ -56,4 +56,16 @@ export const isObject = (thing: unknown): boolean => {
     return false
   }
   return true
+}
+
+export function applyMixins(derivedCtor: any, baseCtors: any[]): void {
+  baseCtors.forEach(baseCtor => {
+    Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+      Object.defineProperty(
+        derivedCtor.prototype,
+        name,
+        Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
+      )
+    })
+  })
 }

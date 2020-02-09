@@ -2,7 +2,7 @@ import { def, logs } from "@cardsgame/utils"
 
 import { type, canBeChild } from "../annotations"
 import { State } from "../state"
-import { Entity, applyMixins } from "../traits/entity"
+import { Entity, applyTraitsMixins } from "../traits/entity"
 import { LabelTrait } from "../traits/label"
 import { TwoSidedTrait } from "../traits/twoSided"
 import { ChildTrait } from "../traits/child"
@@ -31,7 +31,7 @@ import { OwnershipTrait } from "../traits/ownership"
 // }
 
 @canBeChild
-@applyMixins([
+@applyTraitsMixins([
   IdentityTrait,
   LocationTrait,
   ChildTrait,

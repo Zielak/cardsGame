@@ -1,7 +1,7 @@
 import { containsChildren, canBeChild } from "../annotations"
 
 import { ChildTrait } from "../traits/child"
-import { Entity, applyMixins } from "../traits/entity"
+import { Entity, applyTraitsMixins } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
@@ -10,7 +10,7 @@ import { ParentArrayTrait } from "../traits/parentArray"
 
 @canBeChild
 @containsChildren()
-@applyMixins([
+@applyTraitsMixins([
   IdentityTrait,
   LabelTrait,
   ChildTrait,

@@ -5,7 +5,7 @@ import { logs } from "@cardsgame/utils"
 import { type } from "../annotations"
 import { State } from "../state"
 
-export function executeHook(hookName: string, ...args) {
+export function executeHook(hookName: string, ...args): void {
   const proto = Object.getPrototypeOf(this)
   const { hooks } = proto
 
@@ -36,7 +36,7 @@ export class Entity<T> extends Schema {
 
   _executeHook = executeHook
 
-  create(state: State, options: Partial<T> = {}) {
+  create(state: State, options: Partial<T> = {}): void {
     logs.warn(
       `Entity`,
       `"${this.constructor.name}" instance doesn't have its own 'create()' method`
@@ -51,7 +51,9 @@ export class Entity<T> extends Schema {
  * @param derivedCtor
  * @param baseCtors
  */
-export const applyMixins = (baseCtors: any[]) => (derivedCtor: Function) => {
+export const applyTraitsMixins = (baseCtors: any[]) => (
+  derivedCtor: Function
+): void => {
   const derived = derivedCtor.prototype
 
   if (!Object.prototype.hasOwnProperty.call(derived, "traitsConstructors")) {

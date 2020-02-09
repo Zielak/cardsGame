@@ -4,7 +4,7 @@ import { FlexyTrait } from "./traits/flexyContainer"
 import { hasIdentity } from "./traits/identity"
 import { LabelTrait } from "./traits/label"
 import { LocationTrait } from "./traits/location"
-import { OwnershipTrait } from "./traits/ownership"
+import { OwnershipTrait, hasOwnership } from "./traits/ownership"
 import { ParentArrayTrait } from "./traits/parentArray"
 import { ParentMapTrait } from "./traits/parentMap"
 import { SelectableChildrenTrait } from "./traits/selectableChildren"
@@ -60,6 +60,10 @@ export const queryRunner = <T>(props: QuerableProps) => (entity: T) => {
       if (entity.parent.id === -1) return false
 
       return queryRunner(props.parent)(entity.parent)
+    } else if (propName === "owner") {
+      if (!hasOwnership(entity)) return false
+
+      return entity.getOwner() === props.owner
     } else {
       return entity[propName] === props[propName]
     }

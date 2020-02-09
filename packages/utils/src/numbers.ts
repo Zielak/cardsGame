@@ -1,10 +1,10 @@
-export const limit = (val, min = 0, max = 1) =>
+export const limit = (val: number, min = 0, max = 1): number =>
   val < min ? min : val > max ? max : val
 
 // TODO: maybe allow negative values as min?
-export const wrap = (val: number, max = 1) => ((val % max) + max) % max
+export const wrap = (val: number, max = 1): number => ((val % max) + max) % max
 
-export const rad2deg = angle => {
+export const rad2deg = (angle: number): number => {
   //  discuss at: http://locutus.io/php/rad2deg/
   // original by: Enrique Gonzalez
   // improved by: Brett Zamir (http://brett-zamir.me)
@@ -13,7 +13,7 @@ export const rad2deg = angle => {
   return angle * 57.29577951308232 // angle / Math.PI * 180
 }
 
-export const deg2rad = angle => {
+export const deg2rad = (angle: number): number => {
   //  discuss at: http://locutus.io/php/deg2rad/
   // original by: Enrique Gonzalez
   // improved by: Thomas Grainger (http://graingert.co.uk)
@@ -22,13 +22,13 @@ export const deg2rad = angle => {
   return angle * 0.017453292519943295 // (angle / 180) * Math.PI;
 }
 
-export const cm2px = (value: number) => value * 11.5
-export const px2cm = (value: number) => value / 11.5
+export const cm2px = (value: number): number => value * 11.5
+export const px2cm = (value: number): number => value / 11.5
 
 /**
  * Limits the number of digits "after comma"
  */
-export const decimal = (value: number, maxZeroes = 2) => {
+export const decimal = (value: number, maxZeroes = 2): number => {
   const pow = Math.pow(10, maxZeroes)
 
   return Math.round(value * pow) / pow

@@ -99,7 +99,7 @@ getConditions: con => {
 
   // Change subject to previously remembered "chosenCards"
   // and ensure its got nothing inside.
-  con.get("chosenCards").children.not.empty
+  con.get("chosenCards").children.not.empty()
 }
 ```
 

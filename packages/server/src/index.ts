@@ -12,7 +12,7 @@ export * from "./command"
 export * from "./room"
 export * from "./state"
 
-export * from "./conditions"
+export * from "./conditions/conditions"
 export * from "./actionTemplate"
 export * from "./player"
 

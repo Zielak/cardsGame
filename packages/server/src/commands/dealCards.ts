@@ -31,8 +31,8 @@ export class DealCards extends Command {
    * @param source will take cards from here
    * @param targets and put them in these containers
    * @param {DealCardsOptions} options
-   * @param {number} options.count how many cards should I deal for each target in total?
-   * @param {number} options.step number of cards on each singular deal
+   * @param {number=Infinity} options.count how many cards should I deal for each target in total?
+   * @param {number=1} options.step number of cards on each singular deal
    */
   constructor(
     source: Target<ParentTrait>,

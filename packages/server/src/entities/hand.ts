@@ -5,7 +5,7 @@ import { State } from "../state"
 import { ParentArrayTrait } from "../traits/parentArray"
 import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { Entity, applyMixins } from "../traits/entity"
+import { Entity, applyTraitsMixins } from "../traits/entity"
 import { LabelTrait } from "../traits/label"
 import { OwnershipTrait } from "../traits/ownership"
 import { IdentityTrait } from "../traits/identity"
@@ -13,7 +13,7 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
 @canBeChild
 @containsChildren()
-@applyMixins([
+@applyTraitsMixins([
   IdentityTrait,
   LocationTrait,
   ChildTrait,

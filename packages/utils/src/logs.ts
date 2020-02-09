@@ -22,7 +22,7 @@ export enum LogLevels {
 
 let logLevel = LogLevels.silent
 
-const setLogLevel = (val: string) => {
+const setLogLevel = (val: string): void => {
   switch (val) {
     case "silent":
       logLevel = LogLevels.silent
@@ -73,7 +73,7 @@ const syntaxHighlight = (arg: any) => {
 
 let indentLevel = 0
 
-const getIndent = () => {
+const getIndent = (): string => {
   return Array(indentLevel)
     .fill("│ ")
     .join("")

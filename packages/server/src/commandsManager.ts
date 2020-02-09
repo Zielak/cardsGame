@@ -7,7 +7,7 @@ import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
 import { Command } from "./command"
 import { Room } from "./room"
-import { Conditions } from "./conditions"
+import { Conditions } from "./conditions/conditions"
 import { isChild } from "./traits/child"
 
 export class CommandsManager<S extends State> {

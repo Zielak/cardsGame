@@ -1,5 +1,5 @@
 import { State } from "../../src/state"
-import { Entity, applyMixins } from "../../src/traits/entity"
+import { Entity, applyTraitsMixins } from "../../src/traits/entity"
 
 let state: State
 
@@ -15,7 +15,7 @@ describe("hooks", () => {
     }
     class HookTestEntity extends Entity<{}> {}
 
-    applyMixins([HookTestTrait])(HookTestEntity)
+    applyTraitsMixins([HookTestTrait])(HookTestEntity)
 
     new HookTestEntity(state)
 
