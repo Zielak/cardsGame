@@ -9,9 +9,13 @@ import { Entity, applyTraitsMixins } from "../traits/entity"
 import { LabelTrait } from "../traits/label"
 import { OwnershipTrait } from "../traits/ownership"
 import { IdentityTrait } from "../traits/identity"
-import { SelectableChildrenTrait } from "../traits/selectableChildren"
 import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
 
+/**
+ * Cards placed on the table, each neatly placed at such an angle
+ * to make every card's suit and rank to be visible.
+ * Like Pile, but you can see every card. Meant for small count of entities.
+ */
 @canBeChild
 @containsChildren()
 @applyTraitsMixins([
@@ -20,17 +24,16 @@ import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
   ChildTrait,
   ParentArrayTrait,
   LabelTrait,
-  OwnershipTrait,
-  SelectableChildrenTrait
+  OwnershipTrait
 ])
-export class Hand extends Entity<HandOptions> {
+export class Spread extends Entity<SpreadOptions> {
   autoSort: SortingFunction
 
   hijacksInteractionTarget = false
 
-  create(state: State, options: HandOptions = {}) {
-    this.name = def(options.name, "Hand")
-    this.type = def(options.type, "hand")
+  create(state: State, options: SpreadOptions = {}) {
+    this.name = def(options.name, "Spread")
+    this.type = def(options.type, "spread")
 
     this.autoSort = options.autoSort
   }
@@ -44,13 +47,12 @@ interface Mixin
     ChildTrait,
     ParentArrayTrait,
     LabelTrait,
-    OwnershipTrait,
-    SelectableChildrenTrait {}
+    OwnershipTrait {}
 
-type HandOptions = Partial<
+type SpreadOptions = Partial<
   ConstructorType<Mixin> & {
     autoSort: SortingFunction
   }
 >
 
-export interface Hand extends Mixin {}
+export interface Spread extends Mixin {}
