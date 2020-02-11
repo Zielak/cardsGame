@@ -134,8 +134,28 @@ class ConditionAssertions {
 
     this.assert(
       subject > value,
-      `expected ${printPropName}#{exp} to be above #{act}`,
-      `expected ${printPropName}#{exp} to be below #{act}`,
+      `expected ${printPropName}#{act} to be above #{exp}`,
+      `expected ${printPropName}#{act} to NOT be above #{exp}`,
+      value,
+      subject
+    )
+
+    return this
+  }
+
+  /**
+   * @asserts that subject is numerically above OR equal to the provided value.
+   * @alias equals
+   */
+  aboveEq(value: number): this {
+    const subject = flag(this, "subject")
+    const propName = flag(this, "propName")
+    const printPropName = propName ? `'${propName}' = ` : ""
+
+    this.assert(
+      subject > value,
+      `expected ${printPropName}#{act} to be above #{exp}`,
+      `expected ${printPropName}#{act} to NOT be above #{exp}`,
       value,
       subject
     )
@@ -160,8 +180,28 @@ class ConditionAssertions {
 
     this.assert(
       subject < value,
-      `expected ${printPropName}#{exp} to be below #{act}`,
-      `expected ${printPropName}#{exp} to be above #{act}`,
+      `expected ${printPropName}#{act} to be below #{exp}`,
+      `expected ${printPropName}#{act} to NOT be below #{exp}`,
+      value,
+      subject
+    )
+
+    return this
+  }
+
+  /**
+   * @asserts that subject is numerically below or equal to the provided value.
+   * @alias equals
+   */
+  belowEq(value: number): this {
+    const subject = flag(this, "subject")
+    const propName = flag(this, "propName")
+    const printPropName = propName ? `'${propName}' = ` : ""
+
+    this.assert(
+      subject <= value,
+      `expected ${printPropName}#{act} to be below or equal to #{exp}`,
+      `expected ${printPropName}#{act} to NOT be below or equal to #{exp}`,
       value,
       subject
     )

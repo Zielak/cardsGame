@@ -5,6 +5,9 @@ import { State } from "../state"
 import { iconStyle, flag, resetNegation } from "./utils"
 import { Conditions } from "./conditions"
 
+type EitherCallback = () => any
+type EitherTuple = [string, EitherCallback]
+
 class ConditionGrouping<S extends State> {
   /**
    * Loops through every item in subject's collection.
@@ -44,49 +47,73 @@ class ConditionGrouping<S extends State> {
 
   // Grouping?
   /**
-   * Checks if at least on of the functions pass.
+   * Checks if at least one of the functions pass.
    * Resets `subject` back to `state` before each iteration
    */
-  either(...args: (() => any)[]): this
-  either(name: string, ...args: (() => any)[]): this
-  either(nameOrFunc: string | (() => any), ...args: (() => any)[]): this {
+  either(groupName: string, ...args: (EitherCallback | EitherTuple)[]): this
+  either(...args: (EitherCallback | EitherTuple)[]): this
+  either(
+    nameOrFunc: string | (EitherCallback | EitherTuple),
+    ...args: (EitherCallback | EitherTuple)[]
+  ): this {
     // TODO: early quit on first passing function.
 
     flag(this, "eitherLevel", flag(this, "eitherLevel") + 1)
 
     // At least one of these must pass
     const results = []
-    let idx = 0
 
-    const funcs = [...args]
+    const funcs: EitherTuple[] = [...args].map(value => {
+      if (!Array.isArray(value)) {
+        return ["", value]
+      }
+      return value
+    })
+
     if (typeof nameOrFunc !== "string") {
-      funcs.unshift(nameOrFunc)
+      if (Array.isArray(nameOrFunc)) {
+        funcs.unshift(nameOrFunc)
+      } else {
+        funcs.unshift(["", nameOrFunc])
+      }
     }
-    const name = typeof nameOrFunc === "string" ? nameOrFunc : ""
+    const groupName = typeof nameOrFunc === "string" ? nameOrFunc : ""
 
-    for (const test of funcs) {
+    logs.group(`either ${chalk.white.italic(groupName)}`)
+
+    let idx = 0
+    for (const [name, test] of funcs) {
       let error = null
       let result = true
+      const testName = name ? `"${chalk.italic(name)}" ` : ""
       const level = flag(this, "eitherLevel")
 
       flag(this, "subject", flag(this, "state"))
       resetNegation(this)
 
-      try {
-        logs.group(`either [${idx}] ${name}`)
+      const prefix = idx < funcs.length - 1 ? "╞╴" : "╘╴"
 
+      try {
         test()
 
         IS_CHROME
-          ? logs.verbose(`[${idx}] -> %c✔︎`, iconStyle("green", "white"))
-          : logs.verbose(`[${idx}] -> ${chalk.bgGreen.white(" ✔︎ ")}`)
-        logs.groupEnd()
+          ? logs.notice(
+              `${prefix}[${idx}] ${testName}-> %c✔︎`,
+              iconStyle("green", "white")
+            )
+          : logs.notice(
+              `${prefix}[${idx}] ${testName}-> ${chalk.bgGreen.white(" ✔︎ ")}`
+            )
       } catch (i) {
         logs.verbose(`err:`, i.message)
         IS_CHROME
-          ? logs.verbose(`[${idx}] -> %c✘`, iconStyle("red", "white"))
-          : logs.verbose(`[${idx}] -> ${chalk.bgRed.white(" ✘ ")}`)
-        logs.groupEnd()
+          ? logs.notice(
+              `${prefix}[${idx}] ${testName}-> %c✘`,
+              iconStyle("red", "white")
+            )
+          : logs.notice(
+              `${prefix}[${idx}] ${testName}-> ${chalk.bgRed.white(" ✘ ")}`
+            )
         error = "  ".repeat(level) + i.message
         result = false
       }
@@ -99,6 +126,7 @@ class ConditionGrouping<S extends State> {
 
       idx++
     }
+    logs.groupEnd()
     flag(this, "eitherLevel", flag(this, "eitherLevel") - 1)
 
     if (results.every(({ result }) => result === false)) {
