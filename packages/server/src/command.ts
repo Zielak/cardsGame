@@ -49,6 +49,9 @@ export class Command {
     logs.groupEnd()
   }
 
+  /**
+   * Undoes every remembered sub command
+   */
   async undo(state: State, room: Room<any>): Promise<void> {
     if (this._subCommands.length === 0) {
       logs.verbose(`${this.name}, nothing to undo.`)
@@ -86,6 +89,7 @@ export class Command {
 export type Targets<T> = T | T[] | (() => T | T[])
 export class TargetsHolder<T> {
   constructor(private value: Targets<T>) {}
+  // TODO: These could be "value" getters?
   get(): T[] {
     const targets =
       typeof this.value === "function" ? (this.value as () => T)() : this.value
@@ -97,6 +101,7 @@ export class TargetsHolder<T> {
 export type Target<T> = T | (() => T)
 export class TargetHolder<T> {
   constructor(private value: Target<T>) {}
+  // TODO: These could be "value" getters?
   get(): T {
     return typeof this.value === "function"
       ? (this.value as () => T)()

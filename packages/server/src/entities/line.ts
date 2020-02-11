@@ -98,11 +98,37 @@ interface Mixin
 
 type LineOptions = Partial<
   ConstructorType<Mixin> & {
+    /**
+     * Either "column" or "row".
+     * Shorthand for "itemAngle" and "angle"
+     */
     lineType: LineType
+    /**
+     * 0cm by default, sets the point of overflow.
+     */
     length: number
+    /**
+     * How should items align within the container.
+     * In zero-length container only "start" and "end" values make sense.
+     */
     align: LineAlign
+    /**
+     * Should the items overflow over the edge,
+     * or squeeze in and keep in the Lines length?
+     * Remember, items don't "wrap" to "the next line".
+     * Default value depends on `length`:
+     * - length=0 -> overflow=true
+     * - length>0 -> overflow=false
+     */
     overflow: boolean
+    /**
+     * An angle at which items are rotated by default.
+     * Line looks like a row by default. To make a column
+     */
     itemAngle: number
+    /**
+     * Margin or overlapping (negative values) between items
+     */
     itemSpacing: number
   }
 >

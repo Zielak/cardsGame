@@ -21,6 +21,9 @@ class SetCurrentPlayer extends Command {
 }
 
 export class NextPlayer extends Command {
+  constructor() {
+    super()
+  }
   async execute(state: State, room: Room<any>) {
     if (!state.turnBased)
       throw new Error(`Can't use NextPlayer in non turn based game.`)
@@ -50,6 +53,9 @@ export class NextPlayer extends Command {
 }
 
 export class PreviousPlayer extends Command {
+  constructor() {
+    super()
+  }
   async execute(state: State, room: Room<any>) {
     if (!state.turnBased)
       throw new Error(`Can't use PreviousPlayer in non turn based game.`)

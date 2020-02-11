@@ -82,7 +82,7 @@ export class DealCards extends Command {
         const emptiedCmds = this.onDeckEmptied && this.onDeckEmptied()
         if (!emptiedCmds) {
           throw new Error(
-            `Source emptied before dealing every requested card. Add onDeckEmptied in options to for example refill the source with new elements.`
+            `Source emptied before dealing every requested card. Add onDeckEmptied in options to for example refill the source with new entities.`
           )
         }
         await this.subExecute(

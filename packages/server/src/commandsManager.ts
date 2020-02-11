@@ -137,7 +137,7 @@ export class CommandsManager<S extends State> {
     state: S,
     event: ServerPlayerEvent
   ) {
-    logs.group(`Filter out actions by CONDITIONS`)
+    logs.notice(`Filter out actions by CONDITIONS`)
 
     const result = actions.filter(action => {
       logs.group(`action: ${chalk.white(action.name)}`)
@@ -163,8 +163,6 @@ export class CommandsManager<S extends State> {
 
       return subResult
     })
-
-    logs.groupEnd()
 
     return result
   }
