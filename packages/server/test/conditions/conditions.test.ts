@@ -1,9 +1,9 @@
-import { Conditions, flag } from "../src/conditions/conditions"
-import { State } from "../src/state"
-import { ServerPlayerEvent, Player } from "../src/player"
-import { SmartEntity, SmartParent } from "./helpers/smartEntities"
-import { Hand } from "../src/entities/hand"
-import { ClassicCard } from "../src/entities/index"
+import { Conditions, flag } from "../../src/conditions/conditions"
+import { State } from "../../src/state"
+import { ServerPlayerEvent, Player } from "../../src/player"
+import { SmartEntity, SmartParent } from "../helpers/smartEntities"
+import { Hand } from "../../src/entities/hand"
+import { ClassicCard } from "../../src/entities/index"
 
 let state: State
 let event: ServerPlayerEvent
@@ -337,94 +337,6 @@ test("childrenCount", () => {
   expect(() => con.get("parent").childrenCount.equals(5)).not.toThrow()
 })
 
-describe("equals", () => {
-  test("states properties", () => {
-    expect(() => {
-      con.state.its("tableWidth").equals(60)
-      con.state.its("tableWidth").not.equals("any")
-      con.state.its("tableWidth").not.equals(80)
-    }).not.toThrow()
-
-    expect(() => {
-      con.state.its("tableWidth").equals(80)
-    }).toThrow()
-  })
-})
-
-test("above", () => {
-  expect(() => con.set(5).above(0)).not.toThrow()
-  expect(() => con.set(-5).above(-10)).not.toThrow()
-  expect(() => con.set(0).above(-Infinity)).not.toThrow()
-  expect(() => con.set(Infinity).above(-Infinity)).not.toThrow()
-
-  expect(() => con.set(0).above(0)).toThrow()
-  expect(() => con.set(0).above(10)).toThrow()
-
-  expect(() => con.set("whoop").above(0)).toThrow()
-})
-test("below", () => {
-  expect(() => con.set(5).below(100)).not.toThrow()
-  expect(() => con.set(-10).below(0)).not.toThrow()
-  expect(() => con.set(0).below(Infinity)).not.toThrow()
-  expect(() => con.set(-Infinity).below(Infinity)).not.toThrow()
-
-  expect(() => con.set(0).below(0)).toThrow()
-  expect(() => con.set(0).below(-10)).toThrow()
-
-  expect(() => con.set("whoop").below(0)).toThrow()
-})
-
-describe("oneOf", () => {
-  beforeEach(() => {
-    new SmartEntity(state, { name: "foo" })
-  })
-  it("passes", () => {
-    expect(() =>
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .oneOf(["foo", "bar", "baz"])
-    ).not.toThrow()
-
-    expect(() =>
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .oneOf(["nope", "foo", "bar", "baz"])
-    ).not.toThrow()
-
-    expect(() =>
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .not.oneOf(["bar", "baz"])
-    ).not.toThrow()
-  })
-
-  it("fails as expected", () => {
-    expect(() => {
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .oneOf(["bar", "baz"])
-    }).toThrow()
-
-    expect(() => {
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .not.oneOf(["foo", "bar"])
-    }).toThrow()
-
-    expect(() => {
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .not.oneOf(["baz", "foo", "bar"])
-    }).toThrow()
-  })
-})
-
 describe("each", () => {
   beforeEach(() => {
     new SmartEntity(state, { parent, name: "childA" })
@@ -469,26 +381,6 @@ describe("each", () => {
         /to be an array/
       )
     })
-  })
-})
-
-describe("empty", () => {
-  it("passes", () => {
-    expect(() => con.set([]).empty()).not.toThrow()
-    expect(() => con.set({}).empty()).not.toThrow()
-    expect(() => con.set("").empty()).not.toThrow()
-    expect(() => con.set(new Map()).empty()).not.toThrow()
-    expect(() => con.set(new Set()).empty()).not.toThrow()
-  })
-
-  it("fails as expected", () => {
-    expect(() => con.set(["foo"]).empty()).toThrow()
-    expect(() => con.set({ key1: 1 }).empty()).toThrow()
-    expect(() => con.set("foo").empty()).toThrow()
-    expect(() => con.set(new Map([["foo", "bar"]])).empty()).toThrow()
-    expect(() => con.set(new Set(["foo"])).empty()).toThrow()
-    expect(() => con.set(function foo() {}).empty()).toThrow()
-    expect(() => con.set(null).empty()).toThrow()
   })
 })
 

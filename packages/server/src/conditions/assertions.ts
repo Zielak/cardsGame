@@ -153,7 +153,7 @@ class ConditionAssertions {
     const printPropName = propName ? `'${propName}' = ` : ""
 
     this.assert(
-      subject > value,
+      subject >= value,
       `expected ${printPropName}#{act} to be above #{exp}`,
       `expected ${printPropName}#{act} to NOT be above #{exp}`,
       value,
@@ -204,24 +204,6 @@ class ConditionAssertions {
       `expected ${printPropName}#{act} to NOT be below or equal to #{exp}`,
       value,
       subject
-    )
-
-    return this
-  }
-
-  /**
-   * @asserts that subject (IParent) has exactly the expected children count.
-   */
-  childrenCountOf(value: number): this {
-    const subject = flag(this, "subject")
-    const count = subject.countChildren()
-
-    this.assert(
-      count == value,
-      `subject[#{act}] doesn't have exactly #{exp} children`,
-      `subject[#{act}] has exactly #{exp} children, but shouldn't`,
-      value,
-      count
     )
 
     return this

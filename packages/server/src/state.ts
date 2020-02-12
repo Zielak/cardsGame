@@ -116,53 +116,6 @@ export class State extends Entity<{}> {
     return newID
   }
 
-  // TODO: Separate this function to `getEntityByID` and `getEntityByIdxPath`. State also has `find` automatically
-  // TODO: wait... isn't this function also `getEntitiesAlongPath`?
-  // FIXME: Deprecate. It's not used anywhere...
-  /**
-   * Get an Entity by its ID
-   * @deprecated
-   * @param id
-   */
-  getEntity(id: EntityID)
-  /**
-   * Get an Entity by its idx path
-   * @deprecated
-   * @param path
-   */
-  getEntity(path: number[])
-  /**
-   * @deprecated
-   * @param idOrPath
-   */
-  getEntity(idOrPath: EntityID | number[]) {
-    if (Array.isArray(idOrPath)) {
-      const travel = (parent: ParentTrait, remainingPath: number[]) => {
-        const idx = remainingPath.shift()
-        const newChild = parent.getChild(idx)
-        if (!newChild) {
-          throw new Error(
-            `getEntity/path: This entity doesn't have such child.`
-          )
-        }
-        if (remainingPath.length > 0 && !isParent(newChild)) {
-          throw new Error(
-            `getEntity/path: Path inaccessible, entity doesn't have any children. Stopped at [${remainingPath}].`
-          )
-        }
-        if (remainingPath.length > 0 && isParent(newChild)) {
-          return travel(newChild, remainingPath)
-        } else {
-          return newChild
-        }
-      }
-      return travel(this, [...idOrPath])
-    }
-    if (idOrPath >= 0) {
-      return this._allEntities.get(idOrPath)
-    }
-  }
-
   /**
    * Gets an array of all entities from the top-most parent
    * to the lowest of the child.
