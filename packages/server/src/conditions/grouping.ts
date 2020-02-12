@@ -132,7 +132,9 @@ class ConditionGrouping<S extends State> {
     if (results.every(({ result }) => result === false)) {
       throw new Error(
         [
-          `either${name && ` '${name}'`} | none of the tests passed:`,
+          `either${
+            groupName ? ` "${groupName}"` : ""
+          } | none of the tests passed:`,
           ...results.map(({ error }) => error)
         ].join(`\n`)
       )
