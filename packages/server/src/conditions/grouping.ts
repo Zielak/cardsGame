@@ -2,7 +2,7 @@ import { logs, IS_CHROME, chalk } from "@cardsgame/utils"
 
 import { State } from "../state"
 
-import { iconStyle, flag, resetNegation } from "./utils"
+import { iconStyle, getFlag, setFlag, resetNegation } from "./utils"
 import { Conditions } from "./conditions"
 
 type EitherCallback = () => any
@@ -30,15 +30,18 @@ class ConditionGrouping<S extends State> {
       collection: any
     ) => void
   ): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (!Array.isArray(subject)) {
       throw new Error(`each | Expected subject to be an array`)
     }
 
     subject.forEach((item, index) => {
-      const con = new Conditions<S>(flag(this, "state"), flag(this, "event"))
-      flag(con, "subject", item)
+      const con = new Conditions<S>(
+        getFlag(this, "state"),
+        getFlag(this, "event")
+      )
+      setFlag(con, "subject", item)
       predicate.call(con, con, item, index, subject)
     })
 
@@ -58,7 +61,8 @@ class ConditionGrouping<S extends State> {
   ): this {
     // TODO: early quit on first passing function.
 
-    flag(this, "eitherLevel", flag(this, "eitherLevel") + 1)
+    const eitherLevel = getFlag(this, "eitherLevel") + 1
+    setFlag(this, "eitherLevel", eitherLevel)
 
     // At least one of these must pass
     const results = []
@@ -86,9 +90,8 @@ class ConditionGrouping<S extends State> {
       let error = null
       let result = true
       const testName = name ? `"${chalk.italic(name)}" ` : ""
-      const level = flag(this, "eitherLevel")
 
-      flag(this, "subject", flag(this, "state"))
+      setFlag(this, "subject", getFlag(this, "state"))
       resetNegation(this)
 
       const prefix = idx < funcs.length - 1 ? "╞╴" : "╘╴"
@@ -114,7 +117,7 @@ class ConditionGrouping<S extends State> {
           : logs.notice(
               `${prefix}[${idx}] ${testName}-> ${chalk.bgRed.white(" ✘ ")}`
             )
-        error = "  ".repeat(level) + i.message
+        error = "  ".repeat(eitherLevel) + i.message
         result = false
       }
       results.push({
@@ -127,7 +130,7 @@ class ConditionGrouping<S extends State> {
       idx++
     }
     logs.groupEnd()
-    flag(this, "eitherLevel", flag(this, "eitherLevel") - 1)
+    setFlag(this, "eitherLevel", eitherLevel - 1)
 
     if (results.every(({ result }) => result === false)) {
       throw new Error(

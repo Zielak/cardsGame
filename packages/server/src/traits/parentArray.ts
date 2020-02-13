@@ -53,6 +53,7 @@ export class ParentArrayTrait implements ParentTrait {
     // ------ remove
 
     const targetArrayName = "children" + this.childrenPointers[idx]
+
     const targetArray: ArraySchema = this[targetArrayName]
 
     const childIdx = targetArray.findIndex(el => el.idx === idx)
@@ -76,7 +77,7 @@ export class ParentArrayTrait implements ParentTrait {
     return true
   }
 
-  addChild(entity: ChildTrait, prepend = false) {
+  addChild(entity: ChildTrait, prepend = false): void {
     if (entity.parent !== undefined) {
       entity.parent.removeChildAt(entity.idx)
     }

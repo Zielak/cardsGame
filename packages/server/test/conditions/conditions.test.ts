@@ -1,4 +1,4 @@
-import { Conditions, flag } from "../../src/conditions/conditions"
+import { Conditions, getFlag, setFlag } from "../../src/conditions/conditions"
 import { State } from "../../src/state"
 import { ServerPlayerEvent, Player } from "../../src/player"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
@@ -44,7 +44,7 @@ describe("constructor", () => {
   it("defines all props", () => {
     expect(con.getState()).toBe(state)
     expect(con.getEvent()).toBe(event)
-    expect(flag(con, "subject")).toBe(state)
+    expect(getFlag(con, "subject")).toBe(state)
   })
 })
 
@@ -57,9 +57,9 @@ describe("references/aliases", () => {
     expect(con._refs.has("parent")).toBeTruthy()
     expect(con._refs.get("parent")).toBe(parent)
 
-    expect(flag(con, "subject")).toBe(state)
+    expect(getFlag(con, "subject")).toBe(state)
     con.get("parent")
-    expect(flag(con, "subject")).toBe(parent)
+    expect(getFlag(con, "subject")).toBe(parent)
   })
 
   test("internal _player reference", () => {
@@ -75,17 +75,17 @@ describe("references/aliases", () => {
 
 describe("subject changing", () => {
   test("entity", () => {
-    expect(flag(con, "subject")).toBe(state)
+    expect(getFlag(con, "subject")).toBe(state)
     con.entity
-    expect(flag(con, "subject")).toBe(event.entity)
+    expect(getFlag(con, "subject")).toBe(event.entity)
   })
 
   test("children", () => {
-    expect(flag(con, "subject")).toBe(state)
+    expect(getFlag(con, "subject")).toBe(state)
     con.get({ name: "parent" }).as("parent")
     con.get("parent").children
 
-    const subject = flag(con, "subject")
+    const subject = getFlag(con, "subject")
     expect(Array.isArray(subject)).toBeTruthy()
     expect(subject.length).toBe(5)
     expect(subject).toContain(child)
@@ -159,9 +159,9 @@ describe("subject changing", () => {
   })
 
   test("player", () => {
-    expect(flag(con, "subject")).toBe(state)
+    expect(getFlag(con, "subject")).toBe(state)
     con.player
-    expect(flag(con, "subject")).toBe(event.player)
+    expect(getFlag(con, "subject")).toBe(event.player)
   })
 })
 
@@ -408,10 +408,10 @@ describe("either", () => {
   })
 })
 
-describe("flag", () => {
+describe("setFlag", () => {
   it("throws with invalid target", () => {
     expect(() => {
-      flag({}, "test", "foo")
+      setFlag({}, "test", "foo")
     }).toThrowError(/Incompatible target/)
   })
 })

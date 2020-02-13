@@ -49,6 +49,7 @@ export class ParentMapTrait implements ParentTrait {
     const targetArrayName = "children" + this.childrenPointers.get(child)
 
     const targetArray: ArraySchema = this[targetArrayName]
+
     const childIdx = targetArray.findIndex(el => el.idx === idx)
 
     this.childrenPointers.delete(child)
@@ -72,7 +73,7 @@ export class ParentMapTrait implements ParentTrait {
   /**
    * Adds item to last OR last available space
    */
-  addChild(entity: ChildTrait, prepend = false) {
+  addChild(entity: ChildTrait, prepend = false): void {
     // Ensure this parent still has space
     if (this.maxChildren >= 0 && this.countChildren() >= this.maxChildren) {
       throw new Error(`addChild(), limit reached: ${this.maxChildren}`)

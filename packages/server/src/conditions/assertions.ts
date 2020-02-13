@@ -1,8 +1,9 @@
-import { flag, resetNegation, postAssertion, ref } from "./utils"
+import { getFlag, resetNegation, postAssertion, ref } from "./utils"
 
 import { isChild } from "../traits/child"
 import { hasOwnership } from "../traits/ownership"
 import { hasSelectableChildren } from "../traits/selectableChildren"
+import { isParentMap } from "../traits/parentMap"
 
 const getMessage = (
   target,
@@ -12,7 +13,7 @@ const getMessage = (
   expected?: any,
   actual?: any
 ): string => {
-  const not = flag(target, "not")
+  const not = getFlag(target, "not")
 
   const expT = "#{exp}"
   const actT = "#{act}"
@@ -42,7 +43,7 @@ class ConditionAssertions {
     expected?,
     actual?
   ): void {
-    const not = flag(this, "not")
+    const not = getFlag(this, "not")
     const ok = not ? !result : result
 
     if (!ok) {
@@ -67,8 +68,8 @@ class ConditionAssertions {
    * @asserts subject should be empty.
    */
   empty(): this {
-    const subject = flag(this, "subject")
-    const propName = flag(this, "propName")
+    const subject = getFlag(this, "subject")
+    const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
     if (subject.length !== undefined && typeof subject !== "function") {
@@ -99,11 +100,10 @@ class ConditionAssertions {
   /**
    * Compares current subject to given value, no coercion (strict equality).
    * @asserts that subject is equal to provided value.
-   * @alias equals
    */
   equals(value: any): this {
-    const subject = flag(this, "subject")
-    const propName = flag(this, "propName")
+    const subject = getFlag(this, "subject")
+    const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
     this.assert(
@@ -125,11 +125,10 @@ class ConditionAssertions {
   // (5).not.above(10)
   /**
    * @asserts that subject is numerically above the provided value.
-   * @alias equals
    */
   above(value: number): this {
-    const subject = flag(this, "subject")
-    const propName = flag(this, "propName")
+    const subject = getFlag(this, "subject")
+    const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
     this.assert(
@@ -145,11 +144,10 @@ class ConditionAssertions {
 
   /**
    * @asserts that subject is numerically above OR equal to the provided value.
-   * @alias equals
    */
   aboveEq(value: number): this {
-    const subject = flag(this, "subject")
-    const propName = flag(this, "propName")
+    const subject = getFlag(this, "subject")
+    const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
     this.assert(
@@ -171,11 +169,10 @@ class ConditionAssertions {
   // (5).not.below(10)
   /**
    * @asserts that subject is numerically below the provided value.
-   * @alias equals
    */
   below(value: number): this {
-    const subject = flag(this, "subject")
-    const propName = flag(this, "propName")
+    const subject = getFlag(this, "subject")
+    const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
     this.assert(
@@ -191,11 +188,10 @@ class ConditionAssertions {
 
   /**
    * @asserts that subject is numerically below or equal to the provided value.
-   * @alias equals
    */
   belowEq(value: number): this {
-    const subject = flag(this, "subject")
-    const propName = flag(this, "propName")
+    const subject = getFlag(this, "subject")
+    const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
     this.assert(
@@ -213,7 +209,7 @@ class ConditionAssertions {
    * @asserts that subject is equal to one of the provided values. Coercion allowed.
    */
   oneOf(values: any[]): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     const result = values.some(val => subject == val)
 
@@ -233,15 +229,15 @@ class ConditionAssertions {
    */
   matchesPropOf(refName: string | symbol): this {
     // TODO: accept queryProps?
-    const propName = flag(this, "propName")
+    const propName = getFlag(this, "propName")
 
-    if (!flag(this, "propParent")) {
+    if (!getFlag(this, "propParent")) {
       throw new Error(
         `matchesPropOf | Needs to be preceded with ".its" to pick a prop name`
       )
     }
 
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
     const expected = ref(this, refName)[propName]
 
     this.assert(
@@ -263,7 +259,7 @@ class ConditionAssertions {
    * @asserts if entity can be selected. Checks if parent extends `SelectableChildrenTrait`
    */
   selectable(): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (!isChild(subject)) {
       this.assert(false, `selectable | applies only on child entities`)
@@ -279,7 +275,7 @@ class ConditionAssertions {
   }
 
   selected(): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (!isChild(subject)) {
       this.assert(false, `isSelected | is not a child`)
@@ -316,8 +312,8 @@ class ConditionAssertions {
    * con.not.revealedUI("rankChooser")
    */
   revealedUI(uiKey?: string): this {
-    const { ui } = flag(this, "state")
-    const { clientID } = flag(this, "player")
+    const { ui } = getFlag(this, "state")
+    const { clientID } = getFlag(this, "player")
 
     if (uiKey) {
       // 1. uiKey needs to exist
@@ -361,8 +357,8 @@ class ConditionAssertions {
    * @asserts that player is interacting with an entity which belongs to them
    */
   get owner(): this {
-    const entity = flag(this, "entity")
-    const player = flag(this, "player")
+    const entity = getFlag(this, "entity")
+    const player = getFlag(this, "player")
 
     if (hasOwnership(entity)) {
       const expected = entity.getOwner()
@@ -386,8 +382,8 @@ class ConditionAssertions {
    * @asserts if interacting player currently has the turn.
    */
   get playersTurn(): this {
-    const { currentPlayer } = flag(this, "state")
-    const player = flag(this, "player")
+    const { currentPlayer } = getFlag(this, "state")
+    const player = getFlag(this, "player")
 
     this.assert(
       player === currentPlayer,

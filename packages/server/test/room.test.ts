@@ -1,6 +1,7 @@
+import { Schema } from "@colyseus/schema"
+
 import { Room } from "../src/room"
 import { State } from "../src/state"
-import { Schema } from "@colyseus/schema"
 
 let room: Room<any>
 

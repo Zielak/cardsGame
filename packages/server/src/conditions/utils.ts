@@ -1,15 +1,18 @@
-export function flag(target, flagName, value?) {
+export function getFlag(target, flagName: string): any {
   if (!target._flags) {
     throw new Error(`flag | Incompatible target.`)
   }
-  if (arguments.length === 3) {
-    target._flags.set(flagName, value)
-  } else {
-    return target._flags.get(flagName)
-  }
+  return target._flags.get(flagName)
 }
 
-export function ref(target, refName, value?) {
+export function setFlag(target, flagName: string, value: any): void {
+  if (!target._flags) {
+    throw new Error(`flag | Incompatible target.`)
+  }
+  target._flags.set(flagName, value)
+}
+
+export function ref(target, refName, value?): any {
   if (!target._refs) {
     throw new Error(`ref | Incompatible target.`)
   }
@@ -21,26 +24,26 @@ export function ref(target, refName, value?) {
 }
 
 export const resetPropDig = (target): void => {
-  flag(target, "propParent", undefined)
-  flag(target, "propName", undefined)
+  setFlag(target, "propParent", undefined)
+  setFlag(target, "propName", undefined)
 }
 
 export const resetNegation = (target): void => {
-  flag(target, "not", false)
+  setFlag(target, "not", false)
 }
 
 /**
  * reset subject back to its default value - the State
  */
 export const resetSubject = (target): void => {
-  flag(target, "subject", flag(target, "state"))
+  setFlag(target, "subject", getFlag(target, "state"))
 }
 
 export const postAssertion = (target): void => {
   if (target._propParent) {
     // Reset subject to the object, if we were
     // just asserting its key value
-    flag(target, "subject", target._propParent)
+    setFlag(target, "subject", target._propParent)
     resetPropDig(target)
   }
 }

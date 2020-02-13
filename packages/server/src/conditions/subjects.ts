@@ -1,4 +1,4 @@
-import { flag, resetPropDig, resetSubject, ref } from "./utils"
+import { getFlag, setFlag, resetPropDig, resetSubject, ref } from "./utils"
 import { hasSelectableChildren } from "../traits/selectableChildren"
 import { isParent } from "../traits/parent"
 import { QuerableProps } from "../queryRunner"
@@ -24,7 +24,7 @@ class ConditionSubjects {
    * @yields `player` of current interaction
    */
   get player(): this {
-    flag(this, "subject", flag(this, "player"))
+    setFlag(this, "subject", getFlag(this, "player"))
     resetPropDig(this)
 
     return this
@@ -35,7 +35,7 @@ class ConditionSubjects {
    * @yields `entity` from players interaction
    */
   get entity(): this {
-    flag(this, "subject", flag(this, "entity"))
+    setFlag(this, "subject", getFlag(this, "entity"))
     resetPropDig(this)
 
     return this
@@ -46,7 +46,7 @@ class ConditionSubjects {
    * @yields completely new subject, provided in the argument
    */
   set(newSubject): this {
-    flag(this, "subject", newSubject)
+    setFlag(this, "subject", newSubject)
 
     return this
   }
@@ -78,10 +78,10 @@ class ConditionSubjects {
       }
     } else {
       // find subject in State tree
-      newSubject = flag(this, "state").query(arg0)
+      newSubject = getFlag(this, "state").query(arg0)
     }
 
-    flag(this, "subject", newSubject)
+    setFlag(this, "subject", newSubject)
 
     resetPropDig(this)
 
@@ -97,14 +97,14 @@ class ConditionSubjects {
    *   .and.its('propB').above(5)
    */
   its(propName: string): this {
-    const propParent = flag(this, "propParent")
+    const propParent = getFlag(this, "propParent")
 
     if (propParent) {
-      flag(this, "subject", propParent[propName])
+      setFlag(this, "subject", propParent[propName])
     } else {
-      flag(this, "propParent", flag(this, "subject"))
-      flag(this, "propName", propName)
-      flag(this, "subject", flag(this, "propParent")[propName])
+      setFlag(this, "propParent", getFlag(this, "subject"))
+      setFlag(this, "propName", propName)
+      setFlag(this, "subject", getFlag(this, "propParent")[propName])
     }
 
     return this
@@ -117,7 +117,7 @@ class ConditionSubjects {
    * ```
    */
   as(refName: string | symbol): void {
-    ref(this, refName, flag(this, "subject"))
+    ref(this, refName, getFlag(this, "subject"))
 
     resetSubject(this)
   }
@@ -126,9 +126,9 @@ class ConditionSubjects {
    * @yields children of current subject
    */
   get children(): this {
-    const children = flag(this, "subject").getChildren()
+    const children = getFlag(this, "subject").getChildren()
 
-    flag(this, "subject", children)
+    setFlag(this, "subject", children)
 
     return this
   }
@@ -138,16 +138,16 @@ class ConditionSubjects {
    * @param index
    */
   nthChild(index: number): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (typeof subject !== "object") {
       throw new Error(`nthChild | Subject must be an object`)
     }
 
     if (isParent(subject)) {
-      flag(this, "subject", subject.getChild(index))
+      setFlag(this, "subject", subject.getChild(index))
     } else {
-      flag(this, "subject", subject[index])
+      setFlag(this, "subject", subject[index])
     }
 
     return this
@@ -157,7 +157,7 @@ class ConditionSubjects {
    * @yields first element in collection
    */
   get bottom(): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (typeof subject !== "object") {
       throw new Error(
@@ -166,9 +166,9 @@ class ConditionSubjects {
     }
 
     if ("length" in subject) {
-      flag(this, "subject", subject[0])
+      setFlag(this, "subject", subject[0])
     } else if (isParent(subject)) {
-      flag(this, "subject", subject.getBottom())
+      setFlag(this, "subject", subject.getBottom())
     } else {
       throw new Error(`bottom | Couldn't decide how to get the "bottom" value`)
     }
@@ -180,7 +180,7 @@ class ConditionSubjects {
    * @yields last element in collection
    */
   get top(): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (typeof subject !== "object") {
       throw new Error(
@@ -189,9 +189,9 @@ class ConditionSubjects {
     }
 
     if ("length" in subject) {
-      flag(this, "subject", subject[subject.length - 1])
+      setFlag(this, "subject", subject[subject.length - 1])
     } else if (isParent(subject)) {
-      flag(this, "subject", subject.getTop())
+      setFlag(this, "subject", subject.getTop())
     } else {
       throw new Error(`top | Couldn't decide how to get the "top" value`)
     }
@@ -203,13 +203,13 @@ class ConditionSubjects {
    * @yields {number} `length` property of a collection (or string)
    */
   get length(): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (subject.length === undefined) {
       throw new Error(`length | Subject doesn't have "length" property`)
     }
 
-    flag(this, "subject", subject.length)
+    setFlag(this, "subject", subject.length)
     return this
   }
 
@@ -217,7 +217,7 @@ class ConditionSubjects {
    * @yields all selected children
    */
   get selectedChildren(): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
       throw new Error(`selectedChildren | Expected subject to be parent`)
@@ -226,7 +226,7 @@ class ConditionSubjects {
       throw new Error(`selectedChildren | Subjects children are not selectable`)
     }
 
-    flag(this, "subject", subject.getSelectedChildren())
+    setFlag(this, "subject", subject.getSelectedChildren())
 
     return this
   }
@@ -235,7 +235,7 @@ class ConditionSubjects {
    * @yields all selected children
    */
   get unselectedChildren(): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
       throw new Error(`unselectedChildren | Expected subject to be parent`)
@@ -246,7 +246,7 @@ class ConditionSubjects {
       )
     }
 
-    flag(this, "subject", subject.getUnselectedChildren())
+    setFlag(this, "subject", subject.getUnselectedChildren())
 
     return this
   }
@@ -255,14 +255,14 @@ class ConditionSubjects {
    * @yields {number} children count if `subject` is a `Parent`
    */
   get childrenCount(): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
       throw new Error(`childrenCount | Expected subject to be a parent`)
     }
 
     const count = subject.countChildren()
-    flag(this, "subject", count)
+    setFlag(this, "subject", count)
 
     return this
   }
@@ -271,7 +271,7 @@ class ConditionSubjects {
    * @yields {number} number of selected children if subject is parent
    */
   get selectedChildrenCount(): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
       throw new Error(`childrenCount | Expected subject to be parent`)
@@ -281,7 +281,7 @@ class ConditionSubjects {
     }
 
     const count = subject.countSelectedChildren()
-    flag(this, "subject", count)
+    setFlag(this, "subject", count)
 
     return this
   }
@@ -290,7 +290,7 @@ class ConditionSubjects {
    * @yields {number} number of selected children if subject is parent
    */
   get unselectedChildrenCount(): this {
-    const subject = flag(this, "subject")
+    const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
       throw new Error(`unselectedChildrenCount | Expected subject to be parent`)
@@ -302,7 +302,7 @@ class ConditionSubjects {
     }
 
     const count = subject.countUnselectedChildren()
-    flag(this, "subject", count)
+    setFlag(this, "subject", count)
 
     return this
   }

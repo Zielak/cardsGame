@@ -5,13 +5,13 @@ import { State } from "../state"
 
 // Conditions
 import { ConditionChainers } from "./chainers"
-import { flag } from "./utils"
+import { getFlag, setFlag } from "./utils"
 import { ConditionAssertions } from "./assertions"
 import { ConditionBase } from "./base"
 import { ConditionGrouping } from "./grouping"
 import { ConditionSubjects } from "./subjects"
 
-export { flag }
+export { getFlag, setFlag }
 
 export type ConditionsConstructor<S extends State> = new (
   state: S,
@@ -23,17 +23,17 @@ class Conditions<S extends State> {
   _refs = new Map<string | symbol, any>()
 
   constructor(state: S, event: ServerPlayerEvent) {
-    flag(this, "state", state)
-    flag(this, "event", event)
-    flag(this, "player", event.player)
-    flag(this, "entity", event.entity)
+    setFlag(this, "state", state)
+    setFlag(this, "event", event)
+    setFlag(this, "player", event.player)
+    setFlag(this, "entity", event.entity)
 
-    flag(this, "subject", state)
+    setFlag(this, "subject", state)
 
-    flag(this, "propName", undefined)
-    flag(this, "propParent", undefined)
-    flag(this, "not", false)
-    flag(this, "eitherLevel", 0)
+    setFlag(this, "propName", undefined)
+    setFlag(this, "propParent", undefined)
+    setFlag(this, "not", false)
+    setFlag(this, "eitherLevel", 0)
   }
 }
 
