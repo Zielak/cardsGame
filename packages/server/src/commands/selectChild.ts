@@ -94,7 +94,7 @@ export class ToggleSelection extends Command {
    * @param parent target parent of child elements you want to toggle selection
    * @param idx single number or array of all indexes to toggle. Omit to TOGGLE ALL. These are not "selection indexes" but entity's index in its parent.
    */
-  constructor(parent: Target<ParentSelecta>, idx: number | number[]) {
+  constructor(parent: Target<ParentSelecta>, idx?: number | number[]) {
     super()
 
     this.parent = new TargetHolder<ParentSelecta>(parent)
@@ -105,7 +105,7 @@ export class ToggleSelection extends Command {
     }
   }
 
-  async execute(): Promise<void> {
+  async execute(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()
 
     if (!this.indexes) {
@@ -120,7 +120,7 @@ export class ToggleSelection extends Command {
       }
     })
   }
-  async undo(): Promise<void> {
+  async undo(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()
 
     this.indexes.forEach(idx => {

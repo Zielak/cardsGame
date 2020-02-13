@@ -101,6 +101,10 @@ export class ParentArrayTrait implements ParentTrait {
     executeHook.call(this, "childAdded", entity)
   }
 
+  addChildren(entities: ChildTrait[]) {
+    entities.forEach(entity => this.addChild(entity))
+  }
+
   moveChildTo(from: number, to: number) {
     // 1. pluck out the FROM
     const child = this.getChild(from)

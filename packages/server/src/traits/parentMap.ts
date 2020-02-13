@@ -16,6 +16,16 @@ import {
   queryAll
 } from "./parent"
 
+export function isParentMap(entity: any): entity is ParentMapTrait {
+  return (
+    typeof entity == "object" &&
+    typeof (entity as ParentTrait).query !== "undefined" &&
+    typeof (entity as ParentTrait).getChildren !== "undefined" &&
+    "maxChildren" in entity &&
+    typeof entity.maxChildren === "number"
+  )
+}
+
 export class ParentMapTrait implements ParentTrait {
   childrenPointers: Map<ChildTrait, string>
   hijacksInteractionTarget: boolean
@@ -120,6 +130,10 @@ export class ParentMapTrait implements ParentTrait {
     this.childrenPointers.set(entity, con.name)
 
     executeHook.call(this, "childAdded", entity)
+  }
+
+  addChildren(entities: ChildTrait[]): void {
+    entities.forEach(entity => this.addChild(entity))
   }
 
   /**

@@ -98,6 +98,30 @@ class ConditionAssertions {
   }
 
   /**
+   * @asserts that subject can't hold any more new items.
+   * Only makes sense with entities with ParentMapTrait, for example `Grid`.
+   * @example
+   * // Check if grid has some space available
+   * con.entity.is.not.full()
+   */
+  full(): this {
+    const subject = getFlag(this, "subject")
+
+    if (!isParentMap(subject)) {
+      throw new Error(
+        `full | applies only on parent of "map" structure (ParentMapTrait)`
+      )
+    }
+
+    this.assert(
+      subject.countChildren() >= subject.maxChildren,
+      `subject is not full`,
+      `subject is full`
+    )
+    return this
+  }
+
+  /**
    * Compares current subject to given value, no coercion (strict equality).
    * @asserts that subject is equal to provided value.
    */
@@ -112,6 +136,46 @@ class ConditionAssertions {
       `expected ${printPropName}#{act} to NOT equal #{exp}`,
       value,
       subject
+    )
+
+    return this
+  }
+
+  /**
+   * @asserts that value is exactly `true`
+   */
+  true(): this {
+    const subject = getFlag(this, "subject")
+    const propName = getFlag(this, "propName")
+    const printPropName = propName ? `'${propName}' = ` : ""
+
+    if (getFlag(this, "not")) {
+      throw new Error(`Don't be silly, just use "false()" instead.`)
+    }
+
+    this.assert(
+      subject === true,
+      `expected ${printPropName}${subject} to equal true`
+    )
+
+    return this
+  }
+
+  /**
+   * @asserts that value is exactly `false`
+   */
+  false(): this {
+    const subject = getFlag(this, "subject")
+    const propName = getFlag(this, "propName")
+    const printPropName = propName ? `'${propName}' = ` : ""
+
+    if (getFlag(this, "not")) {
+      throw new Error(`Don't be silly, just use "true()" instead.`)
+    }
+
+    this.assert(
+      subject === false,
+      `expected ${printPropName}${subject} to equal false`
     )
 
     return this
@@ -225,10 +289,12 @@ class ConditionAssertions {
   }
 
   /**
-   * @asserts
+   * @asserts that chosen prop value matches the same prop on other subject
+   * @example
+   * con.entity.its("rank").matchesPropOf("pileTop")
    */
   matchesPropOf(refName: string | symbol): this {
-    // TODO: accept queryProps?
+    // don't? TODO: accept queryProps?
     const propName = getFlag(this, "propName")
 
     if (!getFlag(this, "propParent")) {
@@ -262,8 +328,7 @@ class ConditionAssertions {
     const subject = getFlag(this, "subject")
 
     if (!isChild(subject)) {
-      this.assert(false, `selectable | applies only on child entities`)
-      return this
+      throw new Error(`selectable | applies only on child entities`)
     }
 
     this.assert(
@@ -278,8 +343,7 @@ class ConditionAssertions {
     const subject = getFlag(this, "subject")
 
     if (!isChild(subject)) {
-      this.assert(false, `isSelected | is not a child`)
-      return this
+      throw new Error(`isSelected | is not a child`)
     }
 
     const result = hasSelectableChildren(subject.parent)
@@ -371,7 +435,7 @@ class ConditionAssertions {
         hasOwnership(entity) ? entity.getOwner().clientID : undefined
       )
     } else {
-      this.assert(false, `Given entity is not ownable.`)
+      throw new Error(`Given entity is not ownable.`)
     }
 
     return this

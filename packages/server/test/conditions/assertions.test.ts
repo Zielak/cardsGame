@@ -3,10 +3,12 @@ import { State } from "../../src/state"
 import { ServerPlayerEvent, Player } from "../../src/player"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 import { SelectableParent } from "../helpers/selectableParent"
+import { Grid } from "../../src/entities/grid"
 
 let state: State
 let event: ServerPlayerEvent
 let parent: SmartParent
+let grid: Grid
 let selectableParent: SelectableParent
 let child: SmartEntity
 let top: SmartEntity
@@ -49,6 +51,28 @@ describe("equals", () => {
       con.state.its("tableWidth").equals(80)
     }).toThrow()
   })
+})
+
+test("true", () => {
+  expect(() => con.set(true).true()).not.toThrow()
+
+  expect(() => con.set(true).not.true()).toThrow(/silly/)
+  expect(() => con.set(false).true()).toThrow()
+  expect(() => con.set("asd").true()).toThrow()
+  expect(() => con.set(1).true()).toThrow()
+  expect(() => con.set({}).true()).toThrow()
+  expect(() => con.set([]).true()).toThrow()
+})
+
+test("false", () => {
+  expect(() => con.set(false).false()).not.toThrow()
+
+  expect(() => con.set(false).not.false()).toThrow(/silly/)
+  expect(() => con.set(false).false()).toThrow()
+  expect(() => con.set("").false()).toThrow()
+  expect(() => con.set(0).false()).toThrow()
+  expect(() => con.set({}).false()).toThrow()
+  expect(() => con.set([]).false()).toThrow()
 })
 
 test("above", () => {
@@ -171,6 +195,48 @@ describe("empty", () => {
   })
 })
 
+describe("full", () => {
+  beforeEach(() => {
+    grid = new Grid(state, {
+      columns: 2,
+      rows: 2
+    })
+  })
+
+  test("grid full", () => {
+    new SmartEntity(state, { parent: grid })
+    new SmartEntity(state, { parent: grid })
+    new SmartEntity(state, { parent: grid })
+    new SmartEntity(state, { parent: grid })
+
+    expect(() => con.set(grid).full()).not.toThrow()
+    expect(() => con.set(grid).not.full()).toThrow()
+  })
+
+  test("grid half-full", () => {
+    new SmartEntity(state, { parent: grid })
+    new SmartEntity(state, { parent: grid })
+
+    expect(() => con.set(grid).full()).toThrow()
+    expect(() => con.set(grid).not.full()).not.toThrow()
+  })
+
+  test("grid empty", () => {
+    expect(() => con.set(grid).full()).toThrow()
+    expect(() => con.set(grid).not.full()).not.toThrow()
+  })
+
+  it("fails as expected", () => {
+    expect(() => con.set(["foo"]).full()).toThrow()
+    expect(() => con.set({ key1: 1 }).full()).toThrow()
+    expect(() => con.set("foo").full()).toThrow()
+    expect(() => con.set(new Map([["foo", "bar"]])).full()).toThrow()
+    expect(() => con.set(new Set(["foo"])).full()).toThrow()
+    expect(() => con.set(function foo() {}).full()).toThrow()
+    expect(() => con.set(null).full()).toThrow()
+  })
+})
+
 describe("selectable", () => {
   it("passes", () => {
     expect(() => con.set(selectableParent).bottom.is.selectable()).not.toThrow()
@@ -178,6 +244,7 @@ describe("selectable", () => {
 
     expect(() => con.set(parent).top.is.not.selectable()).not.toThrow()
   })
+
   it("fails as expected", () => {
     expect(() => con.set(selectableParent).top.is.not.selectable()).toThrow()
 
@@ -185,6 +252,9 @@ describe("selectable", () => {
     expect(() => con.set(parent).top.is.selectable()).toThrow()
 
     expect(() => con.set(parent).is.selectable()).toThrow()
+
+    expect(() => con.set({}).is.selectable()).toThrow()
+    expect(() => con.set(1).is.selectable()).toThrow()
   })
 })
 
@@ -202,5 +272,29 @@ describe("selected", () => {
     expect(() => con.set(selectableParent).top.is.selected()).toThrow()
 
     expect(() => con.set(parent).bottom.is.selected()).toThrow()
+
+    expect(() => con.set({}).is.selected()).toThrow()
+    expect(() => con.set(1).is.selected()).toThrow()
   })
+})
+
+test("matchesPropOf", () => {
+  con.set(bottom).as("bottom")
+  con.set(top).as("top")
+
+  expect(() =>
+    con
+      .get("bottom")
+      .its("type")
+      .matchesPropOf("top")
+  ).not.toThrow()
+  expect(() =>
+    con
+      .get("top")
+      .its("type")
+      .matchesPropOf("bottom")
+  ).not.toThrow()
+
+  expect(() => con.get(top).matchesPropOf("bottom")).toThrow()
+  expect(() => con.set([]).matchesPropOf("bottom")).toThrow()
 })

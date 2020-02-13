@@ -1,4 +1,8 @@
-import { arrayWith, sortAlphabetically } from "../src/arrays"
+import {
+  arrayWith,
+  sortAlphabetically,
+  sortAlphaNumerically
+} from "../src/arrays"
 
 test("arrayWith", () => {
   expect(arrayWith(0)).toStrictEqual([])
@@ -6,7 +10,20 @@ test("arrayWith", () => {
 })
 
 test("sortAlphabetically", () => {
-  const array = ["East", "Cry", "Tree"]
+  expect(["East", "Cry", "Tree"].sort(sortAlphabetically)).toStrictEqual([
+    "Cry",
+    "East",
+    "Tree"
+  ])
+  expect(["Two", "One", "Two"].sort(sortAlphabetically)).toStrictEqual([
+    "One",
+    "Two",
+    "Two"
+  ])
+})
 
-  expect(array.sort(sortAlphabetically)).toStrictEqual(["Cry", "East", "Tree"])
+test("sortAlphaNumerically", () => {
+  expect(
+    ["2", "zz", "b", "22", "aa", "b", "1", "10", "2"].sort(sortAlphaNumerically)
+  ).toStrictEqual(["1", "2", "2", "10", "22", "aa", "b", "b", "zz"])
 })

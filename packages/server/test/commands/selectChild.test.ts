@@ -1,5 +1,9 @@
 import { State } from "../../src/state"
-import { Select, Deselect } from "../../src/commands/selectChild"
+import {
+  Select,
+  Deselect,
+  ToggleSelection
+} from "../../src/commands/selectChild"
 import { Hand } from "../../src/entities/hand"
 import { ClassicCard } from "../../src/entities/classicCard"
 import { RoomMock } from "../helpers/roomMock"
@@ -140,6 +144,57 @@ describe("Deselect", () => {
       expect(hand.isChildSelected(3)).toBe(true)
       expect(hand.selectedChildren.length).toBe(3)
     })
+  })
+})
+
+describe("Toggle", () => {
+  test("single", () => {
+    const cmd = new ToggleSelection(hand, 1)
+
+    cmd.execute(state, room)
+    expect(hand.isChildSelected(1)).toBe(true)
+
+    cmd.undo(state, room)
+    expect(hand.isChildSelected(1)).toBe(false)
+  })
+
+  test("twice", () => {
+    new ToggleSelection(hand, 1).execute(state, room)
+    new ToggleSelection(hand, 1).execute(state, room)
+
+    expect(hand.isChildSelected(1)).toBe(false)
+  })
+
+  test("multiple", () => {
+    const cmd = new ToggleSelection(hand, [0, 2, 3])
+
+    cmd.execute(state, room)
+    expect(hand.isChildSelected(0)).toBe(true)
+    expect(hand.isChildSelected(1)).toBe(false)
+    expect(hand.isChildSelected(2)).toBe(true)
+    expect(hand.isChildSelected(3)).toBe(true)
+
+    cmd.undo(state, room)
+    expect(hand.isChildSelected(0)).toBe(false)
+    expect(hand.isChildSelected(1)).toBe(false)
+    expect(hand.isChildSelected(2)).toBe(false)
+    expect(hand.isChildSelected(3)).toBe(false)
+  })
+
+  test("all", () => {
+    const cmd = new ToggleSelection(hand)
+
+    cmd.execute(state, room)
+    expect(hand.isChildSelected(0)).toBe(true)
+    expect(hand.isChildSelected(1)).toBe(true)
+    expect(hand.isChildSelected(2)).toBe(true)
+    expect(hand.isChildSelected(3)).toBe(true)
+
+    cmd.undo(state, room)
+    expect(hand.isChildSelected(0)).toBe(false)
+    expect(hand.isChildSelected(1)).toBe(false)
+    expect(hand.isChildSelected(2)).toBe(false)
+    expect(hand.isChildSelected(3)).toBe(false)
   })
 })
 

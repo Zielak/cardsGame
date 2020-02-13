@@ -34,6 +34,3 @@ export const sortAlphaNumerically = (a: string, b: string): number => {
 }
 
 export const arrayWith = (count: number): any[] => [...Array(count).keys()]
-
-export const oneOf = (value: any, array: any[]): boolean =>
-  array.some(item => item === value)
