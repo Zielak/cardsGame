@@ -1,5 +1,5 @@
 import { ArraySchema } from "@colyseus/schema"
-import { logs, def, limit } from "@cardsgame/utils"
+import { logs, def, limit, arrayWith } from "@cardsgame/utils"
 
 import { ChildTrait } from "./child"
 import { State } from "../state"
@@ -80,12 +80,12 @@ export class ParentMapTrait implements ParentTrait {
     return true
   }
 
-  /**
-   * Adds item to last OR last available space
-   */
-  addChild(entity: ChildTrait, prepend = false): void {
+  addChild(entity: ChildTrait): void
+  addChild(entity: ChildTrait, prepend: boolean): void
+  addChild(entity: ChildTrait, index: number): void
+  addChild(entity: ChildTrait, arg1?: boolean | number): void {
     // Ensure this parent still has space
-    if (this.maxChildren >= 0 && this.countChildren() >= this.maxChildren) {
+    if (this.isIndexOutOfBounds(this.countChildren())) {
       throw new Error(`addChild(), limit reached: ${this.maxChildren}`)
     }
 
@@ -93,40 +93,53 @@ export class ParentMapTrait implements ParentTrait {
       entity.parent.removeChildAt(entity.idx)
     }
 
-    const con = getKnownConstructor(entity)
-    const targetArray = this["children" + con.name] as ArraySchema<ChildTrait>
-    targetArray[prepend ? "unshift" : "push"](entity)
+    const childrenCount = this.countChildren()
 
-    if (prepend) {
+    if (arg1 === true) {
+      // Prepend = true (yuk)
       const target = this.getFirstEmptySpot()
-      for (let i = target; i > 0; i--) {
-        this.moveChildTo(i, i - 1)
+
+      for (let i = target - 1; i >= 0; i--) {
+        const child = this.getChild(i)
+        if (!child) continue
+        const oldIdx = child.idx
+        child.idx += 1
+        executeHook.call(this, "childIndexUpdated", oldIdx, child.idx)
       }
       entity.idx = 0
-    } else {
-      const childrenCount = this.countChildren()
-      const top = this.getTop()
-
+    } else if (typeof arg1 === "number") {
+      // Want to place entity in certain index spot
+      if (!this.getChild(arg1)) {
+        entity.idx = arg1
+      } else {
+        throw new Error(`addChild(), spot ${arg1} is already occupied`)
+        // I can't assume author would want that.
+        // entity.idx = this.getClosestEmptySpot(arg1)
+      }
+    } else if (typeof arg1 === "undefined") {
+      // Just put it anywhere
       if (childrenCount === 0) {
         // No children here yet
         entity.idx = 0
-      } else if (top && top.idx < this.maxChildren - 1) {
-        // Place it next to the last child
-
-        entity.idx = childrenCount
       } else {
-        // Or squeeze it in last possible position,
-        // pushing other children down
-        const target = this.getLastEmptySpot()
-
-        for (let i = target; i < childrenCount - 1; i++) {
-          this.moveChildTo(i + 1, i)
+        // Or squeeze it in the first available spot
+        const newIndex = this.getFirstEmptySpot()
+        if (newIndex < 0) {
+          throw new Error(
+            `addChild(), shouldn't happen! can't actually find any empty spot`
+          )
         }
-        entity.idx = childrenCount - 1
+
+        entity.idx = newIndex
       }
     }
 
     entity.parent = this
+
+    const con = getKnownConstructor(entity)
+    const targetArray = this["children" + con.name] as ArraySchema<ChildTrait>
+    targetArray.push(entity)
+
     this.childrenPointers.set(entity, con.name)
 
     executeHook.call(this, "childAdded", entity)
@@ -211,15 +224,19 @@ export class ParentMapTrait implements ParentTrait {
       return 0
     }
 
-    const max =
-      this.maxChildren !== Infinity ? this.maxChildren : this.countChildren()
-
-    for (let i = 0; i < max; i++) {
-      if (!this.getChild(i)) {
-        return i
+    if (this.maxChildren !== Infinity) {
+      for (let i = 0; i < this.maxChildren; i++) {
+        if (!this.getChild(i)) {
+          return i
+        }
       }
+      return -1
     }
-    return -1
+    let i = 0
+    while (this.getChild(i)) {
+      i++
+    }
+    return i
   }
 
   getLastEmptySpot(): number {
@@ -237,6 +254,36 @@ export class ParentMapTrait implements ParentTrait {
       }
     }
     return -1
+  }
+
+  getClosestEmptySpot(index: number): number {
+    if (typeof index !== "number") {
+      throw new Error("getClosestEmptySpot(), give me a number")
+    }
+
+    const childrenCount = this.countChildren()
+    const allSpots = arrayWith(
+      this.maxChildren !== Infinity ? this.maxChildren : childrenCount
+    ).map(idx => this.getChild(idx))
+
+    for (let i = 1; i < childrenCount / 2; i++) {
+      const left = index - i
+      const right = index + i
+      if (!this.isIndexOutOfBounds(left) && !allSpots[left]) {
+        return left
+      } else if (!this.isIndexOutOfBounds(right) && !allSpots[right]) {
+        return right
+      }
+    }
+  }
+
+  isIndexOutOfBounds(index: number): boolean {
+    return (
+      index < 0 ||
+      (this.maxChildren >= 0 &&
+        this.maxChildren !== Infinity &&
+        index >= this.maxChildren)
+    )
   }
 }
 

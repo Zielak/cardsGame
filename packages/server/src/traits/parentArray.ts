@@ -77,27 +77,51 @@ export class ParentArrayTrait implements ParentTrait {
     return true
   }
 
-  addChild(entity: ChildTrait, prepend = false): void {
+  addChild(entity: ChildTrait): void
+  addChild(entity: ChildTrait, prepend: boolean): void
+  addChild(entity: ChildTrait, index: number): void
+  addChild(entity: ChildTrait, arg1?: boolean | number): void {
     if (entity.parent !== undefined) {
       entity.parent.removeChildAt(entity.idx)
     }
 
     const con = getKnownConstructor(entity)
     const targetArray = this["children" + con.name] as ArraySchema<ChildTrait>
-    targetArray[prepend ? "unshift" : "push"](entity)
 
-    if (prepend) {
-      entity.idx = -1
-      this.getChildren().forEach((child, idx) => {
-        child.idx = idx
-      })
+    if (arg1 === true) {
+      // Prepend = true
+      entity.idx = 0
+      this.childrenPointers.unshift(con.name)
+
+      this.getChildren()
+        .reverse()
+        .map(child => {
+          child.idx = child.idx + 1
+          executeHook.call(this, "childIndexUpdated", child.idx - 1, child.idx)
+        })
+    } else if (typeof arg1 === "number") {
+      if (this.isIndexOutOfBounds(this.countChildren())) {
+        throw new Error(`addChild(), incorrect index ${arg1}`)
+      }
+      entity.idx = arg1
+      this.childrenPointers = this.childrenPointers
+        .slice(0, arg1)
+        .concat([con.name], this.childrenPointers.slice(arg1))
+
+      this.getChildren()
+        .reverse()
+        .filter(child => child.idx >= arg1)
+        .map(child => {
+          child.idx = child.idx + 1
+          executeHook.call(this, "childIndexUpdated", child.idx - 1, child.idx)
+        })
     } else {
       entity.idx = this.countChildren()
+      this.childrenPointers.push(con.name)
     }
 
     entity.parent = this
-    this.childrenPointers[prepend ? "unshift" : "push"](con.name)
-
+    targetArray.push(entity)
     executeHook.call(this, "childAdded", entity)
   }
 
@@ -201,6 +225,10 @@ export class ParentArrayTrait implements ParentTrait {
    */
   getBottom<T extends ChildTrait>(): T {
     return this.getChild<T>(0)
+  }
+
+  isIndexOutOfBounds(index: number): boolean {
+    return index > 0
   }
 
   protected updateIndexes(): void {

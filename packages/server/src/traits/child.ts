@@ -63,7 +63,13 @@ export class ChildTrait {
 ;(ChildTrait as any).typeDef = { idx: "number" }
 ;(ChildTrait as any).hooks = {
   postConstructor: function(state: State, options: ChildTrait) {
-    def(options.parent, state).addChild(this)
+    const targetParent = def(options.parent, state)
+
+    if ("idx" in options) {
+      targetParent.addChild(this, options.idx)
+    } else {
+      targetParent.addChild(this)
+    }
 
     if (typeof options.idx === "number") {
       this.parent.moveChildTo(this.idx, options.idx)

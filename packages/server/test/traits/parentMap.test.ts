@@ -104,6 +104,27 @@ describe("#addChild", () => {
     expect(entity.idx).toBe(0)
     expect(parent.countChildren()).toBe(2)
   })
+  it("prepends in busier parent", () => {
+    // Clean parent this time.
+    parent = new DumbMapParent(state)
+    const e0 = new DumbEntity(state, { parent, idx: 0 })
+    const e1 = new DumbEntity(state, { parent, idx: 1 })
+    const e3 = new DumbEntity(state, { parent, idx: 3 })
+    entity = new DumbEntity(state)
+
+    expect(parent.getChildren().map(c => c.idx)).toStrictEqual([0, 1, 3])
+
+    parent.addChild(entity, true)
+
+    expect(entity.parent).toBe(parent)
+    expect(parent.getChildren().map(c => c.idx)).toStrictEqual([0, 1, 2, 3])
+    expect(entity.idx).toBe(0)
+    expect(e0.idx).toBe(1)
+    expect(e1.idx).toBe(2)
+    expect(e3.idx).toBe(3)
+
+    expect(parent.countChildren()).toBe(4)
+  })
 })
 
 describe("#moveChildTo", () => {
@@ -217,16 +238,29 @@ describe("#getChild", () => {
   let parent
   let entity
 
-  beforeEach(() => {
-    parent = new DumbMapParent(state)
-  })
   it("gets child", () => {
+    parent = new DumbMapParent(state)
+
     new DumbEntity(state, { parent })
     entity = new DumbEntity(state, { parent })
 
     expect(parent.getChild(1)).toBe(entity)
   })
-  it.todo("throws if idx out of range")
+  test("idx out of range", () => {
+    parent = new DumbMapParent(state)
+
+    expect(parent.getChild(-1)).toBeUndefined()
+    expect(parent.getChild(0)).toBeUndefined()
+    expect(parent.getChild(Infinity)).toBeUndefined()
+  })
+  test("idx out of range in limited container", () => {
+    parent = new DumbMapParent(state, { maxChildren: 5 })
+
+    expect(parent.getChild(-1)).toBeUndefined()
+    expect(parent.getChild(10)).toBeUndefined()
+    expect(parent.getChild(-Infinity)).toBeUndefined()
+    expect(parent.getChild(Infinity)).toBeUndefined()
+  })
 })
 
 test("#getTop", () => {
@@ -249,33 +283,64 @@ test("#getBottom", () => {
 
 describe("#getFirstEmptySpot", () => {
   let parent: DumbMapParent
-  beforeEach(() => {
-    parent = new DumbMapParent(state, { maxChildren: 3 })
-  })
-  it("return zero", () => {
-    new DumbEntity(state, { parent, idx: 1 })
-    new DumbEntity(state, { parent, idx: 2 })
+  describe("limited parent", () => {
+    beforeEach(() => {
+      parent = new DumbMapParent(state, { maxChildren: 3 })
+    })
+    it("returns zero on empty parent", () => {
+      expect(parent.getFirstEmptySpot()).toBe(0)
+    })
+    it("return zero", () => {
+      new DumbEntity(state, { parent, idx: 1 })
+      new DumbEntity(state, { parent, idx: 2 })
 
-    expect(parent.getFirstEmptySpot()).toBe(0)
-  })
-  it("return one", () => {
-    new DumbEntity(state, { parent, idx: 0 })
-    new DumbEntity(state, { parent, idx: 2 })
+      expect(parent.getFirstEmptySpot()).toBe(0)
+    })
+    it("return one", () => {
+      new DumbEntity(state, { parent, idx: 0 })
+      new DumbEntity(state, { parent, idx: 2 })
 
-    expect(parent.getFirstEmptySpot()).toBe(1)
-  })
-  it("return last", () => {
-    new DumbEntity(state, { parent, idx: 0 })
-    new DumbEntity(state, { parent, idx: 1 })
+      expect(parent.getFirstEmptySpot()).toBe(1)
+    })
+    it("return last", () => {
+      new DumbEntity(state, { parent, idx: 0 })
+      new DumbEntity(state, { parent, idx: 1 })
 
-    expect(parent.getFirstEmptySpot()).toBe(2)
-  })
-  it("can't find it so it returns -1", () => {
-    new DumbEntity(state, { parent, idx: 0 })
-    new DumbEntity(state, { parent, idx: 1 })
-    new DumbEntity(state, { parent, idx: 2 })
+      expect(parent.getFirstEmptySpot()).toBe(2)
+    })
+    it("can't find it so it returns -1", () => {
+      new DumbEntity(state, { parent, idx: 0 })
+      new DumbEntity(state, { parent, idx: 1 })
+      new DumbEntity(state, { parent, idx: 2 })
 
-    expect(parent.getFirstEmptySpot()).toBe(-1)
+      expect(parent.getFirstEmptySpot()).toBe(-1)
+    })
+  })
+  describe("unlimited parent", () => {
+    beforeEach(() => {
+      parent = new DumbMapParent(state)
+    })
+    it("returns zero on empty parent", () => {
+      expect(parent.getFirstEmptySpot()).toBe(0)
+    })
+    it("return zero", () => {
+      new DumbEntity(state, { parent, idx: 1 })
+      new DumbEntity(state, { parent, idx: 2 })
+
+      expect(parent.getFirstEmptySpot()).toBe(0)
+    })
+    it("return one", () => {
+      new DumbEntity(state, { parent, idx: 0 })
+      new DumbEntity(state, { parent, idx: 2 })
+
+      expect(parent.getFirstEmptySpot()).toBe(1)
+    })
+    it("return last", () => {
+      new DumbEntity(state, { parent, idx: 0 })
+      new DumbEntity(state, { parent, idx: 1 })
+
+      expect(parent.getFirstEmptySpot()).toBe(2)
+    })
   })
 })
 
@@ -283,6 +348,9 @@ describe("#getLastEmptySpot", () => {
   let parent: DumbMapParent
   beforeEach(() => {
     parent = new DumbMapParent(state, { maxChildren: 5 })
+  })
+  it("picks last on empty parent", () => {
+    expect(parent.getLastEmptySpot()).toBe(4)
   })
   it("picks last spot", () => {
     // 0

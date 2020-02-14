@@ -15,12 +15,13 @@ export interface ParentTrait {
   childAdded: ChildAddedHandler
   childRemoved: ChildRemovedHandler
 
-  addChild(entity: ChildTrait, prepend?: boolean)
+  addChild: (entity: ChildTrait, arg1?: boolean | number) => void
   countChildren(): number
   getChildren<T extends ChildTrait>(): T[]
   getChild<T extends ChildTrait>(idx: number): T
   getTop<T extends ChildTrait>(): T
   getBottom<T extends ChildTrait>(): T
+  isIndexOutOfBounds(index: number): boolean
   moveChildTo(from: number, to: number)
   removeChild(child: ChildTrait): boolean
   removeChildAt(idx: number): boolean

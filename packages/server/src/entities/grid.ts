@@ -53,6 +53,10 @@ export class Grid extends Entity<GridOptions> {
     this.itemSpacingX = def(options.itemSpacingX, 0)
     this.itemSpacingY = def(options.itemSpacingY, 0)
   }
+
+  addChildAt(entity: ChildTrait, column: number, row: number): void {
+    this.addChild(entity, column + row * this.columns)
+  }
 }
 
 interface Mixin
