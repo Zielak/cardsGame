@@ -65,12 +65,16 @@ export class Room {
    */
   sendInteraction(
     event: MouseEvent | TouchEvent,
-    entityIdxPath: number[]
+    entityIdxPath: number[],
+    data?: any
   ): void {
     const playerEvent: ClientPlayerEvent = {
       command: "EntityInteraction",
       event: event.type,
       entityPath: entityIdxPath
+    }
+    if (data) {
+      playerEvent.data = data
     }
     this.room.send(playerEvent)
   }

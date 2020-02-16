@@ -101,9 +101,7 @@ if (isBrowser) {
     groupCollapsed: console.groupCollapsed.bind(window.console),
     groupEnd: console.groupEnd.bind(window.console)
   }
-}
-
-if (!IS_CHROME) {
+} else if (!IS_CHROME) {
   logs = {
     verbose: function(...args: any[]) {
       console.debug.apply(console, [

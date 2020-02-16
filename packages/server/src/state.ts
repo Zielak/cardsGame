@@ -125,19 +125,23 @@ export class State extends Entity<{}> {
       parent: ParentTrait,
       remainingPath: number[],
       result: any[] = []
-    ) => {
+    ): any[] => {
       const idx = remainingPath.shift()
       const newChild = parent.getChild(idx)
       if (!newChild) {
-        throw new Error(
-          `getEntitiesAlongPath: This entity doesn't have such child.`
+        logs.error(
+          "getEntitiesAlongPath",
+          `This entity doesn't have such child.`
         )
+        return result
       }
 
       if (remainingPath.length > 0 && !hasChildren(newChild)) {
-        throw new Error(
-          `getEntitiesAlongPath: Path inaccessible, entity doesn't have any children. Stopped at [${path}]. Remaining path: [${remainingPath}]`
+        logs.error(
+          "getEntitiesAlongPath",
+          `Path inaccessible, entity doesn't have any children. Stopped at [${path}]. Remaining path: [${remainingPath}]`
         )
+        return result
       }
 
       result.push(newChild)
