@@ -16,7 +16,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@colyseus/schema": "^0.5.19",
+    "@colyseus/schema": "^0.5.30",
     "chalk": "^3.0.0"
   }
 }
