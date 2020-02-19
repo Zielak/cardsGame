@@ -234,7 +234,7 @@ function debugLogMessage(newEvent: ServerPlayerEvent): void {
   const entityPath =
     newEvent.entityPath && chalk.green(newEvent.entityPath.join(", "))
 
-  const { command, event } = newEvent
+  const { command, event, data } = newEvent
 
   const playerString = newEvent.player
     ? `Player: ${minifyPlayer(newEvent.player)} | `
@@ -251,7 +251,9 @@ function debugLogMessage(newEvent: ServerPlayerEvent): void {
       ` entity:`,
       entity,
       `\n\tentities: `,
-      entities
+      entities,
+      `\n\tdata: `,
+      data
     )
   } else {
     logs.info(
@@ -262,7 +264,8 @@ function debugLogMessage(newEvent: ServerPlayerEvent): void {
         ` "${chalk.yellow(event)}"`,
         entityPath ? `\n\tpath: [${entityPath}], ` : "",
         entity ? ` entity:"${entity}"` : "",
-        entities ? `\n\tentities: [${entities}]` : ""
+        entities ? `\n\tentities: [${entities}]` : "",
+        data ? `\n\tdata: ${JSON.stringify(data)}` : ""
       ].join("")
     )
   }

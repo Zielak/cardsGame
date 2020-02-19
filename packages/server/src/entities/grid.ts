@@ -12,6 +12,10 @@ import { OwnershipTrait } from "../traits/ownership"
 import { ParentMapTrait } from "../traits/parentMap"
 import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
+export function isGrid(entity: any): entity is Grid {
+  return "columns" in entity && "rows" in entity
+}
+
 /**
  * Two dimensional container of items of set spots.
  * May also be used as one-dimensional "line" of limited child items.
@@ -31,11 +35,13 @@ export class Grid extends Entity<GridOptions> {
   @type("uint8") columns: number
   @type("uint8") rows: number
 
-  @type("number") cellSpacing: number
+  // @type("number") cellSpacing: number
+
+  @type("string") justify: GridJustify
+  @type("string") justifyItems: GridJustifyItems
+  @type("string") alignItems: GridAlignItems
 
   itemAngle: number
-  itemSpacingX: number
-  itemSpacingY: number
 
   hijacksInteractionTarget = false
 
@@ -47,17 +53,35 @@ export class Grid extends Entity<GridOptions> {
     this.rows = Math.max(1, def(options.rows, 1))
     this.maxChildren = this.columns * this.rows
 
-    this.cellSpacing = def(options.cellSpacing, 0)
+    this.justify = options.justify
+    this.justifyItems = options.justifyItems
+    this.alignItems = options.alignItems
+
+    // this.cellSpacing = def(options.cellSpacing, 0)
 
     this.itemAngle = def(options.itemAngle, 0)
-    this.itemSpacingX = def(options.itemSpacingX, 0)
-    this.itemSpacingY = def(options.itemSpacingY, 0)
   }
 
   addChildAt(entity: ChildTrait, column: number, row: number): void {
     this.addChild(entity, column + row * this.columns)
   }
+
+  getChildAt<T extends ChildTrait>(column: number, row: number): T {
+    return this.getChildren<T>().find(child => {
+      child.idx === column + row * this.columns
+    })
+  }
 }
+
+type GridJustify =
+  | "start"
+  | "end"
+  | "center"
+  | "stretch"
+  | "space-around"
+  | "space-between"
+type GridJustifyItems = "start" | "end" | "center" | "stretch"
+type GridAlignItems = "start" | "end" | "center" | "stretch"
 
 interface Mixin
   extends IdentityTrait,
@@ -74,9 +98,11 @@ type GridOptions = Partial<
     rows: number
     cellSpacing: number
 
+    justify: GridJustify
+    justifyItems: GridJustifyItems
+    alignItems: GridAlignItems
+
     itemAngle: number
-    itemSpacingX: number
-    itemSpacingY: number
   }
 >
 

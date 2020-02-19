@@ -81,9 +81,9 @@ const synchChildrenArray = (
   const arr = []
   arr.push(childrenConstructor)
 
-  logs.verbose(
-    `\`- adding  "children${childrenConstructor.name}" in ${parentConstructor.name}`
-  )
+  // logs.verbose(
+  //   `\`- adding  "children${childrenConstructor.name}" in ${parentConstructor.name}`
+  // )
   type(arr)(parentConstructor.prototype, `children${childrenConstructor.name}`)
 }
 
@@ -92,7 +92,7 @@ const synchChildrenArray = (
  * Register an entity class as possible child for any other parent entities.
  */
 export function canBeChild(childConstructor: Function): void {
-  logs.verbose("canBeChild", childConstructor.name)
+  // logs.verbose("canBeChild", childConstructor.name)
 
   // Remember this child type for future classes
   registeredChildren.push(childConstructor)

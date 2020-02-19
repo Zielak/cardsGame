@@ -4,6 +4,8 @@ import { isChild } from "../traits/child"
 import { hasOwnership } from "../traits/ownership"
 import { hasSelectableChildren } from "../traits/selectableChildren"
 import { isParentMap } from "../traits/parentMap"
+import { isParent } from "../traits/parent"
+import { isGrid } from "../entities"
 
 const getMessage = (
   target,
@@ -122,6 +124,44 @@ class ConditionAssertions {
   }
 
   /**
+   * @asserts that container has index empty
+   */
+  availableSpotAt(index: number)
+  /**
+   * @asserts that **Grid** has spot available at specified column/row
+   */
+  availableSpotAt(column: number, row: number)
+  availableSpotAt(arg0: number, arg1?: number): this {
+    const subject = getFlag(this, "subject")
+
+    if (!isParent(subject)) {
+      throw new Error(`availableSpot | applies only on parents`)
+    }
+
+    if (typeof arg0 === "number" && arg1 === undefined) {
+      this.assert(
+        subject.getChild(arg0) === undefined,
+        `spot [${arg0}] is occupied`,
+        `spot [${arg0}] is available but shouldn't`
+      )
+    } else if (typeof arg0 === "number" && typeof arg1 === "number") {
+      if (!isGrid(subject)) {
+        throw new Error(`availableSpot | column/row, expected Grid container`)
+      }
+
+      this.assert(
+        subject.getChildAt(arg0, arg1) === undefined,
+        `spot [${arg0},${arg1}] is occupied`,
+        `spot [${arg0},${arg1}] is available but shouldn't`
+      )
+    } else {
+      throw new Error(`availableSpot | incorrect arguments, expected numbers`)
+    }
+
+    return this
+  }
+
+  /**
    * Compares current subject to given value, no coercion (strict equality).
    * @asserts that subject is equal to provided value.
    */
@@ -177,6 +217,36 @@ class ConditionAssertions {
       subject === false,
       `expected ${printPropName}${subject} to equal false`
     )
+
+    return this
+  }
+
+  /**
+   * @asserts that subject is not undefined
+   */
+  defined(): this {
+    const subject = getFlag(this, "subject")
+
+    if (getFlag(this, "not")) {
+      throw new Error(`Don't be silly, just use "undefined()" instead.`)
+    }
+
+    this.assert(subject !== undefined, `subject is undefined.`)
+
+    return this
+  }
+
+  /**
+   * @asserts that subject is undefined
+   */
+  undefined(): this {
+    const subject = getFlag(this, "subject")
+
+    if (getFlag(this, "not")) {
+      throw new Error(`Don't be silly, just use "defined()" instead.`)
+    }
+
+    this.assert(subject === undefined, `subject is defined.`)
 
     return this
   }

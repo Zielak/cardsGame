@@ -42,6 +42,18 @@ class ConditionSubjects {
   }
 
   /**
+   * Changes subject to interaction data,
+   * throws if it wasn't provided by the client.
+   * @yields `data` from players interaction
+   */
+  get data(): this {
+    setFlag(this, "subject", getFlag(this, "data"))
+    resetPropDig(this)
+
+    return this
+  }
+
+  /**
    * Sets new subject. This can be anything.
    * @yields completely new subject, provided in the argument
    */

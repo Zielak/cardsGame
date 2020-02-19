@@ -31,6 +31,13 @@ class ConditionBase<S> {
   getPlayer(): Player {
     return getFlag(this, "player")
   }
+
+  /**
+   * @returns `data` reference from event
+   */
+  getData(): any {
+    return getFlag(this, "data")
+  }
 }
 
 export { ConditionBase }

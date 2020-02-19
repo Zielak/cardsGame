@@ -27,6 +27,7 @@ class Conditions<S extends State> {
     setFlag(this, "event", event)
     setFlag(this, "player", event.player)
     setFlag(this, "entity", event.entity)
+    setFlag(this, "data", event.data)
 
     setFlag(this, "subject", state)
 

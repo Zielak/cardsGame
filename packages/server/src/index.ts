@@ -1,4 +1,5 @@
 export { Server } from "colyseus"
+export { RoomConstructor } from "colyseus/lib/Room"
 export { defineTypes, Schema, ArraySchema, MapSchema } from "@colyseus/schema"
 
 // TODO: wrap `defineTypes` for our `types`!!!
