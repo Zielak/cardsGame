@@ -95,7 +95,7 @@ export class ParentArrayTrait implements ParentTrait {
 
       this.getChildren()
         .reverse()
-        .map(child => {
+        .forEach(child => {
           child.idx = child.idx + 1
           executeHook.call(this, "childIndexUpdated", child.idx - 1, child.idx)
         })
@@ -111,7 +111,7 @@ export class ParentArrayTrait implements ParentTrait {
       this.getChildren()
         .reverse()
         .filter(child => child.idx >= arg1)
-        .map(child => {
+        .forEach(child => {
           child.idx = child.idx + 1
           executeHook.call(this, "childIndexUpdated", child.idx - 1, child.idx)
         })

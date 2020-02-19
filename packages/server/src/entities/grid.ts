@@ -1,4 +1,4 @@
-import { def, limit } from "@cardsgame/utils"
+import { def } from "@cardsgame/utils"
 
 import { canBeChild, containsChildren, type } from "../annotations"
 import { State } from "../state"
@@ -67,9 +67,9 @@ export class Grid extends Entity<GridOptions> {
   }
 
   getChildAt<T extends ChildTrait>(column: number, row: number): T {
-    return this.getChildren<T>().find(child => {
-      child.idx === column + row * this.columns
-    })
+    return this.getChildren<T>().find(
+      child => child.idx === column + row * this.columns
+    )
   }
 }
 
