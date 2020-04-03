@@ -11,7 +11,7 @@ export class LocationTrait {
 ;(LocationTrait as any).typeDef = {
   x: "number",
   y: "number",
-  angle: "number"
+  angle: "number",
 }
 ;(LocationTrait as any).trait = function LocationTrait(
   state: State,

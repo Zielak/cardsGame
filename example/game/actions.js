@@ -20,7 +20,7 @@ const PlayCardWithAnte = (state, event) => {
     new MarkPlayerPlayed(state.getPlayersIndex(event.player)),
     new commands.ChangeParent(ante, pile),
     new commands.ChangeParent(card, pile),
-    new commands.FaceUp(card)
+    new commands.FaceUp(card),
   ]
 }
 
@@ -30,23 +30,23 @@ const PickCard = {
   getInteractions: () => [
     {
       type: "deck",
-      name: "playersDeck"
-    }
+      name: "playersDeck",
+    },
   ],
   /**
    * @param {Conditions<WarState>} con
    */
-  getConditions: con => {
+  getConditions: (con) => {
     // Player is interacting with his own Deck
     con.is.owner
 
     // Both players didn't chose their cards yet
-    con.state.its("playersPlayed").each(con => {
+    con.state.its("playersPlayed").each((con) => {
       con.equals(false)
     })
   },
 
-  getCommands: PlayCardWithAnte
+  getCommands: PlayCardWithAnte,
 }
 
 const PickCardLast = {
@@ -55,29 +55,26 @@ const PickCardLast = {
   getInteractions: () => [
     {
       type: "deck",
-      name: "playersDeck"
-    }
+      name: "playersDeck",
+    },
   ],
   /**
    * @param {Conditions<WarState>} con
    */
-  getConditions: con => {
+  getConditions: (con) => {
     // Player is interacting with his own Deck
     con.is.owner
 
     // There's exactly one last player who didn't pick yet
     con
-      .set(con.getState().playersPlayed.filter(val => val === false).length)
+      .set(con.getState().playersPlayed.filter((val) => val === false).length)
       .equals(1)
 
     // Get the index of currently acting player
     const currentPlayerIdx = con.getState().getPlayersIndex(con.getPlayer())
 
     // Current player is the one who didn't pick yet
-    con.state
-      .its("playersPlayed")
-      .nthChild(currentPlayerIdx)
-      .equals(false)
+    con.state.its("playersPlayed").nthChild(currentPlayerIdx).equals(false)
   },
 
   /**
@@ -88,9 +85,9 @@ const PickCardLast = {
     return [
       ...PlayCardWithAnte(state, event),
       new Battle(),
-      new ResetPlayersPlayed()
+      new ResetPlayersPlayed(),
     ]
-  }
+  },
 }
 
 module.exports = [PickCard, PickCardLast]

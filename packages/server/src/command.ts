@@ -22,7 +22,7 @@ export class Command {
     this._name = name || this.constructor.name
 
     this._subCommands = subCommands
-      ? subCommands.filter(c => typeof c === "object")
+      ? subCommands.filter((c) => typeof c === "object")
       : []
   }
 

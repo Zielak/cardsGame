@@ -8,7 +8,7 @@ const isBrowser = new Function(
 export const IS_CHROME = process ? Boolean(process.env.LOGS_CHROME) : false
 
 export const chalk = new Chalk.Instance({
-  level: isBrowser ? 0 : IS_CHROME ? 0 : 1
+  level: isBrowser ? 0 : IS_CHROME ? 0 : 1,
 })
 
 export enum LogLevels {
@@ -17,7 +17,7 @@ export enum LogLevels {
   warn,
   info,
   notice,
-  verbose
+  verbose,
 }
 
 let logLevel = LogLevels.silent
@@ -74,9 +74,7 @@ const syntaxHighlight = (arg: any) => {
 let indentLevel = 0
 
 const getIndent = (): string => {
-  return Array(indentLevel)
-    .fill("│ ")
-    .join("")
+  return Array(indentLevel).fill("│ ").join("")
 }
 
 export let logs: {
@@ -99,73 +97,73 @@ if (isBrowser) {
     error: console.error.bind(window.console),
     group: console.group.bind(window.console),
     groupCollapsed: console.groupCollapsed.bind(window.console),
-    groupEnd: console.groupEnd.bind(window.console)
+    groupEnd: console.groupEnd.bind(window.console),
   }
 } else if (!IS_CHROME) {
   logs = {
-    verbose: function(...args: any[]) {
+    verbose: function (...args: any[]) {
       console.debug.apply(console, [
         getIndent(),
         `\t`,
-        ...args.map(arg => chalk.gray(arg))
+        ...args.map((arg) => chalk.gray(arg)),
       ])
     },
-    notice: function(first, ...args: any[]) {
+    notice: function (first, ...args: any[]) {
       if (args.length > 0) {
         console.log.apply(console, [
           getIndent(),
           `${first}:`,
-          ...args.map(syntaxHighlight)
+          ...args.map(syntaxHighlight),
         ])
       } else {
         console.log.call(console, chalk.gray(getIndent() + first))
       }
     },
-    info: function(first, ...args: any[]) {
+    info: function (first, ...args: any[]) {
       console.info.apply(console, [
         getIndent() + chalk.bgBlue.black(` ${first} `),
-        ...args.map(syntaxHighlight)
+        ...args.map(syntaxHighlight),
       ])
     },
-    warn: function(first, ...args: any[]) {
+    warn: function (first, ...args: any[]) {
       console.warn.apply(console, [
         getIndent() + chalk.bgYellow.black(` ${first} `),
-        ...args.map(syntaxHighlight)
+        ...args.map(syntaxHighlight),
       ])
     },
-    error: function(first, ...args: any[]) {
+    error: function (first, ...args: any[]) {
       console.error.apply(console, [
         getIndent() + chalk.bgRed(` ${first} `),
-        ...args.map(syntaxHighlight)
+        ...args.map(syntaxHighlight),
       ])
     },
-    group: function(first, ...args: any[]) {
+    group: function (first, ...args: any[]) {
       logs.notice(`┍━${first}`, ...args)
       indentLevel++
     },
-    groupCollapsed: function(first, ...args: any[]) {
+    groupCollapsed: function (first, ...args: any[]) {
       logs.notice(`┍━${first}`, ...args)
       indentLevel++
     },
-    groupEnd: function(first = "────────────", ...args: any[]) {
+    groupEnd: function (first = "────────────", ...args: any[]) {
       indentLevel = Math.max(--indentLevel, 0)
       logs.notice(`┕━${first}`, ...args)
-    }
+    },
   }
 } else {
   const styles = {
     common: "padding: 1px 5px; margin: -1px 0;",
-    info: "color: white; background: #2196f3"
+    info: "color: white; background: #2196f3",
   }
 
   logs = {
     verbose: console.debug.bind(console),
     notice: console.log.bind(console),
-    info: function(first, ...args: any[]) {
+    info: function (first, ...args: any[]) {
       return console.info.apply(console, [
         `%c ${first} `,
         styles.common + styles.info,
-        ...args.map(syntaxHighlight)
+        ...args.map(syntaxHighlight),
       ])
     },
     warn: console.warn.bind(console),
@@ -184,7 +182,7 @@ if (isBrowser) {
       global.console.groupCollapsed.apply(console, args)
       global.console.log = tmp
     },
-    groupEnd: console.groupEnd.bind(console)
+    groupEnd: console.groupEnd.bind(console),
   }
 }
 

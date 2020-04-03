@@ -9,7 +9,7 @@ export class LabelTrait {
 
 ;(LabelTrait as any).typeDef = {
   type: "string",
-  name: "string"
+  name: "string",
 }
 ;(LabelTrait as any).trait = function LabelTrait(
   state: State,

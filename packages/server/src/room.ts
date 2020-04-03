@@ -7,7 +7,7 @@ import {
   map2Array,
   mapAdd,
   mapRemoveEntry,
-  IS_CHROME
+  IS_CHROME,
 } from "@cardsgame/utils"
 
 import { CommandsManager } from "./commandsManager"
@@ -67,7 +67,9 @@ export class Room<S extends State> extends colRoom<S> implements IRoom {
     // Add to `state.clients` only if the game is not yet started
     if (
       !this.state.isGameStarted &&
-      map2Array(this.state.clients).every(clientID => newClient.id !== clientID)
+      map2Array(this.state.clients).every(
+        (clientID) => newClient.id !== clientID
+      )
     ) {
       mapAdd(this.state.clients, newClient.id)
     }
@@ -111,10 +113,10 @@ export class Room<S extends State> extends colRoom<S> implements IRoom {
 
     this.commandsManager
       .action(client, newEvent)
-      .then(result => {
+      .then((result) => {
         logs.notice("ROOM", "action() completed, result:", result)
       })
-      .catch(error => {
+      .catch((error) => {
         logs.error("ROOM", `action() failed. Client: "${client.id}". ${error}`)
       })
   }
@@ -131,7 +133,7 @@ export class Room<S extends State> extends colRoom<S> implements IRoom {
 
       Object.keys(this.state.clients).forEach((key, idx) => {
         this.state.players[idx] = new Player({
-          clientID: this.state.clients[key]
+          clientID: this.state.clients[key],
         })
       })
       this.state.isGameStarted = true
@@ -230,7 +232,9 @@ function debugLogMessage(newEvent: ServerPlayerEvent): void {
   const entity = hasLabel(newEvent.entity) ? minifyTarget(newEvent.entity) : ""
   const entities =
     newEvent.entities &&
-    newEvent.entities.map(e => (hasLabel(e) ? minifyTarget(e) : "?")).join(", ")
+    newEvent.entities
+      .map((e) => (hasLabel(e) ? minifyTarget(e) : "?"))
+      .join(", ")
   const entityPath =
     newEvent.entityPath && chalk.green(newEvent.entityPath.join(", "))
 
@@ -265,7 +269,7 @@ function debugLogMessage(newEvent: ServerPlayerEvent): void {
         entityPath ? `\n\tpath: [${entityPath}], ` : "",
         entity ? ` entity:"${entity}"` : "",
         entities ? `\n\tentities: [${entities}]` : "",
-        data ? `\n\tdata: ${JSON.stringify(data)}` : ""
+        data ? `\n\tdata: ${JSON.stringify(data)}` : "",
       ].join("")
     )
   }

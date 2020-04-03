@@ -50,7 +50,7 @@ applyMixins(Conditions, [
   ConditionGrouping,
   ConditionChainers,
   ConditionAssertions,
-  ConditionSubjects
+  ConditionSubjects,
 ])
 
 export { Conditions }

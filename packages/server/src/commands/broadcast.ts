@@ -14,7 +14,7 @@ export class Broadcast extends Command {
   async undo(state: State, room: Room<any>) {
     room.broadcast({
       ...this.message,
-      undo: true
+      undo: true,
     })
   }
 }

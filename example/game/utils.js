@@ -11,7 +11,7 @@ const cardRank = [
   "J",
   "Q",
   "K",
-  "A"
+  "A",
 ]
 
 const sortRank = (rankA, rankB) => {
@@ -25,5 +25,5 @@ const sortRank = (rankA, rankB) => {
 
 module.exports = {
   cardRank,
-  sortRank
+  sortRank,
 }

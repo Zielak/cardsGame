@@ -29,10 +29,10 @@ export class Select extends Command {
     const parent = this.parent.get()
 
     if (this.indexes) {
-      this.indexes.forEach(idx => parent.selectChildAt(idx))
+      this.indexes.forEach((idx) => parent.selectChildAt(idx))
     } else {
       this.indexes = []
-      parent.getUnselectedChildren().forEach(child => {
+      parent.getUnselectedChildren().forEach((child) => {
         this.indexes.push(child.idx)
         parent.selectChildAt(child.idx)
       })
@@ -41,7 +41,7 @@ export class Select extends Command {
   async undo(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()
 
-    this.indexes.forEach(idx => parent.deselectChildAt(idx))
+    this.indexes.forEach((idx) => parent.deselectChildAt(idx))
   }
 }
 
@@ -68,10 +68,10 @@ export class Deselect extends Command {
     const parent = this.parent.get()
 
     if (this.indexes) {
-      this.indexes.forEach(idx => parent.deselectChildAt(idx))
+      this.indexes.forEach((idx) => parent.deselectChildAt(idx))
     } else {
       this.indexes = []
-      parent.getSelectedChildren().forEach(child => {
+      parent.getSelectedChildren().forEach((child) => {
         this.indexes.push(child.idx)
         parent.deselectChildAt(child.idx)
       })
@@ -80,7 +80,7 @@ export class Deselect extends Command {
   async undo(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()
 
-    this.indexes.forEach(idx => parent.selectChildAt(idx))
+    this.indexes.forEach((idx) => parent.selectChildAt(idx))
   }
 }
 
@@ -109,9 +109,9 @@ export class ToggleSelection extends Command {
     const parent = this.parent.get()
 
     if (!this.indexes) {
-      this.indexes = parent.getChildren().map(child => child.idx)
+      this.indexes = parent.getChildren().map((child) => child.idx)
     }
-    this.indexes.forEach(childIdx => {
+    this.indexes.forEach((childIdx) => {
       this.lastStates[childIdx] = parent.isChildSelected(childIdx)
       if (this.lastStates[childIdx]) {
         parent.deselectChildAt(childIdx)
@@ -123,7 +123,7 @@ export class ToggleSelection extends Command {
   async undo(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()
 
-    this.indexes.forEach(idx => {
+    this.indexes.forEach((idx) => {
       if (this.lastStates[idx]) {
         parent.selectChildAt(idx)
       } else {

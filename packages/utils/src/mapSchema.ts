@@ -1,7 +1,7 @@
 export const map2Array = <T>(map: { [key: string]: T | any }): T[] =>
   Object.keys(map)
     .sort()
-    .map(key => map[key])
+    .map((key) => map[key])
 
 export const mapGetIdx = (map: {}, entry: any): number => {
   const max = Object.keys(map).length

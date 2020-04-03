@@ -28,17 +28,17 @@ beforeEach(() => {
     new LabeledEntity(state, { parent: source, name: "child4" }),
     new LabeledEntity(state, { parent: source, name: "child5" }),
     new LabeledEntity(state, { parent: source, name: "child6" }),
-    new LabeledEntity(state, { parent: source, name: "child7" })
+    new LabeledEntity(state, { parent: source, name: "child7" }),
   ]
   sourceCount = entities.length
 
   backup = new LabeledParent(state)
   times(
     20,
-    idx =>
+    (idx) =>
       new LabeledEntity(state, {
         parent: backup,
-        name: "backup" + idx
+        name: "backup" + idx,
       })
   )
 })
@@ -115,8 +115,8 @@ describe("Emptying source", () => {
     const cmd = new DealCards(source, [playerA, playerB], {
       count: 10,
       onDeckEmptied: () => [
-        new ChangeParent(() => backup.getChildren(), source)
-      ]
+        new ChangeParent(() => backup.getChildren(), source),
+      ],
     })
 
     await cmd.execute(state, room)

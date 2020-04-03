@@ -13,8 +13,9 @@ export const mapCompose = (
       return prevArr
     } else {
       throw new Error(
-        `utils/mapCompose, I expected a function at arg${idx +
-          1}, got "${typeof fn}" instead...`
+        `utils/mapCompose, I expected a function at arg${
+          idx + 1
+        }, got "${typeof fn}" instead...`
       )
     }
   }, array || [])

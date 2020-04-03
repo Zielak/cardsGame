@@ -2,7 +2,7 @@
  * Returns first, *defined* value
  */
 export const def = <T>(...values: T[]): T =>
-  values.find(value => typeof value !== "undefined")
+  values.find((value) => typeof value !== "undefined")
 
 export const noop = (): void => {}
 
@@ -42,7 +42,7 @@ export const times = (length: number, func: (idx: number) => any): void => {
  * @param ms milliseconds
  */
 export const timeout = (ms: number): Promise<unknown> =>
-  new Promise(resolve => setTimeout(resolve, ms))
+  new Promise((resolve) => setTimeout(resolve, ms))
 
 /**
  * Check if a `thing` is just a literal object (using typeof), and not Array or anything else.
@@ -59,8 +59,8 @@ export const isObject = (thing: unknown): boolean => {
 }
 
 export function applyMixins(derivedCtor: any, baseCtors: any[]): void {
-  baseCtors.forEach(baseCtor => {
-    Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+  baseCtors.forEach((baseCtor) => {
+    Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
       Object.defineProperty(
         derivedCtor.prototype,
         name,

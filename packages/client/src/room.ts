@@ -24,15 +24,15 @@ export class Room {
       }
       this.onMessage(message)
     })
-    room.onStateChange(state => {
+    room.onStateChange((state) => {
       logs.notice("ROOM, state been updated:", state)
       this.onStateChange(state)
     })
-    room.onLeave(code => {
+    room.onLeave((code) => {
       logs.notice("client left the room", code)
       this.onLeave(code)
     })
-    room.onError(message => {
+    room.onError((message) => {
       logs.error("oops, error ocurred:", message)
       this.onError(message)
     })
@@ -71,7 +71,7 @@ export class Room {
     const playerEvent: ClientPlayerEvent = {
       command: "EntityInteraction",
       event: event.type,
-      entityPath: entityIdxPath
+      entityPath: entityIdxPath,
     }
     if (data) {
       playerEvent.data = data

@@ -10,28 +10,28 @@ let room: Room<State>
 let manager: CommandsManager<State>
 
 const client = {
-  id: "testClient"
+  id: "testClient",
 }
 
 const actions = [
   {
     name: "Action1",
     getInteractions: () => [{ name: "one", type: "foo" }],
-    getConditions: con => {},
-    getCommands: () => []
+    getConditions: (con) => {},
+    getCommands: () => [],
   },
   {
     name: "Action2",
     getInteractions: () => [{ name: "two", type: "bar" }],
-    getConditions: con => {},
-    getCommands: () => []
+    getConditions: (con) => {},
+    getCommands: () => [],
   },
   {
     name: "Action3",
     getInteractions: () => [{ name: "three", type: "foo" }],
-    getConditions: con => {},
-    getCommands: () => []
-  }
+    getConditions: (con) => {},
+    getCommands: () => [],
+  },
 ]
 
 beforeEach(() => {

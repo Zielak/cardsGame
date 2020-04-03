@@ -25,5 +25,5 @@ export class FlexyTrait {
 ;(FlexyTrait as any).typeDef = {
   alignItems: "string",
   directionReverse: "boolean",
-  justifyContent: "string"
+  justifyContent: "string",
 }

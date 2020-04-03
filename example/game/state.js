@@ -27,7 +27,7 @@ class WarState extends State {
 defineTypes(WarState, {
   isAtWar: "boolean",
   playersPlayed: ["boolean"],
-  ante: "number"
+  ante: "number",
 })
 
 module.exports = { WarState }

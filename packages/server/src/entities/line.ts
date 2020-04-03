@@ -24,7 +24,7 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
   ParentArrayTrait,
   LabelTrait,
   OwnershipTrait,
-  SelectableChildrenTrait
+  SelectableChildrenTrait,
 ])
 export class Line extends Entity<LineOptions> {
   hijacksInteractionTarget = false

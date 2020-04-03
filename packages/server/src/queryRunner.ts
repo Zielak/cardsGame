@@ -51,7 +51,7 @@ export const queryRunner = <T>(props: QuerableProps) => (entity: T) => {
 
   const propKeys = Object.keys(props)
 
-  return propKeys.every(propName => {
+  return propKeys.every((propName) => {
     if (propName === "parent") {
       // Must have an identity AND be a child
       if (!hasIdentity(entity.parent)) return false

@@ -41,7 +41,7 @@ export class SelectableChildrenTrait {
 
     // Also ensure we won't push duplicate here
     const alreadyThere = this.selectedChildren.find(
-      data => data.childIndex === childIndex
+      (data) => data.childIndex === childIndex
     )
     if (!alreadyThere) {
       this.selectedChildren.push(
@@ -60,7 +60,7 @@ export class SelectableChildrenTrait {
     this._selectableEnsureIndex(childIndex)
 
     const dataIdx = this.selectedChildren.findIndex(
-      data => data.childIndex === childIndex
+      (data) => data.childIndex === childIndex
     )
     if (dataIdx >= 0) {
       this.selectedChildren.splice(dataIdx, 1)
@@ -72,7 +72,7 @@ export class SelectableChildrenTrait {
   }
 
   isChildSelected(childIndex: number): boolean {
-    return this.selectedChildren.some(data => data.childIndex === childIndex)
+    return this.selectedChildren.some((data) => data.childIndex === childIndex)
   }
 
   /**
@@ -80,7 +80,7 @@ export class SelectableChildrenTrait {
    * @param childIndex
    */
   getSelectionIndex(childIndex: number): number {
-    return this.selectedChildren.find(data => data.childIndex === childIndex)
+    return this.selectedChildren.find((data) => data.childIndex === childIndex)
       .selectionIndex
   }
 
@@ -110,7 +110,7 @@ export class SelectableChildrenTrait {
 
     return Array.from(this.selectedChildren)
       .sort((a, b) => a.selectionIndex - b.selectionIndex)
-      .map(data => this.getChild(data.childIndex))
+      .map((data) => this.getChild(data.childIndex))
   }
 
   getUnselectedChildren<T extends ChildTrait>(
@@ -121,7 +121,7 @@ export class SelectableChildrenTrait {
     }
 
     return this.getChildren<T>().filter(
-      child => !this.isChildSelected(child.idx)
+      (child) => !this.isChildSelected(child.idx)
     )
   }
 
@@ -151,27 +151,27 @@ export class SelectableChildrenTrait {
   this.selectedChildren = new ArraySchema()
 }
 ;(SelectableChildrenTrait as any).typeDef = {
-  selectedChildren: [SelectedChildData]
+  selectedChildren: [SelectedChildData],
 }
 ;(SelectableChildrenTrait as any).hooks = {
-  childRemoved: function(this: SelectableChildrenTrait, childIndex: number) {
+  childRemoved: function (this: SelectableChildrenTrait, childIndex: number) {
     const index = this.selectedChildren.findIndex(
-      data => data.childIndex === childIndex
+      (data) => data.childIndex === childIndex
     )
     if (index >= 0) {
       this.selectedChildren.splice(index, 1)
     }
   },
-  childIndexUpdated: function(
+  childIndexUpdated: function (
     this: SelectableChildrenTrait,
     oldIdx: number,
     newIdx: number
   ) {
     const data = this.selectedChildren.find(
-      data => data.selectionIndex === oldIdx
+      (data) => data.selectionIndex === oldIdx
     )
     if (data) {
       data.selectionIndex = newIdx
     }
-  }
+  },
 }

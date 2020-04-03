@@ -30,7 +30,7 @@ export class Game {
         options.wss && options.wss.host,
         window.document.location.hostname
       ),
-      port: def(options.wss && options.wss.port, 2657)
+      port: def(options.wss && options.wss.port, 2657),
     }
 
     this.client = new Client(
@@ -45,7 +45,7 @@ export class Game {
   joinOrCreate(roomName: string, options?: any) {
     this.room && this.room.leave()
 
-    return this.client.joinOrCreate(roomName, options).then(room => {
+    return this.client.joinOrCreate(roomName, options).then((room) => {
       this.room = new Room(room)
       return this.room
     })
@@ -54,7 +54,7 @@ export class Game {
   create(roomName: string, options?: any) {
     this.room && this.room.leave()
 
-    return this.client.create(roomName, options).then(room => {
+    return this.client.create(roomName, options).then((room) => {
       this.room = new Room(room)
       return this.room
     })
@@ -67,7 +67,7 @@ export class Game {
   join(roomName: string, options?: any) {
     this.room && this.room.leave()
 
-    return this.client.join(roomName, options).then(room => {
+    return this.client.join(roomName, options).then((room) => {
       this.room = new Room(room)
       return this.room
     })
@@ -76,7 +76,7 @@ export class Game {
   joinById(roomId: string, options?: any) {
     this.room && this.room.leave()
 
-    return this.client.joinById(roomId, options).then(room => {
+    return this.client.joinById(roomId, options).then((room) => {
       this.room = new Room(room)
       return this.room
     })

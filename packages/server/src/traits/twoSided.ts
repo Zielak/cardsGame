@@ -19,7 +19,7 @@ export class TwoSidedTrait {
 }
 
 ;(TwoSidedTrait as any).typeDef = {
-  faceUp: "boolean"
+  faceUp: "boolean",
 }
 ;(TwoSidedTrait as any).trait = function TwoSidedTrait(
   state: State,

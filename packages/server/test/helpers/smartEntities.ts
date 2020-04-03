@@ -14,7 +14,7 @@ import { State } from "../../src/state"
   ParentArrayTrait,
   ChildTrait,
   LabelTrait,
-  OwnershipTrait
+  OwnershipTrait,
 ])
 export class SmartParent extends Entity<SmartParentOptions> {
   type = "smartParent"

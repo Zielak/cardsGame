@@ -6,7 +6,7 @@ import {
   TargetsHolder,
   Targets,
   TargetHolder,
-  Target
+  Target,
 } from "../command"
 import { ChildTrait } from "../traits/child"
 import { ParentTrait } from "../traits/parent"
@@ -52,7 +52,7 @@ export class ChangeParent extends Command {
     logs.notice(
       _,
       "moving",
-      this.entities.get().map(e => (hasLabel(e) ? e.name : "")),
+      this.entities.get().map((e) => (hasLabel(e) ? e.name : "")),
       "entities to",
       chalk.yellow(this.target.get()["name"] || "ROOT")
     )

@@ -3,7 +3,7 @@ import { noop } from "@cardsgame/utils"
 function RoomMock() {
   this.broadcast = noop
   this.commandsManager = {
-    execute: noop
+    execute: noop,
   }
 
   this.onPlayerTurnEnded = jest.fn()

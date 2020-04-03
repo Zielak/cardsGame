@@ -24,7 +24,7 @@ import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
   ChildTrait,
   ParentArrayTrait,
   LabelTrait,
-  OwnershipTrait
+  OwnershipTrait,
 ])
 export class Spread extends Entity<SpreadOptions> {
   autoSort: SortingFunction

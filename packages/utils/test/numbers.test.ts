@@ -5,7 +5,7 @@ import {
   deg2rad,
   decimal,
   cm2px,
-  px2cm
+  px2cm,
 } from "../src/numbers"
 
 describe("limit", () => {

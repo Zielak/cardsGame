@@ -10,7 +10,7 @@ beforeEach(() => {
   cards = [
     new ClassicCard(state),
     new ClassicCard(state),
-    new ClassicCard(state)
+    new ClassicCard(state),
   ]
 })
 

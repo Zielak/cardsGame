@@ -29,7 +29,7 @@ export function isGrid(entity: any): entity is Grid {
   ParentMapTrait,
   LabelTrait,
   OwnershipTrait,
-  SelectableChildrenTrait
+  SelectableChildrenTrait,
 ])
 export class Grid extends Entity<GridOptions> {
   @type("uint8") columns: number
@@ -68,7 +68,7 @@ export class Grid extends Entity<GridOptions> {
 
   getChildAt<T extends ChildTrait>(column: number, row: number): T {
     return this.getChildren<T>().find(
-      child => child.idx === column + row * this.columns
+      (child) => child.idx === column + row * this.columns
     )
   }
 }

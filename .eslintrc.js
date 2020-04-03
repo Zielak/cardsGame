@@ -7,7 +7,7 @@ module.exports = {
     "no-extra-semi": "off",
     "no-undef": "off",
     "no-unused-vars": "warn",
-    "prefer-const": "warn"
+    "prefer-const": "warn",
   },
   overrides: [
     {
@@ -16,7 +16,7 @@ module.exports = {
       extends: [
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
-        "prettier/@typescript-eslint"
+        "prettier/@typescript-eslint",
       ],
       rules: {
         "@typescript-eslint/explicit-function-return-type": "warn",
@@ -25,19 +25,19 @@ module.exports = {
         "@typescript-eslint/no-empty-interface": [
           "error",
           {
-            allowSingleExtends: true
-          }
+            allowSingleExtends: true,
+          },
         ],
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-use-before-define": [
           "error",
-          { functions: false }
-        ]
-      }
+          { functions: false },
+        ],
+      },
     },
     {
       files: ["*.test.ts", "*.test.tsx"],
-      extends: ["plugin:jest/recommended"]
-    }
-  ]
+      extends: ["plugin:jest/recommended"],
+    },
+  ],
 }

@@ -17,24 +17,24 @@ export const populatePlayerEvent = (
   // Populate event with server-side known data
   const newEvent: ServerPlayerEvent = {
     command: event.command,
-    data: event.data
+    data: event.data,
   }
   if (event.entityPath) {
     newEvent.entityPath =
       typeof event.entityPath === "string"
-        ? event.entityPath.split(",").map(idx => parseInt(idx))
+        ? event.entityPath.split(",").map((idx) => parseInt(idx))
         : event.entityPath
 
     newEvent.entities = state
       .getEntitiesAlongPath(newEvent.entityPath)
       .reverse()
-      .filter(target => (isChild(target) ? target.isInteractive() : false))
+      .filter((target) => (isChild(target) ? target.isInteractive() : false))
 
     newEvent.entity = newEvent.entities[0]
   }
 
   const player = map2Array<Player>(state.players).find(
-    p => p.clientID === client.id
+    (p) => p.clientID === client.id
   )
 
   if (player) {

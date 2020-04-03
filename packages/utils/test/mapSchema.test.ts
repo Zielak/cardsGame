@@ -33,7 +33,7 @@ test("mapCount", () => {
   expect(
     mapCount({
       0: "dqwdasd",
-      1: "e13fr4"
+      1: "e13fr4",
     })
   ).toBe(2)
 })

@@ -52,7 +52,7 @@ export class OwnershipTrait {
 
 ;(OwnershipTrait as any).typeDef = {
   isInOwnersView: "boolean",
-  ownerID: "string"
+  ownerID: "string",
 }
 ;(OwnershipTrait as any).trait = function OwnershipTrait(
   state: State,

@@ -61,63 +61,67 @@ export class CommandsManager<S extends State> {
   filterActionsByInteraction(event: ServerPlayerEvent): ActionTemplate<S>[] {
     logs.groupCollapsed(`Filter out actions by INTERACTIONS`)
 
-    const actions = Array.from(this.possibleActions.values()).filter(action => {
-      const interactions = action.getInteractions()
+    const actions = Array.from(this.possibleActions.values()).filter(
+      (action) => {
+        const interactions = action.getInteractions()
 
-      logs.verbose(
-        action.name,
-        `got`,
-        interactions.length,
-        `interaction${interactions.length > 1 ? "s" : ""}`,
-        interactions.map(def => JSON.stringify(def))
-      )
+        logs.verbose(
+          action.name,
+          `got`,
+          interactions.length,
+          `interaction${interactions.length > 1 ? "s" : ""}`,
+          interactions.map((def) => JSON.stringify(def))
+        )
 
-      const interactionMatchesEntity = definition => currentTarget => {
-        // Every KEY in definition should be present
-        // in the Entity and be of equal value
-        // or either of values if its an array
-        return Object.keys(definition).every((prop: string) => {
-          const value = definition[prop]
+        const interactionMatchesEntity = (definition) => (currentTarget) => {
+          // Every KEY in definition should be present
+          // in the Entity and be of equal value
+          // or either of values if its an array
+          return Object.keys(definition).every((prop: string) => {
+            const value = definition[prop]
 
-          // Is simple type or array of these, NOT an {object}
-          if (Array.isArray(value) || typeof value !== "object") {
-            const values = Array.isArray(value) ? value : [value]
-            return values.some(testValue => currentTarget[prop] === testValue)
-          }
-          if (prop === "parent") {
-            const parentOfCurrent = currentTarget.parent
+            // Is simple type or array of these, NOT an {object}
+            if (Array.isArray(value) || typeof value !== "object") {
+              const values = Array.isArray(value) ? value : [value]
+              return values.some(
+                (testValue) => currentTarget[prop] === testValue
+              )
+            }
+            if (prop === "parent") {
+              const parentOfCurrent = currentTarget.parent
 
-            return parentOfCurrent
-              ? interactionMatchesEntity(value)(parentOfCurrent)
-              : // You game me some definition of "parent"
-                // But I don't have a parent...
-                false
+              return parentOfCurrent
+                ? interactionMatchesEntity(value)(parentOfCurrent)
+                : // You game me some definition of "parent"
+                  // But I don't have a parent...
+                  false
+            }
+          })
+        }
+
+        const result = interactions.some((definition) => {
+          if (
+            event.entities &&
+            (!definition.command || definition.command === "EntityInteraction")
+          ) {
+            // Check props for every interactive entity in `targets` array
+            return event.entities
+              .filter((currentTarget) =>
+                isChild(currentTarget) ? currentTarget.isInteractive() : false
+              )
+              .some(interactionMatchesEntity(definition))
+          } else if (definition.command) {
+            return definition.command === event.command
           }
         })
-      }
 
-      const result = interactions.some(definition => {
-        if (
-          event.entities &&
-          (!definition.command || definition.command === "EntityInteraction")
-        ) {
-          // Check props for every interactive entity in `targets` array
-          return event.entities
-            .filter(currentTarget =>
-              isChild(currentTarget) ? currentTarget.isInteractive() : false
-            )
-            .some(interactionMatchesEntity(definition))
-        } else if (definition.command) {
-          return definition.command === event.command
+        if (result) {
+          logs.notice(action.name, "match!")
         }
-      })
 
-      if (result) {
-        logs.notice(action.name, "match!")
+        return result
       }
-
-      return result
-    })
+    )
 
     logs.groupEnd()
 
@@ -139,7 +143,7 @@ export class CommandsManager<S extends State> {
   ) {
     logs.notice(`Filter out actions by CONDITIONS`)
 
-    const result = actions.filter(action => {
+    const result = actions.filter((action) => {
       logs.group(`action: ${chalk.white(action.name)}`)
 
       const conditionsChecker = new Conditions(state, event)
@@ -191,8 +195,9 @@ export class CommandsManager<S extends State> {
     } catch (error) {
       logs.error(
         "parseAction",
-        `command "${this.currentCommand &&
-          this.currentCommand.constructor.name}" FAILED to execute`,
+        `command "${
+          this.currentCommand && this.currentCommand.constructor.name
+        }" FAILED to execute`,
         error
       )
       return false

@@ -1,7 +1,7 @@
 import {
   DumbArrayParent,
   DumbEntity,
-  DumbMapParent
+  DumbMapParent,
 } from "../helpers/dumbEntities"
 import { IdentityTrait } from "../../src/traits/identity"
 import { ChildTrait } from "../../src/traits/child"
@@ -103,7 +103,7 @@ describe("#addChild", () => {
 })
 
 describe("#moveChildTo", () => {
-  const mapArrayChildren = p => p.getChildren().map(e => (e ? e.id : null))
+  const mapArrayChildren = (p) => p.getChildren().map((e) => (e ? e.id : null))
 
   let parent: DumbArrayParent
   beforeEach(() => {

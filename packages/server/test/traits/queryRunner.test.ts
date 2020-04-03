@@ -16,21 +16,21 @@ beforeEach(() => {
   targetA = new SmartEntity(state, {
     customProp: "bar",
     name: "targetA",
-    parent: parentA
+    parent: parentA,
   })
 
   // Parent B
   targetB = new SmartEntity(state, {
     customProp: "bar",
     name: "targetB",
-    parent: parentB
+    parent: parentB,
   })
   new SmartEntity(state, { customProp: "foo", parent: parentB })
   new SmartEntity(state, { name: "bar", parent: parentB })
   parentC = new SmartParent(state, {
     name: "parentC",
     customProp: "baz",
-    parent: parentB
+    parent: parentB,
   })
   new SmartEntity(state, { customProp: "foo", parent: parentB })
 
@@ -39,7 +39,7 @@ beforeEach(() => {
   targetC = new SmartEntity(state, {
     customProp: "bar",
     name: "targetC",
-    parent: parentC
+    parent: parentC,
   })
   new SmartEntity(state, { customProp: "foo", parent: parentC })
   new SmartEntity(state, { customProp: "foo", parent: parentC })
@@ -107,13 +107,13 @@ describe("#queryAll, with parent", () => {
     expect(
       state.queryAll({
         customProp: "baz",
-        parent: { name: "parentB" }
+        parent: { name: "parentB" },
       })[0]
     ).toBe(parentC)
     expect(
       state.queryAll({
         customProp: "bar",
-        parent: { customProp: "baz" }
+        parent: { customProp: "baz" },
       })[0]
     ).toBe(targetC)
   })

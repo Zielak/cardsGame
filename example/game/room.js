@@ -6,7 +6,7 @@ const {
   ClassicCard,
   Deck,
   Pile,
-  Room
+  Room,
 } = cardsGameServer
 
 const { WarState } = require("./state")
@@ -26,17 +26,17 @@ class WarGame extends Room {
 
     this.deck = new Deck(state, {
       name: "mainDeck",
-      x: 50
+      x: 50,
     })
     this.pile = new Pile(state, {
-      name: "mainPile"
+      name: "mainPile",
     })
     standardDeckFactory().forEach(
-      data =>
+      (data) =>
         new ClassicCard(state, {
           parent: this.deck,
           suit: data.suit,
-          rank: data.rank
+          rank: data.rank,
         })
     )
   }
@@ -55,14 +55,14 @@ class WarGame extends Room {
       // Eeach player will has his own Container.
       const container = new Container(state, {
         owner: player,
-        isInOwnersView: true
+        isInOwnersView: true,
       })
 
       // Create a Deck to contain all player's cards
       decks.push(
         new Deck(state, {
           parent: container,
-          name: "playersDeck"
+          name: "playersDeck",
         })
       )
 
@@ -92,15 +92,15 @@ class WarGame extends Room {
 
     const winningDeck = state
       .queryAll({ name: "playersDeck" })
-      .find(deck => deck.countChildren() === 0)
+      .find((deck) => deck.countChildren() === 0)
 
     if (winningDeck) {
       state.isGameOver = true
       this.broadcast({
         type: "gameOver",
         data: {
-          winner: winningDeck.getOwner().clientID
-        }
+          winner: winningDeck.getOwner().clientID,
+        },
       })
     }
   }

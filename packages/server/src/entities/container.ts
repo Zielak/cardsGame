@@ -16,7 +16,7 @@ import { ParentArrayTrait } from "../traits/parentArray"
   ChildTrait,
   ParentArrayTrait,
   LocationTrait,
-  OwnershipTrait
+  OwnershipTrait,
 ])
 export class Container extends Entity<ContainerOptions> {
   hijacksInteractionTarget = false

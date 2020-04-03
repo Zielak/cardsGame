@@ -11,7 +11,7 @@ describe("hooks", () => {
   it("calls postConstructor hook with state reference", () => {
     class HookTestTrait {}
     ;(HookTestTrait as any).hooks = {
-      postConstructor: jest.fn()
+      postConstructor: jest.fn(),
     }
     class HookTestEntity extends Entity<{}> {}
 

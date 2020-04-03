@@ -10,7 +10,7 @@ export function executeHook(hookName: string, ...args): void {
   const { hooks } = proto
 
   if (hooks && hooks.has(hookName)) {
-    hooks.get(hookName).forEach(fn => fn.apply(this, args))
+    hooks.get(hookName).forEach((fn) => fn.apply(this, args))
   }
 }
 
@@ -22,7 +22,7 @@ export class Entity<T> extends Schema {
 
     // First, apply all traits and their "constructors"
     if (proto.traitsConstructors) {
-      proto.traitsConstructors.forEach(fun => {
+      proto.traitsConstructors.forEach((fun) => {
         fun.call(this, state, options)
       }, this)
     }
@@ -58,19 +58,19 @@ export const applyTraitsMixins = (baseCtors: any[]) => (
 
   if (!Object.prototype.hasOwnProperty.call(derived, "traitsConstructors")) {
     Object.defineProperty(derived, "traitsConstructors", {
-      value: []
+      value: [],
     })
   }
   if (!Object.prototype.hasOwnProperty.call(derived, "hooks")) {
     Object.defineProperty(derived, "hooks", {
-      value: new Map()
+      value: new Map(),
     })
   }
 
-  baseCtors.forEach(baseCtor => {
+  baseCtors.forEach((baseCtor) => {
     Object.getOwnPropertyNames(baseCtor.prototype)
-      .filter(name => name !== "constructor")
-      .forEach(name => {
+      .filter((name) => name !== "constructor")
+      .forEach((name) => {
         Object.defineProperty(
           derived,
           name,
@@ -78,7 +78,7 @@ export const applyTraitsMixins = (baseCtors: any[]) => (
         )
       })
 
-    Object.getOwnPropertyNames(baseCtor).forEach(name => {
+    Object.getOwnPropertyNames(baseCtor).forEach((name) => {
       if (name === "typeDef") {
         for (const field in baseCtor.typeDef) {
           type(baseCtor.typeDef[field])(derived, field)
@@ -86,7 +86,7 @@ export const applyTraitsMixins = (baseCtors: any[]) => (
       } else if (name === "trait") {
         derived.traitsConstructors.push(baseCtor.trait)
       } else if (name === "hooks" && typeof baseCtor.hooks === "object") {
-        Object.keys(baseCtor.hooks).forEach(hookKey => {
+        Object.keys(baseCtor.hooks).forEach((hookKey) => {
           if (!derived.hooks.has(hookKey)) {
             derived.hooks.set(hookKey, [])
           }

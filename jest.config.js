@@ -3,7 +3,7 @@ module.exports = {
     "**/*.{ts,tsx}",
     "!**/*.d.ts",
     "!**/node_modules/**",
-    "!**/test/**/*.ts"
+    "!**/test/**/*.ts",
   ],
-  projects: ["<rootDir>/packages/*"]
+  projects: ["<rootDir>/packages/*"],
 }

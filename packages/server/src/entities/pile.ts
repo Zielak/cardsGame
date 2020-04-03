@@ -16,7 +16,7 @@ import { IdentityTrait } from "../traits/identity"
   LocationTrait,
   ChildTrait,
   ParentArrayTrait,
-  LabelTrait
+  LabelTrait,
 ])
 export class Pile extends Entity<PileOptions> {
   create(state: State, options: PileOptions = {}) {

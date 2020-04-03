@@ -21,7 +21,7 @@ import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
   ParentArrayTrait,
   LabelTrait,
   OwnershipTrait,
-  SelectableChildrenTrait
+  SelectableChildrenTrait,
 ])
 export class Hand extends Entity<HandOptions> {
   autoSort: SortingFunction

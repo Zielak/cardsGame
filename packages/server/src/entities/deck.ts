@@ -7,7 +7,7 @@ import {
   containsChildren,
   defineTypes,
   getAllChildrensTypes,
-  type
+  type,
 } from "../annotations"
 import { State } from "../state"
 
@@ -30,7 +30,7 @@ defineTypes(TopDeckElement, getAllChildrensTypes())
   ChildTrait,
   ParentArrayTrait,
   LabelTrait,
-  OwnershipTrait
+  OwnershipTrait,
 ])
 export class Deck extends Entity<DeckOptions> {
   @type("uint16") childCount: number
@@ -57,7 +57,7 @@ export class Deck extends Entity<DeckOptions> {
   updateTopElement(child: { [key: string]: any }) {
     const whitelist = Object.keys(getAllChildrensTypes())
 
-    whitelist.forEach(key => {
+    whitelist.forEach((key) => {
       this.topDeck[key] = child[key]
     })
   }

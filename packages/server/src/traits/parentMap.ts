@@ -13,7 +13,7 @@ import {
   isParent,
   sortByIdx,
   query,
-  queryAll
+  queryAll,
 } from "./parent"
 
 export function isParentMap(entity: any): entity is ParentMapTrait {
@@ -60,7 +60,7 @@ export class ParentMapTrait implements ParentTrait {
 
     const targetArray: ArraySchema = this[targetArrayName]
 
-    const childIdx = targetArray.findIndex(el => el.idx === idx)
+    const childIdx = targetArray.findIndex((el) => el.idx === idx)
 
     this.childrenPointers.delete(child)
 
@@ -146,7 +146,7 @@ export class ParentMapTrait implements ParentTrait {
   }
 
   addChildren(entities: ChildTrait[]): void {
-    entities.forEach(entity => this.addChild(entity))
+    entities.forEach((entity) => this.addChild(entity))
   }
 
   /**
@@ -201,7 +201,7 @@ export class ParentMapTrait implements ParentTrait {
    * Get one direct child of `parent` by its `idx`
    */
   getChild<T extends ChildTrait>(idx: number): T {
-    return this.getChildren<T>().find(child => child.idx === idx)
+    return this.getChildren<T>().find((child) => child.idx === idx)
   }
 
   /**
@@ -264,7 +264,7 @@ export class ParentMapTrait implements ParentTrait {
     const childrenCount = this.countChildren()
     const allSpots = arrayWith(
       this.maxChildren !== Infinity ? this.maxChildren : childrenCount
-    ).map(idx => this.getChild(idx))
+    ).map((idx) => this.getChild(idx))
 
     for (let i = 1; i < childrenCount / 2; i++) {
       const left = index - i
@@ -304,7 +304,7 @@ ParentMapTrait.prototype.queryAll = queryAll
   )
   this.maxChildren = def(options.maxChildren, this.maxChildren, Infinity)
 
-  registeredChildren.forEach(con => {
+  registeredChildren.forEach((con) => {
     if ((this as any).__syncChildren === false) {
       this[`children${con.name}`] = []
     } else {
@@ -313,14 +313,14 @@ ParentMapTrait.prototype.queryAll = queryAll
   })
 }
 ;(ParentMapTrait as any).hooks = {
-  childAdded: function(this: ParentMapTrait, child: ChildTrait) {
+  childAdded: function (this: ParentMapTrait, child: ChildTrait) {
     if (this.childAdded) {
       this.childAdded(child)
     }
   },
-  childRemoved: function(this: ParentMapTrait, idx: number) {
+  childRemoved: function (this: ParentMapTrait, idx: number) {
     if (this.childRemoved) {
       this.childRemoved(idx)
     }
-  }
+  },
 }

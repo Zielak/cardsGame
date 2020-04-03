@@ -51,7 +51,7 @@ describe("isObject", () => {
   it(`verifies the rest`, () => {
     expect(isObject([])).toBe(false)
     expect(isObject(() => {})).toBe(false)
-    expect(isObject(function() {})).toBe(false)
+    expect(isObject(function () {})).toBe(false)
     // I'm not even using this function...
     // expect(isObject(new Map())).toBe(false)
     // expect(isObject(new Set())).toBe(false)

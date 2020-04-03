@@ -6,7 +6,7 @@ let state: State
 let room
 const message: ServerMessage = {
   type: "testing",
-  data: 123
+  data: 123,
 }
 
 beforeEach(() => {
@@ -41,7 +41,7 @@ describe("undo", () => {
     expect(room.broadcast).toHaveBeenCalled()
     expect(room.broadcast.mock.calls[0][0]).toMatchObject({
       ...message,
-      undo: true
+      undo: true,
     })
   })
 })

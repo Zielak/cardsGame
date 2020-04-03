@@ -112,12 +112,12 @@ describe("#addChild", () => {
     const e3 = new DumbEntity(state, { parent, idx: 3 })
     entity = new DumbEntity(state)
 
-    expect(parent.getChildren().map(c => c.idx)).toStrictEqual([0, 1, 3])
+    expect(parent.getChildren().map((c) => c.idx)).toStrictEqual([0, 1, 3])
 
     parent.addChild(entity, true)
 
     expect(entity.parent).toBe(parent)
-    expect(parent.getChildren().map(c => c.idx)).toStrictEqual([0, 1, 2, 3])
+    expect(parent.getChildren().map((c) => c.idx)).toStrictEqual([0, 1, 2, 3])
     expect(entity.idx).toBe(0)
     expect(e0.idx).toBe(1)
     expect(e1.idx).toBe(2)

@@ -19,7 +19,7 @@ const secureServer = createServer({ key, cert }, app)
 // Boot up the game
 const gameServer = new Server({
   server: secureServer,
-  express: app
+  express: app,
 })
 gameServer.define("war", WarGame)
 gameServer.listen(443)

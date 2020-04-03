@@ -11,7 +11,7 @@ import { canBeChild, containsChildren } from "../../src/annotations"
   IdentityTrait,
   ParentArrayTrait,
   ChildTrait,
-  OwnershipTrait
+  OwnershipTrait,
 ])
 export class OwnableParent extends Entity<OwnableParent> {}
 

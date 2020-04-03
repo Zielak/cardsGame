@@ -5,7 +5,7 @@ import {
   Target,
   TargetHolder,
   Targets,
-  TargetsHolder
+  TargetsHolder,
 } from "../command"
 import { State } from "../state"
 import { ParentTrait } from "../traits/parent"

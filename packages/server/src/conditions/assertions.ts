@@ -345,7 +345,7 @@ class ConditionAssertions {
   oneOf(values: any[]): this {
     const subject = getFlag(this, "subject")
 
-    const result = values.some(val => subject == val)
+    const result = values.some((val) => subject == val)
 
     this.assert(
       result,
@@ -459,7 +459,7 @@ class ConditionAssertions {
 
       // 2. Current client has to be on the list
       const uiValues = Array.isArray(ui[uiKey]) ? ui[uiKey] : [ui[uiKey]]
-      const result = uiValues.some(client => clientID === client)
+      const result = uiValues.some((client) => clientID === client)
       this.assert(
         result,
         `revealedUI | client doesn't have "${uiKey}" UI presented to him`,
@@ -468,10 +468,10 @@ class ConditionAssertions {
     } else {
       const uiKeys = Object.keys(ui).filter(
         // FIXME: StateUI for some reason needs these keys...
-        key => !["clone", "onAdd", "onRemove", "onChange"].includes(key)
+        (key) => !["clone", "onAdd", "onRemove", "onChange"].includes(key)
       )
 
-      const result = uiKeys.some(key => ui[key].includes(clientID))
+      const result = uiKeys.some((key) => ui[key].includes(clientID))
       this.assert(
         result,
         `revealedUI | client doesn't have any UI revealed`,

@@ -15,11 +15,11 @@ export class FaceUp extends Command {
   }
 
   async execute(state?, room?): Promise<void> {
-    this.targets.get().forEach(e => e.flipUp())
+    this.targets.get().forEach((e) => e.flipUp())
   }
 
   async undo(state?, room?): Promise<void> {
-    this.targets.get().forEach(e => e.flipDown())
+    this.targets.get().forEach((e) => e.flipDown())
   }
 }
 
@@ -35,11 +35,11 @@ export class FaceDown extends Command {
   }
 
   async execute(state?, room?): Promise<void> {
-    this.targets.get().forEach(e => e.flipDown())
+    this.targets.get().forEach((e) => e.flipDown())
   }
 
   async undo(state?, room?): Promise<void> {
-    this.targets.get().forEach(e => e.flipUp())
+    this.targets.get().forEach((e) => e.flipUp())
   }
 }
 
@@ -55,10 +55,10 @@ export class Flip extends Command {
   }
 
   async execute(state?, room?): Promise<void> {
-    this.targets.get().forEach(e => e.flip())
+    this.targets.get().forEach((e) => e.flip())
   }
 
   async undo(state?, room?): Promise<void> {
-    this.targets.get().forEach(e => e.flip())
+    this.targets.get().forEach((e) => e.flip())
   }
 }

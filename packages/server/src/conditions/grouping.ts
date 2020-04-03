@@ -67,7 +67,7 @@ class ConditionGrouping<S extends State> {
     // At least one of these must pass
     const results = []
 
-    const funcs: EitherTuple[] = [...args].map(value => {
+    const funcs: EitherTuple[] = [...args].map((value) => {
       if (!Array.isArray(value)) {
         return ["", value]
       }
@@ -122,7 +122,7 @@ class ConditionGrouping<S extends State> {
       }
       results.push({
         error,
-        result
+        result,
       })
 
       if (result) break
@@ -138,7 +138,7 @@ class ConditionGrouping<S extends State> {
           `either${
             groupName ? ` "${groupName}"` : ""
           } | none of the tests passed:`,
-          ...results.map(({ error }) => error)
+          ...results.map(({ error }) => error),
         ].join(`\n`)
       )
     }

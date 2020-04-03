@@ -54,11 +54,11 @@ module.exports.Battle = class Battle extends Command {
     // TODO: maybe prepare it for more than 2 players setup?
     const containerA = state.query({
       type: "container",
-      owner: state.players[0]
+      owner: state.players[0],
     })
     const containerB = state.query({
       type: "container",
-      owner: state.players[1]
+      owner: state.players[1],
     })
 
     const topA = containerA.query({ type: "pile" }).getTop()
@@ -67,7 +67,7 @@ module.exports.Battle = class Battle extends Command {
     const data = {
       outcome: "",
       winner: undefined,
-      loser: undefined
+      loser: undefined,
     }
 
     const res = sortRank(topA.rank, topB.rank)
@@ -85,27 +85,27 @@ module.exports.Battle = class Battle extends Command {
 
     const subCommands = [
       new commands.Broadcast({ type: "battleResult", data }),
-      new commands.Wait(500)
+      new commands.Wait(500),
     ]
 
     if (data.outcome !== "tie") {
       const losersCards = state
         .query({
           type: "pile",
-          parent: { ownerID: data.loser }
+          parent: { ownerID: data.loser },
         })
         .getChildren()
 
       const winnersCards = state
         .query({
           type: "pile",
-          parent: { ownerID: data.winner }
+          parent: { ownerID: data.winner },
         })
         .getChildren()
 
       const winnersDeck = state.query({
         type: "deck",
-        parent: { ownerID: data.winner }
+        parent: { ownerID: data.winner },
       })
 
       subCommands.push(

@@ -9,22 +9,22 @@ const EL = {
     clientID: document.querySelector("#player .clientID"),
     pile: document.querySelector("#player .pile"),
     deck: document.querySelector("#player .deck"),
-    deckCount: document.querySelector("#player .deck__cardsCount")
+    deckCount: document.querySelector("#player .deck__cardsCount"),
   },
   opponent: {
     container: document.getElementById("opponent"),
     clientID: document.querySelector("#opponent .clientID"),
     pile: document.querySelector("#opponent .pile"),
     deck: document.querySelector("#opponent .deck"),
-    deckCount: document.querySelector("#opponent .deck__cardsCount")
+    deckCount: document.querySelector("#opponent .deck__cardsCount"),
   },
   round: document.getElementById("roundText"),
   ante: document.getElementById("anteText"),
-  endScreen: document.getElementById("endScreen")
+  endScreen: document.getElementById("endScreen"),
 }
 
 const UI = {
-  updateStartButton: state => {
+  updateStartButton: (state) => {
     if (state.isGameStarted) {
       EL.start_btn.disabled = true
     } else if (Object.keys(state.clients).length === 2) {
@@ -39,7 +39,7 @@ const UI = {
     )
     EL[isPlayer ? "player" : "opponent"].clientID.innerHTML = id
   },
-  clientLeft: isPlayer => {
+  clientLeft: (isPlayer) => {
     const which = isPlayer ? "player" : "opponent"
     EL[which].container.classList.add("playerContainer--disconnected")
     EL[which].clientID.innerHTML = ""
@@ -66,7 +66,7 @@ const UI = {
 
     parent.removeChild(elem)
   },
-  playerLost: isPlayer => {
+  playerLost: (isPlayer) => {
     const container = EL[isPlayer ? "player" : "opponent"].container
 
     container.classList.add("playerContainer--loser")
@@ -82,14 +82,14 @@ const UI = {
       EL.gameView.classList.remove("playerContainer--tie")
     }, 1000)
   },
-  updateGameInfo: state => {
+  updateGameInfo: (state) => {
     EL.ante.innerHTML = state.ante
     EL.round.innerHTML = state.round
   },
   gameOver: ({ winner }) => {
     EL.endScreen.style.display = "flex"
     EL.endScreen.innerHTML = `<h1>GAME OVER</h1><p>Player ${winner} is the winner!</p>`
-  }
+  },
 }
 
 /**
@@ -100,12 +100,12 @@ class GameHandler {
   constructor() {
     this.game = new Game({
       wss: {
-        port: 443
-      }
+        port: 443,
+      },
     })
 
     EL.quickJoin_btn.addEventListener("click", () => {
-      this.game.joinOrCreate("war").then(room => {
+      this.game.joinOrCreate("war").then((room) => {
         this.room = room
         this.roomListeners()
       })
@@ -120,13 +120,13 @@ class GameHandler {
       room.send({ data: "start" })
     })
 
-    EL.player.deck.addEventListener("click", event => {
+    EL.player.deck.addEventListener("click", (event) => {
       const idxPath = event.currentTarget.dataset["idxPath"]
       console.log("room.sendInteraction(", event, idxPath, ")")
       room.sendInteraction(event, idxPath)
     })
 
-    room.onMessage = message => {
+    room.onMessage = (message) => {
       console.log("MSG:", message.type, message.data)
 
       if (message.type === "battleResult") {
@@ -141,7 +141,7 @@ class GameHandler {
       }
     }
 
-    room.onStateChange = state => {
+    room.onStateChange = (state) => {
       UI.updateStartButton(state)
       UI.updateGameInfo(state)
     }
@@ -159,7 +159,7 @@ class GameHandler {
       UI.updateStartButton(room.state)
     }
 
-    room.state.childrenContainer.onAdd = container => {
+    room.state.childrenContainer.onAdd = (container) => {
       console.log(`Player's container added!`, container)
       const deck = container.childrenDeck[0]
       const pile = container.childrenPile[0]
@@ -175,15 +175,15 @@ class GameHandler {
         UI.deckCountUpdated(isPlayer, deck.childCount)
       }
 
-      pile.childrenClassicCard.onAdd = card => {
+      pile.childrenClassicCard.onAdd = (card) => {
         UI.pileAddedeCard(isPlayer, card)
       }
-      pile.childrenClassicCard.onRemove = card => {
+      pile.childrenClassicCard.onRemove = (card) => {
         UI.pileRemovedCard(isPlayer, card)
       }
     }
 
-    room.state.onChange = changes => {
+    room.state.onChange = (changes) => {
       changes.forEach(({ field, value, previousValue }) => {
         if (field === "round") {
           EL.player.container.classList.remove("playerContainer--loser")

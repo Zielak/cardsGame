@@ -11,7 +11,7 @@ import { SelectableChildrenTrait } from "../../src/traits/selectableChildren"
   IdentityTrait,
   ParentArrayTrait,
   ChildTrait,
-  SelectableChildrenTrait
+  SelectableChildrenTrait,
 ])
 export class SelectableParent extends Entity<SelectableParentOptions> {}
 

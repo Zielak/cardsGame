@@ -13,7 +13,7 @@ beforeEach(() => {
   entities = [
     new DumbEntity(state),
     new DumbEntity(state),
-    new DumbEntity(state)
+    new DumbEntity(state),
   ]
   parent = new DumbArrayParent(state)
 })

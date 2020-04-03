@@ -11,17 +11,17 @@ const MyAction: ActionTemplate<MyGameState> = {
 
   getInteractions: () => [
     {
-      type: "deck"
-    }
+      type: "deck",
+    },
   ],
 
-  getConditions: con => {
+  getConditions: (con) => {
     con.is.playersTurn
   },
 
   getCommands: (state: MyGameState, event: ServerPlayerEvent) => {
     return NextPlayer()
-  }
+  },
 }
 ```
 
@@ -49,9 +49,9 @@ return [
   {
     type: "classicCard",
     parent: {
-      name: "playersHand"
-    }
-  }
+      name: "playersHand",
+    },
+  },
 ]
 
 // Command "passTurn", most likely invoked by clicking a button.
@@ -61,12 +61,12 @@ return [{ command: "passTurn" }]
 // Either click of a button, or click on a pile
 return [
   {
-    command: "discard"
+    command: "discard",
   },
   {
     type: "pile",
-    name: "mainPile"
-  }
+    name: "mainPile",
+  },
 ]
 ```
 
@@ -82,7 +82,7 @@ Use [`conditions`](./conditions.md), first and only argument of this function, t
 
 ```typescript
 // You can name it `con` for short.
-getConditions: con => {
+getConditions: (con) => {
   con.is.playersTurn
 
   // Grab current player's `hand` and remember it
@@ -92,8 +92,8 @@ getConditions: con => {
       type: "hand",
       parent: {
         owner: con.getPlayer(),
-        type: "container"
-      }
+        type: "container",
+      },
     })
     .as("chosenCards")
 

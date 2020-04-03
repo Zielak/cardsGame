@@ -33,7 +33,7 @@ beforeEach(() => {
 
   event = {
     player: new Player({ clientID: "123" }),
-    entity: top
+    entity: top,
   }
 
   con = new Conditions<State>(state, event)
@@ -130,47 +130,29 @@ describe("oneOf", () => {
   })
   it("passes", () => {
     expect(() =>
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .oneOf(["foo", "bar", "baz"])
+      con.get({ name: "foo" }).its("name").oneOf(["foo", "bar", "baz"])
     ).not.toThrow()
 
     expect(() =>
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .oneOf(["nope", "foo", "bar", "baz"])
+      con.get({ name: "foo" }).its("name").oneOf(["nope", "foo", "bar", "baz"])
     ).not.toThrow()
 
     expect(() =>
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .not.oneOf(["bar", "baz"])
+      con.get({ name: "foo" }).its("name").not.oneOf(["bar", "baz"])
     ).not.toThrow()
   })
 
   it("fails as expected", () => {
     expect(() => {
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .oneOf(["bar", "baz"])
+      con.get({ name: "foo" }).its("name").oneOf(["bar", "baz"])
     }).toThrow()
 
     expect(() => {
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .not.oneOf(["foo", "bar"])
+      con.get({ name: "foo" }).its("name").not.oneOf(["foo", "bar"])
     }).toThrow()
 
     expect(() => {
-      con
-        .get({ name: "foo" })
-        .its("name")
-        .not.oneOf(["baz", "foo", "bar"])
+      con.get({ name: "foo" }).its("name").not.oneOf(["baz", "foo", "bar"])
     }).toThrow()
   })
 })
@@ -199,7 +181,7 @@ describe("full", () => {
   beforeEach(() => {
     grid = new Grid(state, {
       columns: 2,
-      rows: 2
+      rows: 2,
     })
   })
 
@@ -282,18 +264,8 @@ test("matchesPropOf", () => {
   con.set(bottom).as("bottom")
   con.set(top).as("top")
 
-  expect(() =>
-    con
-      .get("bottom")
-      .its("type")
-      .matchesPropOf("top")
-  ).not.toThrow()
-  expect(() =>
-    con
-      .get("top")
-      .its("type")
-      .matchesPropOf("bottom")
-  ).not.toThrow()
+  expect(() => con.get("bottom").its("type").matchesPropOf("top")).not.toThrow()
+  expect(() => con.get("top").its("type").matchesPropOf("bottom")).not.toThrow()
 
   expect(() => con.get(top).matchesPropOf("bottom")).toThrow()
   expect(() => con.set([]).matchesPropOf("bottom")).toThrow()

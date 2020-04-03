@@ -64,16 +64,13 @@ con.state.its("round").above(10)
 con.its("round").above(10)
 
 // On an entity
-con
-  .get({ type: "deck" })
-  .its("angle")
-  .equals(90)
+con.get({ type: "deck" }).its("angle").equals(90)
 
 // Or anything else
 con
   .set({
     propA: "foo",
-    propB: "bar"
+    propB: "bar",
   })
   .its("propB")
   .equals("bar")

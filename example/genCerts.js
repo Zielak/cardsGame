@@ -2,7 +2,7 @@ const { execSync } = require("child_process")
 const { readFileSync, mkdirSync, existsSync } = require("fs")
 const { join } = require("path")
 
-module.exports = function() {
+module.exports = function () {
   const certsDir = join(__dirname, "./certs/")
   const configLocation = join(certsDir, "config")
   const keyLocation = join(certsDir, "localhost.key")
@@ -17,13 +17,13 @@ module.exports = function() {
       `openssl req -x509 -out ${certLocation} -keyout ${keyLocation}`,
       "-newkey rsa:2048 -nodes -sha256",
       "-subj '/CN=localhost' -extensions EXT",
-      `-config ${configLocation}`
+      `-config ${configLocation}`,
     ]
     execSync(command.join(" "))
   }
 
   return {
     key: readFileSync(keyLocation),
-    cert: readFileSync(certLocation)
+    cert: readFileSync(certLocation),
   }
 }

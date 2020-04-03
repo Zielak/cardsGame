@@ -2,7 +2,7 @@ import { State } from "../../src/state"
 import {
   Select,
   Deselect,
-  ToggleSelection
+  ToggleSelection,
 } from "../../src/commands/selectChild"
 import { Hand } from "../../src/entities/hand"
 import { ClassicCard } from "../../src/entities/classicCard"

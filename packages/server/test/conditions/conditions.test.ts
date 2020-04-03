@@ -25,7 +25,7 @@ beforeEach(() => {
 
   event = {
     player: new Player({ clientID: "123" }),
-    entity: top
+    entity: top,
   }
 
   con = new Conditions<State>(state, event)
@@ -97,14 +97,10 @@ describe("subject changing", () => {
         con
           .set([
             { rank: "K", suit: "H" },
-            { rank: "K", suit: "S" }
+            { rank: "K", suit: "S" },
           ])
-          .each(con => {
-            con
-              .its("rank")
-              .equals("K")
-              .its("suit")
-              .oneOf(["S", "H"])
+          .each((con) => {
+            con.its("rank").equals("K").its("suit").oneOf(["S", "H"])
           })
       }).not.toThrow()
     })
@@ -114,14 +110,10 @@ describe("subject changing", () => {
         con
           .set([
             { rank: "5", suit: "H" },
-            { rank: "K", suit: "S" }
+            { rank: "K", suit: "S" },
           ])
-          .each(con => {
-            con
-              .its("rank")
-              .equals("K")
-              .its("suit")
-              .oneOf(["S", "H"])
+          .each((con) => {
+            con.its("rank").equals("K").its("suit").oneOf(["S", "H"])
           })
       }).toThrow()
 
@@ -129,14 +121,10 @@ describe("subject changing", () => {
         con
           .set([
             { rank: "K", suit: "H" },
-            { rank: "5", suit: "D" }
+            { rank: "5", suit: "D" },
           ])
-          .each(con => {
-            con
-              .its("rank")
-              .equals("K")
-              .its("suit")
-              .oneOf(["S", "H"])
+          .each((con) => {
+            con.its("rank").equals("K").its("suit").oneOf(["S", "H"])
           })
       }).toThrow()
     })
@@ -145,14 +133,10 @@ describe("subject changing", () => {
         con
           .set([
             { rank: "5", suit: "D" },
-            { rank: "K", suit: "D" }
+            { rank: "K", suit: "D" },
           ])
-          .each(con => {
-            con
-              .its("rank")
-              .equals("K")
-              .its("suit")
-              .oneOf(["S", "H"])
+          .each((con) => {
+            con.its("rank").equals("K").its("suit").oneOf(["S", "H"])
           })
       }).toThrow()
     })
@@ -170,38 +154,13 @@ describe("nthChild", () => {
     con.get({ name: "parent" }).as("parent")
 
     // Entities
-    expect(() =>
-      con
-        .get("parent")
-        .nthChild(0)
-        .equals(bottom)
-    ).not.toThrow()
-    expect(() =>
-      con
-        .get("parent")
-        .nthChild(2)
-        .equals(child)
-    ).not.toThrow()
-    expect(() =>
-      con
-        .get("parent")
-        .nthChild(4)
-        .equals(top)
-    ).not.toThrow()
+    expect(() => con.get("parent").nthChild(0).equals(bottom)).not.toThrow()
+    expect(() => con.get("parent").nthChild(2).equals(child)).not.toThrow()
+    expect(() => con.get("parent").nthChild(4).equals(top)).not.toThrow()
 
     // Simple array
-    expect(() =>
-      con
-        .set([0, 1, 2, 3])
-        .nthChild(0)
-        .equals(0)
-    ).not.toThrow()
-    expect(() =>
-      con
-        .set([0, 1, 2, 3])
-        .nthChild(0)
-        .equals(3)
-    ).toThrow()
+    expect(() => con.set([0, 1, 2, 3]).nthChild(0).equals(0)).not.toThrow()
+    expect(() => con.set([0, 1, 2, 3]).nthChild(0).equals(3)).toThrow()
   })
 
   test("invalid cases", () => {
@@ -240,7 +199,7 @@ test("length", () => {
   expect(() => con.set("12345").length.equals(5)).not.toThrow()
   expect(() => con.set(["a", "b", "c"]).length.equals(3)).not.toThrow()
 
-  expect(() => con.set(function() {}).length.equals(0)).not.toThrow()
+  expect(() => con.set(function () {}).length.equals(0)).not.toThrow()
   expect(() => con.set(500).length).toThrow()
 })
 
@@ -348,13 +307,13 @@ describe("each", () => {
 
     it("tests an array", () => {
       expect(() =>
-        con.set([5, 10, 15]).each(con => {
+        con.set([5, 10, 15]).each((con) => {
           con.is.above(3)
         })
       ).not.toThrow()
 
       expect(() =>
-        con.set([15, 10, 5]).each(con => {
+        con.set([15, 10, 5]).each((con) => {
           con.is.above(3)
         })
       ).not.toThrow()
@@ -364,20 +323,20 @@ describe("each", () => {
   describe("fail", () => {
     it("tests an array", () => {
       expect(() =>
-        con.set([5, 10, 15]).each(con => {
+        con.set([5, 10, 15]).each((con) => {
           con.is.above(6)
         })
       ).toThrow()
 
       expect(() =>
-        con.set([15, 10, 5]).each(con => {
+        con.set([15, 10, 5]).each((con) => {
           con.is.above(6)
         })
       ).toThrow()
     })
 
     test("incorrect subject", () => {
-      expect(() => con.set("whoops").each(con => con.empty())).toThrow(
+      expect(() => con.set("whoops").each((con) => con.empty())).toThrow(
         /to be an array/
       )
     })

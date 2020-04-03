@@ -12,10 +12,10 @@ export class VisibilityData {
     if (!Array.isArray(keys)) {
       keys = [keys]
     }
-    keys.forEach(key => {
+    keys.forEach((key) => {
       this.data[key] = {
         toEveryone,
-        toOwner
+        toOwner,
       }
     })
   }

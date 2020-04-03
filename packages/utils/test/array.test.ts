@@ -1,7 +1,7 @@
 import {
   arrayWith,
   sortAlphabetically,
-  sortAlphaNumerically
+  sortAlphaNumerically,
 } from "../src/arrays"
 
 test("arrayWith", () => {
@@ -13,12 +13,12 @@ test("sortAlphabetically", () => {
   expect(["East", "Cry", "Tree"].sort(sortAlphabetically)).toStrictEqual([
     "Cry",
     "East",
-    "Tree"
+    "Tree",
   ])
   expect(["Two", "One", "Two"].sort(sortAlphabetically)).toStrictEqual([
     "One",
     "Two",
-    "Two"
+    "Two",
   ])
 })
 

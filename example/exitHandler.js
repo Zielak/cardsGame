@@ -1,4 +1,4 @@
-module.exports = function(onClose) {
+module.exports = function (onClose) {
   process.stdin.resume()
 
   function exitHandler(options) {

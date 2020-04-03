@@ -37,7 +37,7 @@ import { OwnershipTrait } from "../traits/ownership"
   ChildTrait,
   TwoSidedTrait,
   LabelTrait,
-  OwnershipTrait
+  OwnershipTrait,
 ])
 export class ClassicCard extends Entity<ClassicCardOptions> {
   // @filter(faceDownOnlyOwner)
@@ -92,7 +92,7 @@ export const standardDeckFactory = (
   const cards: ClassicCard[] = suits.reduce(
     (prevS, suit) => [
       ...prevS,
-      ...ranks.reduce((prevR, rank) => [...prevR, { suit, rank }], [])
+      ...ranks.reduce((prevR, rank) => [...prevR, { suit, rank }], []),
     ],
     []
   )

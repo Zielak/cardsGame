@@ -1,6 +1,6 @@
 import {
   standardDeckFactory,
-  ClassicCard
+  ClassicCard,
 } from "../../src/entities/classicCard"
 import { State } from "../../src/state"
 
@@ -57,8 +57,8 @@ describe("standardDeckFactory", () => {
     const cards = standardDeckFactory()
 
     expect(cards.length).toBe(52)
-    expect(cards.some(el => el === undefined)).toBeFalsy()
-    expect(cards.every(el => typeof el.suit === "string")).toBeTruthy()
-    expect(cards.every(el => typeof el.rank === "string")).toBeTruthy()
+    expect(cards.some((el) => el === undefined)).toBeFalsy()
+    expect(cards.every((el) => typeof el.suit === "string")).toBeTruthy()
+    expect(cards.every((el) => typeof el.rank === "string")).toBeTruthy()
   })
 })

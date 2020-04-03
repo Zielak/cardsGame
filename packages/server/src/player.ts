@@ -58,7 +58,7 @@ const randomPlayerNames = [
   "Witeck",
   "Xavier",
   "Yumi",
-  "Zoltan"
+  "Zoltan",
 ]
 function getRandomName(): string {
   randomPlayerNames.sort(() => {

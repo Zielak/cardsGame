@@ -2,7 +2,7 @@ import {
   type as colType,
   DefinitionType,
   Context,
-  Schema
+  Schema,
 } from "@colyseus/schema"
 import { globalContext } from "@colyseus/schema/lib/annotations"
 
@@ -27,7 +27,7 @@ export function type(
   typeDef: DefinitionType,
   context?: Context
 ): PropertyDecorator {
-  return function(target: typeof Schema, field: string): void {
+  return function (target: typeof Schema, field: string): void {
     const constructor = target.constructor as typeof Schema
 
     // let logType: any = `"${typeDef}"`
@@ -102,7 +102,7 @@ export function canBeChild(childConstructor: Function): void {
   registeredParents
     .filter(({ childrenSynced }) => childrenSynced)
     .map(({ con }) => con)
-    .forEach(parentConstructor =>
+    .forEach((parentConstructor) =>
       synchChildrenArray(parentConstructor, childConstructor)
     )
 
@@ -134,16 +134,16 @@ export function containsChildren(childrenSynced = true) {
     // Remember this parent
     registeredParents.push({
       con: parentConstructor,
-      childrenSynced
+      childrenSynced,
     })
 
     Object.defineProperty(parentConstructor.prototype, "__syncChildren", {
-      value: childrenSynced
+      value: childrenSynced,
     })
 
     // Add all known children kinds to this one
     if (childrenSynced) {
-      registeredChildren.forEach(childConstructor =>
+      registeredChildren.forEach((childConstructor) =>
         synchChildrenArray(parentConstructor, childConstructor)
       )
     }

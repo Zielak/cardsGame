@@ -71,7 +71,7 @@ export class State extends Entity<{}> {
    */
   getPlayersIndex(player: Player): number {
     return parseInt(
-      Object.keys(this.players).find(idx => this.players[idx] === player)
+      Object.keys(this.players).find((idx) => this.players[idx] === player)
     )
   }
 
@@ -155,7 +155,7 @@ export class State extends Entity<{}> {
   }
 
   logTreeState(logger: any = logs, startingPoint?: ParentTrait) {
-    const travel = parent => {
+    const travel = (parent) => {
       parent
         .getChildren()
         .map((child: ChildTrait & LabelTrait, idx, entities) => {

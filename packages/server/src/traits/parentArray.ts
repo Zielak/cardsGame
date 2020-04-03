@@ -15,7 +15,7 @@ import {
   pickByIdx,
   query,
   queryAll,
-  sortByIdx
+  sortByIdx,
 } from "./parent"
 
 export class ParentArrayTrait implements ParentTrait {
@@ -56,7 +56,7 @@ export class ParentArrayTrait implements ParentTrait {
 
     const targetArray: ArraySchema = this[targetArrayName]
 
-    const childIdx = targetArray.findIndex(el => el.idx === idx)
+    const childIdx = targetArray.findIndex((el) => el.idx === idx)
 
     this.childrenPointers.splice(idx, 1)
 
@@ -95,7 +95,7 @@ export class ParentArrayTrait implements ParentTrait {
 
       this.getChildren()
         .reverse()
-        .forEach(child => {
+        .forEach((child) => {
           child.idx = child.idx + 1
           executeHook.call(this, "childIndexUpdated", child.idx - 1, child.idx)
         })
@@ -110,8 +110,8 @@ export class ParentArrayTrait implements ParentTrait {
 
       this.getChildren()
         .reverse()
-        .filter(child => child.idx >= arg1)
-        .forEach(child => {
+        .filter((child) => child.idx >= arg1)
+        .forEach((child) => {
           child.idx = child.idx + 1
           executeHook.call(this, "childIndexUpdated", child.idx - 1, child.idx)
         })
@@ -126,7 +126,7 @@ export class ParentArrayTrait implements ParentTrait {
   }
 
   addChildren(entities: ChildTrait[]) {
-    entities.forEach(entity => this.addChild(entity))
+    entities.forEach((entity) => this.addChild(entity))
   }
 
   moveChildTo(from: number, to: number) {
@@ -235,7 +235,7 @@ export class ParentArrayTrait implements ParentTrait {
     this.childrenPointers = []
 
     this.getChildren().forEach((child, newIdx) => {
-      const con = registeredChildren.find(con => child instanceof con)
+      const con = registeredChildren.find((con) => child instanceof con)
       const prevIndex = child.idx
 
       this.childrenPointers[newIdx] = con.name
@@ -264,7 +264,7 @@ ParentArrayTrait.prototype.queryAll = queryAll
     true
   )
 
-  registeredChildren.forEach(con => {
+  registeredChildren.forEach((con) => {
     if ((this as any).__syncChildren === false) {
       this[`children${con.name}`] = []
     } else {
@@ -273,14 +273,14 @@ ParentArrayTrait.prototype.queryAll = queryAll
   })
 }
 ;(ParentArrayTrait as any).hooks = {
-  childAdded: function(this: ParentArrayTrait, child: ChildTrait): void {
+  childAdded: function (this: ParentArrayTrait, child: ChildTrait): void {
     if (this.childAdded) {
       this.childAdded(child)
     }
   },
-  childRemoved: function(this: ParentArrayTrait, idx: number): void {
+  childRemoved: function (this: ParentArrayTrait, idx: number): void {
     if (this.childRemoved) {
       this.childRemoved(idx)
     }
-  }
+  },
 }
