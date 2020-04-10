@@ -9,7 +9,7 @@ export const mapCompose = (
   return functions.reduce((prevArr, fn, idx) => {
     if (typeof fn === "function") {
       return prevArr.map(fn)
-    } else if (typeof fn === "undefined") {
+    } else if (typeof fn === "undefined" || fn === false) {
       return prevArr
     } else {
       throw new Error(

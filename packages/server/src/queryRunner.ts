@@ -35,7 +35,7 @@ export type EveryTraitsOptionsKeys =
   | "angle"
   | "owner"
   | "ownerID"
-  | "isInOwnersView"
+  | "ownersMainFocus"
   | "hijacksInteractionTarget"
   | "maxChildren"
   | "faceUp"

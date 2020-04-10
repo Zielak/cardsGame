@@ -5,7 +5,7 @@ Object {
   "angle": 0,
   "faceUp": false,
   "idx": 0,
-  "isInOwnersView": false,
+  "ownersMainFocus": false,
   "name": "HA",
   "rank": "A",
   "suit": "H",

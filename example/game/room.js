@@ -55,7 +55,7 @@ class WarGame extends Room {
       // Eeach player will has his own Container.
       const container = new Container(state, {
         owner: player,
-        isInOwnersView: true,
+        ownersMainFocus: true,
       })
 
       // Create a Deck to contain all player's cards

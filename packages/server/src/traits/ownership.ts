@@ -24,7 +24,7 @@ export class OwnershipTrait {
 
   ownerID: string
 
-  isInOwnersView: boolean
+  ownersMainFocus: boolean
 
   /**
    * Get the real owner of this thing, by traversing `this.parent` chain.
@@ -51,7 +51,7 @@ export class OwnershipTrait {
 }
 
 ;(OwnershipTrait as any).typeDef = {
-  isInOwnersView: "boolean",
+  ownersMainFocus: "boolean",
   ownerID: "string",
 }
 ;(OwnershipTrait as any).trait = function OwnershipTrait(
@@ -59,5 +59,5 @@ export class OwnershipTrait {
   options: Partial<OwnershipTrait> = {}
 ) {
   this.owner = def(options.owner, undefined)
-  this.isInOwnersView = def(options.isInOwnersView, false)
+  this.ownersMainFocus = def(options.ownersMainFocus, false)
 }

@@ -20,7 +20,7 @@ export interface QuerableProps
       | "angle"
       | "owner"
       | "ownerID"
-      | "isInOwnersView"
+      | "ownersMainFocus"
       | "hijacksInteractionTarget"
       | "faceUp"
     >
