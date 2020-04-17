@@ -21,6 +21,9 @@ import { ParentArrayTrait } from "../traits/parentArray"
 
 class TopDeckElement extends Schema {}
 defineTypes(TopDeckElement, getAllChildrensTypes())
+interface TopDeckElement {
+  [key: string]: any
+}
 
 @canBeChild
 @containsChildren(false)
@@ -55,11 +58,17 @@ export class Deck extends Entity<DeckOptions> {
   }
 
   updateTopElement(child: { [key: string]: any }) {
-    const whitelist = Object.keys(getAllChildrensTypes())
+    if (!child) {
+      Object.keys(this.topDeck).forEach(
+        (key) => (this.topDeck[key] = undefined)
+      )
+    } else {
+      const whitelist = Object.keys(getAllChildrensTypes())
 
-    whitelist.forEach((key) => {
-      this.topDeck[key] = child[key]
-    })
+      whitelist.forEach((key) => {
+        this.topDeck[key] = child[key]
+      })
+    }
   }
 }
 
