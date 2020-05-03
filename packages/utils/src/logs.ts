@@ -73,7 +73,7 @@ const syntaxHighlight = (arg: any) => {
 
 let indentLevel = 0
 
-const getIndent = (): string => {
+function getIndent(): string {
   return Array(indentLevel).fill("│ ").join("")
 }
 
@@ -211,4 +211,89 @@ if (logLevel < LogLevels.notice) {
 }
 if (logLevel < LogLevels.verbose) {
   logs.verbose = noop
+}
+
+export interface Logs {
+  error: (...any) => void
+  warn: (...any) => void
+  info: (...any) => void
+  notice: (...any) => void
+  verbose: (...any) => void
+  group: (...any) => void
+  groupCollapsed: (...any) => void
+  groupEnd: () => void
+}
+/**
+ * Local logging utility
+ * TODO: whoops, port it to server environment too!
+ */
+export class Logs {
+  constructor(name: string, style: string, enabled = false) {
+    this["error"] =
+      logLevel < LogLevels.error && enabled
+        ? noop
+        : (function () {
+            return Function.prototype.bind.call(
+              console.error,
+              console,
+              `%c ${name} `,
+              style
+            )
+          })()
+    this["warn"] =
+      logLevel < LogLevels.warn && enabled
+        ? noop
+        : (function () {
+            return Function.prototype.bind.call(
+              console.warn,
+              console,
+              `%c ${name} `,
+              style
+            )
+          })()
+    this["info"] =
+      logLevel < LogLevels.info && enabled
+        ? noop
+        : (function () {
+            return Function.prototype.bind.call(
+              console.info,
+              console,
+              `%c ${name} `,
+              style
+            )
+          })()
+    this["notice"] =
+      logLevel < LogLevels.notice && enabled
+        ? noop
+        : (function () {
+            return Function.prototype.bind.call(
+              console.log,
+              console,
+              `%c ${name} `,
+              style
+            )
+          })()
+    this["verbose"] =
+      logLevel < LogLevels.verbose && enabled
+        ? noop
+        : (function () {
+            return Function.prototype.bind.call(
+              console.debug,
+              console,
+              `%c ${name} `,
+              style
+            )
+          })()
+    this["group"] = enabled
+      ? noop
+      : console.group.bind(console, `%c ${name} `, style)
+    this["groupCollapsed"] = enabled
+      ? noop
+      : console.groupCollapsed.bind(console, `%c ${name} `, style)
+    this["groupEnd"] = enabled
+      ? noop
+      : (function () {
+          return Function.prototype.bind.call(console.groupEnd, console)
+        })()
+  }
 }
