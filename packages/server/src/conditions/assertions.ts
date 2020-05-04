@@ -487,10 +487,9 @@ class ConditionAssertions {
   // === Assertions which ignore current subject ===
 
   /**
-   * Ignores current subject.
    * @asserts that player is interacting with an entity which belongs to them
    */
-  get owner(): this {
+  playerOwnsThisEntity(): this {
     const entity = getFlag(this, "entity")
     const player = getFlag(this, "player")
 
@@ -512,10 +511,9 @@ class ConditionAssertions {
   }
 
   /**
-   * Ignores current subject
    * @asserts if interacting player currently has the turn.
    */
-  get playersTurn(): this {
+  itsPlayersTurn(): this {
     const { currentPlayer } = getFlag(this, "state")
     const player = getFlag(this, "player")
 

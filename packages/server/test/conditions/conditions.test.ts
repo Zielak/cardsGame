@@ -370,7 +370,7 @@ describe("either", () => {
 describe("setFlag", () => {
   it("throws with invalid target", () => {
     expect(() => {
-      setFlag({}, "test", "foo")
+      setFlag({}, "data", "foo")
     }).toThrowError(/Incompatible target/)
   })
 })

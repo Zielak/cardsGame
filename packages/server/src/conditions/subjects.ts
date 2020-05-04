@@ -31,6 +31,17 @@ class ConditionSubjects {
   }
 
   /**
+   * Changes subject to owner of current entity
+   * @yields `player`
+   */
+  get owner(): this {
+    setFlag(this, "subject", getFlag(this, "player").owner)
+    resetPropDig(this)
+
+    return this
+  }
+
+  /**
    * Changes subject to interacted entity
    * @yields `entity` from players interaction
    */

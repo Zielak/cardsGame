@@ -1,11 +1,23 @@
-export function getFlag(target, flagName: string): any {
+type ConditionsFlag =
+  | "state"
+  | "event"
+  | "player"
+  | "entity"
+  | "data"
+  | "subject"
+  | "propName"
+  | "propParent"
+  | "not"
+  | "eitherLevel"
+
+export function getFlag(target, flagName: ConditionsFlag): any {
   if (!target._flags) {
     throw new Error(`flag | Incompatible target.`)
   }
   return target._flags.get(flagName)
 }
 
-export function setFlag(target, flagName: string, value: any): void {
+export function setFlag(target, flagName: ConditionsFlag, value: any): void {
   if (!target._flags) {
     throw new Error(`flag | Incompatible target.`)
   }
