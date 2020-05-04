@@ -107,7 +107,7 @@ jobs:
   test:
     executor: my-executor
     steps:
-      - checkout:
+      - checkout
       - attach_workspace:
           at: ~/repo
       - run:
