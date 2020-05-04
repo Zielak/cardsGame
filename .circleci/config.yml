@@ -104,15 +104,39 @@ jobs:
           paths:
             - packages/*/lib
 
-  coverage:
+  test:
+    executor: my-executor
+    steps:
+      - checkout:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Just run the tests
+          command: npm run test:cover
+
+  test-cover:
     executor: my-executor
     steps:
       - checkout
       - attach_workspace:
           at: ~/repo
       - run:
-          name: Test & Coverage report
+          name: Test & save coverage report
           command: npm run test:ci
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - coverage
+
+  coveralls:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Send coverasge report to Coveralls
+          command: npm run test:ci_coveralls
 
   sonarcloud:
     executor: my-executor
@@ -165,14 +189,24 @@ workflows:
           requires:
             - build-utils
 
-      - coverage:
+      - test:
           requires:
+            - install
             - build-utils
+
+      - test-cover:
+          requires:
+            - install
+            - build-utils
+
+      - coveralls:
+          requires:
+            - test-cover
 
       - sonarcloud:
           context: SonarCloud
           requires:
-            - build-utils
+            - test-cover
 
       - publish:
           requires:
@@ -180,9 +214,7 @@ workflows:
             - linting
             - build-utils
             - build-server-client
-            - coverage
+            - test
           filters:
-            branches:
-              only: master
             tags:
-              only: /v([\.0-9]+)/
+              only: /^v.*/
