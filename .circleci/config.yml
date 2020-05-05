@@ -72,47 +72,22 @@ jobs:
             - packages/*/lib
             - packages/*/node_modules
 
-  build-utils:
-    executor: my-executor
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/repo
-      - run: npm run build:utils
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - node_modules
-            - packages/*/lib
-            - packages/*/node_modules
-
-  # Last step, right before publishing.
-  # So only built /lib is actually required, no node_modules.
-  build-server-client:
+  build:
     executor: my-executor
     steps:
       - checkout
       - attach_workspace:
           at: ~/repo
       - run:
-          name: Build Server and Client
+          name: Build Utils, Server and Client
           command: |
+            npm run build:utils
             npm run build:server
             npm run build:client
       - persist_to_workspace:
           root: ~/repo
           paths:
             - packages/*/lib
-
-  test:
-    executor: my-executor
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/repo
-      - run:
-          name: Just run the tests
-          command: npm run test:cover
 
   test-cover:
     executor: my-executor
@@ -136,7 +111,7 @@ jobs:
           at: ~/repo
       - run:
           name: Send coverasge report to Coveralls
-          command: npm run test:ci_coveralls
+          command: coveralls < coverage/lcov.info
 
   sonarcloud:
     executor: my-executor
@@ -177,7 +152,7 @@ workflows:
     jobs:
       - install
 
-      - build-utils:
+      - build:
           requires:
             - install
 
@@ -185,36 +160,37 @@ workflows:
           requires:
             - install
 
-      - build-server-client:
-          requires:
-            - build-utils
-
-      - test:
+      - build:
           requires:
             - install
-            - build-utils
 
       - test-cover:
           requires:
-            - install
-            - build-utils
+            - build
 
       - coveralls:
           requires:
             - test-cover
+          filters:
+            tags:
+              ignore: /^v.*/
 
       - sonarcloud:
           context: SonarCloud
           requires:
             - test-cover
+          filters:
+            tags:
+              ignore: /^v.*/
 
       - publish:
           requires:
             - install
+            - build
             - linting
-            - build-utils
-            - build-server-client
-            - test
+            - test-cover
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
