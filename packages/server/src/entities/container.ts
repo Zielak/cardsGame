@@ -20,7 +20,7 @@ import { ParentArrayTrait } from "../traits/parentArray"
 ])
 export class Container extends Entity<ContainerOptions> {
   hijacksInteractionTarget = false
-  create() {
+  create(): void {
     this.type = "container"
   }
 }

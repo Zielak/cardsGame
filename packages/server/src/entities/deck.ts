@@ -40,18 +40,18 @@ export class Deck extends Entity<DeckOptions> {
 
   @type(TopDeckElement) topDeck: TopDeckElement
 
-  create(state: State, options: DeckOptions = {}) {
+  create(state: State, options: DeckOptions = {}): void {
     this.name = def(options.name, "Deck")
     this.type = def(options.type, "deck")
 
     this.childCount = 0
     this.topDeck = new TopDeckElement()
 
-    this.childAdded = (child: ChildTrait) => {
+    this.childAdded = (child: ChildTrait): void => {
       this.childCount++
       this.updateTopElement(child)
     }
-    this.childRemoved = (idx: number) => {
+    this.childRemoved = (idx: number): void => {
       this.childCount--
       this.updateTopElement(this.getTop())
     }

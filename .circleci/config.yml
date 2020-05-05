@@ -150,19 +150,31 @@ workflows:
   version: 2
   build-test-and-publish:
     jobs:
-      - install
+      - install:
+          filters:
+            tags:
+              only: /^v.*/
 
       - build:
           requires:
             - install
+          filters:
+            tags:
+              only: /^v.*/
 
       - linting:
           requires:
             - install
+          filters:
+            tags:
+              only: /^v.*/
 
       - test-cover:
           requires:
             - build
+          filters:
+            tags:
+              only: /^v.*/
 
       - coveralls:
           requires:
@@ -186,5 +198,7 @@ workflows:
             - linting
             - test-cover
           filters:
-            branches:
+            tags:
               only: /^v.*/
+            branches:
+              ignore: /.*/

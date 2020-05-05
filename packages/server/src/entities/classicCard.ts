@@ -46,7 +46,7 @@ export class ClassicCard extends Entity<ClassicCardOptions> {
   // @filter(faceDownOnlyOwner)
   @type("string") rank: string
 
-  create(state: State, options: ClassicCardOptions = {}) {
+  create(state: State, options: ClassicCardOptions = {}): void {
     this.suit = def(options.suit, "X")
     this.rank = def(options.rank, "Y")
     this.name = options.suit + options.rank
