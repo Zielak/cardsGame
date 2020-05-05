@@ -160,10 +160,6 @@ workflows:
           requires:
             - install
 
-      - build:
-          requires:
-            - install
-
       - test-cover:
           requires:
             - build
