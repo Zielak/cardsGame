@@ -14,7 +14,7 @@ export function hasOwnership(entity: any): entity is OwnershipTrait {
 
 export class OwnershipTrait {
   protected _owner: Player
-  get owner() {
+  get owner(): Player {
     return this._owner
   }
   set owner(value: Player) {
@@ -50,14 +50,14 @@ export class OwnershipTrait {
   }
 }
 
-;(OwnershipTrait as any).typeDef = {
+OwnershipTrait["typeDef"] = {
   ownersMainFocus: "boolean",
   ownerID: "string",
 }
-;(OwnershipTrait as any).trait = function OwnershipTrait(
+OwnershipTrait["trait"] = function constructorOwnershipTrait(
   state: State,
   options: Partial<OwnershipTrait> = {}
-) {
+): void {
   this.owner = def(options.owner, undefined)
   this.ownersMainFocus = def(options.ownersMainFocus, false)
 }

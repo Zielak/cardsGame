@@ -220,6 +220,8 @@ export class ParentMapTrait implements ParentTrait {
 
   getFirstEmptySpot(): number {
     const bottom = this.getBottom()
+    let idx = 0
+
     if (bottom && bottom.idx !== 0) {
       return 0
     }
@@ -232,11 +234,11 @@ export class ParentMapTrait implements ParentTrait {
       }
       return -1
     }
-    let i = 0
-    while (this.getChild(i)) {
-      i++
+
+    while (this.getChild(idx)) {
+      idx++
     }
-    return i
+    return idx
   }
 
   getLastEmptySpot(): number {
@@ -291,10 +293,10 @@ export interface ParentMapTrait extends ParentTrait {}
 
 ParentMapTrait.prototype.query = query
 ParentMapTrait.prototype.queryAll = queryAll
-;(ParentMapTrait as any).trait = function ParentMapTrait(
+ParentMapTrait["trait"] = function constructorParentMapTrait(
   state: State,
   options: Partial<ParentMapTrait> = {}
-) {
+): void {
   this.childrenPointers = new Map()
 
   this.hijacksInteractionTarget = def(
@@ -305,20 +307,20 @@ ParentMapTrait.prototype.queryAll = queryAll
   this.maxChildren = def(options.maxChildren, this.maxChildren, Infinity)
 
   registeredChildren.forEach((con) => {
-    if ((this as any).__syncChildren === false) {
+    if (this.__syncChildren === false) {
       this[`children${con.name}`] = []
     } else {
       this[`children${con.name}`] = new ArraySchema()
     }
   })
 }
-;(ParentMapTrait as any).hooks = {
-  childAdded: function (this: ParentMapTrait, child: ChildTrait) {
+ParentMapTrait["hooks"] = {
+  childAdded: function (this: ParentMapTrait, child: ChildTrait): void {
     if (this.childAdded) {
       this.childAdded(child)
     }
   },
-  childRemoved: function (this: ParentMapTrait, idx: number) {
+  childRemoved: function (this: ParentMapTrait, idx: number): void {
     if (this.childRemoved) {
       this.childRemoved(idx)
     }

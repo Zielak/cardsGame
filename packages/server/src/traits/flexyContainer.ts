@@ -14,15 +14,15 @@ export class FlexyTrait {
     | "spaceEvenly"
 }
 
-;(FlexyTrait as any).trait = function FlexyTrait(
+FlexyTrait["trait"] = function constructorFlexyTrait(
   state: State,
   options: Partial<FlexyTrait> = {}
-) {
+): void {
   this.alignItems = def(options.alignItems, "center")
   this.directionReverse = def(options.directionReverse, false)
   this.justifyContent = def(options.justifyContent, "start")
 }
-;(FlexyTrait as any).typeDef = {
+FlexyTrait["typeDef"] = {
   alignItems: "string",
   directionReverse: "boolean",
   justifyContent: "string",

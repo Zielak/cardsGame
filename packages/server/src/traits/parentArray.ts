@@ -125,11 +125,11 @@ export class ParentArrayTrait implements ParentTrait {
     executeHook.call(this, "childAdded", entity)
   }
 
-  addChildren(entities: ChildTrait[]) {
+  addChildren(entities: ChildTrait[]): void {
     entities.forEach((entity) => this.addChild(entity))
   }
 
-  moveChildTo(from: number, to: number) {
+  moveChildTo(from: number, to: number): void {
     // 1. pluck out the FROM
     const child = this.getChild(from)
     if (!child) {
@@ -235,7 +235,7 @@ export class ParentArrayTrait implements ParentTrait {
     this.childrenPointers = []
 
     this.getChildren().forEach((child, newIdx) => {
-      const con = registeredChildren.find((con) => child instanceof con)
+      const con = registeredChildren.find((c) => child instanceof c)
       const prevIndex = child.idx
 
       this.childrenPointers[newIdx] = con.name
@@ -252,7 +252,7 @@ export interface ParentArrayTrait extends ParentTrait {}
 
 ParentArrayTrait.prototype.query = query
 ParentArrayTrait.prototype.queryAll = queryAll
-;(ParentArrayTrait as any).trait = function ParentArrayTrait(
+ParentArrayTrait["trait"] = function constructorParentArrayTrait(
   state: State,
   options: Partial<ParentArrayTrait> = {}
 ): void {
@@ -265,14 +265,14 @@ ParentArrayTrait.prototype.queryAll = queryAll
   )
 
   registeredChildren.forEach((con) => {
-    if ((this as any).__syncChildren === false) {
+    if (this.__syncChildren === false) {
       this[`children${con.name}`] = []
     } else {
       this[`children${con.name}`] = new ArraySchema()
     }
   })
 }
-;(ParentArrayTrait as any).hooks = {
+ParentArrayTrait["hooks"] = {
   childAdded: function (this: ParentArrayTrait, child: ChildTrait): void {
     if (this.childAdded) {
       this.childAdded(child)

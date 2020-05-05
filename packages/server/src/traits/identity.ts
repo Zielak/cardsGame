@@ -3,12 +3,12 @@ import { State } from "../state"
 export class IdentityTrait {
   protected _id: EntityID
 
-  get id() {
+  get id(): number {
     return this._id
   }
 }
 
-;(IdentityTrait as any).trait = function IdentityTrait(state: State) {
+IdentityTrait["trait"] = function constructorIdentityTrait(state: State): void {
   if (this._id !== undefined) return
 
   if (state) {

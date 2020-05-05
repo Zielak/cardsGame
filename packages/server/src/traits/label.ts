@@ -7,14 +7,14 @@ export class LabelTrait {
   type: string
 }
 
-;(LabelTrait as any).typeDef = {
+LabelTrait["typeDef"] = {
   type: "string",
   name: "string",
 }
-;(LabelTrait as any).trait = function LabelTrait(
+LabelTrait["trait"] = function constructorLabelTrait(
   state: State,
   options: Partial<LabelTrait> = {}
-) {
+): void {
   this.name = def(options.name, this.name, "Unnamed")
   this.type = def(options.type, this.type, "entity")
 }

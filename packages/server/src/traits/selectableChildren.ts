@@ -36,7 +36,7 @@ export class SelectableChildrenTrait {
   selectChildAt(
     this: ParentTrait & SelectableChildrenTrait,
     childIndex: number
-  ) {
+  ): void {
     this._selectableEnsureIndex(childIndex)
 
     // Also ensure we won't push duplicate here
@@ -56,7 +56,7 @@ export class SelectableChildrenTrait {
   deselectChildAt(
     this: ParentTrait & SelectableChildrenTrait,
     childIndex: number
-  ) {
+  ): void {
     this._selectableEnsureIndex(childIndex)
 
     const dataIdx = this.selectedChildren.findIndex(
@@ -128,7 +128,7 @@ export class SelectableChildrenTrait {
   _selectableEnsureIndex(
     this: ParentTrait & SelectableChildrenTrait,
     index: number
-  ) {
+  ): void {
     if (!isParent(this)) {
       throw new Error(`ensureIndex | I'm not a parent!`)
     }
@@ -147,14 +147,19 @@ export class SelectableChildrenTrait {
   }
 }
 
-;(SelectableChildrenTrait as any).trait = function SelectableChildrenTrait() {
+SelectableChildrenTrait[
+  "trait"
+] = function constructorSelectableChildrenTrait(): void {
   this.selectedChildren = new ArraySchema()
 }
-;(SelectableChildrenTrait as any).typeDef = {
+SelectableChildrenTrait["typeDef"] = {
   selectedChildren: [SelectedChildData],
 }
-;(SelectableChildrenTrait as any).hooks = {
-  childRemoved: function (this: SelectableChildrenTrait, childIndex: number) {
+SelectableChildrenTrait["hooks"] = {
+  childRemoved: function (
+    this: SelectableChildrenTrait,
+    childIndex: number
+  ): void {
     const index = this.selectedChildren.findIndex(
       (data) => data.childIndex === childIndex
     )
@@ -166,7 +171,7 @@ export class SelectableChildrenTrait {
     this: SelectableChildrenTrait,
     oldIdx: number,
     newIdx: number
-  ) {
+  ): void {
     const data = this.selectedChildren.find(
       (data) => data.selectionIndex === oldIdx
     )

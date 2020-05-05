@@ -5,25 +5,25 @@ import { State } from "../state"
 export class TwoSidedTrait {
   faceUp: boolean
 
-  flip() {
+  flip(): void {
     this.faceUp = !this.faceUp
   }
 
-  flipUp() {
+  flipUp(): void {
     this.faceUp = true
   }
 
-  flipDown() {
+  flipDown(): void {
     this.faceUp = false
   }
 }
 
-;(TwoSidedTrait as any).typeDef = {
+TwoSidedTrait["typeDef"] = {
   faceUp: "boolean",
 }
-;(TwoSidedTrait as any).trait = function TwoSidedTrait(
+TwoSidedTrait["trait"] = function constructorTwoSidedTrait(
   state: State,
   options: Partial<TwoSidedTrait>
-) {
+): void {
   this.faceUp = def(options.faceUp, false)
 }
