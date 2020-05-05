@@ -186,7 +186,5 @@ workflows:
             - linting
             - test-cover
           filters:
-            branches:
-              ignore: /.*/
             tags:
               only: /^v.*/
