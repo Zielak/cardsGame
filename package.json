@@ -14,6 +14,7 @@
     "test:watch": "jest --silent --watch",
     "test:cover": "jest --silent --coverage",
     "test:ci": "jest --maxWorkers=1 --silent --coverage --coverageReporters=lcovonly",
+    "test:ci_coveralls": "coveralls < coverage/lcov.info",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
     "build:server": "lerna run --stream --concurrency 1 --scope '*/server' build",

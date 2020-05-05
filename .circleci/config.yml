@@ -110,8 +110,8 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run:
-          name: Send coverasge report to Coveralls
-          command: coveralls < coverage/lcov.info
+          name: Send coverage report to Coveralls
+          command: npm run test:ci_coveralls
 
   sonarcloud:
     executor: my-executor
