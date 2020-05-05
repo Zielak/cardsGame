@@ -28,7 +28,7 @@ export class ChildTrait {
   /**
    * Points out if this element can be target of any interaction
    */
-  isInteractive() {
+  isInteractive(): boolean {
     if (this.parent.hijacksInteractionTarget) {
       return false
     }
@@ -41,7 +41,7 @@ export class ChildTrait {
   getIdxPath(): number[] {
     const path: number[] = [this.idx]
 
-    const next = (entity: ChildTrait) => {
+    const next = (entity: ChildTrait): void => {
       const parent = entity.parent
 
       if (!parent) {
@@ -60,9 +60,9 @@ export class ChildTrait {
   }
 }
 
-;(ChildTrait as any).typeDef = { idx: "number" }
-;(ChildTrait as any).hooks = {
-  postConstructor: function (state: State, options: ChildTrait) {
+ChildTrait["typeDef"] = { idx: "number" }
+ChildTrait["hooks"] = {
+  postConstructor: function (state: State, options: ChildTrait): void {
     const targetParent = def(options.parent, state)
 
     if ("idx" in options) {

@@ -4,8 +4,8 @@ import { ChildTrait } from "./child"
 import { isParent, ParentTrait } from "./parent"
 import { type } from "../annotations"
 
-// TODO: Thi trait is clearly dependant on ParentTrait
-// There should be a way of checking/ensuing this dependency is met
+// TODO: This trait is clearly dependant on ParentTrait
+// There should be a way of checking/ensuring this dependency is met
 
 class SelectedChildData extends Schema {
   @type("uint16") childIndex: number
@@ -173,7 +173,7 @@ SelectableChildrenTrait["hooks"] = {
     newIdx: number
   ): void {
     const data = this.selectedChildren.find(
-      (data) => data.selectionIndex === oldIdx
+      (selectionData) => selectionData.selectionIndex === oldIdx
     )
     if (data) {
       data.selectionIndex = newIdx
