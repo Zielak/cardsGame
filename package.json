@@ -13,7 +13,7 @@
     "test": "jest --silent",
     "test:watch": "jest --silent --watch",
     "test:cover": "jest --silent --coverage",
-    "test:ci": "jest --maxWorkers=1 --silent --coverage --coverageReporters=text-lcov --coverageReporters=lcovonly",
+    "test:ci": "jest --maxWorkers=1 --silent --coverage --coverageReporters=lcovonly",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
     "build:server": "lerna run --stream --concurrency 1 --scope '*/server' build",
