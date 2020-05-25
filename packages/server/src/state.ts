@@ -6,6 +6,7 @@ import { type, containsChildren } from "./annotations"
 import { Player } from "./player"
 import { PlayerViewPosition } from "./playerViewPosition"
 
+// Traits
 import { ChildTrait, isChild } from "./traits/child"
 import { Entity, applyTraitsMixins } from "./traits/entity"
 import { IdentityTrait } from "./traits/identity"
@@ -81,7 +82,7 @@ export class State extends Entity<{}> {
   @type({ map: "string" }) ui: StateUI = new MapSchema<string | string[]>()
 
   /**
-   * A construct describing how should player's main items
+   * A construct describing how should player's "focused" items
    * be positioned in his view. Containers of other players
    * will not follow these rules.
    * Default is: center/bottom.
@@ -110,7 +111,7 @@ export class State extends Entity<{}> {
    * @param entity
    * @returns new ID to be assigned to that entity
    */
-  registerEntity(entity) {
+  registerEntity(entity): number {
     const newID = ++this._lastID
     this._allEntities.set(newID, entity)
     return newID

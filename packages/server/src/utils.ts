@@ -13,7 +13,7 @@ export const populatePlayerEvent = (
   state: State,
   event: ClientPlayerEvent,
   client: Client
-) => {
+): ServerPlayerEvent => {
   // Populate event with server-side known data
   const newEvent: ServerPlayerEvent = {
     command: event.command,

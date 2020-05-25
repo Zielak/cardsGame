@@ -4,6 +4,7 @@
   "description": "Simplest implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
+  "private": true,
   "main": "app.js",
   "scripts": {
     "start": "NODE_ENV=development LOGS=verbose node app",

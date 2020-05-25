@@ -140,7 +140,7 @@ export class CommandsManager<S extends State> {
     actions: ActionTemplate<S>[],
     state: S,
     event: ServerPlayerEvent
-  ) {
+  ): ActionTemplate<S>[] {
     logs.notice(`Filter out actions by CONDITIONS`)
 
     const result = actions.filter((action) => {
@@ -209,7 +209,7 @@ export class CommandsManager<S extends State> {
     return true
   }
 
-  async execute(state: S, command: Command) {
+  async execute(state: S, command: Command): Promise<void> {
     this.currentCommand = command
     const commandName = command.name
 

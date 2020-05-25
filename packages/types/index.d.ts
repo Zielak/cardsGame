@@ -47,6 +47,7 @@ type ClientPlayerEvent = {
    * Path to target Entity.
    * As array of numbers: `[0, 2, 0]`
    * Ar a string: `"0,2,0"` (no spaces)
+   * TODO: ^ Decide which one we're gonna keep...
    */
   entityPath?: number[] | string
 
