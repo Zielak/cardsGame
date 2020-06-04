@@ -11,7 +11,7 @@ import {
 } from "@cardsgame/utils"
 
 import { CommandsManager } from "./commandsManager"
-import { State } from "./state"
+import { State } from "./state/state"
 import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
 import { populatePlayerEvent } from "./utils"

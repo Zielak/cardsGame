@@ -1,6 +1,6 @@
 import { logs, chalk, def } from "@cardsgame/utils"
 
-import { State } from "../state"
+import { State } from "../state/state"
 import {
   Command,
   TargetsHolder,

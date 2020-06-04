@@ -22,25 +22,25 @@ describe(`entity properties`, () => {
   })
 })
 
-describe(`getOwner`, () => {
+describe(`owner getter`, () => {
   let entity: OwnableEntity
   let parent: OwnableParent
   test(`entity's direct owner`, () => {
     entity = new OwnableEntity(state, { owner: player })
 
-    expect(entity.getOwner()).toBe(player)
+    expect(entity.owner).toBe(player)
   })
   test(`root entity, no owner`, () => {
     parent = new OwnableParent(state)
     entity = new OwnableEntity(state, { parent })
 
-    expect(entity.getOwner()).toBe(undefined)
+    expect(entity.owner).toBe(undefined)
   })
   test(`entity parent's owner`, () => {
     parent = new OwnableParent(state, { owner: player })
     entity = new OwnableEntity(state, { parent })
 
-    expect(entity.getOwner()).toBe(player)
+    expect(entity.owner).toBe(player)
   })
 })
 

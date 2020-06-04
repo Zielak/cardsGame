@@ -1,7 +1,7 @@
 import { def } from "@cardsgame/utils"
 
 import { Player } from "../player"
-import { State } from "../state"
+import { State } from "../state/state"
 import { isChild } from "./child"
 import { isParent } from "./parent"
 
@@ -14,17 +14,6 @@ export function hasOwnership(entity: any): entity is OwnershipTrait {
 
 export class OwnershipTrait {
   protected _owner: Player
-  get owner(): Player {
-    return this._owner
-  }
-  set owner(value: Player) {
-    this._owner = value
-    this.ownerID = value ? value.clientID : undefined
-  }
-
-  ownerID: string
-
-  ownersMainFocus: boolean
 
   /**
    * Get the real owner of this thing, by traversing `this.parent` chain.
@@ -33,21 +22,27 @@ export class OwnershipTrait {
    *
    * @returns `Player` or `undefined` if this container doesn't belong to anyone
    */
-  getOwner(): Player {
-    if (this.owner) {
-      return this.owner
+  get owner(): Player {
+    if (this._owner) {
+      return this._owner
     }
     if (isChild(this)) {
       const parent = this.parent
 
       if (isParent(parent) && hasOwnership(parent)) {
-        if (parent.owner) {
-          return parent.owner
-        }
-        return parent.getOwner()
+        return parent.owner
       }
     }
   }
+
+  set owner(value: Player) {
+    this._owner = value
+    this.ownerID = value ? value.clientID : undefined
+  }
+
+  ownerID: string
+
+  ownersMainFocus: boolean
 }
 
 OwnershipTrait["typeDef"] = {

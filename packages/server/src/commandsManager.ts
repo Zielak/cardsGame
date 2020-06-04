@@ -2,7 +2,7 @@ import { Client } from "colyseus"
 
 import { logs, chalk } from "@cardsgame/utils"
 
-import { State } from "./state"
+import { State } from "./state/state"
 import { ServerPlayerEvent } from "./player"
 import { ActionTemplate, ActionsSet } from "./actionTemplate"
 import { Command } from "./command"
@@ -107,7 +107,7 @@ export class CommandsManager<S extends State> {
             // Check props for every interactive entity in `targets` array
             return event.entities
               .filter((currentTarget) =>
-                isChild(currentTarget) ? currentTarget.isInteractive() : false
+                isChild(currentTarget) ? currentTarget.isInteractive : false
               )
               .some(interactionMatchesEntity(definition))
           } else if (definition.command) {

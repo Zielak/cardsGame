@@ -1,6 +1,6 @@
 import { logs, IS_CHROME, chalk } from "@cardsgame/utils"
 
-import { State } from "../state"
+import { State } from "../state/state"
 
 import { iconStyle, getFlag, setFlag, resetNegation } from "./utils"
 import { Conditions } from "./conditions"

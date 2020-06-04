@@ -1,4 +1,4 @@
-import { State } from "../state"
+import { State } from "../state/state"
 import { Command, Target, TargetHolder } from "../command"
 import { ParentTrait } from "../traits/parent"
 

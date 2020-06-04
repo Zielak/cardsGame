@@ -11,7 +11,8 @@ export { commands }
 export * from "./command"
 
 export * from "./room"
-export * from "./state"
+export * from "./state/state"
+export * from "./state/helpers"
 
 export * from "./conditions/conditions"
 export * from "./actionTemplate"

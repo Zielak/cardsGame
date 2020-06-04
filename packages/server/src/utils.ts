@@ -2,12 +2,14 @@ import { Client } from "colyseus"
 
 import { map2Array } from "@cardsgame/utils"
 
-import { ServerPlayerEvent, Player } from "./player"
-import { State } from "./state"
+import { State } from "./state/state"
+import { getEntitiesAlongPath } from "./state/helpers"
 
 import { isChild } from "./traits/child"
 import { hasIdentity } from "./traits/identity"
 import { hasLabel } from "./traits/label"
+
+import { ServerPlayerEvent, Player } from "./player"
 
 export const populatePlayerEvent = (
   state: State,
@@ -25,10 +27,9 @@ export const populatePlayerEvent = (
         ? event.entityPath.split(",").map((idx) => parseInt(idx))
         : event.entityPath
 
-    newEvent.entities = state
-      .getEntitiesAlongPath(newEvent.entityPath)
+    newEvent.entities = getEntitiesAlongPath(state, newEvent.entityPath)
       .reverse()
-      .filter((target) => (isChild(target) ? target.isInteractive() : false))
+      .filter((target) => (isChild(target) ? target.isInteractive : false))
 
     newEvent.entity = newEvent.entities[0]
   }

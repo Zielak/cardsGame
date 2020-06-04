@@ -1,7 +1,7 @@
 import { applyMixins } from "@cardsgame/utils"
 
 import { ServerPlayerEvent } from "../player"
-import { State } from "../state"
+import { State } from "../state/state"
 
 // Conditions
 import { ConditionChainers } from "./chainers"

@@ -84,15 +84,15 @@ export function queryAll<T extends ChildTrait>(
   return result
 }
 
-export const hasChildren = (entity) =>
+export const hasChildren = (entity): boolean =>
   isParent(entity) ? entity.countChildren() > 0 : false
 
-export const getKnownConstructor = (entity: ChildTrait) =>
+export const getKnownConstructor = (entity: ChildTrait): Function =>
   registeredChildren.find((con) => entity instanceof con)
 
-export const pickByIdx = (idx: number) => (child: ChildTrait) =>
+export const pickByIdx = (idx: number) => (child: ChildTrait): boolean =>
   child.idx === idx
-export const sortByIdx = (a: ChildTrait, b: ChildTrait) => a.idx - b.idx
+export const sortByIdx = (a: ChildTrait, b: ChildTrait): number => a.idx - b.idx
 
 export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void

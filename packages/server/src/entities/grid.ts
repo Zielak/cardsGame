@@ -1,7 +1,7 @@
 import { def } from "@cardsgame/utils"
 
 import { canBeChild, containsChildren, type } from "../annotations"
-import { State } from "../state"
+import { State } from "../state/state"
 
 import { ChildTrait } from "../traits/child"
 import { Entity, applyTraitsMixins } from "../traits/entity"

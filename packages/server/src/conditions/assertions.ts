@@ -494,14 +494,14 @@ class ConditionAssertions {
     const player = getFlag(this, "player")
 
     if (hasOwnership(entity)) {
-      const expected = entity.getOwner()
+      const expected = entity.owner
 
       this.assert(
         player === expected,
         `Player "#{act}" is not an owner.`,
         `Player "#{act}" is an owner, but shouldn't`,
         expected && expected.clientID,
-        hasOwnership(entity) ? entity.getOwner().clientID : undefined
+        hasOwnership(entity) ? entity.owner.clientID : undefined
       )
     } else {
       throw new Error(`Given entity is not ownable.`)

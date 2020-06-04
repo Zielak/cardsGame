@@ -2,7 +2,7 @@ import { def } from "@cardsgame/utils"
 
 import { Command, TargetHolder, Target } from "../command"
 import { Room } from "../room"
-import { State } from "../state"
+import { State } from "../state/state"
 import { ChildTrait } from "../traits/child"
 import { ParentTrait } from "../traits/parent"
 

@@ -2,7 +2,7 @@ import { ArraySchema } from "@colyseus/schema"
 import { logs, def, limit, arrayWith } from "@cardsgame/utils"
 
 import { ChildTrait } from "./child"
-import { State } from "../state"
+import { State } from "../state/state"
 import { registeredChildren } from "../annotations"
 import { executeHook } from "./entity"
 import {

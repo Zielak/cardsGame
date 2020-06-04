@@ -1,6 +1,6 @@
 import { def } from "@cardsgame/utils"
 
-import { State } from "../state"
+import { State } from "../state/state"
 import { ParentTrait } from "./parent"
 
 export function isChild(entity: any): entity is ChildTrait {
@@ -28,7 +28,7 @@ export class ChildTrait {
   /**
    * Points out if this element can be target of any interaction
    */
-  isInteractive(): boolean {
+  get isInteractive(): boolean {
     if (this.parent.hijacksInteractionTarget) {
       return false
     }
@@ -38,7 +38,7 @@ export class ChildTrait {
   /**
    * @returns array of indexes for this entity access
    */
-  getIdxPath(): number[] {
+  get idxPath(): number[] {
     const path: number[] = [this.idx]
 
     const next = (entity: ChildTrait): void => {

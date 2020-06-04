@@ -1,4 +1,5 @@
-import { State } from "../state"
+import { State } from "../state/state"
+import { registerEntity } from "../state/helpers"
 
 export class IdentityTrait {
   protected _id: EntityID
@@ -12,7 +13,7 @@ IdentityTrait["trait"] = function constructorIdentityTrait(state: State): void {
   if (this._id !== undefined) return
 
   if (state) {
-    this._id = state.registerEntity(this)
+    this._id = registerEntity(state, this)
   } else {
     this._id = -1
   }

@@ -3,7 +3,7 @@ import { Schema } from "@colyseus/schema"
 import { logs } from "@cardsgame/utils"
 
 import { type } from "../annotations"
-import { State } from "../state"
+import { State } from "../state/state"
 
 export function executeHook(hookName: string, ...args): void {
   const proto = Object.getPrototypeOf(this)
@@ -34,7 +34,7 @@ export class Entity<T> extends Schema {
     this._executeHook("postConstructor", state, options)
   }
 
-  _executeHook = executeHook
+  private _executeHook = executeHook
 
   create(state: State, options: Partial<T> = {}): void {
     logs.warn(

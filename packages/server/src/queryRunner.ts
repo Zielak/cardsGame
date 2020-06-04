@@ -63,7 +63,7 @@ export const queryRunner = <T>(props: QuerableProps) => (entity: T) => {
     } else if (propName === "owner") {
       if (!hasOwnership(entity)) return false
 
-      return entity.getOwner() === props.owner
+      return entity.owner === props.owner
     } else {
       return entity[propName] === props[propName]
     }

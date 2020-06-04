@@ -28,6 +28,6 @@ describe(`State`, () => {
 
   test.todo("#get currentPlayer")
   test.todo("#get playersCount")
-
-  test.todo("#getEntitiesAlongPath")
 })
+
+test.todo("#getEntitiesAlongPath")

@@ -1,4 +1,4 @@
-const { commands, Conditions } = require("@cardsgame/server")
+const { commands, Conditions, getPlayersIndex } = require("@cardsgame/server")
 
 const { WarState } = require("./state")
 const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
@@ -17,7 +17,7 @@ const PlayCardWithAnte = (state, event) => {
   const card = deck.getTop()
 
   return [
-    new MarkPlayerPlayed(state.getPlayersIndex(event.player)),
+    new MarkPlayerPlayed(getPlayersIndex(state, event.player)),
     new commands.ChangeParent(ante, pile),
     new commands.ChangeParent(card, pile),
     new commands.FaceUp(card),
@@ -71,7 +71,7 @@ const PickCardLast = {
       .equals(1)
 
     // Get the index of currently acting player
-    const currentPlayerIdx = con.getState().getPlayersIndex(con.getPlayer())
+    const currentPlayerIdx = getPlayersIndex(con.getState(), con.getPlayer())
 
     // Current player is the one who didn't pick yet
     con.state.its("playersPlayed").nthChild(currentPlayerIdx).equals(false)

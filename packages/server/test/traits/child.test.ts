@@ -55,7 +55,7 @@ describe(`addChild`, () => {
   test.todo(`adding entity to itself throws error`)
 })
 
-describe(`getIdxPath`, () => {
+describe(`idxPath`, () => {
   test.todo(`top level entity`)
   test(`nested entities`, () => {
     const parentA = new DumbArrayParent(state)
@@ -71,8 +71,8 @@ describe(`getIdxPath`, () => {
     const child = new DumbEntity(state, { parent: parentB })
     new DumbEntity(state, { parent: parentB })
 
-    expect(parentA.getIdxPath()).toStrictEqual([0])
-    expect(parentB.getIdxPath()).toStrictEqual([0, 2])
-    expect(child.getIdxPath()).toStrictEqual([0, 2, 1])
+    expect(parentA.idxPath).toStrictEqual([0])
+    expect(parentB.idxPath).toStrictEqual([0, 2])
+    expect(child.idxPath).toStrictEqual([0, 2, 1])
   })
 })

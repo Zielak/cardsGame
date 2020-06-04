@@ -1,6 +1,6 @@
 import { def } from "@cardsgame/utils"
 
-import { State } from "../state"
+import { State } from "../state/state"
 
 export class FlexyTrait {
   alignItems: "start" | "end" | "center"

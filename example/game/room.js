@@ -99,7 +99,7 @@ class WarGame extends Room {
       this.broadcast({
         type: "gameOver",
         data: {
-          winner: winningDeck.getOwner().clientID,
+          winner: winningDeck.owner.clientID,
         },
       })
     }

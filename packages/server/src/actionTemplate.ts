@@ -1,4 +1,4 @@
-import { State } from "./state"
+import { State } from "./state/state"
 import { ServerPlayerEvent } from "./player"
 import { Command } from "./command"
 import { Conditions } from "./conditions/conditions"

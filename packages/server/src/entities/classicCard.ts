@@ -1,7 +1,7 @@
 import { def, logs } from "@cardsgame/utils"
 
 import { type, canBeChild } from "../annotations"
-import { State } from "../state"
+import { State } from "../state/state"
 import { Entity, applyTraitsMixins } from "../traits/entity"
 import { LabelTrait } from "../traits/label"
 import { TwoSidedTrait } from "../traits/twoSided"
@@ -25,7 +25,7 @@ import { OwnershipTrait } from "../traits/ownership"
 //   // 2. To owner, only if it's in his hands
 //   return (
 //     this.faceUp ||
-//     (getOwner().clientID === (client as Client).id &&
+//     (owner.clientID === (client as Client).id &&
 //       getParentEntity(this).type === "hand")
 //   )
 // }

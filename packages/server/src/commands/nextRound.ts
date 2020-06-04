@@ -1,7 +1,7 @@
 import { logs } from "@cardsgame/utils"
 
 import { Command } from "../command"
-import { State } from "../state"
+import { State } from "../state/state"
 import { Room } from "../room"
 
 export class NextRound extends Command {
