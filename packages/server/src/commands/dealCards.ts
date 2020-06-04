@@ -11,6 +11,7 @@ import { Room } from "../room"
 import { State } from "../state/state"
 import { ParentTrait } from "../traits/parent"
 import { ChangeParent } from "./changeParent"
+import { Sequence } from "./sequence"
 
 /**
  * A command which by itself changes nothing,
@@ -88,7 +89,7 @@ export class DealCards extends Command {
         await this.subExecute(
           state,
           room,
-          new Command("onDeckEmptied", emptiedCmds)
+          new Sequence("onDeckEmptied", emptiedCmds)
         )
       }
     } while (

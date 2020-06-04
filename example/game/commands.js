@@ -50,7 +50,7 @@ module.exports.Battle = class Battle extends Command {
   constructor() {
     super("Battle")
   }
-  async execute(state) {
+  async execute(state, room) {
     // TODO: maybe prepare it for more than 2 players setup?
     const containerA = state.query({
       type: "container",
@@ -113,12 +113,15 @@ module.exports.Battle = class Battle extends Command {
         new commands.ChangeParent(
           [...losersCards, ...winnersCards],
           winnersDeck,
-          true
-        ),
-        new commands.NextRound()
+          { prepend: true }
+        )
       )
     }
 
-    return subCommands
+    this.subExecute(
+      state,
+      room,
+      new commands.Sequence("PostBattle", subCommands)
+    )
   }
 }

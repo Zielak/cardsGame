@@ -1,6 +1,6 @@
 import { def } from "@cardsgame/utils"
 
-import { Player } from "../player"
+import { Player } from "../players/player"
 import { State } from "../state/state"
 import { isChild } from "./child"
 import { isParent } from "./parent"
@@ -21,6 +21,8 @@ export class OwnershipTrait {
    * such container belongs to one owner.
    *
    * @returns `Player` or `undefined` if this container doesn't belong to anyone
+   *
+   * @memberof OwnershipTrait
    */
   get owner(): Player {
     if (this._owner) {
@@ -40,8 +42,14 @@ export class OwnershipTrait {
     this.ownerID = value ? value.clientID : undefined
   }
 
+  /**
+   * @memberof OwnershipTrait
+   */
   ownerID: string
 
+  /**
+   * @memberof OwnershipTrait
+   */
   ownersMainFocus: boolean
 }
 

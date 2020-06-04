@@ -34,4 +34,15 @@ export const sortAlphaNumerically = (a: string, b: string): number => {
   return a < b ? -1 : a > b ? 1 : 0
 }
 
+export const shuffle = (array): any[] => {
+  const res = [...array]
+  for (let i = res.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const temp = res[i]
+    res[i] = res[j]
+    res[j] = temp
+  }
+  return res
+}
+
 export const arrayWith = (count: number): any[] => [...Array(count).keys()]

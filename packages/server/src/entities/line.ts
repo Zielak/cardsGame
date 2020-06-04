@@ -32,6 +32,7 @@ export class Line extends Entity<LineOptions> {
 
   /**
    * 0cm by default, sets the point of overflow.
+   * @memberof Line
    */
   @type("float32") length: number
 
@@ -42,23 +43,27 @@ export class Line extends Entity<LineOptions> {
    * Default value depends on `length`:
    * - length=0 -> overflow=true
    * - length>0 -> overflow=false
+   * @memberof Line
    */
   @type("boolean") overflow: boolean
 
   /**
    * How should items align within the container.
    * In zero-length container only "start" and "end" values make sense.
+   * @memberof Line
    */
   @type("string") align: LineAlign
 
   /**
    * An angle at which items are rotated by default.
    * Line looks like a row by default. To make a column
+   * @memberof Line
    */
   @type("float32") itemAngle: number
 
   /**
    * Margin or overlapping (negative values) between items
+   * @memberof Line
    */
   @type("float32") itemSpacing: number
 
@@ -98,7 +103,7 @@ interface Mixin
     SelectableChildrenTrait {}
 
 type LineOptions = Partial<
-  ConstructorType<Mixin> & {
+  NonFunctionProperties<Mixin> & {
     /**
      * Either "column" or "row".
      * Shorthand for "itemAngle" and "angle"

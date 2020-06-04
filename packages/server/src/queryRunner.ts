@@ -1,46 +1,38 @@
-import { BoxModelTrait } from "./traits/boxModel"
-import { ChildTrait, isChild } from "./traits/child"
-import { FlexyTrait } from "./traits/flexyContainer"
+import {
+  ClassicCard,
+  Container,
+  Deck,
+  Grid,
+  Hand,
+  Line,
+  Pile,
+  Spread,
+} from "./entities"
+import { isChild } from "./traits/child"
 import { hasIdentity } from "./traits/identity"
-import { LabelTrait } from "./traits/label"
-import { LocationTrait } from "./traits/location"
-import { hasOwnership, OwnershipTrait } from "./traits/ownership"
-import { ParentArrayTrait } from "./traits/parentArray"
-import { ParentMapTrait } from "./traits/parentMap"
-import { SelectableChildrenTrait } from "./traits/selectableChildren"
-import { TwoSidedTrait } from "./traits/twoSided"
+import { hasOwnership } from "./traits/ownership"
 
-type EveryTrait = BoxModelTrait &
-  ChildTrait &
-  ParentArrayTrait &
-  ParentMapTrait &
-  FlexyTrait &
-  LabelTrait &
-  LocationTrait &
-  OwnershipTrait &
-  SelectableChildrenTrait &
-  TwoSidedTrait
+type EveryEntity = ClassicCard &
+  Container &
+  Deck &
+  Grid &
+  Hand &
+  Line &
+  Pile &
+  Spread
 
-export type EveryTraitsOptionsKeys =
-  | "width"
-  | "height"
-  | "idx"
-  | "alignItems"
-  | "directionReverse"
-  | "justifyContent"
-  | "name"
-  | "type"
-  | "x"
-  | "y"
-  | "angle"
-  | "owner"
-  | "ownerID"
-  | "ownersMainFocus"
+type KeysToIgnore =
+  | "$changed"
+  | "childrenPointers"
   | "hijacksInteractionTarget"
-  | "maxChildren"
-  | "faceUp"
+  | "id"
+  | "idxPath"
+  | "parent"
+  | "selectedChildren"
 
-export type EntityOptions = Partial<Pick<EveryTrait, EveryTraitsOptionsKeys>>
+export type EntityOptions<E = {}> = Partial<
+  Omit<NonFunctionProperties<EveryEntity & E>, KeysToIgnore>
+>
 
 export interface QuerableProps extends EntityOptions {
   parent?: QuerableProps

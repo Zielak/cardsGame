@@ -6,6 +6,9 @@ export { canBeChild } from "./annotations/canBeChild"
 export { containsChildren } from "./annotations/containsChildren"
 export { defineTypes, type } from "./annotations/type"
 
+export * from "./bots/goal"
+export * from "./bots/action"
+
 import * as commands from "./commands"
 
 export { commands }
@@ -16,9 +19,13 @@ export * from "./room"
 export * from "./state/state"
 export * from "./state/helpers"
 
-export * from "./conditions/conditions"
 export * from "./actionTemplate"
-export * from "./player"
+
+export { InteractionConditions } from "./conditions/interaction"
+export { BotConditions } from "./conditions/bot"
+
+export { Player, ServerPlayerEvent } from "./players/player"
+export { Bot } from "./players/bot"
 
 export * from "./traits/boxModel"
 export * from "./traits/child"
@@ -35,7 +42,3 @@ export * from "./traits/selectableChildren"
 export * from "./traits/twoSided"
 
 export * from "./entities"
-
-// Useful for testing
-
-export * from "./utils"

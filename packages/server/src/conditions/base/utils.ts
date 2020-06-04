@@ -9,17 +9,19 @@ type ConditionsFlag =
   | "propParent"
   | "not"
   | "eitherLevel"
+  | "_constructor"
+  | "_constructorArguments"
 
 export function getFlag(target, flagName: ConditionsFlag): any {
   if (!target._flags) {
-    throw new Error(`flag | Incompatible target.`)
+    throw new Error(`getFlag | Incompatible target.`)
   }
   return target._flags.get(flagName)
 }
 
 export function setFlag(target, flagName: ConditionsFlag, value: any): void {
   if (!target._flags) {
-    throw new Error(`flag | Incompatible target.`)
+    throw new Error(`setFlag | Incompatible target.`)
   }
   target._flags.set(flagName, value)
 }
@@ -33,6 +35,16 @@ export function ref(target, refName, value?): any {
   } else {
     return target._refs.get(refName)
   }
+}
+
+export const cloneConditions = <C>(con: any): C => {
+  const Constr = getFlag(con, "_constructor")
+  const args = getFlag(con, "_constructorArguments")
+  const newCon = new Constr(...args)
+
+  con._flags.forEach((value, key) => newCon._flags.set(key, value))
+
+  return newCon
 }
 
 export const resetPropDig = (target): void => {

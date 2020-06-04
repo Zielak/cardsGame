@@ -1,13 +1,18 @@
 import { chalk, IS_CHROME, logs } from "@cardsgame/utils"
 
-import { State } from "../state/state"
 import { Conditions } from "./conditions"
-import { getFlag, iconStyle, resetNegation, setFlag } from "./utils"
+import {
+  cloneConditions,
+  getFlag,
+  iconStyle,
+  resetNegation,
+  setFlag,
+} from "./utils"
 
 type EitherCallback = () => any
 type EitherTuple = [string, EitherCallback]
 
-class ConditionGrouping<S extends State> {
+class ConditionGrouping<S, C extends Conditions<S>> {
   /**
    * Loops through every item in subject's collection.
    * Each item is set as the `subject` with each iteration automatically.
@@ -23,7 +28,7 @@ class ConditionGrouping<S extends State> {
    */
   each(
     predicate: (
-      con: Conditions<S>,
+      con: C,
       item: any,
       index: number | string,
       collection: any
@@ -36,10 +41,7 @@ class ConditionGrouping<S extends State> {
     }
 
     subject.forEach((item, index) => {
-      const con = new Conditions<S>(
-        getFlag(this, "state"),
-        getFlag(this, "event")
-      )
+      const con = cloneConditions<C>(this)
       setFlag(con, "subject", item)
       predicate.call(con, con, item, index, subject)
     })

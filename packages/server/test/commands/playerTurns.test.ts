@@ -1,5 +1,5 @@
+import { Player } from "../../src"
 import { NextPlayer, PreviousPlayer } from "../../src/commands/playerTurns"
-import { Player } from "../../src/player"
 import { State } from "../../src/state/state"
 import { RoomMock } from "../helpers/roomMock"
 

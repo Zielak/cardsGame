@@ -3,6 +3,9 @@ import { def } from "@cardsgame/utils"
 import { State } from "../state/state"
 
 export class TwoSidedTrait {
+  /**
+   * @memberof TwoSidedTrait
+   */
   faceUp: boolean
 
   flip(): void {

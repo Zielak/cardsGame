@@ -3,7 +3,13 @@ import { def } from "@cardsgame/utils"
 import { State } from "../state/state"
 
 export class LabelTrait {
+  /**
+   * @memberof LabelTrait
+   */
   name: string
+  /**
+   * @memberof LabelTrait
+   */
   type: string
 }
 

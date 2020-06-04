@@ -31,7 +31,6 @@ describe("plain Command", () => {
     const command = new Command()
 
     expect(async () => await command.execute(state, room)).not.toThrow()
-
     expect(async () => await command.undo(state, room)).not.toThrow()
   })
 })

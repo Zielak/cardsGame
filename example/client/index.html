@@ -14,7 +14,10 @@
         <li>
           <button id="quickJoin_btn" type="button">Quick join some room</button>
         </li>
-        <li>Wait fot other player to join</li>
+        <li>
+          Wait fot other player to join, or
+          <button id="addBot_btn" type="button" disabled>Add Bot</button>
+        </li>
         <li>
           <button id="start_btn" type="button" disabled>Start game</button>
         </li>
@@ -23,7 +26,7 @@
     <main class="gameView">
       <div id="opponent" class="playerContainer playerContainer--disconnected">
         <header>
-          <h2>Opponent</h2>
+          <h2>Opponent <em class="playerPlayed"></em></h2>
           <p>(clientID: <span class="clientID"></span>)</p>
         </header>
 
@@ -53,7 +56,7 @@
         </div>
 
         <header>
-          <h2>You</h2>
+          <h2>You <em class="playerPlayed"></em></h2>
           <p>(clientID: <span class="clientID"></span>)</p>
         </header>
       </div>

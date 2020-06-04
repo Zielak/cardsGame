@@ -3,7 +3,7 @@ import { MapSchema } from "@colyseus/schema"
 
 import { containsChildren } from "../annotations/containsChildren"
 import { type } from "../annotations/type"
-import { Player } from "../player"
+import { Player } from "../players/player"
 import { PlayerViewPosition } from "../playerViewPosition"
 import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
@@ -25,13 +25,6 @@ export class State extends Entity<{}> {
    * and not necessarily someone who is playing the game.
    */
   @type({ map: "string" }) clients = new MapSchema<string>()
-
-  /**
-   * How much clients are connected to the room
-   */
-  get clientsCount(): number {
-    return mapCount(this.clients)
-  }
 
   /**
    * Games are turn-based by default. Each player takes their turns one by one.

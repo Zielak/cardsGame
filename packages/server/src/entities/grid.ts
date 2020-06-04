@@ -33,20 +33,39 @@ export function isGrid(entity: any): entity is Grid {
   SelectableChildrenTrait,
 ])
 export class Grid extends Entity<GridOptions> {
+  /**
+   * @memberof Grid
+   */
   @type("uint8") columns: number
+  /**
+   * @memberof Grid
+   */
   @type("uint8") rows: number
 
   // @type("number") cellSpacing: number
 
+  /**
+   * @memberof Grid
+   */
   @type("string") justify: GridJustify
+  /**
+   * @memberof Grid
+   */
   @type("string") justifyItems: GridJustifyItems
+  /**
+   * @memberof Grid
+   */
   @type("string") alignItems: GridAlignItems
 
+  /**
+   * Grid comment at grid file
+   * @memberof Grid
+   */
   itemAngle: number
 
   hijacksInteractionTarget = false
 
-  create(state: State, options: GridOptions = {}) {
+  create(state: State, options: GridOptions = {}): void {
     this.name = def(options.name, "Grid")
     this.type = def(options.type, "grid")
 
@@ -94,7 +113,7 @@ interface Mixin
     SelectableChildrenTrait {}
 
 type GridOptions = Partial<
-  ConstructorType<Mixin> & {
+  NonFunctionProperties<Mixin> & {
     columns: number
     rows: number
     cellSpacing: number

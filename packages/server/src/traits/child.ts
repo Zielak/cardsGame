@@ -13,6 +13,9 @@ export function isChild(entity: any): entity is ChildTrait {
 export class ChildTrait {
   parent: ParentTrait
 
+  /**
+   * @memberof ChildTrait
+   */
   idx: number
 
   /**
@@ -28,7 +31,7 @@ export class ChildTrait {
   /**
    * Points out if this element can be target of any interaction
    */
-  get isInteractive(): boolean {
+  isInteractive(): boolean {
     if (this.parent.hijacksInteractionTarget) {
       return false
     }
@@ -36,6 +39,7 @@ export class ChildTrait {
   }
 
   /**
+   * TODO: Limit the number of automatic getters. Just make these a `getIdxPath` functions. QueryRunner grabs all the "props" and ignores functions.
    * @returns array of indexes for this entity access
    */
   get idxPath(): number[] {

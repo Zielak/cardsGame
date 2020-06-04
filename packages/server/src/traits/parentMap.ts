@@ -5,14 +5,13 @@ import { globalEntitiesContext } from "../annotations/entitiesContext"
 import { State } from "../state/state"
 import { ChildTrait } from "./child"
 import { executeHook } from "./entity"
+import { query, queryAll } from "./helpers/parentCommons"
 import {
   ChildAddedHandler,
   ChildRemovedHandler,
   getKnownConstructor,
   isParent,
   ParentTrait,
-  query,
-  queryAll,
   sortByIdx,
 } from "./parent"
 
@@ -29,6 +28,9 @@ export function isParentMap(entity: any): entity is ParentMapTrait {
 export class ParentMapTrait implements ParentTrait {
   childrenPointers: Map<ChildTrait, string>
   hijacksInteractionTarget: boolean
+  /**
+   * @memberof ParentMapTrait
+   */
   maxChildren: number
 
   childAdded: ChildAddedHandler

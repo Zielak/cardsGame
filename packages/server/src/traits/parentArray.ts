@@ -5,6 +5,7 @@ import { globalEntitiesContext } from "../annotations/entitiesContext"
 import { State } from "../state/state"
 import { ChildTrait } from "./child"
 import { executeHook } from "./entity"
+import { query, queryAll } from "./helpers/parentCommons"
 import {
   ChildAddedHandler,
   ChildRemovedHandler,
@@ -12,8 +13,6 @@ import {
   isParent,
   ParentTrait,
   pickByIdx,
-  query,
-  queryAll,
   sortByIdx,
 } from "./parent"
 

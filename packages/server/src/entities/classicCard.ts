@@ -42,9 +42,15 @@ import { TwoSidedTrait } from "../traits/twoSided"
 ])
 export class ClassicCard extends Entity<ClassicCardOptions> {
   // @filter(faceDownOnlyOwner)
+  /**
+   * @memberof ClassicCard
+   */
   @type("string") suit: string
 
   // @filter(faceDownOnlyOwner)
+  /**
+   * @memberof ClassicCard
+   */
   @type("string") rank: string
 
   create(state: State, options: ClassicCardOptions = {}): void {
@@ -65,7 +71,7 @@ interface Mixin
     OwnershipTrait {}
 
 type ClassicCardOptions = Partial<
-  ConstructorType<Mixin> & {
+  NonFunctionProperties<Mixin> & {
     suit: string
     rank: string
   }

@@ -1,5 +1,5 @@
 import { globalEntitiesContext } from "../annotations/entitiesContext"
-import { QuerableProps, queryRunner } from "../queryRunner"
+import { QuerableProps } from "../queryRunner"
 import { ChildTrait } from "./child"
 
 export function isParent(entity: any): entity is ParentTrait {
@@ -11,6 +11,9 @@ export function isParent(entity: any): entity is ParentTrait {
 }
 
 export interface ParentTrait {
+  /**
+   * @memberof ParentTrait
+   */
   hijacksInteractionTarget: boolean
   childAdded: ChildAddedHandler
   childRemoved: ChildRemovedHandler
@@ -29,69 +32,21 @@ export interface ParentTrait {
   queryAll<T extends ChildTrait>(props: QuerableProps): T[]
 }
 
-/**
- * Find one item matching props.
- * @param props
- */
-export function query<T extends ChildTrait>(
-  this: ParentTrait,
-  props: QuerableProps
-): T {
-  // Grab all current children
-  const children = this.getChildren()
-
-  // Check if maybe some of them match the query
-  const firstLevel = children.find(queryRunner(props))
-
-  if (firstLevel) {
-    return firstLevel as ChildTrait & T
-  }
-
-  // Keep querying for the same props in children if they're also parents
-
-  for (const entity of children) {
-    if (!isParent(entity)) continue
-
-    const result = entity.query(props)
-    if (result) {
-      return result as ChildTrait & T
-    }
-  }
-}
-
-/**
- * Looks for every matching entity here and deeper
- */
-export function queryAll<T extends ChildTrait>(
-  this: ParentTrait,
-  props: QuerableProps
-): T[] {
-  const result: (ChildTrait & T)[] = []
-
-  // Grab all current children
-  const children = this.getChildren<T>()
-
-  // Check if maybe some of them match the query
-  result.push(...children.filter(queryRunner<T>(props)))
-
-  // Keep querying for the same props in children if they're also parents
-  for (const entity of children) {
-    if (!isParent(entity)) continue
-
-    result.push(...entity.queryAll<T>(props))
-  }
-
-  return result
-}
-
 export const hasChildren = (entity): boolean =>
   isParent(entity) ? entity.countChildren() > 0 : false
 
 export const getKnownConstructor = (entity: ChildTrait): Function =>
   globalEntitiesContext.registeredChildren.find((con) => entity instanceof con)
 
+/**
+ * Finding function, for `find()` iteration
+ */
 export const pickByIdx = (idx: number) => (child: ChildTrait): boolean =>
   child.idx === idx
+
+/**
+ * Sorting function, for `sort()`
+ */
 export const sortByIdx = (a: ChildTrait, b: ChildTrait): number => a.idx - b.idx
 
 export type ChildAddedHandler = (child: ChildTrait) => void

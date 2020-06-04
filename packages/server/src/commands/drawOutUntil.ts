@@ -72,9 +72,4 @@ export class DrawOutUntil extends Command {
       }
     } while (!this.condition(entity))
   }
-
-  async undo(state: State, room: Room<any>): Promise<void> {
-    // Probably nothing else to do, we're dealing with subCommands only
-    super.undo(state, room)
-  }
 }

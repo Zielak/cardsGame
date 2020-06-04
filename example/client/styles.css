@@ -10,6 +10,31 @@ header p {
   margin-top: 0;
 }
 
+#start_btn:not(:disabled) {
+  background: linear-gradient(
+    250deg,
+    #ff8f75,
+    #c7fb28,
+    #28fbea,
+    #f028fb,
+    #ff8f75
+  );
+  background-size: 8000% 100%;
+  border: 1px solid gray;
+  border-radius: 2px;
+
+  animation: AnimationName 2s linear infinite;
+}
+
+@keyframes AnimationName {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
 .playerContainer--disconnected {
   opacity: 0.5;
 }

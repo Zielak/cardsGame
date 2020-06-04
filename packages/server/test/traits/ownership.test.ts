@@ -1,4 +1,4 @@
-import { Player } from "../../src/player"
+import { Player } from "../../src"
 import { State } from "../../src/state/state"
 import { hasOwnership } from "../../src/traits/ownership"
 import { DumbArrayParent, DumbEntity } from "../helpers/dumbEntities"

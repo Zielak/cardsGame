@@ -1,9 +1,8 @@
-import { isGrid } from "../entities"
-import { isChild } from "../traits/child"
-import { hasOwnership } from "../traits/ownership"
-import { isParent } from "../traits/parent"
-import { isParentMap } from "../traits/parentMap"
-import { hasSelectableChildren } from "../traits/selectableChildren"
+import { isGrid } from "../../entities"
+import { isChild } from "../../traits/child"
+import { isParent } from "../../traits/parent"
+import { isParentMap } from "../../traits/parentMap"
+import { hasSelectableChildren } from "../../traits/selectableChildren"
 import { getFlag, postAssertion, ref, resetNegation } from "./utils"
 
 const getMessage = (
@@ -28,43 +27,43 @@ const getMessage = (
   }
 }
 
-class ConditionAssertions {
-  /**
-   *
-   * @param result
-   * @param errMessage use #{exp} and #{act} to inject values in error messages
-   * @param [errMessageNot] use #{exp} and #{act} to inject values in error messages
-   * @param [expected]
-   * @param [actual]
-   */
-  private assert(
-    result: boolean,
-    errMessage: string,
-    errMessageNot?: string,
-    expected?,
-    actual?
-  ): void {
-    const not = getFlag(this, "not")
-    const ok = not ? !result : result
+/**
+ * @param result
+ * @param errMessage use #{exp} and #{act} to inject values in error messages
+ * @param [errMessageNot] use #{exp} and #{act} to inject values in error messages
+ * @param [expected]
+ * @param [actual]
+ */
+export function assert(
+  this: any,
+  result: boolean,
+  errMessage: string,
+  errMessageNot?: string,
+  expected?,
+  actual?
+): void {
+  const not = getFlag(this, "not")
+  const ok = not ? !result : result
 
-    if (!ok) {
-      const msg = getMessage(
-        this,
-        result,
-        errMessage,
-        errMessageNot,
-        expected,
-        actual
-      )
-
-      resetNegation(this)
-      postAssertion(this)
-      throw new Error(msg)
-    }
+  if (!ok) {
+    const msg = getMessage(
+      this,
+      result,
+      errMessage,
+      errMessageNot,
+      expected,
+      actual
+    )
 
     resetNegation(this)
+    postAssertion(this)
+    throw new Error(msg)
   }
 
+  resetNegation(this)
+}
+
+class ConditionAssertions {
   /**
    * @asserts subject should be empty.
    */
@@ -74,19 +73,22 @@ class ConditionAssertions {
     const printPropName = propName ? `'${propName}' = ` : ""
 
     if (subject.length !== undefined && typeof subject !== "function") {
-      this.assert(
+      assert.call(
+        this,
         subject.length === 0,
         `subject ${printPropName}(iterable) has some items.`,
         `subject ${printPropName}(iterable) is empty, but shouldn't.`
       )
     } else if (`size` in subject) {
-      this.assert(
+      assert.call(
+        this,
         subject.size === 0,
         `subject ${printPropName}(map/set) has some items.`,
         `subject ${printPropName}(map/set) is empty, but shouldn't.`
       )
     } else if (typeof subject === "object" && subject !== null) {
-      this.assert(
+      assert.call(
+        this,
         Object.keys(subject).length === 0,
         `subject ${printPropName}(object) has some items.`,
         `subject ${printPropName}(object) is empty, but shouldn't.`
@@ -114,7 +116,8 @@ class ConditionAssertions {
       )
     }
 
-    this.assert(
+    assert.call(
+      this,
       subject.countChildren() >= subject.maxChildren,
       `subject is not full`,
       `subject is full`
@@ -138,7 +141,8 @@ class ConditionAssertions {
     }
 
     if (typeof arg0 === "number" && arg1 === undefined) {
-      this.assert(
+      assert.call(
+        this,
         subject.getChild(arg0) === undefined,
         `spot [${arg0}] is occupied`,
         `spot [${arg0}] is available but shouldn't`
@@ -148,7 +152,8 @@ class ConditionAssertions {
         throw new Error(`availableSpot | column/row, expected Grid container`)
       }
 
-      this.assert(
+      assert.call(
+        this,
         subject.getChildAt(arg0, arg1) === undefined,
         `spot [${arg0},${arg1}] is occupied`,
         `spot [${arg0},${arg1}] is available but shouldn't`
@@ -169,7 +174,8 @@ class ConditionAssertions {
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
-    this.assert(
+    assert.call(
+      this,
       subject === value,
       `expected ${printPropName}#{act} to equal #{exp}`,
       `expected ${printPropName}#{act} to NOT equal #{exp}`,
@@ -192,7 +198,8 @@ class ConditionAssertions {
       throw new Error(`Don't be silly, just use "false()" instead.`)
     }
 
-    this.assert(
+    assert.call(
+      this,
       subject === true,
       `expected ${printPropName}${subject} to equal true`
     )
@@ -212,7 +219,8 @@ class ConditionAssertions {
       throw new Error(`Don't be silly, just use "true()" instead.`)
     }
 
-    this.assert(
+    assert.call(
+      this,
       subject === false,
       `expected ${printPropName}${subject} to equal false`
     )
@@ -230,7 +238,7 @@ class ConditionAssertions {
       throw new Error(`Don't be silly, just use "undefined()" instead.`)
     }
 
-    this.assert(subject !== undefined, `subject is undefined.`)
+    assert.call(this, subject !== undefined, `subject is undefined.`)
 
     return this
   }
@@ -245,7 +253,7 @@ class ConditionAssertions {
       throw new Error(`Don't be silly, just use "defined()" instead.`)
     }
 
-    this.assert(subject === undefined, `subject is defined.`)
+    assert.call(this, subject === undefined, `subject is defined.`)
 
     return this
   }
@@ -264,7 +272,8 @@ class ConditionAssertions {
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
-    this.assert(
+    assert.call(
+      this,
       subject > value,
       `expected ${printPropName}#{act} to be above #{exp}`,
       `expected ${printPropName}#{act} to NOT be above #{exp}`,
@@ -283,7 +292,8 @@ class ConditionAssertions {
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
-    this.assert(
+    assert.call(
+      this,
       subject >= value,
       `expected ${printPropName}#{act} to be above #{exp}`,
       `expected ${printPropName}#{act} to NOT be above #{exp}`,
@@ -308,7 +318,8 @@ class ConditionAssertions {
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
-    this.assert(
+    assert.call(
+      this,
       subject < value,
       `expected ${printPropName}#{act} to be below #{exp}`,
       `expected ${printPropName}#{act} to NOT be below #{exp}`,
@@ -327,7 +338,8 @@ class ConditionAssertions {
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
-    this.assert(
+    assert.call(
+      this,
       subject <= value,
       `expected ${printPropName}#{act} to be below or equal to #{exp}`,
       `expected ${printPropName}#{act} to NOT be below or equal to #{exp}`,
@@ -346,7 +358,8 @@ class ConditionAssertions {
 
     const result = values.some((val) => subject == val)
 
-    this.assert(
+    assert.call(
+      this,
       result,
       `#{act} didn't match with any of the provided values: #{exp}`,
       `#{act} is in #{exp}, but it shouldn't`,
@@ -375,7 +388,8 @@ class ConditionAssertions {
     const subject = getFlag(this, "subject")
     const expected = ref(this, refName)[propName]
 
-    this.assert(
+    assert.call(
+      this,
       subject === expected,
       `subject's '${propName}' (#{act}) doesn't match with the same prop at '${String(
         refName
@@ -400,7 +414,8 @@ class ConditionAssertions {
       throw new Error(`selectable | applies only on child entities`)
     }
 
-    this.assert(
+    assert.call(
+      this,
       hasSelectableChildren(subject.parent),
       `selectable | subject's parent can't have children selected`,
       `selectable | subject's parent can have children selected, but shouldn't`
@@ -419,7 +434,8 @@ class ConditionAssertions {
       ? subject.parent.isChildSelected(subject.idx)
       : false
 
-    this.assert(
+    assert.call(
+      this,
       result,
       `isSelected | subject is not selected`,
       `isSelected | subject is selected, but shouldn't`
@@ -459,7 +475,8 @@ class ConditionAssertions {
       // 2. Current client has to be on the list
       const uiValues = Array.isArray(ui[uiKey]) ? ui[uiKey] : [ui[uiKey]]
       const result = uiValues.some((client) => clientID === client)
-      this.assert(
+      assert.call(
+        this,
         result,
         `revealedUI | client doesn't have "${uiKey}" UI presented to him`,
         `revealedUI | client has "${uiKey}" UI presented to him, but shouldn't`
@@ -471,7 +488,8 @@ class ConditionAssertions {
       )
 
       const result = uiKeys.some((key) => ui[key].includes(clientID))
-      this.assert(
+      assert.call(
+        this,
         result,
         `revealedUI | client doesn't have any UI revealed`,
         `revealedUI | client has some UI revealed, but shouldn't`
@@ -480,48 +498,6 @@ class ConditionAssertions {
 
     resetNegation(this)
     postAssertion(this)
-    return this
-  }
-
-  // === Assertions which ignore current subject ===
-
-  /**
-   * @asserts that player is interacting with an entity which belongs to them
-   */
-  playerOwnsThisEntity(): this {
-    const entity = getFlag(this, "entity")
-    const player = getFlag(this, "player")
-
-    if (hasOwnership(entity)) {
-      const expected = entity.owner
-
-      this.assert(
-        player === expected,
-        `Player "#{act}" is not an owner.`,
-        `Player "#{act}" is an owner, but shouldn't`,
-        expected && expected.clientID,
-        hasOwnership(entity) ? entity.owner.clientID : undefined
-      )
-    } else {
-      throw new Error(`Given entity is not ownable.`)
-    }
-
-    return this
-  }
-
-  /**
-   * @asserts if interacting player currently has the turn.
-   */
-  itsPlayersTurn(): this {
-    const { currentPlayer } = getFlag(this, "state")
-    const player = getFlag(this, "player")
-
-    this.assert(
-      player === currentPlayer,
-      `It's not current players turn`,
-      `It is current players turn, but shouldn't`
-    )
-
     return this
   }
 }

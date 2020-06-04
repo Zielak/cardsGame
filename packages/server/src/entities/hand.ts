@@ -49,7 +49,7 @@ interface Mixin
     SelectableChildrenTrait {}
 
 type HandOptions = Partial<
-  ConstructorType<Mixin> & {
+  NonFunctionProperties<Mixin> & {
     autoSort: SortingFunction
   }
 >

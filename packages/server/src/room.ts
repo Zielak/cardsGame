@@ -8,32 +8,49 @@ import {
   map2Array,
   mapAdd,
   mapRemoveEntry,
+  shuffle,
 } from "@cardsgame/utils"
 
 import { ActionsSet } from "./actionTemplate"
+import { BotGoalsSet } from "./bots/goal"
+import { BotRunner } from "./bots/runner"
 import { Command } from "./command"
+import { Sequence } from "./commands"
 import { CommandsManager } from "./commandsManager"
-import { Player, ServerPlayerEvent } from "./player"
+import { Bot, BotOptions } from "./players/bot"
+import { Player, ServerPlayerEvent } from "./players/player"
 import { State } from "./state/state"
 import { hasLabel, LabelTrait } from "./traits/label"
 import { populatePlayerEvent } from "./utils"
 
-export interface IRoom {
+export interface IRoom<S extends State> {
+  botActivities?: BotGoalsSet<S>
   canGameStart(): boolean
   onInitGame(options: any): void
-  onStartGame(state: State): void | Command[]
+  onStartGame(state: S): void | Command[]
   onPlayerTurnStarted(player: Player): void | Command[]
   onPlayerTurnEnded(player: Player): void | Command[]
   onRoundStart(): void | Command[]
   onRoundEnd(): void | Command[]
 }
 
-export class Room<S extends State> extends colRoom<S> implements IRoom {
+export class Room<S extends State> extends colRoom<S> {
   patchRate = 100 // ms = 10FPS
 
   commandsManager: CommandsManager<S>
+  botRunner: BotRunner<S>
 
   possibleActions: ActionsSet<S>
+
+  botActivities: BotGoalsSet<S>
+  botClients: Bot[] = []
+
+  /**
+   * Count all connected clients, with planned bot players
+   */
+  get allClientsCount(): number {
+    return this.clients.length + this.botClients.length
+  }
 
   get name(): string {
     return this.constructor.name
@@ -48,6 +65,7 @@ export class Room<S extends State> extends colRoom<S> implements IRoom {
     }
 
     this.commandsManager = new CommandsManager<S>(this)
+    this.botRunner = new BotRunner<S>(this)
 
     this.onInitGame(options)
   }
@@ -57,29 +75,71 @@ export class Room<S extends State> extends colRoom<S> implements IRoom {
    * @param data
    * @param options
    */
-  broadcast(data: ServerMessage, options?: BroadcastOptions) {
+  broadcast(data: ServerMessage, options?: BroadcastOptions): boolean {
     logs.notice("BROADCAST 📢", data)
 
     return super.broadcast(data, options)
   }
 
-  onJoin(newClient: Client) {
-    // Add to `state.clients` only if the game is not yet started
-    if (
-      !this.state.isGameStarted &&
-      map2Array(this.state.clients).every(
-        (clientID) => newClient.id !== clientID
-      )
-    ) {
-      mapAdd(this.state.clients, newClient.id)
+  /**
+   * Create and add new Bot player to clients list.
+   * @returns clientID of newly created bot, if added successfully.
+   */
+  protected addBot(botOptions: Omit<BotOptions, "clientID">): string {
+    const { state } = this
+
+    if (state.isGameStarted) {
+      return
     }
 
-    logs.notice("onJoin", `client "${newClient.id}" joined`)
+    const clientID = `botPlayer${this.botClients.length}`
+    if (this.addClient(clientID)) {
+      const bot = new Bot({
+        ...botOptions,
+        clientID,
+      })
+      this.botClients.push(bot)
+      return clientID
+    }
+  }
+
+  /**
+   * Add human client or bot to `state.clients`
+   */
+  protected addClient(id: string): boolean {
+    const { state } = this
+
+    // Add to `state.clients` only if the game is not yet started
+    if (
+      !state.isGameStarted &&
+      map2Array(state.clients).every((clientID) => id !== clientID)
+    ) {
+      mapAdd(state.clients, id)
+      return true
+    }
+    return false
+  }
+
+  /**
+   * Remove human client or bot from `state.clients`
+   */
+  protected removeClient(id: string): void {
+    mapRemoveEntry(this.state.clients, id)
+  }
+
+  onJoin(newClient: Client): void {
+    const added = this.addClient(newClient.id)
+    logs.notice(
+      "onJoin",
+      `client "${newClient.id}" joined, ${
+        added ? "and" : `wasn't`
+      } added to state.clients`
+    )
   }
 
   onLeave(client: Client, consented: boolean): void {
     if (consented || !this.state.isGameStarted) {
-      mapRemoveEntry(this.state.clients, client.id)
+      this.removeClient(client.id)
       logs.notice("onLeave", `client "${client.id}" left permanently`)
     } else {
       logs.notice(
@@ -90,67 +150,126 @@ export class Room<S extends State> extends colRoom<S> implements IRoom {
   }
 
   onMessage(client: Client, event: ClientPlayerEvent): void {
-    logs.verbose("\n==================================\n")
-    if (this.state.isGameOver) {
+    logs.verbose("\n================MESSAGE==================\n")
+
+    // Player signals START
+    if (event.command === "start") {
+      return this.handleGameStart()
+      // No need to parse/do anything else
+    }
+    if (event.command === "add_bot") {
+      this.addBot({
+        actionDelay: () => Math.random() + 1,
+      })
+      return
+    }
+
+    const newEvent = this.parseMessage(client, event)
+
+    if (newEvent) {
+      this.handleMessage(newEvent).then((result) => {
+        if (result) {
+          this.botRunner.onAnyMessage()
+        }
+      })
+    }
+  }
+
+  private parseMessage(
+    client: Client,
+    event: ClientPlayerEvent
+  ): ServerPlayerEvent {
+    const { state } = this
+
+    if (state.isGameOver) {
       logs.info(
-        "onMessage",
+        "parseMessage",
         "Game's already over, I'm not accepting any more messages"
       )
       return
     }
-    if (event.data === "start") {
-      return this.handleGameStart()
-    }
 
-    const newEvent = populatePlayerEvent(this.state, event, client)
+    const newEvent = populatePlayerEvent(state, event, client)
+    debugLogMessage(newEvent)
 
     if (!newEvent.player) {
-      logs.error("onMessage", "You're not a player, get out!", event)
+      logs.error("parseMessage", "You're not a player, get out!", event)
       return
     }
 
-    debugLogMessage(newEvent)
-
-    this.commandsManager
-      .action(client, newEvent)
-      .then((result) => {
-        logs.notice("ROOM", "action() completed, result:", result)
-      })
-      .catch((error) => {
-        logs.error("ROOM", `action() failed. Client: "${client.id}". ${error}`)
-      })
+    return newEvent
   }
 
-  handleGameStart(): void {
-    if (!this.state.isGameStarted) {
-      if (this.canGameStart && !this.canGameStart()) {
-        logs.notice(
-          "onMessage",
-          `Someone requested game start, but we can't go yet...`
-        )
-        return
-      }
+  /**
+   * Once parsed, human-players intention is directed here from `onMessage`.
+   * Also, this function is a direct entry point for BOT players.
+   * Bot players may listen for the resolution of this promise and act accordingly.
+   */
+  async handleMessage(event: ServerPlayerEvent): Promise<boolean> {
+    if (this.state.isGameOver) {
+      return false
+    }
 
-      Object.keys(this.state.clients).forEach((key, idx) => {
-        this.state.players[idx] = new Player({
-          clientID: this.state.clients[key],
-        })
-      })
-      this.state.isGameStarted = true
+    let result = false
+    try {
+      result = await this.commandsManager.handlePlayerEvent(event)
+    } catch (e) {
+      logs.error(
+        "ROOM",
+        `action() failed. Client: "${event.player.clientID}". ${e}`
+      )
+    }
 
-      const postStartCommands = this.onStartGame(this.state)
+    if (result) {
+      logs.notice("ROOM", "action() completed")
+    }
 
-      if (postStartCommands) {
-        this.commandsManager
-          .execute(this.state, new Command("onStartGame", postStartCommands))
-          .then(() => {
-            this.onPlayerTurnStarted(this.state.currentPlayer)
-          })
-      } else {
-        this.onPlayerTurnStarted(this.state.currentPlayer)
-      }
-    } else if (this.state.isGameStarted) {
+    return result
+  }
+
+  private handleGameStart(): void {
+    const { state } = this
+
+    if (state.isGameStarted) {
       logs.notice("onMessage", `Game is already started, ignoring...`)
+      return
+    }
+    if (this.canGameStart && !this.canGameStart()) {
+      logs.notice(
+        "onMessage",
+        `Someone requested game start, but we can't go yet...`
+      )
+      return
+    }
+
+    // We can go, convert all connected "clients" into players
+    shuffle(
+      this.clients
+        .map((client) => new Player({ clientID: client.id }))
+        .concat(this.botClients)
+    ).forEach((player, idx) => {
+      state.players[idx] = player
+    })
+
+    state.isGameStarted = true
+
+    const postStartCommands = this.onStartGame(state)
+
+    const postStartup = (): void => {
+      if (state.turnBased) {
+        this.onPlayerTurnStarted(state.currentPlayer)
+        this.botRunner.onPlayerTurnStarted(state.currentPlayer)
+      }
+      this.onRoundStart()
+      this.botRunner.onRoundStart()
+    }
+
+    if (postStartCommands) {
+      this.commandsManager
+        .executeCommand(state, new Sequence("onStartGame", postStartCommands))
+        .then(postStartup)
+    } else {
+      postStartup()
     }
   }
 

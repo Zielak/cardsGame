@@ -1,7 +1,8 @@
-import { Conditions, getFlag, setFlag } from "../../src/conditions/conditions"
+import { InteractionConditions } from "../../src"
+import { getFlag, setFlag } from "../../src/conditions/base/conditions"
+import { ClassicCard } from "../../src/entities/classicCard"
 import { Hand } from "../../src/entities/hand"
-import { ClassicCard } from "../../src/entities/index"
-import { Player, ServerPlayerEvent } from "../../src/player"
+import { Player, ServerPlayerEvent } from "../../src/players/player"
 import { State } from "../../src/state/state"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 
@@ -11,7 +12,7 @@ let parent: SmartParent
 let child: SmartEntity
 let top: SmartEntity
 let bottom: SmartEntity
-let con: Conditions<State>
+let con: InteractionConditions<State>
 
 beforeEach(() => {
   state = new State()
@@ -28,7 +29,7 @@ beforeEach(() => {
     entity: top,
   }
 
-  con = new Conditions<State>(state, event)
+  con = new InteractionConditions<State>(state, event)
 })
 
 test("all chainers", () => {
