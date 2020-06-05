@@ -1,11 +1,11 @@
 import { logs } from "@cardsgame/utils"
 
 import { Command } from "../command"
-import { State } from "../state/state"
 import { Room } from "../room"
+import { State } from "../state/state"
 
 export class NextRound extends Command {
-  async execute(state: State, room: Room<any>) {
+  async execute(state: State, room: Room<any>): Promise<void> {
     room.onRoundEnd()
 
     state.round++
@@ -14,7 +14,7 @@ export class NextRound extends Command {
     room.onRoundStart()
   }
 
-  async undo(state: State, room: Room<any>) {
+  async undo(state: State, room: Room<any>): Promise<void> {
     room.onRoundStart()
 
     state.round--

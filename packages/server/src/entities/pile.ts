@@ -1,13 +1,14 @@
 import { def } from "@cardsgame/utils"
 
-import { canBeChild, containsChildren } from "../annotations"
+import { canBeChild } from "../annotations/canBeChild"
+import { containsChildren } from "../annotations/containsChildren"
 import { State } from "../state/state"
-import { Entity, applyTraitsMixins } from "../traits/entity"
-import { ParentArrayTrait } from "../traits/parentArray"
-import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { LabelTrait } from "../traits/label"
+import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
+import { LabelTrait } from "../traits/label"
+import { LocationTrait } from "../traits/location"
+import { ParentArrayTrait } from "../traits/parentArray"
 
 @canBeChild
 @containsChildren()
@@ -19,7 +20,7 @@ import { IdentityTrait } from "../traits/identity"
   LabelTrait,
 ])
 export class Pile extends Entity<PileOptions> {
-  create(state: State, options: PileOptions = {}) {
+  create(state: State, options: PileOptions = {}): void {
     this.name = def(options.name, "Pile")
     this.type = def(options.type, "pile")
   }

@@ -1,8 +1,8 @@
 import { logs } from "@cardsgame/utils"
 
 import { Command } from "../command"
-import { State } from "../state/state"
 import { Room } from "../room"
+import { State } from "../state/state"
 
 class SetCurrentPlayer extends Command {
   private lastIdx: number
@@ -10,12 +10,12 @@ class SetCurrentPlayer extends Command {
     super()
   }
 
-  async execute(state: State) {
+  async execute(state: State): Promise<void> {
     this.lastIdx = state.currentPlayerIdx
     state.currentPlayerIdx = this.idx
   }
 
-  async undo(state: State) {
+  async undo(state: State): Promise<void> {
     state.currentPlayerIdx = this.lastIdx
   }
 }
@@ -24,7 +24,7 @@ export class NextPlayer extends Command {
   constructor() {
     super()
   }
-  async execute(state: State, room: Room<any>) {
+  async execute(state: State, room: Room<any>): Promise<void> {
     if (!state.turnBased)
       throw new Error(`Can't use NextPlayer in non turn based game.`)
 
@@ -56,7 +56,7 @@ export class PreviousPlayer extends Command {
   constructor() {
     super()
   }
-  async execute(state: State, room: Room<any>) {
+  async execute(state: State, room: Room<any>): Promise<void> {
     if (!state.turnBased)
       throw new Error(`Can't use PreviousPlayer in non turn based game.`)
 

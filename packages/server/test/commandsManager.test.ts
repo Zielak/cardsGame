@@ -1,7 +1,9 @@
+import { Client } from "colyseus"
+
 import { CommandsManager } from "../src/commandsManager"
-import { State } from "../src/state"
-import { Room } from "../src/room"
 import { ServerPlayerEvent } from "../src/player"
+import { Room } from "../src/room"
+import { State } from "../src/state/state"
 import { populatePlayerEvent } from "../src/utils"
 
 let state: State
@@ -34,18 +36,18 @@ const actions = [
   },
 ]
 
-beforeEach(() => {
-  state = new State()
-  event = populatePlayerEvent(state, event, client)
-  room = new Room()
-  room.possibleActions = new Set(actions)
-  manager = new CommandsManager(room)
-})
-
 describe("action", () => {
-  it("throws up when another action is still pending", () => {
+  beforeEach(() => {
+    state = new State()
+    event = {} // populatePlayerEvent(state, event, client as Client)
+    room = new Room()
+    room.possibleActions = new Set(actions)
+    manager = new CommandsManager(room)
+  })
+
+  it("throws up when another action is still pending", async () => {
     manager.actionPending = true
 
-    expect(() => manager.action(client, {})).toThrow()
+    await expect(manager.action(client as Client, {})).rejects.toThrow()
   })
 })

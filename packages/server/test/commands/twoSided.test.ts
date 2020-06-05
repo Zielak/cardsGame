@@ -1,6 +1,6 @@
-import { State } from "../../src/state"
-import { FaceUp, FaceDown, Flip } from "../../src/commands/twoSided"
+import { FaceDown, FaceUp, Flip } from "../../src/commands/twoSided"
 import { ClassicCard } from "../../src/entities/index"
+import { State } from "../../src/state/state"
 
 let state: State
 let cards: ClassicCard[]

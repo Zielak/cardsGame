@@ -1,7 +1,8 @@
 import { times } from "@cardsgame/utils"
 
-import { State } from "../../src/state"
-import { DealCards, ChangeParent } from "../../src/commands"
+import { ChangeParent } from "../../src/commands/changeParent"
+import { DealCards } from "../../src/commands/dealCards"
+import { State } from "../../src/state/state"
 import { LabeledEntity, LabeledParent } from "../helpers/labeledEntities"
 import { RoomMock } from "../helpers/roomMock"
 

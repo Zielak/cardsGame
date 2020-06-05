@@ -1,5 +1,5 @@
-import { State } from "../../src/state"
-import { SmartParent, SmartEntity } from "../helpers/smartEntities"
+import { State } from "../../src/state/state"
+import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 
 let state, parentA, parentB, targetA, targetB, parentC, targetC
 

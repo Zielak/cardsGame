@@ -1,9 +1,9 @@
 import { Conditions } from "../../src/conditions/conditions"
-import { State } from "../../src/state"
-import { ServerPlayerEvent, Player } from "../../src/player"
-import { SmartEntity, SmartParent } from "../helpers/smartEntities"
-import { SelectableParent } from "../helpers/selectableParent"
 import { Grid } from "../../src/entities/grid"
+import { Player, ServerPlayerEvent } from "../../src/player"
+import { State } from "../../src/state/state"
+import { SelectableParent } from "../helpers/selectableParent"
+import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 
 let state: State
 let event: ServerPlayerEvent

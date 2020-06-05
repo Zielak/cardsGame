@@ -1,8 +1,8 @@
 import {
-  standardDeckFactory,
   ClassicCard,
+  standardDeckFactory,
 } from "../../src/entities/classicCard"
-import { State } from "../../src/state"
+import { State } from "../../src/state/state"
 
 let card: ClassicCard
 let state: State

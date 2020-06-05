@@ -1,12 +1,11 @@
-import { MapSchema } from "@colyseus/schema"
 import { mapCount } from "@cardsgame/utils"
+import { MapSchema } from "@colyseus/schema"
 
-import { type, containsChildren } from "../annotations"
+import { containsChildren } from "../annotations/containsChildren"
+import { type } from "../annotations/type"
 import { Player } from "../player"
 import { PlayerViewPosition } from "../playerViewPosition"
-
-// Trait
-import { Entity, applyTraitsMixins } from "../traits/entity"
+import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { ParentArrayTrait } from "../traits/parentArray"
@@ -75,20 +74,43 @@ export class State extends Entity<{}> {
   @type(PlayerViewPosition) playerViewPosition = new PlayerViewPosition()
 
   /**
-   * @private
+   * ID of last known, registered Entity.
    */
-  _lastID = -1
+  private _lastID = -1
 
   /**
-   * Use `find()` or `getEntity()` methods instead
-   * @private
+   * Map of every Entity in this state.
    */
-  _allEntities = new Map<number, IdentityTrait>()
+  private _allEntities = new Map<number, IdentityTrait>()
 
   constructor() {
     super(undefined)
 
     this.hijacksInteractionTarget = false
+  }
+
+  /**
+   * Registers new entity to the game state.
+   * @param entity
+   * @private internal use only
+   */
+  _registerEntity(entity: IdentityTrait): void {
+    if (this._allEntities.has(entity.id)) {
+      if (this._allEntities.get(entity.id) !== entity) {
+        throw new Error(
+          "State: registering entity, which was already registered WITH DIFFERENT ID?"
+        )
+      }
+      return
+    }
+
+    const newID = ++this._lastID
+    Object.defineProperty(entity, "id", {
+      configurable: false,
+      writable: false,
+      value: newID,
+    })
+    this._allEntities.set(newID, entity)
   }
 }
 

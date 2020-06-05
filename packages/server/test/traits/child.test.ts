@@ -1,5 +1,5 @@
+import { State } from "../../src/state/state"
 import { DumbArrayParent, DumbEntity } from "../helpers/dumbEntities"
-import { State } from "../../src/state"
 
 let state: State
 

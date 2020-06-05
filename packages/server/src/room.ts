@@ -2,21 +2,21 @@ import { Client, Room as colRoom } from "colyseus"
 import { BroadcastOptions } from "colyseus/lib/Room"
 
 import {
-  logs,
   chalk,
+  IS_CHROME,
+  logs,
   map2Array,
   mapAdd,
   mapRemoveEntry,
-  IS_CHROME,
 } from "@cardsgame/utils"
 
-import { CommandsManager } from "./commandsManager"
-import { State } from "./state/state"
-import { Player, ServerPlayerEvent } from "./player"
 import { ActionsSet } from "./actionTemplate"
-import { populatePlayerEvent } from "./utils"
-import { LabelTrait, hasLabel } from "./traits/label"
 import { Command } from "./command"
+import { CommandsManager } from "./commandsManager"
+import { Player, ServerPlayerEvent } from "./player"
+import { State } from "./state/state"
+import { hasLabel, LabelTrait } from "./traits/label"
+import { populatePlayerEvent } from "./utils"
 
 export interface IRoom {
   canGameStart(): boolean

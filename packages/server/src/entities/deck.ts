@@ -1,18 +1,13 @@
+import { def } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
-import { def } from "@cardsgame/utils"
-
-import {
-  canBeChild,
-  containsChildren,
-  defineTypes,
-  getAllChildrensTypes,
-  type,
-} from "../annotations"
+import { canBeChild } from "../annotations/canBeChild"
+import { containsChildren } from "../annotations/containsChildren"
+import { globalEntitiesContext } from "../annotations/entitiesContext"
+import { defineTypes, type } from "../annotations/type"
 import { State } from "../state/state"
-
 import { ChildTrait } from "../traits/child"
-import { Entity, applyTraitsMixins } from "../traits/entity"
+import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
@@ -20,7 +15,13 @@ import { OwnershipTrait } from "../traits/ownership"
 import { ParentArrayTrait } from "../traits/parentArray"
 
 class TopDeckElement extends Schema {}
-defineTypes(TopDeckElement, getAllChildrensTypes())
+
+const typesMap = {}
+globalEntitiesContext.allChildrensTypes.forEach(
+  (value, key) => (typesMap[key] = value)
+)
+defineTypes(TopDeckElement, typesMap)
+
 interface TopDeckElement {
   [key: string]: any
 }
@@ -63,9 +64,7 @@ export class Deck extends Entity<DeckOptions> {
         (key) => (this.topDeck[key] = undefined)
       )
     } else {
-      const whitelist = Object.keys(getAllChildrensTypes())
-
-      whitelist.forEach((key) => {
+      globalEntitiesContext.allChildrensTypes.forEach((_, key) => {
         this.topDeck[key] = child[key]
       })
     }

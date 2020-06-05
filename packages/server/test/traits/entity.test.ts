@@ -1,5 +1,5 @@
-import { State } from "../../src/state"
-import { Entity, applyTraitsMixins } from "../../src/traits/entity"
+import { State } from "../../src/state/state"
+import { applyTraitsMixins, Entity } from "../../src/traits/entity"
 
 let state: State
 

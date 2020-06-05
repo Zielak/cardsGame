@@ -1,13 +1,13 @@
-import { State } from "../../src/state"
 import {
-  Select,
   Deselect,
+  Select,
   ToggleSelection,
 } from "../../src/commands/selectChild"
-import { Hand } from "../../src/entities/hand"
 import { ClassicCard } from "../../src/entities/classicCard"
-import { RoomMock } from "../helpers/roomMock"
+import { Hand } from "../../src/entities/hand"
 import { Room } from "../../src/room"
+import { State } from "../../src/state/state"
+import { RoomMock } from "../helpers/roomMock"
 
 let state: State
 let room: Room<any>

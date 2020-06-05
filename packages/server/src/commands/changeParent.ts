@@ -1,16 +1,16 @@
-import { logs, chalk, def } from "@cardsgame/utils"
+import { chalk, def, logs } from "@cardsgame/utils"
 
-import { State } from "../state/state"
 import {
   Command,
-  TargetsHolder,
-  Targets,
-  TargetHolder,
   Target,
+  TargetHolder,
+  Targets,
+  TargetsHolder,
 } from "../command"
+import { State } from "../state/state"
 import { ChildTrait } from "../traits/child"
-import { ParentTrait } from "../traits/parent"
 import { hasLabel } from "../traits/label"
+import { ParentTrait } from "../traits/parent"
 
 export class ChangeParent extends Command {
   private entities: TargetsHolder<ChildTrait>
@@ -40,7 +40,7 @@ export class ChangeParent extends Command {
     this.index = def(options.index, undefined)
   }
 
-  async execute(state: State) {
+  async execute(state: State): Promise<void> {
     const _ = this.constructor.name
     if (!this.target.get()) {
       throw new Error(`ChangeParent, Target is required.`)
@@ -63,7 +63,7 @@ export class ChangeParent extends Command {
     })
   }
 
-  async undo(state: State) {
+  async undo(state: State): Promise<void> {
     this.entities.get().forEach((entity, idx) => {
       const last = this.sources[idx]
       last[0].addChild(entity, last[1])

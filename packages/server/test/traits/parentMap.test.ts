@@ -1,7 +1,7 @@
-import { DumbEntity, DumbMapParent } from "../helpers/dumbEntities"
-import { IdentityTrait } from "../../src/traits/identity"
+import { State } from "../../src/state/state"
 import { ChildTrait } from "../../src/traits/child"
-import { State } from "../../src/state"
+import { IdentityTrait } from "../../src/traits/identity"
+import { DumbEntity, DumbMapParent } from "../helpers/dumbEntities"
 
 let state: State
 

@@ -2,14 +2,12 @@ import { applyMixins } from "@cardsgame/utils"
 
 import { ServerPlayerEvent } from "../player"
 import { State } from "../state/state"
-
-// Conditions
-import { ConditionChainers } from "./chainers"
-import { getFlag, setFlag } from "./utils"
 import { ConditionAssertions } from "./assertions"
 import { ConditionBase } from "./base"
+import { ConditionChainers } from "./chainers"
 import { ConditionGrouping } from "./grouping"
 import { ConditionSubjects } from "./subjects"
+import { getFlag, setFlag } from "./utils"
 
 export { getFlag, setFlag }
 

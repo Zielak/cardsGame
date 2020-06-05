@@ -1,6 +1,6 @@
-import { ChildTrait } from "./child"
+import { globalEntitiesContext } from "../annotations/entitiesContext"
 import { QuerableProps, queryRunner } from "../queryRunner"
-import { registeredChildren } from "../annotations"
+import { ChildTrait } from "./child"
 
 export function isParent(entity: any): entity is ParentTrait {
   return (
@@ -88,7 +88,7 @@ export const hasChildren = (entity): boolean =>
   isParent(entity) ? entity.countChildren() > 0 : false
 
 export const getKnownConstructor = (entity: ChildTrait): Function =>
-  registeredChildren.find((con) => entity instanceof con)
+  globalEntitiesContext.registeredChildren.find((con) => entity instanceof con)
 
 export const pickByIdx = (idx: number) => (child: ChildTrait): boolean =>
   child.idx === idx

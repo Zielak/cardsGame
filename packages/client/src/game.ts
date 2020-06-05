@@ -1,6 +1,8 @@
-import { logs, def } from "@cardsgame/utils"
 import { Client } from "colyseus.js"
 import { RoomAvailable } from "colyseus.js/lib/Room"
+
+import { def, logs } from "@cardsgame/utils"
+
 import { Room } from "./room"
 
 interface IGameOptions {
@@ -38,11 +40,11 @@ export class Game {
     )
   }
 
-  get sessionID() {
+  get sessionID(): string {
     return this.room ? this.room.sessionID : undefined
   }
 
-  joinOrCreate(roomName: string, options?: any) {
+  joinOrCreate(roomName: string, options?: any): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.joinOrCreate(roomName, options).then((room) => {
@@ -51,7 +53,7 @@ export class Game {
     })
   }
 
-  create(roomName: string, options?: any) {
+  create(roomName: string, options?: any): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.create(roomName, options).then((room) => {
@@ -64,7 +66,7 @@ export class Game {
    * This one is probably useless for game rooms.
    * Use `joinOrCreate` instead.
    */
-  join(roomName: string, options?: any) {
+  join(roomName: string, options?: any): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.join(roomName, options).then((room) => {
@@ -73,7 +75,7 @@ export class Game {
     })
   }
 
-  joinById(roomId: string, options?: any) {
+  joinById(roomId: string, options?: any): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.joinById(roomId, options).then((room) => {

@@ -5,5 +5,5 @@ module.exports = {
     "!**/node_modules/**",
     "!**/test/**/*.ts",
   ],
-  projects: ["<rootDir>/packages/*"],
+  projects: ["<rootDir>/packages/*/jest.config.js"],
 }

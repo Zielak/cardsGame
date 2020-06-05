@@ -1,10 +1,11 @@
 import { def } from "@cardsgame/utils"
 
-import { canBeChild, containsChildren, type } from "../annotations"
+import { canBeChild } from "../annotations/canBeChild"
+import { containsChildren } from "../annotations/containsChildren"
+import { type } from "../annotations/type"
 import { State } from "../state/state"
-
 import { ChildTrait } from "../traits/child"
-import { Entity, applyTraitsMixins } from "../traits/entity"
+import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
@@ -61,7 +62,7 @@ export class Line extends Entity<LineOptions> {
    */
   @type("float32") itemSpacing: number
 
-  create(state: State, options: LineOptions = {}) {
+  create(state: State, options: LineOptions = {}): void {
     this.name = def(options.name, "Line")
     this.type = def(options.type, "line")
 

@@ -1,14 +1,15 @@
 import { def } from "@cardsgame/utils"
 
-import { canBeChild, containsChildren } from "../annotations"
+import { canBeChild } from "../annotations/canBeChild"
+import { containsChildren } from "../annotations/containsChildren"
 import { State } from "../state/state"
-import { ParentArrayTrait } from "../traits/parentArray"
-import { LocationTrait } from "../traits/location"
 import { ChildTrait } from "../traits/child"
-import { Entity, applyTraitsMixins } from "../traits/entity"
-import { LabelTrait } from "../traits/label"
-import { OwnershipTrait } from "../traits/ownership"
+import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
+import { LabelTrait } from "../traits/label"
+import { LocationTrait } from "../traits/location"
+import { OwnershipTrait } from "../traits/ownership"
+import { ParentArrayTrait } from "../traits/parentArray"
 import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
 
 /**
@@ -31,7 +32,7 @@ export class Spread extends Entity<SpreadOptions> {
 
   hijacksInteractionTarget = false
 
-  create(state: State, options: SpreadOptions = {}) {
+  create(state: State, options: SpreadOptions = {}): void {
     this.name = def(options.name, "Spread")
     this.type = def(options.type, "spread")
 

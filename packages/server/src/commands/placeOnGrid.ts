@@ -1,11 +1,11 @@
-import { logs, chalk, def } from "@cardsgame/utils"
+import { chalk, def, logs } from "@cardsgame/utils"
 
-import { State } from "../state/state"
-import { Command, TargetHolder, Target } from "../command"
+import { Command, Target, TargetHolder } from "../command"
 import { isGrid } from "../entities"
+import { State } from "../state/state"
 import { ChildTrait } from "../traits/child"
-import { ParentTrait } from "../traits/parent"
 import { hasLabel } from "../traits/label"
+import { ParentTrait } from "../traits/parent"
 
 export class PlaceOnGrid extends Command {
   private entity: TargetHolder<ChildTrait>
@@ -31,7 +31,7 @@ export class PlaceOnGrid extends Command {
     this.row = def(row, 0)
   }
 
-  async execute(state: State) {
+  async execute(state: State): Promise<void> {
     const _ = this.constructor.name
     const entity = this.entity.get()
     const target = this.target.get()
@@ -59,7 +59,7 @@ export class PlaceOnGrid extends Command {
     target.addChildAt(entity, this.column, this.row)
   }
 
-  async undo(state: State) {
+  async undo(state: State): Promise<void> {
     const entity = this.entity.get()
 
     this.lastParent.addChild(entity, this.lastIndex)

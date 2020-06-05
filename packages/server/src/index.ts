@@ -1,11 +1,13 @@
 export { Server } from "colyseus"
 export { RoomConstructor } from "colyseus/lib/Room"
-export { defineTypes, Schema, ArraySchema, MapSchema } from "@colyseus/schema"
+export { Schema, ArraySchema, MapSchema } from "@colyseus/schema"
 
-// TODO: wrap `defineTypes` for our `types`!!!
-export { type, canBeChild, containsChildren } from "./annotations"
+export { canBeChild } from "./annotations/canBeChild"
+export { containsChildren } from "./annotations/containsChildren"
+export { defineTypes, type } from "./annotations/type"
 
 import * as commands from "./commands"
+
 export { commands }
 
 export * from "./command"
@@ -18,7 +20,6 @@ export * from "./conditions/conditions"
 export * from "./actionTemplate"
 export * from "./player"
 
-// export * from "./traits"
 export * from "./traits/boxModel"
 export * from "./traits/child"
 export * from "./traits/entity"

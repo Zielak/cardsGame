@@ -1,4 +1,5 @@
-import { State } from "../src/state"
+import { State } from "../src/state/state"
+import { DumbEntity } from "./helpers/dumbEntities"
 
 let state: State
 
@@ -8,11 +9,13 @@ describe(`State`, () => {
   test(`#registerEntity`, () => {
     state = new State()
 
-    let newID = state.registerEntity({})
-    expect(newID).toBe(0)
+    const ent1 = new DumbEntity(state)
+    expect(ent1.id).toBe(0)
 
-    newID = state.registerEntity({})
-    expect(newID).toBe(1)
+    const ent2 = new DumbEntity(state)
+    expect(ent2.id).toBe(1)
+
+    expect(() => ((ent1 as any)["id"] = 1000)).toThrow()
   })
 
   test("#clientsCount", () => {

@@ -1,4 +1,4 @@
-import { logs, def } from "@cardsgame/utils"
+import { def, logs } from "@cardsgame/utils"
 
 import {
   Command,
@@ -7,10 +7,10 @@ import {
   Targets,
   TargetsHolder,
 } from "../command"
+import { Room } from "../room"
 import { State } from "../state/state"
 import { ParentTrait } from "../traits/parent"
 import { ChangeParent } from "./changeParent"
-import { Room } from "../room"
 
 /**
  * A command which by itself changes nothing,
@@ -48,7 +48,7 @@ export class DealCards extends Command {
     this.onDeckEmptied = options.onDeckEmptied
   }
 
-  async execute(state: State, room: Room<any>) {
+  async execute(state: State, room: Room<any>): Promise<void> {
     const _ = this.constructor.name
     logs.notice(_, "count:", this.count, ", step:", this.step)
 

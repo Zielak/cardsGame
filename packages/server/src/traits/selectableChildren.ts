@@ -1,11 +1,10 @@
 import { ArraySchema, Schema } from "@colyseus/schema"
 
+import { type } from "../annotations/type"
 import { ChildTrait } from "./child"
 import { isParent, ParentTrait } from "./parent"
-import { type } from "../annotations"
 
-// TODO: This trait is clearly dependant on ParentTrait
-// There should be a way of checking/ensuring this dependency is met
+// TODO: This trait is clearly dependant on ParentTrait. There should be a way of checking/ensuring this dependency is met
 
 class SelectedChildData extends Schema {
   @type("uint16") childIndex: number

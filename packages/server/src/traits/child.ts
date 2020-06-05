@@ -62,7 +62,10 @@ export class ChildTrait {
 
 ChildTrait["typeDef"] = { idx: "number" }
 ChildTrait["hooks"] = {
-  postConstructor: function (state: State, options: ChildTrait): void {
+  postConstructor: function addMyselfToParent(
+    state: State,
+    options: ChildTrait
+  ): void {
     const targetParent = def(options.parent, state)
 
     if ("idx" in options) {

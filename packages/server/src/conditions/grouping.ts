@@ -1,9 +1,8 @@
-import { logs, IS_CHROME, chalk } from "@cardsgame/utils"
+import { chalk, IS_CHROME, logs } from "@cardsgame/utils"
 
 import { State } from "../state/state"
-
-import { iconStyle, getFlag, setFlag, resetNegation } from "./utils"
 import { Conditions } from "./conditions"
+import { getFlag, iconStyle, resetNegation, setFlag } from "./utils"
 
 type EitherCallback = () => any
 type EitherTuple = [string, EitherCallback]
