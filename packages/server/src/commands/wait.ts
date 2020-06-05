@@ -5,7 +5,7 @@ export class Wait extends Command {
     super()
   }
 
-  async execute() {
+  async execute(): Promise<void> {
     await new Promise((res) => setTimeout(res, this.time))
   }
 }

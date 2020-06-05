@@ -1,13 +1,12 @@
 import { def } from "@cardsgame/utils"
 
-import { Command, TargetHolder, Target } from "../command"
+import { Command, Target, TargetHolder } from "../command"
 import { Room } from "../room"
 import { State } from "../state/state"
 import { ChildTrait } from "../traits/child"
 import { ParentTrait } from "../traits/parent"
-
 import { ChangeParent } from "./changeParent"
-import { FaceUp, FaceDown, Flip } from "./twoSided"
+import { FaceDown, FaceUp, Flip } from "./twoSided"
 import { Wait } from "./wait"
 
 type DrawOutCondition = (child: ChildTrait) => boolean
@@ -38,7 +37,7 @@ export class DrawOutUntil extends Command {
     this.options = def(options, {})
   }
 
-  async execute(state: State, room: Room<any>) {
+  async execute(state: State, room: Room<any>): Promise<void> {
     const source = this.source.get()
     const target = this.target.get()
 
@@ -74,7 +73,7 @@ export class DrawOutUntil extends Command {
     } while (!this.condition(entity))
   }
 
-  async undo(state: State, room: Room<any>) {
+  async undo(state: State, room: Room<any>): Promise<void> {
     // Probably nothing else to do, we're dealing with subCommands only
     super.undo(state, room)
   }

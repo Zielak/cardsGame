@@ -1,11 +1,10 @@
-import { getFlag, resetNegation, postAssertion, ref } from "./utils"
-
+import { isGrid } from "../entities"
 import { isChild } from "../traits/child"
 import { hasOwnership } from "../traits/ownership"
-import { hasSelectableChildren } from "../traits/selectableChildren"
-import { isParentMap } from "../traits/parentMap"
 import { isParent } from "../traits/parent"
-import { isGrid } from "../entities"
+import { isParentMap } from "../traits/parentMap"
+import { hasSelectableChildren } from "../traits/selectableChildren"
+import { getFlag, postAssertion, ref, resetNegation } from "./utils"
 
 const getMessage = (
   target,

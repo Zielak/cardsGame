@@ -1,17 +1,16 @@
+import { def, limit, logs } from "@cardsgame/utils"
 import { ArraySchema } from "@colyseus/schema"
-import { logs, def, limit } from "@cardsgame/utils"
 
-import { registeredChildren } from "../annotations"
+import { globalEntitiesContext } from "../annotations/entitiesContext"
 import { State } from "../state/state"
-
 import { ChildTrait } from "./child"
 import { executeHook } from "./entity"
 import {
-  ParentTrait,
   ChildAddedHandler,
   ChildRemovedHandler,
   getKnownConstructor,
   isParent,
+  ParentTrait,
   pickByIdx,
   query,
   queryAll,
@@ -197,7 +196,7 @@ export class ParentArrayTrait implements ParentTrait {
       return []
     }
 
-    return registeredChildren
+    return globalEntitiesContext.registeredChildren
       .reduce((prev, con) => {
         prev.push(...this[`children${con.name}`])
         return prev
@@ -235,7 +234,9 @@ export class ParentArrayTrait implements ParentTrait {
     this.childrenPointers = []
 
     this.getChildren().forEach((child, newIdx) => {
-      const con = registeredChildren.find((c) => child instanceof c)
+      const con = globalEntitiesContext.registeredChildren.find(
+        (c) => child instanceof c
+      )
       const prevIndex = child.idx
 
       this.childrenPointers[newIdx] = con.name
@@ -264,7 +265,7 @@ ParentArrayTrait["trait"] = function constructorParentArrayTrait(
     true
   )
 
-  registeredChildren.forEach((con) => {
+  globalEntitiesContext.registeredChildren.forEach((con) => {
     if (this.__syncChildren === false) {
       this[`children${con.name}`] = []
     } else {

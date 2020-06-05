@@ -1,5 +1,5 @@
-import { Broadcast } from "../../src/commands"
-import { State } from "../../src/state"
+import { Broadcast } from "../../src/commands/broadcast"
+import { State } from "../../src/state/state"
 import { RoomMock } from "../helpers/roomMock"
 
 let state: State

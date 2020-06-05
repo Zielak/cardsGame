@@ -1,4 +1,5 @@
 import { Room as colyseusRoom } from "colyseus.js/lib/Room"
+
 import { logs } from "@cardsgame/utils"
 
 export class Room {
@@ -40,13 +41,13 @@ export class Room {
     logs.notice("client joined successfully")
   }
 
-  onMessage(message: ServerMessage) {}
-  onStateChange(state: any) {}
+  onMessage(message: ServerMessage): void {}
+  onStateChange(state: any): void {}
   /**
    * @param {number} code webSocket shutdown code
    */
-  onLeave(code: number) {}
-  onError(message: string) {}
+  onLeave(code: number): void {}
+  onError(message: string): void {}
 
   /**
    * Send a message from client to server.

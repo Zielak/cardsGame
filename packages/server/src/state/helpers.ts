@@ -1,25 +1,12 @@
 import { logs } from "@cardsgame/utils"
 
+import { Player } from "../player"
 import { ChildTrait, isChild } from "../traits/child"
 import { IdentityTrait } from "../traits/identity"
-import { LabelTrait, hasLabel } from "../traits/label"
+import { hasLabel, LabelTrait } from "../traits/label"
 import { hasOwnership } from "../traits/ownership"
-import { ParentTrait, hasChildren, isParent } from "../traits/parent"
-
-import { Player } from "../player"
-
+import { hasChildren, isParent, ParentTrait } from "../traits/parent"
 import { State } from "./state"
-
-/**
- * Registers new entity to the game state
- * @param entity
- * @returns new ID to be assigned to that entity
- */
-export function registerEntity(state: State, entity): number {
-  const newID = ++state._lastID
-  state._allEntities.set(newID, entity)
-  return newID
-}
 
 /**
  * Will get you an index of given player in turn queue.

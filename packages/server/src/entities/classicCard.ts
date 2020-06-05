@@ -1,14 +1,15 @@
 import { def, logs } from "@cardsgame/utils"
 
-import { type, canBeChild } from "../annotations"
+import { canBeChild } from "../annotations/canBeChild"
+import { type } from "../annotations/type"
 import { State } from "../state/state"
-import { Entity, applyTraitsMixins } from "../traits/entity"
-import { LabelTrait } from "../traits/label"
-import { TwoSidedTrait } from "../traits/twoSided"
 import { ChildTrait } from "../traits/child"
-import { LocationTrait } from "../traits/location"
+import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
+import { LabelTrait } from "../traits/label"
+import { LocationTrait } from "../traits/location"
 import { OwnershipTrait } from "../traits/ownership"
+import { TwoSidedTrait } from "../traits/twoSided"
 
 /**
  * Visibility filter

@@ -4,7 +4,7 @@ import { FlexyTrait } from "./traits/flexyContainer"
 import { hasIdentity } from "./traits/identity"
 import { LabelTrait } from "./traits/label"
 import { LocationTrait } from "./traits/location"
-import { OwnershipTrait, hasOwnership } from "./traits/ownership"
+import { hasOwnership, OwnershipTrait } from "./traits/ownership"
 import { ParentArrayTrait } from "./traits/parentArray"
 import { ParentMapTrait } from "./traits/parentMap"
 import { SelectableChildrenTrait } from "./traits/selectableChildren"
@@ -46,7 +46,9 @@ export interface QuerableProps extends EntityOptions {
   parent?: QuerableProps
 }
 
-export const queryRunner = <T>(props: QuerableProps) => (entity: T) => {
+export const queryRunner = <T>(props: QuerableProps) => (
+  entity: T
+): boolean => {
   if (!isChild(entity)) return false
 
   const propKeys = Object.keys(props)

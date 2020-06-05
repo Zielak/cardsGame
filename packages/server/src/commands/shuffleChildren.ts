@@ -1,5 +1,5 @@
-import { State } from "../state/state"
 import { Command, Target, TargetHolder } from "../command"
+import { State } from "../state/state"
 import { ParentTrait } from "../traits/parent"
 
 export class ShuffleChildren extends Command {
@@ -10,7 +10,7 @@ export class ShuffleChildren extends Command {
     this.target = new TargetHolder(container)
   }
 
-  async execute(state: State) {
+  async execute(state: State): Promise<void> {
     let idxA = this.target.get().countChildren()
     if (idxA === 0) return
     while (--idxA) {

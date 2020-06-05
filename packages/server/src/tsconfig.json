@@ -5,7 +5,7 @@
     "experimentalDecorators": true,
     "module": "commonjs",
     "outDir": "../lib",
-    "target": "esnext",
+    "target": "ES2019",
     "types": ["@cardsgame/types", "colyseus"]
   }
 }

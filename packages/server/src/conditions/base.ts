@@ -1,6 +1,5 @@
-import { ServerPlayerEvent, Player } from "../player"
-
-import { setFlag, getFlag } from "./utils"
+import { Player, ServerPlayerEvent } from "../player"
+import { getFlag, setFlag } from "./utils"
 
 class ConditionBase<S> {
   /**

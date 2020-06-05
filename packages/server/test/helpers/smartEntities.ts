@@ -1,11 +1,12 @@
-import { Entity, applyTraitsMixins } from "../../src/traits/entity"
-import { ParentArrayTrait } from "../../src/traits/parentArray"
+import { canBeChild } from "../../src/annotations/canBeChild"
+import { containsChildren } from "../../src/annotations/containsChildren"
+import { State } from "../../src/state/state"
 import { ChildTrait } from "../../src/traits/child"
-import { LabelTrait } from "../../src/traits/label"
+import { applyTraitsMixins, Entity } from "../../src/traits/entity"
 import { IdentityTrait } from "../../src/traits/identity"
+import { LabelTrait } from "../../src/traits/label"
 import { OwnershipTrait } from "../../src/traits/ownership"
-import { canBeChild, containsChildren } from "../../src/annotations"
-import { State } from "../../src/state"
+import { ParentArrayTrait } from "../../src/traits/parentArray"
 
 @canBeChild
 @containsChildren()

@@ -1,8 +1,8 @@
 import { Command, Target, TargetHolder } from "../command"
-import { SelectableChildrenTrait } from "../traits/selectableChildren"
-import { ParentTrait } from "../traits/parent"
-import { State } from "../state/state"
 import { Room } from "../room"
+import { State } from "../state/state"
+import { ParentTrait } from "../traits/parent"
+import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
 type ParentSelecta = SelectableChildrenTrait & ParentTrait
 

@@ -2,14 +2,12 @@ import { Client } from "colyseus"
 
 import { map2Array } from "@cardsgame/utils"
 
-import { State } from "./state/state"
+import { Player, ServerPlayerEvent } from "./player"
 import { getEntitiesAlongPath } from "./state/helpers"
-
+import { State } from "./state/state"
 import { isChild } from "./traits/child"
 import { hasIdentity } from "./traits/identity"
 import { hasLabel } from "./traits/label"
-
-import { ServerPlayerEvent, Player } from "./player"
 
 export const populatePlayerEvent = (
   state: State,
@@ -43,13 +41,4 @@ export const populatePlayerEvent = (
   }
 
   return newEvent
-}
-
-export const getLabel = (entity): string => {
-  if (hasLabel(entity)) {
-    return `"${entity.type}.${entity.name}"`
-  } else if (hasIdentity(entity)) {
-    return `"id:${entity.id}"`
-  }
-  return `"unknown entity"`
 }

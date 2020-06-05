@@ -1,4 +1,4 @@
-import { Command, TargetsHolder, Targets } from "../command"
+import { Command, Targets, TargetsHolder } from "../command"
 import { TwoSidedTrait } from "../traits/twoSided"
 
 // Make it possible to provide functions as target...

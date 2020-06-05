@@ -1,7 +1,7 @@
-import { getFlag, setFlag, resetPropDig, resetSubject, ref } from "./utils"
-import { hasSelectableChildren } from "../traits/selectableChildren"
-import { isParent } from "../traits/parent"
 import { QuerableProps } from "../queryRunner"
+import { isParent } from "../traits/parent"
+import { hasSelectableChildren } from "../traits/selectableChildren"
+import { getFlag, ref, resetPropDig, resetSubject, setFlag } from "./utils"
 
 /**
  * Getters and methods which change subject

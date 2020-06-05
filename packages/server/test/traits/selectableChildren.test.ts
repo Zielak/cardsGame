@@ -1,6 +1,6 @@
-import { SelectableParent } from "../helpers/selectableParent"
-import { State } from "../../src/state"
+import { State } from "../../src/state/state"
 import { DumbEntity } from "../helpers/dumbEntities"
+import { SelectableParent } from "../helpers/selectableParent"
 
 let state: State
 let parent: SelectableParent

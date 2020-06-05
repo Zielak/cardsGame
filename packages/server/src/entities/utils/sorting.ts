@@ -5,6 +5,7 @@ export type SortingFunction = (childA: ChildTrait, childB: ChildTrait) => number
 export function sortOnChildAdded(child: ChildTrait) {
   if (!this.autoSort) return
   const count = this.countChildren()
+
   for (let idx = 0; idx < count; idx++) {
     if (this.autoSort(child, this.getChild(idx)) > 0) {
       continue

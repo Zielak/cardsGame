@@ -1,8 +1,8 @@
+import { logs } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
-import { logs } from "@cardsgame/utils"
-
-import { type } from "../annotations"
+import { globalEntitiesContext } from "../annotations/entitiesContext"
+import { type } from "../annotations/type"
 import { State } from "../state/state"
 
 export function executeHook(hookName: string, ...args): void {

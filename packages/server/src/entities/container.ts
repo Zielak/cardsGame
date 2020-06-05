@@ -1,7 +1,7 @@
-import { containsChildren, canBeChild } from "../annotations"
-
+import { canBeChild } from "../annotations/canBeChild"
+import { containsChildren } from "../annotations/containsChildren"
 import { ChildTrait } from "../traits/child"
-import { Entity, applyTraitsMixins } from "../traits/entity"
+import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"

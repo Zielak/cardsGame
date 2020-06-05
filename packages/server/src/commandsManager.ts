@@ -1,13 +1,13 @@
 import { Client } from "colyseus"
 
-import { logs, chalk } from "@cardsgame/utils"
+import { chalk, logs } from "@cardsgame/utils"
 
-import { State } from "./state/state"
-import { ServerPlayerEvent } from "./player"
-import { ActionTemplate, ActionsSet } from "./actionTemplate"
+import { ActionsSet, ActionTemplate } from "./actionTemplate"
 import { Command } from "./command"
-import { Room } from "./room"
 import { Conditions } from "./conditions/conditions"
+import { ServerPlayerEvent } from "./player"
+import { Room } from "./room"
+import { State } from "./state/state"
 import { isChild } from "./traits/child"
 
 export class CommandsManager<S extends State> {

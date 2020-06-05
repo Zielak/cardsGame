@@ -1,22 +1,13 @@
 import { State } from "../state/state"
-import { registerEntity } from "../state/helpers"
 
 export class IdentityTrait {
-  protected _id: EntityID
-
-  get id(): number {
-    return this._id
-  }
+  // Value is set in State._registerEntity()
+  readonly id: EntityID
 }
 
 IdentityTrait["trait"] = function constructorIdentityTrait(state: State): void {
-  if (this._id !== undefined) return
-
-  if (state) {
-    this._id = registerEntity(state, this)
-  } else {
-    this._id = -1
-  }
+  // State itself can also report in here.
+  state?._registerEntity(this)
 }
 
 export function hasIdentity(entity): entity is IdentityTrait {

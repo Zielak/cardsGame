@@ -1,5 +1,13 @@
 import { MapSchema, Schema, type } from "@colyseus/schema"
-import { map2Array, mapRemoveIdx, mapCount } from "../src/mapSchema"
+
+import {
+  map2Array,
+  mapAdd,
+  mapCount,
+  mapGetIdx,
+  mapRemoveEntry,
+  mapRemoveIdx,
+} from "../src/mapSchema"
 
 class Box extends Schema {
   name: string
@@ -136,4 +144,57 @@ describe("mapRemoveIdx", () => {
       }).not.toThrow()
     })
   })
+})
+
+test("mapGetIdx", () => {
+  const byRef = {}
+  const map = {
+    0: "zero",
+    1: "one",
+    2: byRef,
+  }
+
+  expect(mapGetIdx(map, "zero")).toBe(0)
+  expect(mapGetIdx(map, "one")).toBe(1)
+  expect(mapGetIdx(map, byRef)).toBe(2)
+  expect(mapGetIdx(map, 0)).toBe(-1)
+})
+
+test("mapAdd", () => {
+  const map = {}
+
+  mapAdd(map, "hello")
+  expect(map[0]).toBe("hello")
+  expect(Object.keys(map).length).toBe(1)
+
+  const byRef = {}
+  mapAdd(map, byRef)
+  expect(map[0]).toBe("hello")
+  expect(map[1]).toBe(byRef)
+  expect(Object.keys(map).length).toBe(2)
+})
+
+test("mapRemoveEntry", () => {
+  const byRef = {}
+  const map = {
+    0: "zero",
+    1: "one",
+    2: byRef,
+    3: 3,
+  }
+
+  mapRemoveEntry(map, "one")
+  expect(map[0]).toBe("zero")
+  expect(map[1]).toBe(byRef)
+  expect(map[2]).toBe(3)
+  expect(Object.keys(map).length).toBe(3)
+
+  mapRemoveEntry(map, byRef)
+  expect(map[0]).toBe("zero")
+  expect(map[1]).toBe(3)
+  expect(Object.keys(map).length).toBe(2)
+
+  mapRemoveEntry(map, 3)
+  expect(map[0]).toBe("zero")
+  expect(Object.keys(map).length).toBe(1)
 })

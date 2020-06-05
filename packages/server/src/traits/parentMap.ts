@@ -1,19 +1,19 @@
+import { arrayWith, def, limit, logs } from "@cardsgame/utils"
 import { ArraySchema } from "@colyseus/schema"
-import { logs, def, limit, arrayWith } from "@cardsgame/utils"
 
-import { ChildTrait } from "./child"
+import { globalEntitiesContext } from "../annotations/entitiesContext"
 import { State } from "../state/state"
-import { registeredChildren } from "../annotations"
+import { ChildTrait } from "./child"
 import { executeHook } from "./entity"
 import {
-  ParentTrait,
   ChildAddedHandler,
   ChildRemovedHandler,
   getKnownConstructor,
   isParent,
-  sortByIdx,
+  ParentTrait,
   query,
   queryAll,
+  sortByIdx,
 } from "./parent"
 
 export function isParentMap(entity: any): entity is ParentMapTrait {
@@ -152,7 +152,7 @@ export class ParentMapTrait implements ParentTrait {
   /**
    * This works more like "swap children", but whateva
    */
-  moveChildTo(from: number, to: number) {
+  moveChildTo(from: number, to: number): void {
     const max =
       this.maxChildren !== Infinity
         ? this.maxChildren - 1
@@ -189,7 +189,7 @@ export class ParentMapTrait implements ParentTrait {
       return []
     }
 
-    return registeredChildren
+    return globalEntitiesContext.registeredChildren
       .reduce((prev, con) => {
         prev.push(...this[`children${con.name}`])
         return prev
@@ -306,7 +306,7 @@ ParentMapTrait["trait"] = function constructorParentMapTrait(
   )
   this.maxChildren = def(options.maxChildren, this.maxChildren, Infinity)
 
-  registeredChildren.forEach((con) => {
+  globalEntitiesContext.registeredChildren.forEach((con) => {
     if (this.__syncChildren === false) {
       this[`children${con.name}`] = []
     } else {
