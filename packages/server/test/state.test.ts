@@ -15,9 +15,7 @@ describe(`State`, () => {
     const ent2 = new DumbEntity(state)
     expect(ent2.id).toBe(1)
 
-    expect(() => ((ent1 as any)["id"] = 1000)).toThrow(
-      "ID of Entity is supposed to be readonly"
-    )
+    expect(() => ((ent1 as any)["id"] = 1000)).toThrow()
   })
 
   test("#clientsCount", () => {
