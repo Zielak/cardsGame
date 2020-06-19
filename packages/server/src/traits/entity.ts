@@ -1,7 +1,6 @@
 import { logs } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
-import { globalEntitiesContext } from "../annotations/entitiesContext"
 import { type } from "../annotations/type"
 import { State } from "../state/state"
 

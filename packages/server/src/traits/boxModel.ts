@@ -3,7 +3,13 @@ import { def } from "@cardsgame/utils"
 import { State } from "../state/state"
 
 export class BoxModelTrait {
+  /**
+   * @memberof BoxModelTrait
+   */
   width: number
+  /**
+   * @memberof BoxModelTrait
+   */
   height: number
 }
 

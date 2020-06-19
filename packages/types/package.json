@@ -3,6 +3,6 @@
   "version": "0.7.0",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
-  "license": "ISC",
+  "license": "MIT",
   "types": "index"
 }

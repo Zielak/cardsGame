@@ -1,3 +1,4 @@
+const { mapAdd } = require("@cardsgame/utils")
 const cardsGameServer = require("@cardsgame/server")
 const {
   commands,
@@ -7,16 +8,19 @@ const {
   Deck,
   Pile,
   Room,
+  Bot,
 } = cardsGameServer
 
 const { WarState } = require("./state")
 const actions = require("./actions")
+const botActivities = require("./bot")
 
 class WarGame extends Room {
   constructor(options) {
     super(options)
     this.maxClients = 2
     this.possibleActions = new Set(actions)
+    this.botActivities = new Set(botActivities)
   }
 
   onInitGame() {
@@ -42,11 +46,11 @@ class WarGame extends Room {
   }
 
   canGameStart() {
-    return this.state.clientsCount === 2
+    return this.allClientsCount === 2
   }
 
   onStartGame() {
-    const { state, commandsManager } = this
+    const { state } = this
 
     // Prepare all (both) players
     const decks = []
@@ -73,8 +77,10 @@ class WarGame extends Room {
     }
 
     // Shuffle & Deal the cards
-    commandsManager.execute(state, new commands.ShuffleChildren(this.deck))
-    commandsManager.execute(state, new commands.DealCards(this.deck, decks))
+    return [
+      new commands.ShuffleChildren(this.deck),
+      new commands.DealCards(this.deck, decks),
+    ]
   }
 
   onRoundStart() {
@@ -90,16 +96,20 @@ class WarGame extends Room {
 
     state.ante = Math.floor(state.round / 2)
 
-    const winningDeck = state
+    const someoneLost = state
       .queryAll({ name: "playersDeck" })
-      .find((deck) => deck.countChildren() === 0)
+      .some((deck) => deck.countChildren() === 0)
 
-    if (winningDeck) {
+    if (someoneLost) {
       state.isGameOver = true
+      const winner = state
+        .queryAll({ name: "playersDeck" })
+        .find((deck) => deck.countChildren() > 0).owner
+
       this.broadcast({
         type: "gameOver",
         data: {
-          winner: winningDeck.owner.clientID,
+          winner: winner.clientID,
         },
       })
     }

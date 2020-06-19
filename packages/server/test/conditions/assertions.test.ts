@@ -1,6 +1,6 @@
-import { Conditions } from "../../src/conditions/conditions"
+import { InteractionConditions } from "../../src"
 import { Grid } from "../../src/entities/grid"
-import { Player, ServerPlayerEvent } from "../../src/player"
+import { Player, ServerPlayerEvent } from "../../src/players/player"
 import { State } from "../../src/state/state"
 import { SelectableParent } from "../helpers/selectableParent"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
@@ -13,7 +13,7 @@ let selectableParent: SelectableParent
 let child: SmartEntity
 let top: SmartEntity
 let bottom: SmartEntity
-let con: Conditions<State>
+let con: InteractionConditions<State>
 
 beforeEach(() => {
   state = new State()
@@ -36,7 +36,7 @@ beforeEach(() => {
     entity: top,
   }
 
-  con = new Conditions<State>(state, event)
+  con = new InteractionConditions<State>(state, event)
 })
 
 describe("equals", () => {
@@ -267,6 +267,6 @@ test("matchesPropOf", () => {
   expect(() => con.get("bottom").its("type").matchesPropOf("top")).not.toThrow()
   expect(() => con.get("top").its("type").matchesPropOf("bottom")).not.toThrow()
 
-  expect(() => con.get(top).matchesPropOf("bottom")).toThrow()
+  expect(() => con.set(top).matchesPropOf("bottom")).toThrow()
   expect(() => con.set([]).matchesPropOf("bottom")).toThrow()
 })

@@ -3,8 +3,17 @@ import { def } from "@cardsgame/utils"
 import { State } from "../state/state"
 
 export class FlexyTrait {
+  /**
+   * @memberof FlexyTrait
+   */
   alignItems: "start" | "end" | "center"
+  /**
+   * @memberof FlexyTrait
+   */
   directionReverse: boolean
+  /**
+   * @memberof FlexyTrait
+   */
   justifyContent:
     | "start"
     | "end"

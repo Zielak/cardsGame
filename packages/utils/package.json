@@ -3,7 +3,7 @@
   "version": "0.7.0",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
-  "license": "ISC",
+  "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [

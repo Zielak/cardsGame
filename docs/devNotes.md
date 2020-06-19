@@ -19,7 +19,7 @@ npm run build:server-w
 
 ## Traits updates and QueryRunner
 
-All props in `QuerableProps` are written by hand. Keep them updated with any changes to any new or existing traits.
+All props in `QuerableProps` are generated from existing entities. Keep them and the "ignored props" updated with any changes to any new or existing traits.
 
 # Units
 

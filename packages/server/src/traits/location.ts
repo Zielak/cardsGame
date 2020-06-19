@@ -3,8 +3,17 @@ import { def } from "@cardsgame/utils"
 import { State } from "../state/state"
 
 export class LocationTrait {
+  /**
+   * @memberof LocationTrait
+   */
   x: number
+  /**
+   * @memberof LocationTrait
+   */
   y: number
+  /**
+   * @memberof LocationTrait
+   */
   angle: number
 }
 

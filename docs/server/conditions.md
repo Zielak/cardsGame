@@ -2,7 +2,7 @@
 
 Conditions are inspired by Chai Assertion Library.
 
-Conditions are mainly used in [Action Templates](./actionTemplates.md#getConditions), in their `getConditions` methods.
+Conditions are mainly used in [Action Templates](./actionTemplates.md#checkConditions), in their `checkConditions` methods.
 
 ## Subject change
 
@@ -44,7 +44,7 @@ con.get({ type: "deck" }).as("deck")
 con.get("deck").is.not.empty()
 ```
 
-Such references can be used throughout whole `getConditions()` function. Once it ends, the main `conditions` object is destroyed and all references are lost. So you can't re-use the same alias in different Action Templates.
+Such references can be used throughout whole `checkConditions()` function. Once it ends, the main `conditions` object is destroyed and all references are lost. So you can't re-use the same alias in different Action Templates.
 
 ### `get(alias: string)`
 

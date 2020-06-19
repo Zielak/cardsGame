@@ -27,30 +27,16 @@ type ServerMessage = {
 //   value: any
 // }
 
-/**
- * Event created by player on client
- * while interacting with game elements or UI
- */
-type ClientPlayerEvent = {
+type BasePlayerEvent = {
   /**
    * Defaults to `EntityInteraction` when sending via `room.sendInteraction()`.
    * May be any other Game-specific command.
    */
   command?: string
-
   /**
    * Interaction-related events ("click", "touchstart"...)
    */
   event?: string
-
-  /**
-   * Path to target Entity.
-   * As array of numbers: `[0, 2, 0]`
-   * Ar a string: `"0,2,0"` (no spaces)
-   * TODO: ^ Decide which one we're gonna keep...
-   */
-  entityPath?: number[] | string
-
   /**
    * Custom command's data.
    */
@@ -58,9 +44,23 @@ type ClientPlayerEvent = {
 }
 
 /**
- * Type of the element which player interacted with
+ * Event created by player on client
+ * while interacting with game elements or UI
  */
-// type PlayerEventTargetType = "Entity" | "UIElement"
+type ClientPlayerEvent = BasePlayerEvent & {
+  /**
+   * Path to target Entity as an array: `[0,2,0]`
+   */
+  entityPath?: number[]
+}
+
+type BotPlayerEvent = BasePlayerEvent & {
+  /**
+   * Which entity is supposed to be "clicked" by bot?
+   * Pass direct reference to `Entity` object.
+   */
+  entity?: unknown
+}
 
 /**
  * How to transform current player's containers/entities on client's screen.
@@ -73,16 +73,22 @@ interface IPlayerViewPosition {
   paddingY?: number
 }
 
-// 1. Transform the type to flag all the undesired keys as 'never'
-type FlagExcludedType<Base, Type> = {
-  [Key in keyof Base]: Base[Key] extends Type ? never : Key
-}
+// // 1. Transform the type to flag all the undesired keys as 'never'
+// type FlagExcludedType<Base, Type> = {
+//   [Key in keyof Base]: Base[Key] extends Type ? never : Key
+// }
 
-// 2. Get the keys that are not flagged as 'never'
-type AllowedNames<Base, Type> = FlagExcludedType<Base, Type>[keyof Base]
+// // 2. Get the keys that are not flagged as 'never'
+// type AllowedNames<Base, Type> = FlagExcludedType<Base, Type>[keyof Base]
 
-// 3. Use this with a simple Pick to get the right interface, excluding the undesired type
-type OmitType<Base, Type> = Pick<Base, AllowedNames<Base, Type>>
+// // 3. Use this with a simple Pick to get the right interface, excluding the undesired type
+// type OmitType<Base, Type> = Pick<Base, AllowedNames<Base, Type>>
 
-// 4. Exclude the Function type to only get properties
-type ConstructorType<T> = OmitType<T, Function>
+// // 4. Exclude the Function type to only get properties
+// type ConstructorType<T> = OmitType<T, Function>
+
+// Author: https://stackoverflow.com/a/55479659/1404284
+type NonFunctionPropertyNames<T> = {
+  [K in keyof T]: T[K] extends Function ? never : K
+}[keyof T]
+type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>

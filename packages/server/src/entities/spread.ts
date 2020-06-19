@@ -51,7 +51,7 @@ interface Mixin
     OwnershipTrait {}
 
 type SpreadOptions = Partial<
-  ConstructorType<Mixin> & {
+  NonFunctionProperties<Mixin> & {
     autoSort: SortingFunction
   }
 >

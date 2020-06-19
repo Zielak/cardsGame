@@ -12,6 +12,7 @@ export class NextRound extends Command {
     logs.notice(this.name, `Round ${state.round}!`)
 
     room.onRoundStart()
+    room.botRunner.onRoundStart()
   }
 
   async undo(state: State, room: Room<any>): Promise<void> {

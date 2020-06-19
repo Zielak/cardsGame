@@ -2,25 +2,13 @@ import { logs } from "@cardsgame/utils"
 
 import { Command } from "../command"
 import { Room } from "../room"
+import { getNextPlayerIdx, getPreviousPlayerIdx } from "../state/helpers"
 import { State } from "../state/state"
-
-class SetCurrentPlayer extends Command {
-  private lastIdx: number
-  constructor(private idx: number) {
-    super()
-  }
-
-  async execute(state: State): Promise<void> {
-    this.lastIdx = state.currentPlayerIdx
-    state.currentPlayerIdx = this.idx
-  }
-
-  async undo(state: State): Promise<void> {
-    state.currentPlayerIdx = this.lastIdx
-  }
-}
+import { Sequence } from "./sequence"
 
 export class NextPlayer extends Command {
+  private lastIdx: number
+
   constructor() {
     super()
   }
@@ -28,17 +16,17 @@ export class NextPlayer extends Command {
     if (!state.turnBased)
       throw new Error(`Can't use NextPlayer in non turn based game.`)
 
-    const current = state.currentPlayerIdx
-    const next: number = current + 1 === state.playersCount ? 0 : current + 1
+    const next = getNextPlayerIdx(state)
 
     // TODO: ignore the player who already finished playing
 
     const cmdsPre = room.onPlayerTurnEnded(state.currentPlayer)
     if (cmdsPre) {
-      this.subExecute(state, room, new Command("onPlayerTurnEnded", cmdsPre))
+      this.subExecute(state, room, new Sequence("onPlayerTurnEnded", cmdsPre))
     }
 
-    this.subExecute(state, room, new SetCurrentPlayer(next))
+    this.lastIdx = state.currentPlayerIdx
+    state.currentPlayerIdx = next
 
     logs.notice(
       this.name,
@@ -47,12 +35,24 @@ export class NextPlayer extends Command {
 
     const cmdsPost = room.onPlayerTurnStarted(state.currentPlayer)
     if (cmdsPost) {
-      this.subExecute(state, room, new Command("onPlayerTurnStarted", cmdsPost))
+      this.subExecute(
+        state,
+        room,
+        new Sequence("onPlayerTurnStarted", cmdsPost)
+      )
     }
+
+    room.botRunner.onPlayerTurnStarted(state.currentPlayer)
+  }
+  async undo(state: State, room): Promise<void> {
+    super.undo(state, room)
+    state.currentPlayerIdx = this.lastIdx
   }
 }
 
 export class PreviousPlayer extends Command {
+  private lastIdx: number
+
   constructor() {
     super()
   }
@@ -60,16 +60,15 @@ export class PreviousPlayer extends Command {
     if (!state.turnBased)
       throw new Error(`Can't use PreviousPlayer in non turn based game.`)
 
-    const current = state.currentPlayerIdx
-    const next: number =
-      current - 1 === -1 ? state.playersCount - 1 : current - 1
+    const previous = getPreviousPlayerIdx(state)
 
     const cmdsPre = room.onPlayerTurnEnded(state.currentPlayer)
     if (cmdsPre) {
-      this.subExecute(state, room, new Command("onPlayerTurnEnded", cmdsPre))
+      this.subExecute(state, room, new Sequence("onPlayerTurnEnded", cmdsPre))
     }
 
-    this.subExecute(state, room, new SetCurrentPlayer(next))
+    this.lastIdx = state.currentPlayerIdx
+    state.currentPlayerIdx = previous
 
     logs.notice(
       this.name,
@@ -78,7 +77,17 @@ export class PreviousPlayer extends Command {
 
     const cmdsPost = room.onPlayerTurnStarted(state.currentPlayer)
     if (cmdsPost) {
-      this.subExecute(state, room, new Command("onPlayerTurnStarted", cmdsPost))
+      this.subExecute(
+        state,
+        room,
+        new Sequence("onPlayerTurnStarted", cmdsPost)
+      )
     }
+
+    room.botRunner.onPlayerTurnStarted(state.currentPlayer)
+  }
+  async undo(state: State, room): Promise<void> {
+    super.undo(state, room)
+    state.currentPlayerIdx = this.lastIdx
   }
 }

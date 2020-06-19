@@ -5,6 +5,11 @@ function RoomMock() {
   this.commandsManager = {
     execute: noop,
   }
+  this.botActivities = {
+    onRoundStart: noop,
+    onAnyMessage: noop,
+    onPlayerTurnStarted: noop,
+  }
 
   this.onPlayerTurnEnded = jest.fn()
   this.onPlayerTurnStarted = jest.fn()

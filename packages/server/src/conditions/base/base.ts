@@ -1,4 +1,4 @@
-import { Player, ServerPlayerEvent } from "../player"
+import { Player } from "../../players/player"
 import { getFlag, setFlag } from "./utils"
 
 class ConditionBase<S> {
@@ -18,24 +18,10 @@ class ConditionBase<S> {
   }
 
   /**
-   * @returns player's `event` reference
-   */
-  getEvent(): ServerPlayerEvent {
-    return getFlag(this, "event")
-  }
-
-  /**
    * @returns `player` reference
    */
   getPlayer(): Player {
     return getFlag(this, "player")
-  }
-
-  /**
-   * @returns `data` reference from event
-   */
-  getData(): any {
-    return getFlag(this, "data")
   }
 }
 

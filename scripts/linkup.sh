@@ -9,7 +9,10 @@ npm link
 cd ../utils
 npm link
 
+echo Going to example directory!
+
 cd ../../example
 npm link @cardsgame/server
 npm link @cardsgame/client
 npm link @cardsgame/utils
+npm link @cardsgame/types

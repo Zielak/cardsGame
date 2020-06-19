@@ -33,6 +33,6 @@ interface Mixin
     ParentArrayTrait,
     LabelTrait {}
 
-type PileOptions = Partial<ConstructorType<Mixin>>
+type PileOptions = Partial<NonFunctionProperties<Mixin>>
 
 export interface Pile extends Mixin {}

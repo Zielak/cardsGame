@@ -37,8 +37,15 @@ interface TopDeckElement {
   OwnershipTrait,
 ])
 export class Deck extends Entity<DeckOptions> {
+  /**
+   * Number of child elements synchronized to the client.
+   * @memberof Deck
+   */
   @type("uint16") childCount: number
 
+  /**
+   * @memberof Deck
+   */
   @type(TopDeckElement) topDeck: TopDeckElement
 
   create(state: State, options: DeckOptions = {}): void {
@@ -81,7 +88,7 @@ interface Mixin
 
 // Options for the game authors to fill in
 type DeckOptions = Partial<
-  ConstructorType<Mixin> & {
+  NonFunctionProperties<Mixin> & {
     childCount: number
   }
 >

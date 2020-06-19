@@ -4,57 +4,34 @@ import { Room } from "./room"
 import { State } from "./state/state"
 
 export interface Command {
-  execute(state: State, room: Room<any>): Promise<void | Command>
+  execute(state: State, room: Room<any>): Promise<void>
+  undo(state: State, room: Room<any>): Promise<void>
 }
 
 export class Command {
-  private _subCommands: Command[]
+  protected _subCommands: Command[]
   private _name: string
   get name(): string {
     return this._name
   }
 
   /**
-   * @param name provide only if you're using `new Command()` syntax. If you're extending command, just leave it empty - the name will be grabbed from class name.
-   * @param subCommands
+   * @param name provide only if you're using `new Command()` syntax.
+   * If you're extending command, just leave it empty -
+   * the name will be grabbed from class name.
    */
-  constructor(name?: string, subCommands?: Command[]) {
+  constructor(name?: string) {
     this._name = name || this.constructor.name
-
-    this._subCommands = subCommands
-      ? subCommands.filter((c) => typeof c === "object")
-      : []
   }
 
   /**
-   * Run only registered sub commands.
-   * Commands extending from this class should override
-   * this function and NOT call super() to here.
-   * @param state
-   * @param room
-   */
-  async execute(state: State, room: Room<any>): Promise<void> {
-    if (!this._subCommands) {
-      return
-    }
-
-    logs.group(`Commands group: ${this.name}._executeSubCommands()`)
-    for (let i = 0; i < this._subCommands.length; i++) {
-      const command = this._subCommands[i]
-
-      logs.notice(`- ${command.name}: executing`)
-
-      await command.execute(state, room)
-    }
-    logs.groupEnd()
-  }
-
-  /**
-   * Undoes every remembered sub command
+   * Undoes every remembered extra sub command.
+   * `Command` may gather new sub commands only while executing.
+   * `Sequence` will only gather sub commands upon construction.
    */
   async undo(state: State, room: Room<any>): Promise<void> {
     if (this._subCommands.length === 0) {
-      logs.verbose(`${this.name}, nothing to undo.`)
+      logs.verbose(`${this.name}, nothing else to undo.`)
       return
     }
 
@@ -81,6 +58,9 @@ export class Command {
     room: Room<any>,
     command: Command
   ): Promise<void> {
+    if (!this._subCommands) {
+      this._subCommands = []
+    }
     this._subCommands.push(command)
     await command.execute(state, room)
   }

@@ -2,32 +2,37 @@
 
 With Action Templates you're helping to decipher players intention, after they click some item in the game. Player may interact with UI in many different ways at any time they wish. It's our job to filter out "illegal" moves.
 
-Here's how a basic action may look like. It's and object with 5 properties:
+Here's how a basic action may look like. It's simply an object:
 
 ```typescript
-const MyAction: ActionTemplate<MyGameState> = {
-  name: "MyAction",
-  description: `I play something`,
+const TakeOneCard: ActionTemplate<MyGameState> = {
+  name: "TakeOneCard",
+  description: `Player grabs new card from the deck`,
 
-  getInteractions: () => [
+  interactions: () => [
     {
       type: "deck",
     },
   ],
 
-  getConditions: (con) => {
+  checkConditions: (con) => {
     con.is.playersTurn
   },
 
-  getCommands: (state: MyGameState, event: ServerPlayerEvent) => {
-    return NextPlayer()
+  getCommand: (state: MyGameState, event: ServerPlayerEvent) => {
+    return ChangeParent(
+      () => state.deck.getTop(),
+      state.query<Hand>({ owner: event.player })
+    )
   },
 }
 ```
 
+> NOTE: `MyGameState` here would refer to your game's `State` class.
+
 `name` and `description` are simply just that.
 
-## getInteractions
+## interactions
 
 _With what elements is this action related to?_
 
@@ -70,9 +75,9 @@ return [
 ]
 ```
 
-> NOTE: `InteractionDefinition` is a mixture of [`QuerableProps`](./types.md#QuerableProps) type with an addition of `command` prop.
+> NOTE: A single `InteractionDefinition` is either an object of [`QuerableProps`](./types.md#QuerableProps) type or an object describing a command: `{ command: "commandName" }`.
 
-## getConditions
+## checkConditions
 
 _Is players intention legal?_
 
@@ -82,7 +87,7 @@ Use [`conditions`](./conditions.md), first and only argument of this function, t
 
 ```typescript
 // You can name it `con` for short.
-getConditions: (con) => {
+checkConditions: (con) => {
   con.is.playersTurn
 
   // Grab current player's `hand` and remember it
@@ -107,4 +112,4 @@ If any of these conditions fail, the whole action is disregarded, and internal C
 
 [Read more about Conditions](./conditions.md).
 
-## getCommands
+## getCommand

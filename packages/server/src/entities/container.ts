@@ -33,6 +33,6 @@ interface Mixin
     LocationTrait,
     OwnershipTrait {}
 
-type ContainerOptions = Partial<ConstructorType<Mixin>>
+type ContainerOptions = Partial<NonFunctionProperties<Mixin>>
 
 export interface Container extends Mixin {}

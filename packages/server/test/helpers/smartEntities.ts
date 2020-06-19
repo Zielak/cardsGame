@@ -34,7 +34,7 @@ interface ParentMixin
     OwnershipTrait {}
 
 type SmartParentOptions = Partial<
-  ConstructorType<ParentMixin> & {
+  NonFunctionProperties<ParentMixin> & {
     customProp: string
   }
 >
@@ -61,7 +61,7 @@ interface EntityMixin
     OwnershipTrait {}
 
 type SmartEntityOptions = Partial<
-  ConstructorType<EntityMixin> & {
+  NonFunctionProperties<EntityMixin> & {
     customProp: string
   }
 >

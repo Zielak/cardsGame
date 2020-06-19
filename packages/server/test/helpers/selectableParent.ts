@@ -22,6 +22,6 @@ interface ParentMixin
     ChildTrait,
     SelectableChildrenTrait {}
 
-type SelectableParentOptions = Partial<ConstructorType<ParentMixin>>
+type SelectableParentOptions = Partial<NonFunctionProperties<ParentMixin>>
 
 export interface SelectableParent extends ParentMixin {}

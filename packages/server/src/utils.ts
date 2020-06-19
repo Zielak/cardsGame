@@ -2,12 +2,20 @@ import { Client } from "colyseus"
 
 import { map2Array } from "@cardsgame/utils"
 
-import { Player, ServerPlayerEvent } from "./player"
+import { Player, ServerPlayerEvent } from "./players/player"
 import { getEntitiesAlongPath } from "./state/helpers"
 import { State } from "./state/state"
 import { isChild } from "./traits/child"
-import { hasIdentity } from "./traits/identity"
-import { hasLabel } from "./traits/label"
+
+const sanitizeIdxPath = (value: unknown): number => {
+  if (typeof value === "number") return value
+  if (typeof value === "string") {
+    const num = parseInt(value)
+    // Notice me, I'm highly improbable number, you did sumting wong!
+    return num !== num ? 999 : parseInt(value)
+  }
+  return 998
+}
 
 export const populatePlayerEvent = (
   state: State,
@@ -20,14 +28,10 @@ export const populatePlayerEvent = (
     data: event.data,
   }
   if (event.entityPath) {
-    newEvent.entityPath =
-      typeof event.entityPath === "string"
-        ? event.entityPath.split(",").map((idx) => parseInt(idx))
-        : event.entityPath
-
+    newEvent.entityPath = event.entityPath.map(sanitizeIdxPath)
     newEvent.entities = getEntitiesAlongPath(state, newEvent.entityPath)
       .reverse()
-      .filter((target) => (isChild(target) ? target.isInteractive : false))
+      .filter((target) => (isChild(target) ? target.isInteractive() : false))
 
     newEvent.entity = newEvent.entities[0]
   }
