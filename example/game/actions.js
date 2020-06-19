@@ -8,7 +8,7 @@ const { WarState } = require("./state")
 const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
 
 /**
- * Ante is optional, and won't be added in early staged of the game
+ * Ante is optional, and won't be added in early stages of the game
  * @param {WarState} state
  * @param {ServerPlayerEvent} event
  */
