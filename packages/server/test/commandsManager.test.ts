@@ -11,9 +11,7 @@ let event: ServerPlayerEvent
 let room: Room<State>
 let manager: CommandsManager<State>
 
-const client = {
-  id: "testClient",
-}
+const clientID = "testClient"
 
 const command = new Command("dummyCommand")
 
@@ -41,15 +39,10 @@ const actions: ActionTemplate<State>[] = [
 describe("action", () => {
   beforeEach(() => {
     state = new State()
-    event = {} // populatePlayerEvent(state, event, client as Client)
+    event = populatePlayerEvent(state, event, clientID)
     room = new Room()
     room.possibleActions = new Set(actions)
     manager = new CommandsManager(room)
   })
-
-  it.skip("throws up when another action is still pending", async () => {
-    manager.actionPending = true
-
-    await expect(manager.handlePlayerEvent({})).rejects.toThrow()
-  })
+  test.todo("whatever")
 })

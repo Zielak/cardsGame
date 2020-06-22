@@ -4,12 +4,11 @@ import { ServerPlayerEvent } from "./players/player"
 import { QuerableProps } from "./queryRunner"
 import { State } from "./state/state"
 
-export type InteractionDefinition = QuerableProps & { command?: string }
+export type InteractionDefinition = QuerableProps | PlayerInteractionCommand
 
 export type ActionTemplate<S extends State> = {
   name: string
   description?: string
-  // parallel?: boolean
 
   interactions(): InteractionDefinition[]
   checkConditions: (con: InteractionConditions<S>) => void

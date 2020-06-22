@@ -27,6 +27,7 @@ beforeEach(() => {
   event = {
     player: new Player({ clientID: "123" }),
     entity: top,
+    timestamp: +new Date(),
   }
 
   con = new InteractionConditions<State>(state, event)
@@ -100,7 +101,7 @@ describe("subject changing", () => {
             { rank: "K", suit: "H" },
             { rank: "K", suit: "S" },
           ])
-          .each((con) => {
+          .every((con) => {
             con.its("rank").equals("K").its("suit").oneOf(["S", "H"])
           })
       }).not.toThrow()
@@ -113,7 +114,7 @@ describe("subject changing", () => {
             { rank: "5", suit: "H" },
             { rank: "K", suit: "S" },
           ])
-          .each((con) => {
+          .every((con) => {
             con.its("rank").equals("K").its("suit").oneOf(["S", "H"])
           })
       }).toThrow()
@@ -124,7 +125,7 @@ describe("subject changing", () => {
             { rank: "K", suit: "H" },
             { rank: "5", suit: "D" },
           ])
-          .each((con) => {
+          .every((con) => {
             con.its("rank").equals("K").its("suit").oneOf(["S", "H"])
           })
       }).toThrow()
@@ -136,7 +137,7 @@ describe("subject changing", () => {
             { rank: "5", suit: "D" },
             { rank: "K", suit: "D" },
           ])
-          .each((con) => {
+          .every((con) => {
             con.its("rank").equals("K").its("suit").oneOf(["S", "H"])
           })
       }).toThrow()
@@ -295,77 +296,6 @@ describe("selection", () => {
 test("childrenCount", () => {
   con.get({ name: "parent" }).as("parent")
   expect(() => con.get("parent").childrenCount.equals(5)).not.toThrow()
-})
-
-describe("each", () => {
-  beforeEach(() => {
-    new SmartEntity(state, { parent, name: "childA" })
-    new SmartEntity(state, { parent, name: "childB" })
-    new SmartEntity(state, { parent, name: "childC" })
-  })
-  describe("pass", () => {
-    it.todo("tests entities structure")
-
-    it("tests an array", () => {
-      expect(() =>
-        con.set([5, 10, 15]).each((con) => {
-          con.is.above(3)
-        })
-      ).not.toThrow()
-
-      expect(() =>
-        con.set([15, 10, 5]).each((con) => {
-          con.is.above(3)
-        })
-      ).not.toThrow()
-    })
-  })
-
-  describe("fail", () => {
-    it("tests an array", () => {
-      expect(() =>
-        con.set([5, 10, 15]).each((con) => {
-          con.is.above(6)
-        })
-      ).toThrow()
-
-      expect(() =>
-        con.set([15, 10, 5]).each((con) => {
-          con.is.above(6)
-        })
-      ).toThrow()
-    })
-
-    test("incorrect subject", () => {
-      expect(() => con.set("whoops").each((con) => con.empty())).toThrow(
-        /to be an array/
-      )
-    })
-  })
-})
-
-describe("either", () => {
-  describe("pass", () => {
-    it("passes on first okay", () => {
-      expect(() => {
-        con.either(
-          () => con.set(1).equals(1),
-          () => con.set(0).equals(1),
-          () => con.set(0).equals(1)
-        )
-      }).not.toThrow()
-    })
-
-    it("passes on other okay", () => {
-      expect(() => {
-        con.either(
-          () => con.set(0).equals(1),
-          () => con.set(0).equals(1),
-          () => con.set(1).equals(1)
-        )
-      }).not.toThrow()
-    })
-  })
 })
 
 describe("setFlag", () => {

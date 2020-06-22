@@ -41,18 +41,24 @@ class ConditionSubjects {
   }
 
   /**
-   * Sets new subject, and entity, found by its previously defined `alias`
-   * or by it's props. Provide multiple arguments to find an item by its
-   * relation to parents.
+   * Looks for a child entity by their `props`, starting from current subject.
+   *
    * @yields an entity, found by alias or `QuerableProps` query
    * @example ```
-   * con.get({name: 'deck'}).as('deck')
-   * con.get('deck')
-   * // get([...] GrandParent, Parent, Child)
-   * con.get('deck', {rank: 'K'})
+   * con.state.get({name: 'deck'}).as('deck')
    * ```
    */
   get(props: QuerableProps): this
+  /**
+   * Changes subject to previously remembered entity by an `alias`.
+   * If `props` are also provided, it'll instead search the aliased entity
+   * for another entity by their `props`.
+   *
+   * @yields an entity, found by alias or `QuerableProps` query
+   * @example ```
+   * con.get('deck', {rank: 'K'})
+   * ```
+   */
   get(alias: string, props?: QuerableProps): this
   get(arg0: string | QuerableProps, arg1?: QuerableProps): this {
     let newSubject
@@ -66,8 +72,17 @@ class ConditionSubjects {
         newSubject = ref(this, alias)
       }
     } else {
-      // find subject in State tree
-      newSubject = getFlag(this, "state").query(arg0)
+      // find new subject in current subject
+      const parent =
+        getFlag(this, "subject") === undefined
+          ? getFlag(this, "state")
+          : getFlag(this, "subject")
+
+      if (!isParent(parent)) {
+        throw new Error(`get(props) | current subject is not a parent`)
+      }
+
+      newSubject = parent.query(arg0)
     }
 
     setFlag(this, "subject", newSubject)
@@ -221,7 +236,7 @@ class ConditionSubjects {
   }
 
   /**
-   * @yields all selected children
+   * @yields all NOT selected children
    */
   get unselectedChildren(): this {
     const subject = getFlag(this, "subject")

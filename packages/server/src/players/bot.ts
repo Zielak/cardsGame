@@ -1,5 +1,6 @@
 import { def, limit } from "@cardsgame/utils"
 
+import { BotAction } from "../bots/action"
 import { Player, PlayerOptions } from "./player"
 
 export interface BotOptions extends PlayerOptions {
@@ -15,21 +16,15 @@ export interface BotOptions extends PlayerOptions {
    * Exact value `0` will force bot to make random `BotGoal` choices.
    */
   intelligence?: number
-
-  /**
-   * Will be executed every time someone else is taking an action.
-   *
-   * Useful in games where players may interrupt each other.
-   *
-   * Actions marked as `insignificant` will not fire this.
-   */
-  // interruption?:
 }
 
 export class Bot extends Player {
   actionDelay: (() => number) | number
   intelligence: number
   isBot = true
+
+  currentThought: BotAction<any>
+  currentThoughtTimer: NodeJS.Timeout
 
   constructor(options: BotOptions) {
     super(options)

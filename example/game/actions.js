@@ -46,7 +46,7 @@ const PickCard = {
     con.playerOwnsThisEntity()
 
     // Both players didn't chose their cards yet
-    con.state.its("playersPlayed").each((con) => {
+    con.state.its("playersPlayed").every((con) => {
       con.equals(false)
     })
   },

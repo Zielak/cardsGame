@@ -62,6 +62,8 @@ type BotPlayerEvent = BasePlayerEvent & {
   entity?: unknown
 }
 
+type PlayerInteractionCommand = { command: string }
+
 /**
  * How to transform current player's containers/entities on client's screen.
  * Units are in pixels.
@@ -72,6 +74,8 @@ interface IPlayerViewPosition {
   paddingX?: number
   paddingY?: number
 }
+
+type AllowArrays<T> = { [prop in keyof T]: T[prop] | Array<T[prop]> }
 
 // // 1. Transform the type to flag all the undesired keys as 'never'
 // type FlagExcludedType<Base, Type> = {

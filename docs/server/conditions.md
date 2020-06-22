@@ -100,18 +100,18 @@ Sets current subjects number of children as the new subject. Previous subject mu
 
 ## Grouping
 
-### `each(predicate)`
+### `every(predicate)`
 
 Loops through every item in subject's collection.
 Each item is set as the `subject` with each iteration automatically.
 After all iterations are done, the `subject` will be reset back to what it originally was.
-If one of the items fail any assertions, whole `each` block fails.
+If one of the items fail any assertions, whole `every` block fails.
 
 Predicate here is a function in style of native `array.forEach`, but first argument is new Conditions instance. This `con` will have its own subject set to each item of current subject.
 
 ```typescript
 // Current subject is state, we change it to "hand"
-con.get("hand").children.each((con, item, index, array) => {
+con.get("hand").children.every((con, item, index, array) => {
   // Current subjects here are the children of "hand"
   con.its("type").equals("classicCard")
   con.its("rank").oneOf(["2", "3"])

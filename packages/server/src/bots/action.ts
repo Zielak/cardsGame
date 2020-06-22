@@ -5,29 +5,40 @@ import { State } from "../state/state"
 /**
  * Wrapper for ActionTemplate, to help bots decide.
  */
-export type BotAction<S extends State> = {
+export interface BotAction<S extends State> {
   name: string
   description?: string
 
   /**
    * Tell me if this action is possible right now.
    *
-   * If omitted, action will be allowed.
+   * Optional. If omitted, action will be allowed.
    */
   condition?: (con: BotConditions<S>) => void
 
   /**
-   * With higher values bot is more likely to pick that action.
-   * Return `-Infinity` to make bot ignore this action.
-   * Remember, bot may try to pick same action multiple times but for different entities.
+   * With higher values bot is more likely to pick
+   * that action _before_ any other action of the same goal.
    *
-   * Optional, by default the value is `0`.
+   * Remember, bot may try to pick same action multiple times during goal execution.
+   *
+   * Return `-Infinity` to make bot ignore this action.
+   *
+   * Optional, by default the value is considered to be `0`.
    */
   value?: (state: S, player: Player) => number
 
   /**
    * Bot needs to imitate player's event.
    * Fill the event object with every needed value.
+   * @example
+   * event: (state, player) => ({
+   *   entity: state.query({ type: "deck" })
+   * })
+   * // or a command
+   * event: (state, player) => ({
+   *   command: "passTurn"
+   * })
    */
   event: (state: S, player: Player) => BotPlayerEvent
 }

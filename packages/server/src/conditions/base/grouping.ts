@@ -14,19 +14,20 @@ type EitherTuple = [string, EitherCallback]
 
 class ConditionGrouping<S, C extends Conditions<S>> {
   /**
-   * Loops through every item in subject's collection.
-   * Each item is set as the `subject` with each iteration automatically.
+   * Loops through every item in subject's collection, executing provided function.
+   * If one of the items fail any assertions, whole `every` block fails.
+   *
+   * Each item is automatically set as the `subject` within each iteration.
    * After all iterations are done, the `subject` will be reset back to what it originally was.
-   * If one of the items fail any assertions, whole `each` block fails.
    *
    * @param predicate a function in style of native `array.forEach`, but first argument is new Conditions instance. This `con` will have its own subject set to each item of current subject.
    * @example
-   * con.get("chosenCards").children.each((con, item, index, array) => {
+   * con.get("chosenCards").children.every((con, item, index, array) => {
    *   con.its("rank").oneOf(["2", "3"])
    * })
-   * @yields back anything that was before `.each()` command so you can chain it further
+   * @yields back anything that was before `.every()` command so you can chain it further
    */
-  each(
+  every(
     predicate: (
       con: C,
       item: any,
@@ -49,7 +50,55 @@ class ConditionGrouping<S, C extends Conditions<S>> {
     return this
   }
 
-  // Grouping?
+  /**
+   * Loops through every item in subject's collection, executing provided function.
+   * At least one item needs to pass tests for this whole block to pass.
+   * If all items fail - whole block fails.
+   *
+   * Each item is automatically set as the `subject` within each iteration.
+   * After all iterations are done, the `subject` will be reset back to what it originally was.
+   *
+   * @param predicate a function in style of native `array.some`, but first argument is new Conditions instance. This `con` will have its own subject set to each item of current subject.
+   * @example
+   * con.get("chosenCards").children.some((con, item, index, array) => {
+   *   con.its("rank").matchesPropOf("pileTop")
+   * })
+   * @yields back anything that was before `.some()` command so you can chain it further
+   */
+  some(
+    predicate: (
+      con: C,
+      item: any,
+      index: number | string,
+      collection: any
+    ) => void
+  ): this {
+    const subject = getFlag(this, "subject")
+
+    if (!Array.isArray(subject)) {
+      throw new Error(`some | Expected subject to be an array`)
+    }
+
+    const result = subject.some((item, index) => {
+      const con = cloneConditions<C>(this)
+      setFlag(con, "subject", item)
+      try {
+        predicate.call(con, con, item, index, subject)
+        // Ok, this one didn't fail, `some` block succeeds
+        return true
+      } catch (_) {
+        // This one failed, try another one
+        return false
+      }
+    })
+
+    if (!result) {
+      throw new Error(`some | all of the functions failed.`)
+    }
+
+    return this
+  }
+
   /**
    * Checks if at least one of the functions pass.
    * Resets `subject` back to `state` before each iteration

@@ -34,6 +34,7 @@ beforeEach(() => {
   event = {
     player: new Player({ clientID: "123" }),
     entity: top,
+    timestamp: 0,
   }
 
   con = new InteractionConditions<State>(state, event)
@@ -130,15 +131,15 @@ describe("oneOf", () => {
   })
   it("passes", () => {
     expect(() =>
-      con.get({ name: "foo" }).its("name").oneOf(["foo", "bar", "baz"])
+      con.set({ name: "foo" }).its("name").oneOf(["foo", "bar", "baz"])
     ).not.toThrow()
 
     expect(() =>
-      con.get({ name: "foo" }).its("name").oneOf(["nope", "foo", "bar", "baz"])
+      con.set({ name: "foo" }).its("name").oneOf(["nope", "foo", "bar", "baz"])
     ).not.toThrow()
 
     expect(() =>
-      con.get({ name: "foo" }).its("name").not.oneOf(["bar", "baz"])
+      con.set({ name: "foo" }).its("name").not.oneOf(["bar", "baz"])
     ).not.toThrow()
   })
 

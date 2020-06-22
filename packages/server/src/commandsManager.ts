@@ -1,4 +1,4 @@
-import { logs } from "@cardsgame/utils"
+import { chalk, logs } from "@cardsgame/utils"
 
 import { ActionsSet } from "./actionTemplate"
 import { Command } from "./command"
@@ -6,13 +6,13 @@ import {
   filterActionsByConditions,
   filterActionsByInteraction,
 } from "./interaction"
-import { isBot } from "./players/bot"
-import { ServerPlayerEvent } from "./players/player"
+import { Player, ServerPlayerEvent } from "./players/player"
 import { Room } from "./room"
 import { State } from "./state/state"
 
 export class CommandsManager<S extends State> {
   history: Command[] = []
+  incoming: Map<Player, ServerPlayerEvent> = new Map()
 
   currentCommand: Command
   actionPending = false
@@ -23,32 +23,47 @@ export class CommandsManager<S extends State> {
     this.possibleActions = room.possibleActions
   }
 
+  /**
+   * @returns `false` when command throws with an error/fails to execute.
+   */
   handlePlayerEvent(event: ServerPlayerEvent): Promise<boolean> {
     const { state } = this.room
 
     if (this.actionPending) {
-      // Early quit, current action is still on-going.
-      throw new Error(
-        `Other action is still in progress (command "${this.currentCommand?.name}") - ignoring interaction...`
+      // Toss that event to `incoming`, will get back at
+      // it after current action is finished
+      logs.info(
+        "handlePlayerEvent",
+        `Other action is still in progress, tossing new one to "incoming"...`
       )
+      // TODO: actually handle that...
+      this.incoming.set(event.player, event)
     }
 
     let actions = Array.from(this.possibleActions.values())
-    if (!isBot(event.player)) {
-      actions = actions.filter(filterActionsByInteraction(event))
-    }
+    let subCountActions = actions.length
+
+    logs.group(chalk.blue("Interactions"))
+    actions = actions.filter(filterActionsByInteraction(event))
+    logs.groupEnd(`actions count: ${subCountActions} => ${actions.length}`)
+    subCountActions = actions.length
+
+    logs.group(chalk.blue("Conditions"))
     actions = actions.filter(filterActionsByConditions(state, event))
+    logs.groupEnd(`actions count: ${subCountActions} => ${actions.length}`)
 
     if (actions.length === 0) {
       throw new Error(
-        `No actions found for that "${event.event}" event, ignoring...`
+        `No actions found for "${
+          event.player ? event.player.clientID : event.event
+        }" event, ignoring...`
       )
     }
 
     if (actions.length > 1) {
       logs.warn(
-        "performAction",
-        `Whoops, even after filtering actions by conditions, I still have ${actions.length} actions! Applying only the first one (ordering actions matter!).`
+        "handlePlayerEvent",
+        `Whoops, even after filtering actions by conditions, I still have ${actions.length} actions! Applying only the first one (ordering actions matters!).`
       )
     }
 
@@ -65,8 +80,9 @@ export class CommandsManager<S extends State> {
     try {
       await this.currentCommand.execute(state, this.room)
     } catch (error) {
-      logs.error("parseAction", `action FAILED, will try do undo it.`, error)
-      await this.currentCommand.undo(state, this.room)
+      // TODO: Undo anything that recently failed
+      // logs.error("parseAction", `action FAILED, will try do undo it.`, error)
+      // await this.currentCommand.undo(state, this.room)
       logs.groupEnd(commandName, "failed")
 
       return false

@@ -3,14 +3,9 @@ import { Player } from "../players/player"
 import { State } from "../state/state"
 import { BotActionsSet } from "./action"
 
-export type BotGoal<S extends State> = {
+export interface BotGoal<S extends State> {
   name: string
   description?: string
-
-  /**
-   * Should this activity be considered outside of my turn?
-   */
-  parallel?: boolean
 
   /**
    * Tell me is this goal achievable right now.
@@ -22,9 +17,11 @@ export type BotGoal<S extends State> = {
   /**
    * Higher value represents an activity which can result
    * with the best outcome for current player,
-   * or the worst outcome for the opponent
+   * or the worst outcome for the opponent.
+   *
+   * Optional, by default the value is considered to be `0`.
    */
-  value: (state: S, player: Player) => number
+  value?: (state: S, player: Player) => number
 
   /**
    * A set of actions bot may take during this activity.

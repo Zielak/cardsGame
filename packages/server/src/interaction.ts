@@ -1,36 +1,16 @@
 import { chalk, logs } from "@cardsgame/utils"
 
-import { ActionTemplate, InteractionDefinition } from "./actionTemplate"
+import { ActionTemplate } from "./actionTemplate"
 import { InteractionConditions } from "./conditions/interaction"
 import { ServerPlayerEvent } from "./players/player"
+import { QuerableProps, queryRunner } from "./queryRunner"
 import { State } from "./state/state"
 import { isChild } from "./traits/child"
+import { isPlayerInteractionCommand } from "./utils"
 
-export const interactionMatchesEntity = (definition: InteractionDefinition) => (
+const interactionMatchesEntity = (definition: QuerableProps) => (
   entity: unknown
-): boolean => {
-  // Every KEY in definition should be present
-  // in the Entity and be of equal value
-  // or either of values if its an array
-  return Object.keys(definition).every((prop: string) => {
-    const value = definition[prop]
-
-    // Is simple type or array of these, NOT an {object}
-    if (Array.isArray(value) || typeof value !== "object") {
-      const values = Array.isArray(value) ? value : [value]
-      return values.some((testValue) => entity[prop] === testValue)
-    }
-    if (prop === "parent" && isChild(entity)) {
-      const parentOfCurrent = entity.parent
-
-      return parentOfCurrent
-        ? interactionMatchesEntity(value)(parentOfCurrent)
-        : // You gave me some definition of "parent"
-          // But I don't have a parent...
-          false
-    }
-  })
-}
+): boolean => queryRunner(definition)(entity)
 
 export const filterActionsByInteraction = <S extends State>(
   event: ServerPlayerEvent
@@ -46,18 +26,16 @@ export const filterActionsByInteraction = <S extends State>(
   )
 
   const result = interactions.some((definition) => {
-    if (
-      event.entities &&
-      (!definition.command || definition.command === "EntityInteraction")
-    ) {
+    if (isPlayerInteractionCommand(definition)) {
+      // Definition speaks of command, event should be command and match
+      return definition.command === event.command
+    } else if (event.entities) {
       // Check props for every interactive entity in `targets` array
       return event.entities
         .filter((currentTarget) =>
           isChild(currentTarget) ? currentTarget.isInteractive() : false
         )
         .some(interactionMatchesEntity(definition))
-    } else if (definition.command) {
-      return definition.command === event.command
     }
   })
 
@@ -88,9 +66,10 @@ export const filterActionsByConditions = <S extends State>(
   if (message) {
     logs.verbose("\t", message)
   }
-  logs.verbose(`result: ${result}`)
 
-  logs.groupEnd()
+  logs.groupEnd(
+    `result: ${result ? chalk.green(result) : chalk.yellow(result)}`
+  )
 
   return result
 }

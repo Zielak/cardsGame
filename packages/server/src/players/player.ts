@@ -18,7 +18,7 @@ export class Player extends Schema {
     this.clientID = options.clientID
     this.name = def(options.name, getRandomName())
 
-    logs.notice("Player()", `"${this.clientID}", "${this.name}"`)
+    logs.notice("Player", `created new: "${this.clientID}", "${this.name}"`)
   }
 }
 
@@ -32,4 +32,8 @@ export type ServerPlayerEvent = ClientPlayerEvent & {
   player?: Player
   entity?: unknown
   entities?: unknown[]
+  /**
+   * It's the time when the message has arrived to the server
+   */
+  timestamp: number
 }

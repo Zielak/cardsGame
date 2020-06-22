@@ -85,7 +85,7 @@ export class Room<S extends State> extends colRoom<S> {
    * Create and add new Bot player to clients list.
    * @returns clientID of newly created bot, if added successfully.
    */
-  protected addBot(botOptions: Omit<BotOptions, "clientID">): string {
+  protected addBot(botOptions: Omit<BotOptions, "clientID"> = {}): string {
     const { state } = this
 
     if (state.isGameStarted) {
@@ -150,7 +150,7 @@ export class Room<S extends State> extends colRoom<S> {
   }
 
   onMessage(client: Client, event: ClientPlayerEvent): void {
-    logs.verbose("\n================MESSAGE==================\n")
+    logs.verbose("\n================[ MESSAGE ]==================\n")
 
     // Player signals START
     if (event.command === "start") {
@@ -164,64 +164,43 @@ export class Room<S extends State> extends colRoom<S> {
       return
     }
 
-    const newEvent = this.parseMessage(client, event)
-
-    if (newEvent) {
-      this.handleMessage(newEvent).then((result) => {
-        if (result) {
-          this.botRunner.onAnyMessage()
-        }
-      })
-    }
+    this.handleMessage(client.id, event).catch((e) =>
+      logs.error("ROOM", `action() failed for client: "${client.id}": ${e}`)
+    )
   }
 
-  private parseMessage(
-    client: Client,
+  /**
+   * Handles new incoming event from client (human or bot).
+   * @returns `true` if action was executed, `false` if not, or if it failed.
+   */
+  async handleMessage(
+    clientID: string,
     event: ClientPlayerEvent
-  ): ServerPlayerEvent {
-    const { state } = this
-
-    if (state.isGameOver) {
-      logs.info(
-        "parseMessage",
-        "Game's already over, I'm not accepting any more messages"
-      )
-      return
-    }
-
-    const newEvent = populatePlayerEvent(state, event, client)
-    debugLogMessage(newEvent)
+  ): Promise<boolean> {
+    let result = false
+    const newEvent = populatePlayerEvent(this.state, event, clientID)
 
     if (!newEvent.player) {
       logs.error("parseMessage", "You're not a player, get out!", event)
       return
     }
 
-    return newEvent
-  }
+    debugLogMessage(newEvent)
 
-  /**
-   * Once parsed, human-players intention is directed here from `onMessage`.
-   * Also, this function is a direct entry point for BOT players.
-   * Bot players may listen for the resolution of this promise and act accordingly.
-   */
-  async handleMessage(event: ServerPlayerEvent): Promise<boolean> {
     if (this.state.isGameOver) {
+      logs.warn("handleMessage", "Game's already over!")
       return false
     }
 
-    let result = false
     try {
-      result = await this.commandsManager.handlePlayerEvent(event)
+      result = await this.commandsManager.handlePlayerEvent(newEvent)
     } catch (e) {
-      logs.error(
-        "ROOM",
-        `action() failed. Client: "${event.player.clientID}". ${e}`
-      )
+      logs.notice("handleMessage FAILED", e.message)
+      return false
     }
 
     if (result) {
-      logs.notice("ROOM", "action() completed")
+      this.botRunner.onAnyMessage()
     }
 
     return result
@@ -288,7 +267,7 @@ export class Room<S extends State> extends colRoom<S> {
    * @param state
    */
   onInitGame(options: any = {}): void {
-    logs.error("Room", `onInitGame is not implemented!`)
+    logs.info("Room", `onInitGame is not implemented!`)
   }
 
   /**
@@ -298,7 +277,7 @@ export class Room<S extends State> extends colRoom<S> {
    * @param state
    */
   onStartGame(state: State): void | Command[] {
-    logs.error("Room", `onStartGame is not implemented!`)
+    logs.info("Room", `onStartGame is not implemented!`)
   }
 
   /**
@@ -306,7 +285,7 @@ export class Room<S extends State> extends colRoom<S> {
    */
   onPlayerTurnStarted(player: Player): void | Command[] {
     if (!this.state.turnBased) {
-      logs.error("Room", `onPlayerTurnStarted is not implemented!`)
+      logs.info("Room", `onPlayerTurnStarted is not implemented!`)
     }
   }
 
@@ -315,7 +294,7 @@ export class Room<S extends State> extends colRoom<S> {
    */
   onPlayerTurnEnded(player: Player): void | Command[] {
     if (!this.state.turnBased) {
-      logs.error("Room", `onPlayerTurnEnded is not implemented!`)
+      logs.info("Room", `onPlayerTurnEnded is not implemented!`)
     }
   }
 
@@ -323,7 +302,7 @@ export class Room<S extends State> extends colRoom<S> {
    * Invoked when each round starts.
    */
   onRoundStart(): void | Command[] {
-    logs.error(
+    logs.info(
       "Room",
       `"nextRound" action was called, but "room.onRoundStart()" is not implemented!`
     )
@@ -333,7 +312,7 @@ export class Room<S extends State> extends colRoom<S> {
    * Invoked when a round is near completion.
    */
   onRoundEnd(): void | Command[] {
-    logs.error(
+    logs.info(
       "Room",
       `"nextRound" action was called, but "room.onRoundEnd()" is not implemented!`
     )

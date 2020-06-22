@@ -8,9 +8,10 @@ import {
   Pile,
   Spread,
 } from "./entities"
-import { isChild } from "./traits/child"
+import { ChildTrait, isChild } from "./traits/child"
 import { hasIdentity } from "./traits/identity"
 import { hasOwnership } from "./traits/ownership"
+import { hasSelectableChildren } from "./traits/selectableChildren"
 
 type EveryEntity = ClassicCard &
   Container &
@@ -30,12 +31,14 @@ type KeysToIgnore =
   | "parent"
   | "selectedChildren"
 
-export type EntityOptions<E = {}> = Partial<
-  Omit<NonFunctionProperties<EveryEntity & E>, KeysToIgnore>
+export type EntityOptions = Partial<
+  AllowArrays<Omit<NonFunctionProperties<EveryEntity>, KeysToIgnore>>
 >
 
 export interface QuerableProps extends EntityOptions {
   parent?: QuerableProps
+  selected?: boolean
+  selectionIndex?: number | number[]
 }
 
 export const queryRunner = <T>(props: QuerableProps) => (
@@ -46,6 +49,16 @@ export const queryRunner = <T>(props: QuerableProps) => (
   const propKeys = Object.keys(props)
 
   return propKeys.every((propName) => {
+    if (Array.isArray(props[propName])) {
+      return props[propName].some(verifyValue(propName, entity))
+    } else {
+      return verifyValue(propName, entity)(props[propName])
+    }
+  })
+}
+
+function verifyValue(propName: string, entity: ChildTrait) {
+  return function verifyValueIteration(value: any): boolean {
     if (propName === "parent") {
       // Must have an identity AND be a child
       if (!hasIdentity(entity.parent)) return false
@@ -53,13 +66,23 @@ export const queryRunner = <T>(props: QuerableProps) => (
       // It's in root state...
       if (entity.parent.id === -1) return false
 
-      return queryRunner(props.parent)(entity.parent)
+      return queryRunner(value)(entity.parent)
     } else if (propName === "owner") {
       if (!hasOwnership(entity)) return false
 
-      return entity.owner === props.owner
+      return entity.owner === value
+    } else if (propName === "selected") {
+      const parent = entity.parent
+      if (!hasSelectableChildren(parent)) return false
+
+      return value === parent.isChildSelected(entity.idx)
+    } else if (propName === "selectionIndex") {
+      const parent = entity.parent
+      if (!hasSelectableChildren(parent)) return false
+
+      return value === parent.getSelectionIndex(entity.idx)
     } else {
-      return entity[propName] === props[propName]
+      return entity[propName] === value
     }
-  })
+  }
 }

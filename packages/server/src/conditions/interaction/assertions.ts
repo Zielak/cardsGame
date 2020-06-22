@@ -29,23 +29,6 @@ class InteractionConditionAssertions {
 
     return this
   }
-
-  /**
-   * @asserts if interacting player currently has the turn.
-   */
-  itsPlayersTurn(): this {
-    const { currentPlayer } = getFlag(this, "state")
-    const player = getFlag(this, "player")
-
-    assert.call(
-      this,
-      player === currentPlayer,
-      `It's not current players turn`,
-      `It is current players turn, but shouldn't`
-    )
-
-    return this
-  }
 }
 
 export { InteractionConditionAssertions }

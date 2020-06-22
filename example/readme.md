@@ -14,4 +14,4 @@ npm run build
 npm start
 ```
 
-This will take care of creating self-signed certificates. Just open up https://localhost
+This will take care of creating self-signed certificates. Just open up https://localhost.

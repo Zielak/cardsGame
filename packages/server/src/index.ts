@@ -42,3 +42,5 @@ export * from "./traits/selectableChildren"
 export * from "./traits/twoSided"
 
 export * from "./entities"
+
+export { populatePlayerEvent } from "./utils"

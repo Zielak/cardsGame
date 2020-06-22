@@ -1,5 +1,3 @@
-import { Client } from "colyseus"
-
 import { map2Array } from "@cardsgame/utils"
 
 import { Player, ServerPlayerEvent } from "./players/player"
@@ -20,12 +18,13 @@ const sanitizeIdxPath = (value: unknown): number => {
 export const populatePlayerEvent = (
   state: State,
   event: ClientPlayerEvent,
-  client: Client
+  clientID: string
 ): ServerPlayerEvent => {
   // Populate event with server-side known data
   const newEvent: ServerPlayerEvent = {
     command: event.command,
     data: event.data,
+    timestamp: +Date.now(),
   }
   if (event.entityPath) {
     newEvent.entityPath = event.entityPath.map(sanitizeIdxPath)
@@ -37,7 +36,7 @@ export const populatePlayerEvent = (
   }
 
   const player = map2Array<Player>(state.players).find(
-    (p) => p.clientID === client.id
+    (p) => p.clientID === clientID
   )
 
   if (player) {
@@ -45,4 +44,14 @@ export const populatePlayerEvent = (
   }
 
   return newEvent
+}
+
+export function isPlayerInteractionCommand(
+  obj: any
+): obj is PlayerInteractionCommand {
+  return (
+    typeof obj === "object" &&
+    "command" in obj &&
+    typeof obj.command === "string"
+  )
 }

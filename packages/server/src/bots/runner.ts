@@ -1,25 +1,13 @@
-import { decimal, logs } from "@cardsgame/utils"
+import { logs } from "@cardsgame/utils"
 
-import { BotConditions } from "../conditions/bot"
-import { Bot, isBot } from "../players/bot"
-import { Player, ServerPlayerEvent } from "../players/player"
+import { Bot } from "../players/bot"
+import { Player } from "../players/player"
 import { Room } from "../room"
 import { State } from "../state/state"
-import { BotAction } from "./action"
+import { ChildTrait } from "../traits/child"
 import { BotGoal } from "./goal"
-
-const STUPIDITY_RANGE = 50
-
-const botsValueError = (bot: Bot) => {
-  if (bot.intelligence === 0) {
-    return Math.random() * 1000 - 500
-  }
-
-  return decimal(
-    (Math.random() * STUPIDITY_RANGE - STUPIDITY_RANGE / 2) *
-      (1 - bot.intelligence)
-  )
-}
+import { pickAction } from "./pickAction"
+import { pickGoal } from "./pickGoal"
 
 export class BotRunner<S extends State> {
   activities: BotGoal<S>[]
@@ -28,188 +16,111 @@ export class BotRunner<S extends State> {
     this.activities = room.botActivities ? [...room.botActivities] : []
   }
 
-  onRoundStart() {
-    const { room } = this
-    const { state } = room
+  onRoundStart(): void {
+    logs.info("Bots:onRoundStart")
 
-    if (room.botClients.length > 0) {
-      if (state.turnBased && isBot(state.currentPlayer)) {
-        logs.info(
-          "Bots:onRoundStart",
-          "turn-based game, poking only current player/bot"
-        )
-        this.thinkForPlayer(state.currentPlayer)
-      }
-      if (!state.turnBased) {
-        logs.info("Bots:onRoundStart", "non-turn-based game, poking every bot")
-        room.botClients.forEach((bot) => {
-          this.thinkForPlayer(bot)
-        })
-      }
-    }
+    this.runAllBots()
   }
-  onAnyMessage() {
-    // Probably just check all parallel goals
-    // if (this.room.botClients.length > 0) {
-    //   logs.info(
-    //     "Bots:onAnyMessage",
-    //     "letting bots know, if they wish to interrupt"
-    //   )
-    //   this.room.botClients.forEach((bot) => {
-    //     this.thinkForPlayer(bot)
-    //   })
-    // }
+  onAnyMessage(): void {
+    logs.info("Bots:onAnyMessage")
+
+    this.runAllBots()
+  }
+  onPlayerTurnStarted(currentPlayer: Player): void {
+    logs.info("Bots:onPlayerTurnStarted", currentPlayer?.clientID)
+
+    this.runAllBots()
   }
 
-  onPlayerTurnStarted(player: Player) {
-    logs.info("Bots:onPlayerTurnStarted", player?.clientID)
-
-    if (isBot(player)) {
-      this.thinkForPlayer(player)
-    }
-  }
-
-  thinkForPlayer(bot: Bot): void {
-    logs.notice("thinkForPlayer", bot?.clientID)
-
-    const { state } = this.room
-
-    const goal = this.pickGoal(state, bot)
-    if (!goal) {
-      logs.notice("Bots", `found no goal to act...`)
+  runAllBots(): void {
+    if (this.room.botClients.length === 0) {
+      logs.verbose("Bots", "nobody is listening...")
       return
     }
-    logs.notice("Bots", `chosen goal: ${goal.name}`)
 
-    this.act(state, bot, goal)
-      .then(() => {
-        // Verify round ended.
-        logs.notice("Bots", "finished acting")
-        // if (state.currentPlayer === bot) {
-        //   throw new Error('Bots, ')
-        // }
-      })
-      .catch(() => {})
+    this.room.botClients.forEach((bot) => {
+      this.pickGoal(bot)
+    })
+  }
+
+  pickGoal(bot: Bot): void {
+    const goal = pickGoal(this.activities, this.room.state, bot)
+
+    if (goal) {
+      logs.notice("Bots", `${bot.clientID} chose goal: ${goal.name}`)
+
+      this.makeUpMyMind(bot, goal)
+    } else {
+      logs.notice("Bots", `no goals for ${bot.clientID}`)
+    }
   }
 
   /**
-   * Make Bot run its action.
-   * Wait for the game server (CommandsManager) to respond.
-   * Rejects if some action failed to be executed.
+   * Makes the bot pick an action to execute.
+   * Sets bot to execute that action after some delay.
+   * If bot was already planning to execute some action,
+   * we'll just change its mind without resetting its timer.
    */
-  act(state: S, bot: Bot, goal: BotGoal<S>): Promise<boolean> {
-    logs.info("act", bot.clientID, goal.name)
-    return new Promise((resolve, reject) => {
-      const keepActing = (): void => {
-        logs.notice("keepActing")
-        const action = this.pickAction(state, bot, goal)
+  makeUpMyMind(bot: Bot, goal: BotGoal<S>): void {
+    logs.notice("Bots.act", bot.clientID, goal.name)
+    if (!goal) {
+      logs.notice(
+        "Bots.act",
+        `for bot:${bot.clientID}, ignoring - no goal to execute`
+      )
+      return
+    }
 
-        logs.notice("- action", action?.name)
+    const action = pickAction(this.room.state, bot, goal)
+    if (!action) {
+      logs.info("Bots.act", `no more actions at "${goal.name}" goal!`)
+      return
+    }
 
-        if (!action) {
-          logs.info("Bots", `no more actions at "${goal.name}" goal!`)
-          resolve()
-          return
-        }
-
-        const delay =
-          (typeof bot.actionDelay === "number"
-            ? bot.actionDelay
-            : bot.actionDelay()) * 1000
-        logs.notice("- delay", delay)
-
-        setTimeout(() => {
-          const event: ServerPlayerEvent = {
-            ...action.event(state, bot),
-            player: bot,
-          }
-          this.room
-            .handleMessage(event)
-            .then((result) => {
-              if (result) {
-                keepActing()
-              } else {
-                logs.info(
-                  "Bots",
-                  `Couldn't execute last action "${action.name}" from goal "${goal.name}".`
-                )
-                resolve()
-              }
-            })
-            .catch(reject)
-        }, delay)
-      }
-
-      keepActing()
-    })
+    bot.currentThought = action
+    if (!bot.currentThoughtTimer) {
+      const delay =
+        typeof bot.actionDelay === "number"
+          ? bot.actionDelay
+          : bot.actionDelay()
+      logs.verbose("Bots", `setting up thought timer: ${delay} sec`)
+      bot.currentThoughtTimer = setTimeout(() => {
+        this.executeThough(bot)
+      }, delay * 1000)
+    }
   }
 
-  pickGoal(state: S, bot: Bot): BotGoal<S> {
-    // Grab all non-parallel and possible goals
-    const availableGoals = this.activities
-      .filter((goal) => !goal.parallel)
-      .filter((goal) => {
-        if (goal.condition) {
-          const conditions = new BotConditions<S>(state, bot)
-          try {
-            goal.condition(conditions)
-          } catch (e) {
-            return false
-          }
-        }
-        return true
-      })
+  executeThough(bot: Bot): void {
+    logs.verbose("Bots.executeThough")
+    const action = bot.currentThought
+    const botEvent = action.event(this.room.state, bot)
+    const clientEvent: ClientPlayerEvent = {}
 
-    // Calculate values of each goal
-    const goalValues = new Map<BotGoal<S>, number>()
-    availableGoals.forEach((goal) =>
-      goalValues.set(goal, goal.value(state, bot) + botsValueError(bot))
-    )
+    if (botEvent.entity) {
+      clientEvent.entityPath = (botEvent.entity as ChildTrait).idxPath
+    }
+    if (botEvent.command) {
+      clientEvent.command = botEvent.command
+    }
+    if (botEvent.data) {
+      clientEvent.data = botEvent.data
+    }
+    if (botEvent.event) {
+      clientEvent.event = botEvent.event
+    }
 
-    // Pick the most valuable goal
-    const mostValuable: [BotGoal<S>, number] = [null, -Infinity]
-    goalValues.forEach((value, goal) => {
-      if (value > mostValuable[1]) {
-        mostValuable[0] = goal
-        mostValuable[1] = value
-      }
-    })
+    bot.currentThought = undefined
+    bot.currentThoughtTimer = undefined
 
-    return mostValuable[0]
-  }
+    logs.verbose("\n===============[ BOT MESSAGE ]================\n")
 
-  pickAction(state: S, bot: Bot, goal: BotGoal<S>): BotAction<S> {
-    const actions = [...goal.actions]
-
-    // Grab all currently possible actions
-    const availableActions = actions.filter((action) => {
-      if (action.condition) {
-        const conditions = new BotConditions<S>(state, bot)
-        try {
-          action.condition(conditions)
-        } catch (e) {
-          return false
-        }
-      }
-      return true
-    })
-
-    // Calculate values of each action
-    const actionValues = new Map<BotAction<S>, number>()
-    availableActions.forEach((action) => {
-      const value = action.value ? action.value(state, bot) : 0
-      actionValues.set(action, value + botsValueError(bot))
-    })
-
-    // Pick the most valuable action
-    const mostValuable: [BotAction<S>, number] = [null, -Infinity]
-    actionValues.forEach((value, action) => {
-      if (value > mostValuable[1]) {
-        mostValuable[0] = action
-        mostValuable[1] = value
-      }
-    })
-
-    return mostValuable[0]
+    this.room
+      .handleMessage(bot.clientID, clientEvent)
+      .catch((e) =>
+        logs.error(
+          "Bot.act",
+          `action() failed for client: "${bot.clientID}": ${e}`
+        )
+      )
   }
 }

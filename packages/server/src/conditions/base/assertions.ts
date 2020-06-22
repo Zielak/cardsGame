@@ -1,4 +1,5 @@
 import { isGrid } from "../../entities"
+import { QuerableProps, queryRunner } from "../../queryRunner"
 import { isChild } from "../../traits/child"
 import { isParent } from "../../traits/parent"
 import { isParentMap } from "../../traits/parentMap"
@@ -445,10 +446,76 @@ class ConditionAssertions {
   }
 
   /**
+   * @asserts that at least one item or child elements has all given properties
+   */
+  someEntitiesMatchProps(props: QuerableProps): this {
+    const subject = getFlag(this, "subject")
+
+    if (Array.isArray(subject)) {
+      const result = subject.some(queryRunner(props))
+
+      assert.call(
+        this,
+        result,
+        `someEntityMatchesProps | no item matched`,
+        `someEntityMatchesProps | some item matched, but shouldn't`
+      )
+    } else if (isParent(subject)) {
+      const result = subject.getChildren().some(queryRunner(props))
+
+      assert.call(
+        this,
+        result,
+        `someEntityMatchesProps | no child matched`,
+        `someEntityMatchesProps | some child matched, but shouldn't`
+      )
+    } else {
+      throw new Error(
+        `someEntitiesMatchProps | subject is neither parent nor array`
+      )
+    }
+
+    return this
+  }
+
+  /**
+   * @asserts that all items in collection OR child elements or parent match all given properties
+   */
+  everyEntityMatchesProps(props: QuerableProps): this {
+    const subject = getFlag(this, "subject")
+
+    if (Array.isArray(subject)) {
+      const result = subject.every(queryRunner(props))
+
+      assert.call(
+        this,
+        result,
+        `everyEntityMatchesProps | not every item matched`,
+        `everyEntityMatchesProps | every item matched, but shouldn't`
+      )
+    } else if (isParent(subject)) {
+      const result = subject.getChildren().every(queryRunner(props))
+
+      assert.call(
+        this,
+        result,
+        `everyEntityMatchesProps | not every child matched`,
+        `everyEntityMatchesProps | every child matched, but shouldn't`
+      )
+    } else {
+      throw new Error(
+        `everyEntityMatchesProps | subject is neither parent nor array`
+      )
+    }
+
+    return this
+  }
+
+  /**
    * Does current player has a specific UI element presented to him?
    * If `uiKey` is left empty, function will test if player
    * has ANY ui interface presented.
-   * Ignores current subject and instead is based on `state` and `event`.
+   * Ignores current subject and instead is based on `state` and `player`.
    * @asserts
    * @example
    * // player has ANY UI revealed
@@ -498,6 +565,23 @@ class ConditionAssertions {
 
     resetNegation(this)
     postAssertion(this)
+    return this
+  }
+
+  /**
+   * @asserts if interacting player/bot currently has the turn.
+   */
+  itsPlayersTurn(): this {
+    const { currentPlayer } = getFlag(this, "state")
+    const player = getFlag(this, "player")
+
+    assert.call(
+      this,
+      player === currentPlayer,
+      `It's not current players turn`,
+      `It is current players turn, but shouldn't`
+    )
+
     return this
   }
 }
