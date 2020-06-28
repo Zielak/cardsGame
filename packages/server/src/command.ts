@@ -9,7 +9,7 @@ export interface Command {
 }
 
 export class Command {
-  protected _subCommands: Command[]
+  protected _subCommands: Command[] = []
   private _name: string
   get name(): string {
     return this._name
@@ -58,9 +58,6 @@ export class Command {
     room: Room<any>,
     command: Command
   ): Promise<void> {
-    if (!this._subCommands) {
-      this._subCommands = []
-    }
     this._subCommands.push(command)
     await command.execute(state, room)
   }

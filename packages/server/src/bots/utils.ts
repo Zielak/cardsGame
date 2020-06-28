@@ -1,6 +1,6 @@
 import { decimal } from "@cardsgame/utils"
 
-import { BotConditions } from "../conditions/bot"
+import { Conditions } from "../conditions"
 import { Bot } from "../players/bot"
 import { State } from "../state/state"
 import { BotAction } from "./action"
@@ -36,14 +36,15 @@ export function isGoalOrAction<S extends State>(
 export const filterOutGoalAction = <S extends State>(state: S, bot: Bot) => (
   goalOrAction: GoalOrAction<S>
 ): boolean => {
-  if (goalOrAction.condition) {
-    const conditions = new BotConditions<S>(state, bot)
-    try {
-      goalOrAction.condition(conditions)
-    } catch (e) {
-      return false
-    }
-  }
+  // FIXME: just leaving it for inspiration?
+  // if (goalOrAction.condition) {
+  //   const conditions = new Conditions<S>(state, bot)
+  //   try {
+  //     goalOrAction.condition(conditions)
+  //   } catch (e) {
+  //     return false
+  //   }
+  // }
   return true
 }
 

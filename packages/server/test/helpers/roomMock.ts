@@ -5,7 +5,7 @@ function RoomMock() {
   this.commandsManager = {
     execute: noop,
   }
-  this.botActivities = {
+  this.botRunner = {
     onRoundStart: noop,
     onAnyMessage: noop,
     onPlayerTurnStarted: noop,

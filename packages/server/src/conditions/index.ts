@@ -1,5 +1,3 @@
-import { CallableInstance } from "callable-instance"
-
 import { applyMixins } from "@cardsgame/utils"
 
 import { ServerPlayerEvent } from "../players/player"
@@ -10,14 +8,14 @@ import { ConditionGrouping } from "./grouping"
 import { ConditionSubjects } from "./subjects"
 import { setFlag } from "./utils"
 
-class Conditions<S> extends CallableInstance<Conditions<S>> {
+class Conditions<S> extends Function {
   _flags = new Map<string, any>()
   _refs = new Map<string | symbol, any>()
 
   _log: string
 
   constructor(state: S, event: ServerPlayerEvent) {
-    super("_setLog")
+    super("failReason")
     setFlag(this, "state", state)
     setFlag(this, "subject", state)
 
@@ -33,6 +31,13 @@ class Conditions<S> extends CallableInstance<Conditions<S>> {
 
     setFlag(this, "_constructor", Conditions)
     setFlag(this, "_constructorArguments", [state, event])
+
+    return new Proxy<Conditions<S>>(this, {
+      apply: function (target, thisArg, args): any {
+        target._setLog(args[0])
+        return target
+      },
+    })
   }
 
   protected _setLog(log: string): void {
@@ -45,7 +50,9 @@ interface Conditions<S>
     ConditionGrouping<S, Conditions<S>>,
     ConditionChainers,
     ConditionAssertions,
-    ConditionSubjects {}
+    ConditionSubjects {
+  (failReason: string): Conditions<S>
+}
 
 applyMixins(Conditions, [
   ConditionBase,

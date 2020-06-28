@@ -1,4 +1,4 @@
-import { BotConditions } from "../conditions/bot"
+import { Conditions } from "../conditions"
 import { Player } from "../players/player"
 import { State } from "../state/state"
 import { BotActionsSet } from "./action"
@@ -12,7 +12,7 @@ export interface BotGoal<S extends State> {
    *
    * If omitted, goal will be considered.
    */
-  condition?: (con: BotConditions<S>) => void
+  condition?: (con: Conditions<S>) => void
 
   /**
    * Higher value represents an activity which can result

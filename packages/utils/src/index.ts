@@ -1,4 +1,5 @@
 export * from "./arrays"
+export * from "./callableInstance"
 export * from "./logs"
 export * from "./mapSchema"
 export * from "./numbers"

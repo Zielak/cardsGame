@@ -23,10 +23,6 @@ export class Sequence extends Command {
    * @param room
    */
   async execute(state: State, room: Room<any>): Promise<void> {
-    if (!this._subCommands || this._subCommands.length === 0) {
-      throw new Error(`Sequence somehow lost its sub commands!`)
-    }
-
     logs.group(`Commands group: ${this.name}._executeSubCommands()`)
     for (let i = 0; i < this._subCommands.length; i++) {
       const command = this._subCommands[i]

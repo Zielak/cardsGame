@@ -1,4 +1,4 @@
-import { BotConditions } from "../conditions/bot"
+import { Conditions } from "../conditions"
 import { Player } from "../players/player"
 import { State } from "../state/state"
 
@@ -14,7 +14,7 @@ export interface BotAction<S extends State> {
    *
    * Optional. If omitted, action will be allowed.
    */
-  condition?: (con: BotConditions<S>) => void
+  condition?: (con: Conditions<S>) => void
 
   /**
    * With higher values bot is more likely to pick
