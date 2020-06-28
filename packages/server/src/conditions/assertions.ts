@@ -1,9 +1,9 @@
-import { isGrid } from "../../entities"
-import { QuerableProps, queryRunner } from "../../queryRunner"
-import { isChild } from "../../traits/child"
-import { isParent } from "../../traits/parent"
-import { isParentMap } from "../../traits/parentMap"
-import { hasSelectableChildren } from "../../traits/selectableChildren"
+import { isGrid } from "../entities"
+import { QuerableProps, queryRunner } from "../queryRunner"
+import { isChild } from "../traits/child"
+import { isParent } from "../traits/parent"
+import { isParentMap } from "../traits/parentMap"
+import { hasSelectableChildren } from "../traits/selectableChildren"
 import { getFlag, postAssertion, ref, resetNegation } from "./utils"
 
 const getMessage = (
@@ -376,7 +376,7 @@ class ConditionAssertions {
    * @example
    * con.entity.its("rank").matchesPropOf("pileTop")
    */
-  matchesPropOf(refName: string | symbol): this {
+  matchesPropOf(refName: string): this {
     // don't? TODO: accept queryProps?
     const propName = getFlag(this, "propName")
 
@@ -387,7 +387,15 @@ class ConditionAssertions {
     }
 
     const subject = getFlag(this, "subject")
-    const expected = ref(this, refName)[propName]
+    const testSubject = ref(this, refName)
+
+    if (!testSubject) {
+      throw new Error(
+        `matchesPropOf | couldn't find anything by ref "${refName}"`
+      )
+    }
+
+    const expected = testSubject[propName]
 
     assert.call(
       this,
@@ -580,6 +588,31 @@ class ConditionAssertions {
       player === currentPlayer,
       `It's not current players turn`,
       `It is current players turn, but shouldn't`
+    )
+
+    return this
+  }
+
+  /**
+   * Runs given callback with current `subject` as the only argument.
+   * @asserts if given callback returns truthy
+   * @example
+   * const isKing = (card: ClassicCard) => {
+   *   return card.rank === "K"
+   * }
+   * // Will test if target of interaction is in fact a King
+   * con.entity.test(isKing)
+   */
+  test(tester: (subject: any) => boolean): this {
+    const subject = getFlag(this, "subject")
+
+    const result = tester.call(undefined, subject)
+
+    assert.call(
+      this,
+      result,
+      `test | ${tester.name} returned falsy`,
+      `test | ${tester.name} returned truthy`
     )
 
     return this

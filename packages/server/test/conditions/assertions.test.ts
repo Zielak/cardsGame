@@ -1,4 +1,4 @@
-import { InteractionConditions } from "../../src"
+import { Conditions } from "../../src/conditions"
 import { Grid } from "../../src/entities/grid"
 import { Player, ServerPlayerEvent } from "../../src/players/player"
 import { State } from "../../src/state/state"
@@ -13,7 +13,7 @@ let selectableParent: SelectableParent
 let child: SmartEntity
 let top: SmartEntity
 let bottom: SmartEntity
-let con: InteractionConditions<State>
+let con: Conditions<State>
 
 beforeEach(() => {
   state = new State()
@@ -37,7 +37,7 @@ beforeEach(() => {
     timestamp: 0,
   }
 
-  con = new InteractionConditions<State>(state, event)
+  con = new Conditions<State>(state, event)
 })
 
 describe("equals", () => {

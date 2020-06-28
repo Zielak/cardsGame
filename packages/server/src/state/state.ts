@@ -12,7 +12,7 @@ import { ParentArrayTrait } from "../traits/parentArray"
 
 @containsChildren()
 @applyTraitsMixins([IdentityTrait, LabelTrait, ParentArrayTrait])
-export class State extends Entity<{}> {
+export class State extends Entity<Record<string, unknown>> {
   type = "state"
 
   @type("number") tableWidth = 60 // 60 cm

@@ -21,8 +21,10 @@ export * from "./state/helpers"
 
 export * from "./actionTemplate"
 
-export { InteractionConditions } from "./conditions/interaction"
-export { BotConditions } from "./conditions/bot"
+export { Conditions } from "./conditions"
+export { getFlag, setFlag } from "./conditions/utils"
+
+export { testAction } from "./interaction"
 
 export { Player, ServerPlayerEvent } from "./players/player"
 export { Bot } from "./players/bot"

@@ -1,16 +1,16 @@
-import { InteractionConditions } from "../../src"
+import { Conditions } from "../../src/conditions"
 import { State } from "../../src/state/state"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 
 let state: State
 let parent: SmartParent
-let con: InteractionConditions<State>
+let con: Conditions<State>
 
 beforeEach(() => {
   state = new State()
   parent = new SmartParent(state, { name: "parent" })
 
-  con = new InteractionConditions<State>(state, {} as any)
+  con = new Conditions<State>(state, {} as any)
 })
 
 describe("every", () => {

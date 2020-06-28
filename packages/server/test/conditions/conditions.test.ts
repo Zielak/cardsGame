@@ -1,5 +1,5 @@
-import { InteractionConditions } from "../../src"
-import { getFlag, setFlag } from "../../src/conditions/base/conditions"
+import { Conditions } from "../../src/conditions"
+import { getFlag, setFlag } from "../../src/conditions/utils"
 import { ClassicCard } from "../../src/entities/classicCard"
 import { Hand } from "../../src/entities/hand"
 import { Player, ServerPlayerEvent } from "../../src/players/player"
@@ -12,7 +12,7 @@ let parent: SmartParent
 let child: SmartEntity
 let top: SmartEntity
 let bottom: SmartEntity
-let con: InteractionConditions<State>
+let con: Conditions<State>
 
 beforeEach(() => {
   state = new State()
@@ -30,7 +30,7 @@ beforeEach(() => {
     timestamp: +new Date(),
   }
 
-  con = new InteractionConditions<State>(state, event)
+  con = new Conditions<State>(state, event)
 })
 
 test("all chainers", () => {
@@ -47,6 +47,11 @@ describe("constructor", () => {
     expect(con.getState()).toBe(state)
     expect(con.getEvent()).toBe(event)
     expect(getFlag(con, "subject")).toBe(state)
+  })
+
+  it("defines itself as callable", () => {
+    expect(() => con("test")).not.toThrow()
+    con()
   })
 })
 
@@ -198,11 +203,11 @@ test("top", () => {
 })
 
 test("length", () => {
-  expect(() => con.set("12345").length.equals(5)).not.toThrow()
-  expect(() => con.set(["a", "b", "c"]).length.equals(3)).not.toThrow()
+  expect(() => con.set("12345").itsLength.equals(5)).not.toThrow()
+  expect(() => con.set(["a", "b", "c"]).itsLength.equals(3)).not.toThrow()
 
-  expect(() => con.set(function () {}).length.equals(0)).not.toThrow()
-  expect(() => con.set(500).length).toThrow()
+  expect(() => con.set(function () {}).itsLength.equals(0)).not.toThrow()
+  expect(() => con.set(500).itsLength).toThrow()
 })
 
 describe("selection", () => {
@@ -217,10 +222,10 @@ describe("selection", () => {
   describe("selectedChildren", () => {
     it("works with proper setup", () => {
       expect(() =>
-        con.get({ type: "hand" }).selectedChildren.length.equals(2)
+        con.get({ type: "hand" }).selectedChildren.itsLength.equals(2)
       ).not.toThrow()
       expect(() =>
-        con.get({ type: "hand" }).selectedChildren.length.equals(0)
+        con.get({ type: "hand" }).selectedChildren.itsLength.equals(0)
       ).toThrow()
     })
 
@@ -235,10 +240,10 @@ describe("selection", () => {
   describe("unselectedChildren", () => {
     it("works with proper setup", () => {
       expect(() =>
-        con.get({ type: "hand" }).unselectedChildren.length.equals(1)
+        con.get({ type: "hand" }).unselectedChildren.itsLength.equals(1)
       ).not.toThrow()
       expect(() =>
-        con.get({ type: "hand" }).unselectedChildren.length.equals(0)
+        con.get({ type: "hand" }).unselectedChildren.itsLength.equals(0)
       ).toThrow()
     })
 

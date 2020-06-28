@@ -26,6 +26,14 @@ export function setFlag(target, flagName: ConditionsFlag, value: any): void {
   target._flags.set(flagName, value)
 }
 
+/**
+ * Get a reference to previously remembered `subject` by the name of `refName`
+ */
+export function ref(target, refName): any
+/**
+ * Remember a reference to current `subject` by the name `refName`
+ */
+export function ref(target, refName, value): void
 export function ref(target, refName, value?): any {
   if (!target._refs) {
     throw new Error(`ref | Incompatible target.`)

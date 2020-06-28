@@ -1,21 +1,17 @@
 import { chalk, logs } from "@cardsgame/utils"
 
 import { ActionTemplate } from "./actionTemplate"
-import { InteractionConditions } from "./conditions/interaction"
+import { Conditions } from "./conditions"
 import { ServerPlayerEvent } from "./players/player"
-import { QuerableProps, queryRunner } from "./queryRunner"
+import { queryRunner } from "./queryRunner"
 import { State } from "./state/state"
 import { isChild } from "./traits/child"
 import { isPlayerInteractionCommand } from "./utils"
 
-const interactionMatchesEntity = (definition: QuerableProps) => (
-  entity: unknown
-): boolean => queryRunner(definition)(entity)
-
 export const filterActionsByInteraction = <S extends State>(
   event: ServerPlayerEvent
 ) => (action: ActionTemplate<S>): boolean => {
-  const interactions = action.interactions()
+  const interactions = action.interactions(event.player)
 
   logs.verbose(
     action.name,
@@ -35,7 +31,7 @@ export const filterActionsByInteraction = <S extends State>(
         .filter((currentTarget) =>
           isChild(currentTarget) ? currentTarget.isInteractive() : false
         )
-        .some(interactionMatchesEntity(definition))
+        .some(queryRunner(definition))
     }
   })
 
@@ -52,7 +48,7 @@ export const filterActionsByConditions = <S extends State>(
 ) => (action: ActionTemplate<S>): boolean => {
   logs.group(`action: ${chalk.white(action.name)}`)
 
-  const conditionsChecker = new InteractionConditions<S>(state, event)
+  const conditionsChecker = new Conditions<S>(state, event)
 
   let result = true
   let message = ""
@@ -74,26 +70,16 @@ export const filterActionsByConditions = <S extends State>(
   return result
 }
 
-// /**
-//  * Gets you a list of all possible game actions
-//  * that match with player's interaction
-//  */
-// export const filterActionsByInteraction = <S extends State>(
-//   event: ServerPlayerEvent
-// ): ActionTemplate<S>[] => {
-//   logs.groupCollapsed(`Filter out actions by INTERACTIONS`)
-
-//   const actions = Array.from(this.possibleActions.values()).filter(<S>(event))
-
-//   logs.groupEnd()
-
-//   // const logActions = actions.map(el => el.name)
-//   logs.info(
-//     "performAction",
-//     actions.length,
-//     `actions by this interaction`
-//     // logActions
-//   )
-
-//   return actions
-// }
+/**
+ * Tests if given action would pass tests when pushed to Commands Manager
+ */
+export const testAction = <S extends State>(
+  action: ActionTemplate<S>,
+  state: S,
+  event: ServerPlayerEvent
+): boolean => {
+  return (
+    filterActionsByInteraction(event)(action) &&
+    filterActionsByConditions(state, event)(action)
+  )
+}

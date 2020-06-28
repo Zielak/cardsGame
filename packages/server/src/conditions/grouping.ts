@@ -1,6 +1,6 @@
 import { chalk, IS_CHROME, logs } from "@cardsgame/utils"
 
-import { Conditions } from "./conditions"
+import { Conditions } from "./"
 import {
   cloneConditions,
   getFlag,
@@ -9,8 +9,8 @@ import {
   setFlag,
 } from "./utils"
 
-type EitherCallback = () => any
-type EitherTuple = [string, EitherCallback]
+type EitherCallback<C> = (con: C) => any
+type EitherTuple<C> = [string, EitherCallback<C>]
 
 class ConditionGrouping<S, C extends Conditions<S>> {
   /**
@@ -101,13 +101,18 @@ class ConditionGrouping<S, C extends Conditions<S>> {
 
   /**
    * Checks if at least one of the functions pass.
-   * Resets `subject` back to `state` before each iteration
+   * Resets `subject` back to `state` before each iteration.
+   *
+   * Effectively works like `OR` in logical operations
    */
-  either(groupName: string, ...args: (EitherCallback | EitherTuple)[]): this
-  either(...args: (EitherCallback | EitherTuple)[]): this
   either(
-    nameOrFunc: string | (EitherCallback | EitherTuple),
-    ...args: (EitherCallback | EitherTuple)[]
+    groupName: string,
+    ...args: (EitherCallback<C> | EitherTuple<C>)[]
+  ): this
+  either(...args: (EitherCallback<C> | EitherTuple<C>)[]): this
+  either(
+    nameOrFunc: string | (EitherCallback<C> | EitherTuple<C>),
+    ...args: (EitherCallback<C> | EitherTuple<C>)[]
   ): this {
     // TODO: early quit on first passing function.
 
@@ -117,7 +122,7 @@ class ConditionGrouping<S, C extends Conditions<S>> {
     // At least one of these must pass
     const results = []
 
-    const funcs: EitherTuple[] = [...args].map((value) => {
+    const funcs: EitherTuple<C>[] = [...args].map((value) => {
       if (!Array.isArray(value)) {
         return ["", value]
       }
@@ -147,7 +152,7 @@ class ConditionGrouping<S, C extends Conditions<S>> {
       const prefix = idx < funcs.length - 1 ? "╞╴" : "╘╴"
 
       try {
-        test()
+        test((this as unknown) as C)
 
         IS_CHROME
           ? logs.notice(
