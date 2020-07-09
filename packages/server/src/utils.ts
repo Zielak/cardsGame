@@ -15,11 +15,22 @@ const sanitizeIdxPath = (value: unknown): number => {
   return 998
 }
 
-export const populatePlayerEvent = (
+export function populatePlayerEvent(
   state: State,
   event: ClientPlayerEvent,
   clientID: string
-): ServerPlayerEvent => {
+): ServerPlayerEvent
+export function populatePlayerEvent(
+  state: State,
+  event: ClientPlayerEvent,
+  player: Player
+): ServerPlayerEvent
+export function populatePlayerEvent(
+  state: State,
+  event: ClientPlayerEvent,
+  clientOrPlayer: string | Player
+): ServerPlayerEvent {
+  // TODO: event may be an empty object. Maybe push that as last and optional argument?
   // Populate event with server-side known data
   const newEvent: ServerPlayerEvent = {
     command: event.command,
@@ -35,23 +46,16 @@ export const populatePlayerEvent = (
     newEvent.entity = newEvent.entities[0]
   }
 
-  const player = map2Array<Player>(state.players).find(
-    (p) => p.clientID === clientID
-  )
+  const player =
+    typeof clientOrPlayer === "string"
+      ? map2Array<Player>(state.players).find(
+          (p) => p.clientID === clientOrPlayer
+        )
+      : clientOrPlayer
 
   if (player) {
     newEvent.player = player
   }
 
   return newEvent
-}
-
-export function isPlayerInteractionCommand(
-  obj: any
-): obj is PlayerInteractionCommand {
-  return (
-    typeof obj === "object" &&
-    "command" in obj &&
-    typeof obj.command === "string"
-  )
 }

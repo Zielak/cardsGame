@@ -44,14 +44,14 @@ test("all chainers", () => {
 
 describe("constructor", () => {
   it("defines all props", () => {
-    expect(con.getState()).toBe(state)
+    expect(con.grabState()).toBe(state)
     expect(con.getEvent()).toBe(event)
     expect(getFlag(con, "subject")).toBe(state)
   })
 
   it("defines itself as callable", () => {
     expect(() => con("test")).not.toThrow()
-    con()
+    con("")
   })
 })
 

@@ -62,6 +62,7 @@ export function assert(
   }
 
   resetNegation(this)
+  postAssertion(this)
 }
 
 class ConditionAssertions {
@@ -520,6 +521,33 @@ class ConditionAssertions {
   }
 
   /**
+   * Runs given callback with current `subject` as the only argument.
+   * @asserts if given callback returns truthy
+   * @example
+   * const isKing = (card: ClassicCard) => {
+   *   return card.rank === "K"
+   * }
+   * // Will test if target of interaction is in fact a King
+   * con.entity.test(isKing)
+   */
+  test(tester: (subject: any) => boolean): this {
+    const subject = getFlag(this, "subject")
+
+    const result = tester.call(undefined, subject)
+
+    assert.call(
+      this,
+      result,
+      `test | ${tester.name} returned falsy`,
+      `test | ${tester.name} returned truthy`
+    )
+
+    return this
+  }
+
+  /**
+   * **REQUIRES** `"player"` reference.
+   *
    * Does current player has a specific UI element presented to him?
    * If `uiKey` is left empty, function will test if player
    * has ANY ui interface presented.
@@ -537,7 +565,7 @@ class ConditionAssertions {
    */
   revealedUI(uiKey?: string): this {
     const { ui } = getFlag(this, "state")
-    const { clientID } = getFlag(this, "player")
+    const { clientID } = ref(this, "player")
 
     if (uiKey) {
       // 1. uiKey needs to exist
@@ -577,42 +605,20 @@ class ConditionAssertions {
   }
 
   /**
+   * **REQUIRES** `"player"` reference.
+   *
    * @asserts if interacting player/bot currently has the turn.
+   * Will also throw if current `Conditions` wasn't setup with "player" prop.
    */
   itsPlayersTurn(): this {
     const { currentPlayer } = getFlag(this, "state")
-    const player = getFlag(this, "player")
+    const player = ref(this, "player")
 
     assert.call(
       this,
       player === currentPlayer,
       `It's not current players turn`,
       `It is current players turn, but shouldn't`
-    )
-
-    return this
-  }
-
-  /**
-   * Runs given callback with current `subject` as the only argument.
-   * @asserts if given callback returns truthy
-   * @example
-   * const isKing = (card: ClassicCard) => {
-   *   return card.rank === "K"
-   * }
-   * // Will test if target of interaction is in fact a King
-   * con.entity.test(isKing)
-   */
-  test(tester: (subject: any) => boolean): this {
-    const subject = getFlag(this, "subject")
-
-    const result = tester.call(undefined, subject)
-
-    assert.call(
-      this,
-      result,
-      `test | ${tester.name} returned falsy`,
-      `test | ${tester.name} returned truthy`
     )
 
     return this

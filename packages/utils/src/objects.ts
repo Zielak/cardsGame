@@ -15,3 +15,17 @@ export const deepClone = (object: any) => {
 
   return object
 }
+
+/**
+ * @returns an object without provided `keys`
+ */
+export const omit = (
+  object: Record<string, any>,
+  keys: string[]
+): Record<string, any> =>
+  Object.keys(object)
+    .filter((key) => !keys.includes(key))
+    .reduce((obj, key) => {
+      obj[key] = object[key]
+      return obj
+    }, {} as Record<string, any>)

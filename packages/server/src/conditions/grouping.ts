@@ -12,7 +12,7 @@ import {
 type EitherCallback<C> = (con: C) => any
 type EitherTuple<C> = [string, EitherCallback<C>]
 
-class ConditionGrouping<S, C extends Conditions<S>> {
+class ConditionGrouping<S, P, C extends Conditions<S, P>> {
   /**
    * Loops through every item in subject's collection, executing provided function.
    * If one of the items fail any assertions, whole `every` block fails.

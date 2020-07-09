@@ -2,11 +2,15 @@ import { decimal } from "@cardsgame/utils"
 
 import { Conditions } from "../conditions"
 import { Bot } from "../players/bot"
+import { Player } from "../players/player"
 import { State } from "../state/state"
-import { BotAction } from "./action"
-import { BotGoal } from "./goal"
+import { ChildTrait } from "../traits/child"
+import { BotNeuron } from "./botNeuron"
 
 const STUPIDITY_RANGE = 50
+
+export type EntitySubject = { entity: ChildTrait }
+export type PlayerSubject = { player: Player }
 
 export const botsValueError = (bot: Bot): number => {
   if (bot.intelligence === 0) {
@@ -19,49 +23,34 @@ export const botsValueError = (bot: Bot): number => {
   )
 }
 
-type GoalOrAction<S extends State> = BotAction<S> | BotGoal<S>
-
-export function isGoalOrAction<S extends State>(
-  object: any
-): object is GoalOrAction<S> {
-  return (
-    "event" in object &&
-    typeof object.event === "function" &&
-    "actions" in object &&
-    typeof object.actions === "object" &&
-    object.actions instanceof Set
-  )
-}
-
-export const filterOutGoalAction = <S extends State>(state: S, bot: Bot) => (
-  goalOrAction: GoalOrAction<S>
+export const filterNeuronCondition = <S extends State>(state: S, bot: Bot) => (
+  neuron: BotNeuron<S>
 ): boolean => {
-  // FIXME: just leaving it for inspiration?
-  // if (goalOrAction.condition) {
-  //   const conditions = new Conditions<S>(state, bot)
-  //   try {
-  //     goalOrAction.condition(conditions)
-  //   } catch (e) {
-  //     return false
-  //   }
-  // }
+  if (neuron.conditions) {
+    const con = new Conditions<S, PlayerSubject>(state, { player: bot })
+    try {
+      neuron.conditions(con)
+    } catch (e) {
+      return false
+    }
+  }
   return true
 }
 
-export const pickMostValuable = <S extends State, E extends GoalOrAction<S>>(
-  entries: E[],
+export const pickMostValuable = <S extends State>(
+  entries: BotNeuron<S>[],
   state: S,
   bot: Bot
-): E => {
+): BotNeuron<S> => {
   // Calculate values of each action
-  const entryValues = new Map<E, number>()
+  const entryValues = new Map<BotNeuron<S>, number>()
   entries.forEach((entry) => {
     const value = entry.value ? entry.value(state, bot) : 0
     entryValues.set(entry, value + botsValueError(bot))
   })
 
   // Pick the most valuable goal
-  const mostValuable: [E, number] = [null, -Infinity]
+  const mostValuable: [BotNeuron<S>, number] = [null, -Infinity]
   entryValues.forEach((value, entry) => {
     if (value > mostValuable[1]) {
       mostValuable[0] = entry

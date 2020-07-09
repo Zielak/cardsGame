@@ -1,19 +1,29 @@
 import { logs } from "@cardsgame/utils"
 
+import {
+  EntitiesActionTemplate,
+  EventActionTemplate,
+  isInteractionOfEntities,
+  isInteractionOfEvent,
+} from "../actionTemplate"
+import { Conditions } from "../conditions"
+import { filterActionsByConditions } from "../interaction"
 import { Bot } from "../players/bot"
 import { Player } from "../players/player"
+import { QuerableProps, queryRunner } from "../queryRunner"
 import { Room } from "../room"
 import { State } from "../state/state"
 import { ChildTrait } from "../traits/child"
-import { BotGoal } from "./goal"
-import { pickAction } from "./pickAction"
-import { pickGoal } from "./pickGoal"
+import { populatePlayerEvent } from "../utils"
+import { BotNeuron } from "./botNeuron"
+import { pickNeuron } from "./pickNeuron"
+import { EntitySubject } from "./utils"
 
 export class BotRunner<S extends State> {
-  activities: BotGoal<S>[]
+  neuronTree: BotNeuron<S>[]
 
   constructor(private room: Room<S>) {
-    this.activities = room.botActivities ? [...room.botActivities] : []
+    this.neuronTree = room.botActivities ? [...room.botActivities] : []
   }
 
   onRoundStart(): void {
@@ -44,7 +54,7 @@ export class BotRunner<S extends State> {
   }
 
   pickGoal(bot: Bot): void {
-    const goal = pickGoal(this.activities, this.room.state, bot)
+    const goal = pickNeuron(this.neuronTree, this.room.state, bot)
 
     if (goal) {
       logs.notice("Bots", `${bot.clientID} chose goal: ${goal.name}`)
@@ -58,26 +68,15 @@ export class BotRunner<S extends State> {
   /**
    * Makes the bot pick an action to execute.
    * Sets bot to execute that action after some delay.
-   * If bot was already planning to execute some action,
+   * If bot was already planning to execute other action,
    * we'll just change its mind without resetting its timer.
+   *
+   * Use case: someone interrupted me and I should probably reassess my choice.
    */
-  makeUpMyMind(bot: Bot, goal: BotGoal<S>): void {
-    logs.notice("Bots.act", bot.clientID, goal.name)
-    if (!goal) {
-      logs.notice(
-        "Bots.act",
-        `for bot:${bot.clientID}, ignoring - no goal to execute`
-      )
-      return
-    }
+  makeUpMyMind(bot: Bot, neuron: BotNeuron<S>): void {
+    logs.notice("Bots.makeUpMyMind", bot.clientID, neuron.name)
 
-    const action = pickAction(this.room.state, bot, goal)
-    if (!action) {
-      logs.info("Bots.act", `no more actions at "${goal.name}" goal!`)
-      return
-    }
-
-    bot.currentThought = action
+    bot.currentThought = neuron
     if (!bot.currentThoughtTimer) {
       const delay =
         typeof bot.actionDelay === "number"
@@ -92,25 +91,21 @@ export class BotRunner<S extends State> {
 
   executeThough(bot: Bot): void {
     logs.verbose("Bots.executeThough")
-    const action = bot.currentThought
-    const botEvent = action.event(this.room.state, bot)
-    const clientEvent: ClientPlayerEvent = {}
+    const neuron = bot.currentThought
 
-    if (botEvent.entity) {
-      clientEvent.entityPath = (botEvent.entity as ChildTrait).idxPath
-    }
-    if (botEvent.command) {
-      clientEvent.command = botEvent.command
-    }
-    if (botEvent.data) {
-      clientEvent.data = botEvent.data
-    }
-    if (botEvent.event) {
-      clientEvent.event = botEvent.event
+    if (Array.isArray(neuron.action)) {
+      throw new Error(
+        "executeThough | given neuron has children instead of target ActionTemplate"
+      )
     }
 
-    bot.currentThought = undefined
-    bot.currentThoughtTimer = undefined
+    const { action } = neuron
+
+    const clientEvent = isInteractionOfEntities(action)
+      ? this.prepareBotInteraction(action, neuron, bot)
+      : isInteractionOfEvent(action)
+      ? this.prepareBotEvent(action, neuron, bot)
+      : {}
 
     logs.verbose("\n===============[ BOT MESSAGE ]================\n")
 
@@ -122,5 +117,70 @@ export class BotRunner<S extends State> {
           `action() failed for client: "${bot.clientID}": ${e}`
         )
       )
+  }
+
+  prepareBotInteraction(
+    action: EntitiesActionTemplate<S>,
+    neuron: BotNeuron<S>,
+    bot: Bot
+  ): ClientPlayerEvent {
+    const state = this.room.state
+    const { entitiesFilter } = neuron
+
+    // Grab all entities from INTERACTIONS
+    let entities = action
+      .interaction(bot)
+      .reduce(
+        (all, query) => all.push(query) && all,
+        new Array<QuerableProps>()
+      )
+      .map((query) => state.queryAll(query))
+      .reduce((all, entities) => all.concat(entities), new Array<ChildTrait>())
+
+    if (Array.isArray(entitiesFilter)) {
+      entities = entities.filter(queryRunner(entitiesFilter))
+    } else if (typeof entitiesFilter === "function") {
+      entities = entities.filter((entity) => {
+        const con = new Conditions<S, EntitySubject>(
+          state,
+          { entity },
+          "entity"
+        )
+        try {
+          entitiesFilter(con)
+        } catch (e) {
+          return false
+        }
+        return true
+      })
+    }
+
+    // Filter out only actionable entities
+    const allowedEntities = entities.filter((entity) => {
+      const event = populatePlayerEvent(
+        state,
+        { entityPath: entity.idxPath },
+        bot
+      )
+      return filterActionsByConditions(state, event)(action)
+    })
+
+    return {
+      entityPath: allowedEntities[0].idxPath,
+    }
+  }
+
+  prepareBotEvent(
+    action: EventActionTemplate<S>,
+    neuron: BotNeuron<S>,
+    bot: Bot
+  ): ClientPlayerEvent {
+    const state = this.room.state
+    const playerEvent = action.interaction
+
+    return {
+      command: playerEvent,
+      data: neuron.playerEventData || neuron.playerEventData(state, bot),
+    }
   }
 }

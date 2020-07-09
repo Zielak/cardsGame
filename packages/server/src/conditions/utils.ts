@@ -1,10 +1,8 @@
 type ConditionsFlag =
   | "state"
-  | "event"
-  | "player"
-  | "entity"
-  | "data"
   | "subject"
+  | "initialSubjects"
+  | "defaultSubject"
   | "propName"
   | "propParent"
   | "not"
@@ -29,12 +27,12 @@ export function setFlag(target, flagName: ConditionsFlag, value: any): void {
 /**
  * Get a reference to previously remembered `subject` by the name of `refName`
  */
-export function ref(target, refName): any
+export function ref(target, refName: string): any
 /**
  * Remember a reference to current `subject` by the name `refName`
  */
-export function ref(target, refName, value): void
-export function ref(target, refName, value?): any {
+export function ref(target, refName: string, value: any): void
+export function ref(target, refName: string, value?: any): any {
   if (!target._refs) {
     throw new Error(`ref | Incompatible target.`)
   }
@@ -65,10 +63,10 @@ export const resetNegation = (target): void => {
 }
 
 /**
- * reset subject back to its default value - the State
+ * Reset subject back to its default value
  */
 export const resetSubject = (target): void => {
-  setFlag(target, "subject", getFlag(target, "state"))
+  setFlag(target, "subject", getFlag(target, getFlag(target, "defaultSubject")))
 }
 
 export const postAssertion = (target): void => {

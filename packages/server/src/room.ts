@@ -12,7 +12,7 @@ import {
 } from "@cardsgame/utils"
 
 import { ActionsSet } from "./actionTemplate"
-import { BotGoalsSet } from "./bots/goal"
+import { BotNeuron } from "./bots/botNeuron"
 import { BotRunner } from "./bots/runner"
 import { Command } from "./command"
 import { Sequence } from "./commands"
@@ -24,7 +24,7 @@ import { hasLabel, LabelTrait } from "./traits/label"
 import { populatePlayerEvent } from "./utils"
 
 export interface IRoom<S extends State> {
-  botActivities?: BotGoalsSet<S>
+  botActivities?: BotNeuron<S>[]
   canGameStart(): boolean
   onInitGame(options: any): void
   onStartGame(state: S): void | Command[]
@@ -42,7 +42,7 @@ export class Room<S extends State> extends colRoom<S> {
 
   possibleActions: ActionsSet<S>
 
-  botActivities: BotGoalsSet<S>
+  botActivities: BotNeuron<S>[]
   botClients: Bot[] = []
 
   /**

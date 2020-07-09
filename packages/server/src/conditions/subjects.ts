@@ -20,21 +20,10 @@ class ConditionSubjects {
   }
 
   /**
-   * Changes subject to a player of current interaction
-   * @yields `player` of current interaction
-   */
-  get player(): this {
-    setFlag(this, "subject", getFlag(this, "player"))
-    resetPropDig(this)
-
-    return this
-  }
-
-  /**
    * Sets new subject. This can be anything.
    * @yields completely new subject, provided in the argument
    */
-  set(newSubject): this {
+  set(newSubject: any): this {
     setFlag(this, "subject", newSubject)
 
     return this
@@ -79,7 +68,9 @@ class ConditionSubjects {
           : getFlag(this, "subject")
 
       if (!isParent(parent)) {
-        throw new Error(`get(props) | current subject is not a parent`)
+        throw new Error(
+          `get(props) | current subject is not a parent: "${typeof parent}" = ${parent}`
+        )
       }
 
       newSubject = parent.query(arg0)
@@ -116,11 +107,10 @@ class ConditionSubjects {
 
   /**
    * Remembers the subject with a given alias
-   * @example ```
-   * con.get({name: 'deck'}).as('deck')
-   * ```
+   * @example
+   * con.get({ name: 'deck' }).as('deck')
    */
-  as(refName: string | symbol): void {
+  as(refName: string): void {
     ref(this, refName, getFlag(this, "subject"))
 
     resetSubject(this)
@@ -319,34 +309,13 @@ class ConditionSubjects {
   }
 
   /**
+   * **REQUIRES** `"player"` subject
+   *
    * Changes subject to owner of current entity
    * @yields `player`
    */
   get owner(): this {
-    setFlag(this, "subject", getFlag(this, "player").owner)
-    resetPropDig(this)
-
-    return this
-  }
-
-  /**
-   * Changes subject to interacted entity
-   * @yields `entity` from players interaction
-   */
-  get entity(): this {
-    setFlag(this, "subject", getFlag(this, "entity"))
-    resetPropDig(this)
-
-    return this
-  }
-
-  /**
-   * Changes subject to interaction data,
-   * throws if it wasn't provided by the client.
-   * @yields `data` from players interaction
-   */
-  get data(): this {
-    setFlag(this, "subject", getFlag(this, "data"))
+    setFlag(this, "subject", ref(this, "player").owner)
     resetPropDig(this)
 
     return this

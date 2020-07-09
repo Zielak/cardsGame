@@ -6,8 +6,7 @@ export { canBeChild } from "./annotations/canBeChild"
 export { containsChildren } from "./annotations/containsChildren"
 export { defineTypes, type } from "./annotations/type"
 
-export * from "./bots/goal"
-export * from "./bots/action"
+export * from "./bots/botNeuron"
 
 import * as commands from "./commands"
 

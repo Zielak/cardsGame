@@ -1,5 +1,4 @@
-import { Player, ServerPlayerEvent } from "../players/player"
-import { getFlag, setFlag } from "./utils"
+import { getFlag, ref, setFlag } from "./utils"
 
 class ConditionBase<S> {
   /**
@@ -10,41 +9,15 @@ class ConditionBase<S> {
     return this
   }
 
-  // TODO: Deprecate these super-specific getters into something generic: con.entity.ref() ?
-
   /**
-   * @returns `state` reference
+   * Grabs and returns direct `reference` for a given subject
    */
-  getState(): S {
+  grab<T>(refName?: string): T {
+    return refName ? ref(this, refName) : getFlag(this, "subject")
+  }
+
+  grabState(): S {
     return getFlag(this, "state")
-  }
-
-  /**
-   * @returns current `subject`
-   */
-  getSubject(): any {
-    return getFlag(this, "subject")
-  }
-
-  /**
-   * @returns `player` reference
-   */
-  getPlayer(): Player {
-    return getFlag(this, "player")
-  }
-
-  /**
-   * @returns player's `event` reference
-   */
-  getEvent(): ServerPlayerEvent {
-    return getFlag(this, "event")
-  }
-
-  /**
-   * @returns `data` reference from event
-   */
-  getData(): any {
-    return getFlag(this, "data")
   }
 }
 
