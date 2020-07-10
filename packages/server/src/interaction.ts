@@ -1,11 +1,11 @@
-import { chalk, logs, omit } from "@cardsgame/utils"
+import { chalk, logs } from "@cardsgame/utils"
 
 import {
   ActionTemplate,
   isInteractionOfEntities,
   isInteractionOfEvent,
 } from "./actionTemplate"
-import { Conditions } from "./conditions"
+import { Conditions, ConditionsMethods } from "./conditions"
 import { ServerPlayerEvent } from "./players/player"
 import { queryRunner } from "./queryRunner"
 import { State } from "./state/state"
@@ -45,10 +45,33 @@ export const filterActionsByInteraction = <S extends State>(
   return false
 }
 
-export type ClientEventSubjects = Omit<
-  ServerPlayerEvent,
-  "timestamp" | "entities" | "entityPath"
->
+export class ClientEventConditions<S extends State> extends Conditions<
+  S,
+  ClientEventConditions<S>
+> {}
+
+export interface ClientEventConditions<S extends State> {
+  /**
+   * Changes current `subject` to game-specific player command. Defaults to "EntityInteraction"
+   */
+  command: ConditionsMethods<S, ClientEventConditions<S>> //string;
+  /**
+   * Changes current `subject` to Interaction-related events ("click", "touchstart"...)
+   */
+  event: ConditionsMethods<S, ClientEventConditions<S>> //string;
+  /**
+   * Changes current `subject` to event's additional data
+   */
+  data: ConditionsMethods<S, ClientEventConditions<S>> //any;
+  /**
+   * Changes current `subject` to interacting `Player`
+   */
+  player: ConditionsMethods<S, ClientEventConditions<S>> //Player;
+  /**
+   * Changes current `subject` to entity being interacted with
+   */
+  entity: ConditionsMethods<S, ClientEventConditions<S>> //unknown;
+}
 
 export const filterActionsByConditions = <S extends State>(
   state: S,
@@ -56,10 +79,14 @@ export const filterActionsByConditions = <S extends State>(
 ) => (action: ActionTemplate<S>): boolean => {
   logs.group(`action: ${chalk.white(action.name)}`)
 
-  const conditionsChecker = new Conditions<S, ClientEventSubjects>(
-    state,
-    omit(event, ["timestamp", "entities", "entityPath"])
-  )
+  const initialSubjects = Object.keys(event)
+    .filter((key) => !["timestamp", "entities", "entityPath"].includes(key))
+    .reduce((o, key) => {
+      o[key] = event[key]
+      return o
+    }, {})
+
+  const conditionsChecker = new ClientEventConditions<S>(state, initialSubjects)
 
   let result = true
   let message = ""

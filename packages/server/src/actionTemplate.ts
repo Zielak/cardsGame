@@ -1,6 +1,5 @@
 import { Command } from "./command"
-import { Conditions } from "./conditions"
-import { ClientEventSubjects } from "./interaction"
+import { ClientEventConditions } from "./interaction"
 import { Player, ServerPlayerEvent } from "./players/player"
 import { QuerableProps } from "./queryRunner"
 import { State } from "./state/state"
@@ -20,7 +19,7 @@ export interface ActionTemplate<S extends State> {
    *
    * Default `subject` is set to the game state.
    */
-  conditions: (con: Conditions<S, ClientEventSubjects>) => void
+  conditions: (con: ClientEventConditions<S>) => void
 
   /**
    * Generate a `Command` to run for this action.

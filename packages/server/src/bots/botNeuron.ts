@@ -1,9 +1,8 @@
 import { ActionTemplate } from "../actionTemplate"
-import { Conditions } from "../conditions"
 import { Bot } from "../players/bot"
 import { QuerableProps } from "../queryRunner"
 import { State } from "../state/state"
-import { EntitySubject, PlayerSubject } from "./utils"
+import { BotConditions, EntityConditions } from "./conditions"
 
 export interface BotNeuron<S extends State> {
   name: string
@@ -17,7 +16,7 @@ export interface BotNeuron<S extends State> {
    * For example, if an action requires player to have certain kind of card in their hand, you can quickly assert that here.
    * Otherwise, bot will brute force its way to understand if this action can be played.
    */
-  conditions?: (con: Conditions<S, PlayerSubject>) => void
+  conditions?: (con: BotConditions<S>) => void
 
   /**
    * With higher values bot is more likely to pick that Neuron.
@@ -39,9 +38,7 @@ export interface BotNeuron<S extends State> {
    * Can simply be additional `QuerableProps` object, or more advanced function
    * of conditions - subject is automatically set to each entity.
    */
-  entitiesFilter?:
-    | ((con: Conditions<S, EntitySubject>) => void)
-    | QuerableProps[]
+  entitiesFilter?: ((con: EntityConditions<S>) => void) | QuerableProps[]
 
   /**
    * Make bot generate additional `data`, if needed.

@@ -1,24 +1,20 @@
 import { QuerableProps } from "../queryRunner"
 import { isParent } from "../traits/parent"
 import { hasSelectableChildren } from "../traits/selectableChildren"
-import { getFlag, ref, resetPropDig, resetSubject, setFlag } from "./utils"
+import {
+  getFlag,
+  getInitialSubject,
+  ref,
+  resetPropDig,
+  resetSubject,
+  setFlag,
+} from "./utils"
 
 /**
  * Getters and methods which change subject
  */
 
 class ConditionSubjects {
-  /**
-   * Changes subject to game's state
-   * @yields `state`
-   */
-  get state(): this {
-    resetSubject(this)
-    resetPropDig(this)
-
-    return this
-  }
-
   /**
    * Sets new subject. This can be anything.
    * @yields completely new subject, provided in the argument
@@ -37,9 +33,10 @@ class ConditionSubjects {
    * con.state.get({name: 'deck'}).as('deck')
    * ```
    */
-  get(props: QuerableProps): this
+  private get(props: QuerableProps): this
   /**
-   * Changes subject to previously remembered entity by an `alias`.
+   * Changes subject to previously remembered entity by an `alias`,
+   * or sone of the already remembered "initial subjects".
    * If `props` are also provided, it'll instead search the aliased entity
    * for another entity by their `props`.
    *
@@ -48,8 +45,8 @@ class ConditionSubjects {
    * con.get('deck', {rank: 'K'})
    * ```
    */
-  get(alias: string, props?: QuerableProps): this
-  get(arg0: string | QuerableProps, arg1?: QuerableProps): this {
+  private get(alias: string, props?: QuerableProps): this
+  private get(arg0: string | QuerableProps, arg1?: QuerableProps): this {
     let newSubject
     if (typeof arg0 === "string") {
       const alias = arg0
@@ -124,7 +121,7 @@ class ConditionSubjects {
   }
 
   /**
-   * @yields children of current subject
+   * @yields children of current subject (an array)
    */
   get children(): this {
     const children = getFlag(this, "subject").getChildren()
@@ -309,13 +306,13 @@ class ConditionSubjects {
   }
 
   /**
-   * **REQUIRES** `"player"` subject
+   * **REQUIRES** `"player"` initial subject
    *
    * Changes subject to owner of current entity
    * @yields `player`
    */
   get owner(): this {
-    setFlag(this, "subject", ref(this, "player").owner)
+    setFlag(this, "subject", getInitialSubject(this, "player").owner)
     resetPropDig(this)
 
     return this

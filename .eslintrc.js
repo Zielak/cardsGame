@@ -7,7 +7,6 @@ module.exports = {
     "no-extra-semi": "off",
     "no-undef": "off",
     "no-unused-vars": "warn",
-    "prefer-const": "warn",
   },
   overrides: [
     {
@@ -33,6 +32,7 @@ module.exports = {
           "error",
           { functions: false },
         ],
+        "prefer-spread": "off",
       },
     },
     {

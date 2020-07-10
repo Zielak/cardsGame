@@ -22,6 +22,8 @@ export * from "./actionTemplate"
 
 export { Conditions } from "./conditions"
 export { getFlag, setFlag } from "./conditions/utils"
+export { BotConditions, EntityConditions } from "./bots/conditions"
+export { ClientEventConditions } from "./interaction"
 
 export { testAction } from "./interaction"
 

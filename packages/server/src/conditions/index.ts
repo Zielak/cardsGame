@@ -1,89 +1,116 @@
 import { applyMixins } from "@cardsgame/utils"
 
+import { QuerableProps } from "../queryRunner"
 import { ConditionAssertions } from "./assertions"
 import { ConditionBase } from "./base"
 import { ConditionChainers } from "./chainers"
 import { ConditionGrouping } from "./grouping"
 import { ConditionSubjects } from "./subjects"
-import { ref, resetSubject, setFlag } from "./utils"
+import { getFlag, resetSubject, setFlag } from "./utils"
 
-class Conditions<S, P = Record<string, any>> extends Function {
-  _flags = new Map<string, any>()
-  _refs = new Map<string | keyof P, any>()
+export interface ConditionsMethods<S, C extends Conditions<S, C>>
+  extends ConditionBase<S>,
+    ConditionGrouping<S, C>,
+    ConditionChainers,
+    ConditionAssertions,
+    ConditionSubjects {}
 
-  _log: string
+export class ConditionsMethods<S, C extends Conditions<S, C>> {
+  protected _flags = new Map<string, any>()
+  protected _refs = new Map<string, any>()
+}
 
+abstract class Conditions<S, C extends Conditions<S, C>> extends Function {
   /**
-   * @param state
-   * @param props Additional data to be available while running conditions
-   * @param defaultSubject which subject to pick back after each assertion? `"state"` is the default.
+   * @param state game's state reference
+   * @param subjects additional data to be available while running conditions
+   * @param defaultSubject which of the initial subjects to pick back after each assertion? If left empty, `state` will be picked instead.
    */
-  constructor(state: S, subjects: P, defaultSubject?: keyof P) {
-    super("failReason")
-    setFlag(this, "state", state)
+  constructor(
+    state: S,
+    subjects: Record<string, any>,
+    defaultSubjectKey?: string
+  ) {
+    super()
+    const core = new ConditionsMethods<S, C>()
 
-    const proxy = new Proxy<Conditions<S, P>>(this, {
-      apply: function (target, thisArg, args): any {
-        target._setLog(args[0])
-        return target
+    setFlag(core, "state", state)
+
+    const proxy = new Proxy<Conditions<S, C>>(this, {
+      apply: function (target, thisArg, args): ConditionsMethods<S, C> {
+        resetSubject(core)
+        if (args && args.length > 0) {
+          return core["get"].apply(core, args)
+        } else {
+          return core
+        }
       },
-      get: function (target, prop, receiver) {
-        resetSubject(target)
-        return target[prop]
+      get: function (target, prop: string, receiver) {
+        // Confirm it's at "initialSubjects"
+        const newSub = getFlag(core, "initialSubjects")[prop]
+        if (!newSub) {
+          throw new Error(
+            `There's no initial subject called "${prop.toString()}".`
+          )
+        }
+        setFlag(core, "subject", newSub)
+        return core
       },
     })
 
-    this.ref = {} as any
-    Object.keys(subjects).forEach((refName) => {
-      // Remember given subjects by ref
-      ref(this, refName, subjects[refName])
-
-      Object.defineProperty(this.ref, refName, {
-        get: function (): Conditions<S, P> {
-          setFlag(proxy, "subject", ref(proxy, refName))
-          return proxy
-        },
-      })
-    })
-
-    if (defaultSubject) {
-      setFlag(this, "subject", subjects[defaultSubject])
+    if (defaultSubjectKey) {
+      if (!(defaultSubjectKey in subjects)) {
+        throw new Error(
+          `Can't set default subject. "${defaultSubjectKey}" does not exist in initial subjects.`
+        )
+      }
+      setFlag(core, "subject", subjects[defaultSubjectKey])
     } else {
-      setFlag(this, "subject", state)
+      setFlag(core, "subject", state)
     }
-    setFlag(this, "initialSubjects", Object.keys(subjects))
-    setFlag(this, "defaultSubject", defaultSubject || "state")
+    setFlag(core, "initialSubjects", Object.assign({}, subjects))
+    setFlag(core, "defaultSubject", subjects[defaultSubjectKey] || state)
 
-    setFlag(this, "propName", undefined)
-    setFlag(this, "propParent", undefined)
-    setFlag(this, "not", false)
-    setFlag(this, "eitherLevel", 0)
+    setFlag(core, "propName", undefined)
+    setFlag(core, "propParent", undefined)
+    setFlag(core, "not", false)
+    setFlag(core, "eitherLevel", 0)
 
-    setFlag(this, "_constructor", Conditions)
-    setFlag(this, "_constructorArguments", [state, subjects, defaultSubject])
+    setFlag(core, "_rootReference", proxy)
 
     return proxy
   }
-
-  protected _setLog(log: string): void {
-    this._log = log
-  }
 }
 
-interface Conditions<S, P>
-  extends ConditionBase<S>,
-    ConditionGrouping<S, P, Conditions<S, P>>,
-    ConditionChainers,
-    ConditionAssertions,
-    ConditionSubjects {
+interface Conditions<S, C extends Conditions<S, C>> {
   /**
-   * Changes subject to one of the initially provided objects
+   *
    */
-  ref: { state: Conditions<S, P> } & { [prop in keyof P]: Conditions<S, P> }
-  (failReason: string): Conditions<S, P>
+  (): ConditionsMethods<S, C>
+  /**
+   * Looks for a child entity by their `props`, starting from current subject.
+   *
+   * @yields an entity, found by alias or `QuerableProps` query
+   * @example ```
+   * con({name: 'deck'}).as('deck')
+   * ```
+   */
+  (props: QuerableProps): ConditionsMethods<S, C>
+  /**
+   * Changes subject to previously remembered entity by an `alias`.
+   * If `props` are also provided, it'll also search the aliased entity
+   * for another entity by their `props`.
+   *
+   * @yields an entity, found by alias or `QuerableProps` query
+   * @example ```
+   * con('deck', {rank: 'K'})
+   * ```
+   */
+  (alias: string, props?: QuerableProps): ConditionsMethods<S, C>
+  (arg0?: string | QuerableProps, arg1?: QuerableProps): ConditionsMethods<S, C>
 }
 
-applyMixins(Conditions, [
+applyMixins(ConditionsMethods, [
   ConditionBase,
   ConditionGrouping,
   ConditionChainers,

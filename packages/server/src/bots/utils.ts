@@ -1,16 +1,14 @@
 import { decimal } from "@cardsgame/utils"
 
-import { Conditions } from "../conditions"
 import { Bot } from "../players/bot"
-import { Player } from "../players/player"
 import { State } from "../state/state"
 import { ChildTrait } from "../traits/child"
 import { BotNeuron } from "./botNeuron"
+import { BotConditions } from "./conditions"
 
 const STUPIDITY_RANGE = 50
 
 export type EntitySubject = { entity: ChildTrait }
-export type PlayerSubject = { player: Player }
 
 export const botsValueError = (bot: Bot): number => {
   if (bot.intelligence === 0) {
@@ -27,7 +25,7 @@ export const filterNeuronCondition = <S extends State>(state: S, bot: Bot) => (
   neuron: BotNeuron<S>
 ): boolean => {
   if (neuron.conditions) {
-    const con = new Conditions<S, PlayerSubject>(state, { player: bot })
+    const con = new BotConditions<S>(state, { player: bot })
     try {
       neuron.conditions(con)
     } catch (e) {

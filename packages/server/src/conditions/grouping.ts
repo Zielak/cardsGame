@@ -1,18 +1,12 @@
 import { chalk, IS_CHROME, logs } from "@cardsgame/utils"
 
 import { Conditions } from "./"
-import {
-  cloneConditions,
-  getFlag,
-  iconStyle,
-  resetNegation,
-  setFlag,
-} from "./utils"
+import { getFlag, iconStyle, resetNegation, setFlag } from "./utils"
 
 type EitherCallback<C> = (con: C) => any
 type EitherTuple<C> = [string, EitherCallback<C>]
 
-class ConditionGrouping<S, P, C extends Conditions<S, P>> {
+class ConditionGrouping<S, C extends Conditions<S, C>> {
   /**
    * Loops through every item in subject's collection, executing provided function.
    * If one of the items fail any assertions, whole `every` block fails.
@@ -42,8 +36,9 @@ class ConditionGrouping<S, P, C extends Conditions<S, P>> {
     }
 
     subject.forEach((item, index) => {
-      const con = cloneConditions<C>(this)
-      setFlag(con, "subject", item)
+      setFlag(this, "defaultSubject", item)
+      setFlag(this, "subject", item)
+      const con = getFlag(this, "_rootReference")
       predicate.call(con, con, item, index, subject)
     })
 
@@ -80,9 +75,10 @@ class ConditionGrouping<S, P, C extends Conditions<S, P>> {
     }
 
     const result = subject.some((item, index) => {
-      const con = cloneConditions<C>(this)
-      setFlag(con, "subject", item)
+      setFlag(this, "defaultSubject", item)
+      setFlag(this, "subject", item)
       try {
+        const con = getFlag(this, "_rootReference")
         predicate.call(con, con, item, index, subject)
         // Ok, this one didn't fail, `some` block succeeds
         return true

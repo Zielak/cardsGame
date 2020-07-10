@@ -6,7 +6,6 @@ import {
   isInteractionOfEntities,
   isInteractionOfEvent,
 } from "../actionTemplate"
-import { Conditions } from "../conditions"
 import { filterActionsByConditions } from "../interaction"
 import { Bot } from "../players/bot"
 import { Player } from "../players/player"
@@ -16,8 +15,8 @@ import { State } from "../state/state"
 import { ChildTrait } from "../traits/child"
 import { populatePlayerEvent } from "../utils"
 import { BotNeuron } from "./botNeuron"
+import { EntityConditions } from "./conditions"
 import { pickNeuron } from "./pickNeuron"
-import { EntitySubject } from "./utils"
 
 export class BotRunner<S extends State> {
   neuronTree: BotNeuron<S>[]
@@ -141,11 +140,7 @@ export class BotRunner<S extends State> {
       entities = entities.filter(queryRunner(entitiesFilter))
     } else if (typeof entitiesFilter === "function") {
       entities = entities.filter((entity) => {
-        const con = new Conditions<S, EntitySubject>(
-          state,
-          { entity },
-          "entity"
-        )
+        const con = new EntityConditions<S>(state, { entity }, "entity")
         try {
           entitiesFilter(con)
         } catch (e) {

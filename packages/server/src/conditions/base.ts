@@ -10,7 +10,7 @@ class ConditionBase<S> {
   }
 
   /**
-   * Grabs and returns direct `reference` for a given subject
+   * Grabs and returns direct `reference` for a given or current `subject`
    */
   grab<T>(refName?: string): T {
     return refName ? ref(this, refName) : getFlag(this, "subject")

@@ -565,7 +565,7 @@ class ConditionAssertions {
    */
   revealedUI(uiKey?: string): this {
     const { ui } = getFlag(this, "state")
-    const { clientID } = ref(this, "player")
+    const clientID = getFlag(this, "initialSubjects").player.clientID
 
     if (uiKey) {
       // 1. uiKey needs to exist
@@ -612,7 +612,7 @@ class ConditionAssertions {
    */
   itsPlayersTurn(): this {
     const { currentPlayer } = getFlag(this, "state")
-    const player = ref(this, "player")
+    const player = getFlag(this, "initialSubjects").player
 
     assert.call(
       this,
