@@ -44,7 +44,7 @@ export class NextPlayer extends Command {
 
     room.botRunner.onPlayerTurnStarted(state.currentPlayer)
   }
-  async undo(state: State, room): Promise<void> {
+  async undo(state: State, room: Room<any>): Promise<void> {
     super.undo(state, room)
     state.currentPlayerIdx = this.lastIdx
   }
@@ -86,7 +86,7 @@ export class PreviousPlayer extends Command {
 
     room.botRunner.onPlayerTurnStarted(state.currentPlayer)
   }
-  async undo(state: State, room): Promise<void> {
+  async undo(state: State, room: Room<any>): Promise<void> {
     super.undo(state, room)
     state.currentPlayerIdx = this.lastIdx
   }

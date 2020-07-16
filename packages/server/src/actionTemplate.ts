@@ -40,21 +40,21 @@ export interface EventActionTemplate<S extends State>
 }
 
 export function isInteractionOfEntities<S extends State = any>(
-  o: any
+  o: unknown
 ): o is EntitiesActionTemplate<S> {
   return (
     typeof o === "object" &&
     "interaction" in o &&
-    typeof o.interaction === "function"
+    typeof o["interaction"] === "function"
   )
 }
 
 export function isInteractionOfEvent<S extends State = any>(
-  o: any
+  o: unknown
 ): o is EventActionTemplate<S> {
   return (
     typeof o === "object" &&
     "interaction" in o &&
-    typeof o.interaction === "string"
+    typeof o["interaction"] === "string"
   )
 }

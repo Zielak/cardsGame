@@ -15,13 +15,13 @@ import {
   sortByIdx,
 } from "./parent"
 
-export function isParentMap(entity: any): entity is ParentMapTrait {
+export function isParentMap(entity: unknown): entity is ParentMapTrait {
   return (
     typeof entity == "object" &&
     typeof (entity as ParentTrait).query !== "undefined" &&
     typeof (entity as ParentTrait).getChildren !== "undefined" &&
     "maxChildren" in entity &&
-    typeof entity.maxChildren === "number"
+    typeof entity["maxChildren"] === "number"
   )
 }
 

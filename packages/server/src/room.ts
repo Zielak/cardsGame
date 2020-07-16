@@ -56,7 +56,7 @@ export class Room<S extends State> extends colRoom<S> {
     return this.constructor.name
   }
 
-  onCreate(options?: any): void {
+  onCreate(options?: Record<string, any>): void {
     logs.info(`Room:${this.name}`, "creating new room")
 
     if (!this.possibleActions) {

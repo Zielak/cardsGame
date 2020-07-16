@@ -40,8 +40,8 @@ export function assert(
   result: boolean,
   errMessage: string,
   errMessageNot?: string,
-  expected?,
-  actual?
+  expected?: unknown,
+  actual?: unknown
 ): void {
   const not = getFlag(this, "not")
   const ok = not ? !result : result
@@ -130,11 +130,11 @@ class ConditionAssertions {
   /**
    * @asserts that container has index empty
    */
-  availableSpotAt(index: number)
+  availableSpotAt(index: number): this
   /**
    * @asserts that **Grid** has spot available at specified column/row
    */
-  availableSpotAt(column: number, row: number)
+  availableSpotAt(column: number, row: number): this
   availableSpotAt(arg0: number, arg1?: number): this {
     const subject = getFlag(this, "subject")
 
@@ -171,7 +171,7 @@ class ConditionAssertions {
    * Compares current subject to given value, no coercion (strict equality).
    * @asserts that subject is equal to provided value.
    */
-  equals(value: any): this {
+  equals(value: unknown): this {
     const subject = getFlag(this, "subject")
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""

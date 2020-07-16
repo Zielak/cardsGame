@@ -128,7 +128,7 @@ describe("#addChild", () => {
 })
 
 describe("#moveChildTo", () => {
-  const mapMapChildren = (parent: DumbMapParent) => {
+  const mapMapChildren = (parent: DumbMapParent): any[] => {
     const max =
       parent.maxChildren !== Infinity
         ? parent.maxChildren

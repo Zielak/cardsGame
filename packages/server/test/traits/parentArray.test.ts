@@ -103,7 +103,8 @@ describe("#addChild", () => {
 })
 
 describe("#moveChildTo", () => {
-  const mapArrayChildren = (p) => p.getChildren().map((e) => (e ? e.id : null))
+  const mapArrayChildren = (p): any =>
+    p.getChildren().map((e) => (e ? e.id : null))
 
   let parent: DumbArrayParent
   beforeEach(() => {

@@ -13,7 +13,7 @@ describe("hooks", () => {
     ;(HookTestTrait as any).hooks = {
       postConstructor: jest.fn(),
     }
-    class HookTestEntity extends Entity<{}> {}
+    class HookTestEntity extends Entity<any> {}
 
     applyTraitsMixins([HookTestTrait])(HookTestEntity)
 

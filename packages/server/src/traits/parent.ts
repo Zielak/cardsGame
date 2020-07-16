@@ -1,6 +1,7 @@
 import { globalEntitiesContext } from "../annotations/entitiesContext"
 import { QuerableProps } from "../queryRunner"
 import { ChildTrait } from "./child"
+import { Entity } from "./entity"
 
 export function isParent(entity: any): entity is ParentTrait {
   return (
@@ -35,7 +36,7 @@ export interface ParentTrait {
 export const hasChildren = (entity): boolean =>
   isParent(entity) ? entity.countChildren() > 0 : false
 
-export const getKnownConstructor = (entity: ChildTrait): Function =>
+export const getKnownConstructor = (entity: ChildTrait): typeof Entity =>
   globalEntitiesContext.registeredChildren.find((con) => entity instanceof con)
 
 /**

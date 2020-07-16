@@ -51,7 +51,7 @@ export class Entity<T> extends Schema {
  * @param baseCtors
  */
 export const applyTraitsMixins = (baseCtors: any[]) => (
-  derivedCtor: Function
+  derivedCtor: AnyClass
 ): void => {
   const derived = derivedCtor.prototype
 

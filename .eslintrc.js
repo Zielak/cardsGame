@@ -6,7 +6,7 @@ module.exports = {
   rules: {
     "no-extra-semi": "off",
     "no-undef": "off",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "off",
   },
   overrides: [
     {
@@ -28,6 +28,7 @@ module.exports = {
           },
         ],
         "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-use-before-define": [
           "error",
           { functions: false },

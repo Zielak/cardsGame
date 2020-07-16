@@ -19,7 +19,7 @@ class ConditionSubjects {
    * Sets new subject. This can be anything.
    * @yields completely new subject, provided in the argument
    */
-  set(newSubject: any): this {
+  set(newSubject: unknown): this {
     setFlag(this, "subject", newSubject)
 
     return this

@@ -45,7 +45,7 @@ abstract class Conditions<S, C extends Conditions<S, C>> extends Function {
           return core
         }
       },
-      get: function (target, prop: string, receiver) {
+      get: function (target, prop: string, receiver): ConditionsMethods<S, C> {
         // Confirm it's at "initialSubjects"
         const newSub = getFlag(core, "initialSubjects")[prop]
         if (!newSub) {

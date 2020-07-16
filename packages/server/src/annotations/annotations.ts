@@ -5,7 +5,7 @@ import { type } from "./type"
 
 export const synchChildrenArray = (
   parentConstructor: typeof Entity,
-  childrenConstructor: Function
+  childrenConstructor: typeof Function
 ): void => {
   const arr = []
   arr.push(childrenConstructor)

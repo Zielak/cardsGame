@@ -52,6 +52,10 @@ interface IPlayerViewPosition {
 
 // === Utility types ===
 
+interface AnyClass extends Function {
+  new (...args: any[]): any
+}
+
 type AllowArrays<T> = { [prop in keyof T]: T[prop] | Array<T[prop]> }
 
 // Author: https://stackoverflow.com/a/55479659/1404284
