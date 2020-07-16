@@ -1,4 +1,5 @@
 import Chalk from "chalk"
+
 import { noop } from "./utils"
 
 const isBrowser = new Function(
@@ -221,16 +222,104 @@ export interface Logs {
   verbose: (...any) => void
   group: (...any) => void
   groupCollapsed: (...any) => void
-  groupEnd: () => void
+  groupEnd: (...any) => void
 }
 /**
  * Local logging utility
  * TODO: whoops, port it to server environment too!
  */
+type LogsOptions = {
+  browserStyle?: string
+  serverStyle?: Chalk.Chalk
+}
 export class Logs {
-  constructor(name: string, style: string, enabled = false) {
+  constructor(name: string, private enabled = false, options?: LogsOptions) {
+    if (isBrowser) {
+      this.setupBrowserLogs(name, options.browserStyle)
+    } else {
+      this.setupServerLogs(name, options.serverStyle)
+    }
+  }
+
+  setupServerLogs(name: string, style: Chalk.Chalk) {
+    let indentLevel = 0
+    const getIndent = (): string => {
+      return Array(indentLevel).fill("│ ").join("")
+    }
+
     this["error"] =
-      logLevel < LogLevels.error && enabled
+      logLevel < LogLevels.error && this.enabled
+        ? noop
+        : function (first, ...args: any[]) {
+            console.error.apply(console, [
+              style(getIndent() + chalk.bgRed(` ${first} `)),
+              ...args.map(syntaxHighlight),
+            ])
+          }
+    this["warn"] =
+      logLevel < LogLevels.warn && this.enabled
+        ? noop
+        : function (first, ...args: any[]) {
+            console.warn.apply(console, [
+              style(getIndent() + chalk.bgYellow.black(` ${first} `)),
+              ...args.map(syntaxHighlight),
+            ])
+          }
+    this["info"] =
+      logLevel < LogLevels.info && this.enabled
+        ? noop
+        : function (first, ...args: any[]) {
+            console.info.apply(console, [
+              style(getIndent() + chalk.bgBlue.black(` ${first} `)),
+              ...args.map(syntaxHighlight),
+            ])
+          }
+    this["notice"] =
+      logLevel < LogLevels.notice && this.enabled
+        ? noop
+        : function (first, ...args: any[]) {
+            if (args.length > 0) {
+              console.log.apply(console, [
+                style(getIndent(), `${first}:`),
+                ...args.map(syntaxHighlight),
+              ])
+            } else {
+              console.log.call(console, style(chalk.gray(getIndent() + first)))
+            }
+          }
+    const notice = this["notice"]
+    this["verbose"] =
+      logLevel < LogLevels.verbose && this.enabled
+        ? noop
+        : function (...args: any[]) {
+            console.debug.apply(console, [
+              style(getIndent() + `\t`),
+              ...args.map((arg) => chalk.gray(arg)),
+            ])
+          }
+    this["group"] = !this.enabled
+      ? noop
+      : function (first, ...args: any[]) {
+          notice(`┍━${first}`, ...args)
+          indentLevel++
+        }
+    this["groupCollapsed"] = !this.enabled
+      ? noop
+      : function (first, ...args: any[]) {
+          notice(`┍━${first}`, ...args)
+          indentLevel++
+        }
+    this["groupEnd"] = !this.enabled
+      ? noop
+      : function (first = "────────────", ...args: any[]) {
+          indentLevel = Math.max(--indentLevel, 0)
+          notice(`┕━${first}`, ...args)
+        }
+  }
+
+  setupBrowserLogs(name: string, style: string) {
+    this["error"] =
+      logLevel < LogLevels.error && this.enabled
         ? noop
         : (function () {
             return Function.prototype.bind.call(
@@ -241,7 +330,7 @@ export class Logs {
             )
           })()
     this["warn"] =
-      logLevel < LogLevels.warn && enabled
+      logLevel < LogLevels.warn && this.enabled
         ? noop
         : (function () {
             return Function.prototype.bind.call(
@@ -252,7 +341,7 @@ export class Logs {
             )
           })()
     this["info"] =
-      logLevel < LogLevels.info && enabled
+      logLevel < LogLevels.info && this.enabled
         ? noop
         : (function () {
             return Function.prototype.bind.call(
@@ -263,7 +352,7 @@ export class Logs {
             )
           })()
     this["notice"] =
-      logLevel < LogLevels.notice && enabled
+      logLevel < LogLevels.notice && this.enabled
         ? noop
         : (function () {
             return Function.prototype.bind.call(
@@ -274,7 +363,7 @@ export class Logs {
             )
           })()
     this["verbose"] =
-      logLevel < LogLevels.verbose && enabled
+      logLevel < LogLevels.verbose && this.enabled
         ? noop
         : (function () {
             return Function.prototype.bind.call(
@@ -284,13 +373,13 @@ export class Logs {
               style
             )
           })()
-    this["group"] = enabled
+    this["group"] = !this.enabled
       ? noop
       : console.group.bind(console, `%c ${name} `, style)
-    this["groupCollapsed"] = enabled
+    this["groupCollapsed"] = !this.enabled
       ? noop
       : console.groupCollapsed.bind(console, `%c ${name} `, style)
-    this["groupEnd"] = enabled
+    this["groupEnd"] = !this.enabled
       ? noop
       : (function () {
           return Function.prototype.bind.call(console.groupEnd, console)

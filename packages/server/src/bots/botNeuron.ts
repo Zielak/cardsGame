@@ -28,9 +28,18 @@ export interface BotNeuron<S extends State> {
   value: (state: S, bot: Bot) => number
 
   /**
-   * `ActionTemplate` associated with this Neuron OR a group of `Neurons`.
+   * `ActionTemplate` associated with this Neuron.
    */
-  action: ActionTemplate<S> | BotNeuron<S>[]
+  action?: ActionTemplate<S>
+
+  /**
+   * Child neurons of this one.
+   *
+   * FIXME: Verify programmatically, that you defined either `action` OR `neurons`...
+   *
+   * TODO: BotNeuron Definition Parser?
+   */
+  children?: BotNeuron<S>[]
 
   /**
    * If your action targets `entities` too broadly, add additional filter here.

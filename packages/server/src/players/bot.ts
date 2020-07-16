@@ -1,6 +1,6 @@
 import { def, limit } from "@cardsgame/utils"
 
-import { BotNeuron } from "../bots/botNeuron"
+import { ChosenBotNeuronResult } from "../bots/pickNeuron"
 import { Player, PlayerOptions } from "./player"
 
 export interface BotOptions extends PlayerOptions {
@@ -23,13 +23,13 @@ export class Bot extends Player {
   intelligence: number
   isBot = true
 
-  currentThought: BotNeuron<any>
+  currentThought: ChosenBotNeuronResult<any>
   currentThoughtTimer: NodeJS.Timeout
 
   constructor(options: BotOptions) {
     super(options)
 
-    this.actionDelay = def(options.actionDelay, 1000)
+    this.actionDelay = def(options.actionDelay, 500)
     this.intelligence = def(limit(options.intelligence, 0, 1), 0.5)
   }
 }

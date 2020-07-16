@@ -14,7 +14,7 @@ import { isChild } from "./traits/child"
 export const filterActionsByInteraction = <S extends State>(
   event: ServerPlayerEvent
 ) => (action: ActionTemplate<S>): boolean => {
-  if (isInteractionOfEntities(action)) {
+  if (event.entity && isInteractionOfEntities(action)) {
     const interactions = action.interaction(event.player)
 
     logs.verbose(
@@ -39,7 +39,7 @@ export const filterActionsByInteraction = <S extends State>(
           return result
         })
     })
-  } else if (isInteractionOfEvent(action)) {
+  } else if (event.command && isInteractionOfEvent(action)) {
     return action.interaction === event.command
   }
   return false
