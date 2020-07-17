@@ -1,6 +1,5 @@
 import { logs } from "@cardsgame/utils"
 
-import { EventActionTemplate } from "../actionTemplate"
 import { Bot } from "../players/bot"
 import { Player } from "../players/player"
 import { Room } from "../room"
@@ -46,7 +45,7 @@ export class BotRunner<S extends State> {
     })
   }
 
-  pickGoal(bot: Bot): void {
+  private pickGoal(bot: Bot): void {
     const goal = pickNeuron(this.neuronTree, this.room.state, bot)
 
     if (goal) {
@@ -69,7 +68,7 @@ export class BotRunner<S extends State> {
     }
   }
 
-  executeThough(bot: Bot): void {
+  private executeThough(bot: Bot): void {
     logs.verbose("Bots.executeThough")
     const { event, neuron } = bot.currentThought
 

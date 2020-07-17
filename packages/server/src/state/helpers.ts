@@ -2,10 +2,7 @@ import { logs, map2Array } from "@cardsgame/utils"
 
 import { Bot, isBot } from "../players/bot"
 import { Player } from "../players/player"
-import { ChildTrait, isChild } from "../traits/child"
 import { IdentityTrait } from "../traits/identity"
-import { hasLabel, LabelTrait } from "../traits/label"
-import { hasOwnership } from "../traits/ownership"
 import { hasChildren, isParent, ParentTrait } from "../traits/parent"
 import { State } from "./state"
 
@@ -81,61 +78,4 @@ export function getEntitiesAlongPath(
     }
   }
   return travel(state, [...path])
-}
-
-export function logTreeState(
-  state: State,
-  logger: any = logs,
-  startingPoint?: ParentTrait
-): void {
-  const travel = (parent): void => {
-    parent
-      .getChildren()
-      .map((child: ChildTrait & LabelTrait, idx, entities) => {
-        if (
-          // getParentEntity(child).isContainer && // Parent HAS to be a container...
-          entities.length > 60 &&
-          idx < entities.length - 60
-        ) {
-          // That's too much, man!
-          if (idx === 0) {
-            logger.notice("...")
-          }
-          return
-        }
-
-        const owner = hasOwnership(child) ? child.owner : undefined
-
-        // const lastChild = entities.length - 1 === idx
-        const idxPath = child.idxPath
-
-        const childrenCount = isParent(child) ? child.countChildren() : "~~"
-        const sChildren = childrenCount > 0 ? childrenCount : ""
-        const sOwner = owner ? `(${owner.name} ${owner.clientID})` : ""
-        // const branchSymbol = lastChild ? "┕━" : "┝━"
-
-        logger[hasChildren(child) ? "group" : "notice"](
-          `[${idxPath}]`,
-          `${child.type}:${child.name}-[${child.idx}]`,
-          sChildren,
-          sOwner
-        )
-        if (isParent(child) && childrenCount > 0) {
-          travel(child)
-          logger.groupEnd()
-        }
-      })
-  }
-
-  if (!startingPoint) {
-    logger.group("ROOT", "(" + this.countChildren() + " direct children")
-  } else {
-    const count = isChild(startingPoint) ? `[${startingPoint.idx}] ` : ""
-    const name = hasLabel(startingPoint)
-      ? startingPoint.type + ":" + startingPoint.name
-      : "unidentified entity"
-    logger.group(count + name, startingPoint.countChildren() + "children")
-  }
-  travel(startingPoint || state)
-  logger.groupEnd()
 }

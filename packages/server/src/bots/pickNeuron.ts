@@ -6,19 +6,19 @@ import {
 } from "../actionTemplate"
 import { filterActionsByConditions } from "../interaction"
 import { Bot } from "../players/bot"
-import { QuerableProps, queryRunner } from "../queryRunner"
+import { queryRunner } from "../queryRunner"
 import { State } from "../state/state"
 import { ChildTrait } from "../traits/child"
 import { populatePlayerEvent } from "../utils"
 import { BotNeuron } from "./botNeuron"
 import { BotConditions, EntityConditions } from "./conditions"
 
-const logs = new Logs("pickNeuron", true, { serverStyle: chalk.bgGreen })
+const logs = new Logs("pickNeuron", true, { serverStyle: chalk.bgGreen.white })
 
 /**
  * Considers only Neuron's own `conditions`
  */
-export const filterNeuronConditions = <S extends State>(state: S, bot: Bot) => (
+const filterNeuronConditions = <S extends State>(state: S, bot: Bot) => (
   neuron: BotNeuron<S>
 ): boolean => {
   if (neuron.conditions) {
@@ -40,12 +40,13 @@ export const filterNeuronConditions = <S extends State>(state: S, bot: Bot) => (
 /**
  * Grabs entities, which could become given neuron's interaction target
  */
-export const auxillaryEntitiesFilter = <S extends State>(
+const auxillaryEntitiesFilter = <S extends State>(
   state: S,
   bot: Bot,
   { action, entitiesFilter }: BotNeuron<S>
 ) => (entity: ChildTrait): boolean => {
   if (!action || !isInteractionOfEntities(action)) {
+    // `getNeuronsAvailableEvents()` already ensures this action is of entities...
     return true
   } else if (Array.isArray(entitiesFilter)) {
     return entitiesFilter.some((query) => queryRunner(query)(entity))
@@ -91,6 +92,9 @@ const getNeuronsAvailableEvents = <S extends State>(
   bot: Bot,
   neuron: BotNeuron<S>
 ): ClientPlayerEvent[] => {
+  if (!neuron.action) {
+    throw new Error(`Neuron without children should have an "action" assigned!`)
+  }
   if (isInteractionOfEntities(neuron.action)) {
     // Grab only interesting entities
     const allEntities = grabAllInteractionEntities(state, bot, neuron)
