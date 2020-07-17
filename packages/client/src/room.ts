@@ -67,7 +67,7 @@ export class Room {
   sendInteraction(
     event: MouseEvent | TouchEvent,
     entityIdxPath: number[],
-    data?: any
+    data?: Record<string, any>
   ): void {
     const playerEvent: ClientPlayerEvent = {
       command: "EntityInteraction",

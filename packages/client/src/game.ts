@@ -35,16 +35,16 @@ export class Game {
       port: def(options.wss && options.wss.port, 2657),
     }
 
-    this.client = new Client(
-      `wss://${this.wss.host}${this.wss.port ? ":" + this.wss.port : ""}`
-    )
+    const portString = this.wss.port ? `:${this.wss.port}` : ""
+
+    this.client = new Client(`wss://${this.wss.host}${portString}`)
   }
 
   get sessionID(): string {
     return this.room ? this.room.sessionID : undefined
   }
 
-  joinOrCreate(roomName: string, options?: any): Promise<Room> {
+  joinOrCreate(roomName: string, options?: Record<string, any>): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.joinOrCreate(roomName, options).then((room) => {
@@ -53,7 +53,7 @@ export class Game {
     })
   }
 
-  create(roomName: string, options?: any): Promise<Room> {
+  create(roomName: string, options?: Record<string, any>): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.create(roomName, options).then((room) => {
@@ -66,7 +66,7 @@ export class Game {
    * This one is probably useless for game rooms.
    * Use `joinOrCreate` instead.
    */
-  join(roomName: string, options?: any): Promise<Room> {
+  join(roomName: string, options?: Record<string, any>): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.join(roomName, options).then((room) => {
@@ -75,7 +75,7 @@ export class Game {
     })
   }
 
-  joinById(roomId: string, options?: any): Promise<Room> {
+  joinById(roomId: string, options?: Record<string, any>): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.joinById(roomId, options).then((room) => {
@@ -89,7 +89,7 @@ export class Game {
   }
 
   // TODO: reconsider it, maybe this method is useless?
-  destroy() {
+  destroy(): void {
     logs.verbose("GAME", "destroy()")
     if (this.room) {
       this.room.leave()

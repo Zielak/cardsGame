@@ -1,9 +1,9 @@
-import { isGrid } from "../../entities"
-import { QuerableProps, queryRunner } from "../../queryRunner"
-import { isChild } from "../../traits/child"
-import { isParent } from "../../traits/parent"
-import { isParentMap } from "../../traits/parentMap"
-import { hasSelectableChildren } from "../../traits/selectableChildren"
+import { isGrid } from "../entities"
+import { QuerableProps, queryRunner } from "../queryRunner"
+import { isChild } from "../traits/child"
+import { isParent } from "../traits/parent"
+import { isParentMap } from "../traits/parentMap"
+import { hasSelectableChildren } from "../traits/selectableChildren"
 import { getFlag, postAssertion, ref, resetNegation } from "./utils"
 
 const getMessage = (
@@ -40,8 +40,8 @@ export function assert(
   result: boolean,
   errMessage: string,
   errMessageNot?: string,
-  expected?,
-  actual?
+  expected?: unknown,
+  actual?: unknown
 ): void {
   const not = getFlag(this, "not")
   const ok = not ? !result : result
@@ -62,6 +62,7 @@ export function assert(
   }
 
   resetNegation(this)
+  postAssertion(this)
 }
 
 class ConditionAssertions {
@@ -129,11 +130,11 @@ class ConditionAssertions {
   /**
    * @asserts that container has index empty
    */
-  availableSpotAt(index: number)
+  availableSpotAt(index: number): this
   /**
    * @asserts that **Grid** has spot available at specified column/row
    */
-  availableSpotAt(column: number, row: number)
+  availableSpotAt(column: number, row: number): this
   availableSpotAt(arg0: number, arg1?: number): this {
     const subject = getFlag(this, "subject")
 
@@ -170,7 +171,7 @@ class ConditionAssertions {
    * Compares current subject to given value, no coercion (strict equality).
    * @asserts that subject is equal to provided value.
    */
-  equals(value: any): this {
+  equals(value: unknown): this {
     const subject = getFlag(this, "subject")
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
@@ -376,7 +377,7 @@ class ConditionAssertions {
    * @example
    * con.entity.its("rank").matchesPropOf("pileTop")
    */
-  matchesPropOf(refName: string | symbol): this {
+  matchesPropOf(refName: string): this {
     // don't? TODO: accept queryProps?
     const propName = getFlag(this, "propName")
 
@@ -387,7 +388,15 @@ class ConditionAssertions {
     }
 
     const subject = getFlag(this, "subject")
-    const expected = ref(this, refName)[propName]
+    const testSubject = ref(this, refName)
+
+    if (!testSubject) {
+      throw new Error(
+        `matchesPropOf | couldn't find anything by ref "${refName}"`
+      )
+    }
+
+    const expected = testSubject[propName]
 
     assert.call(
       this,
@@ -512,6 +521,33 @@ class ConditionAssertions {
   }
 
   /**
+   * Runs given callback with current `subject` as the only argument.
+   * @asserts if given callback returns truthy
+   * @example
+   * const isKing = (card: ClassicCard) => {
+   *   return card.rank === "K"
+   * }
+   * // Will test if target of interaction is in fact a King
+   * con.entity.test(isKing)
+   */
+  test(tester: (subject: any) => boolean): this {
+    const subject = getFlag(this, "subject")
+
+    const result = tester.call(undefined, subject)
+
+    assert.call(
+      this,
+      result,
+      `test | ${tester.name} returned falsy`,
+      `test | ${tester.name} returned truthy`
+    )
+
+    return this
+  }
+
+  /**
+   * **REQUIRES** `"player"` reference.
+   *
    * Does current player has a specific UI element presented to him?
    * If `uiKey` is left empty, function will test if player
    * has ANY ui interface presented.
@@ -529,7 +565,7 @@ class ConditionAssertions {
    */
   revealedUI(uiKey?: string): this {
     const { ui } = getFlag(this, "state")
-    const { clientID } = getFlag(this, "player")
+    const clientID = getFlag(this, "initialSubjects").player.clientID
 
     if (uiKey) {
       // 1. uiKey needs to exist
@@ -569,11 +605,14 @@ class ConditionAssertions {
   }
 
   /**
+   * **REQUIRES** `"player"` reference.
+   *
    * @asserts if interacting player/bot currently has the turn.
+   * Will also throw if current `Conditions` wasn't setup with "player" prop.
    */
   itsPlayersTurn(): this {
     const { currentPlayer } = getFlag(this, "state")
-    const player = getFlag(this, "player")
+    const player = getFlag(this, "initialSubjects").player
 
     assert.call(
       this,

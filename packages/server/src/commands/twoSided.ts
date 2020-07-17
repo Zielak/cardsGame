@@ -1,4 +1,6 @@
 import { Command, Targets, TargetsHolder } from "../command"
+import { Room } from "../room"
+import { State } from "../state/state"
 import { TwoSidedTrait } from "../traits/twoSided"
 
 // Make it possible to provide functions as target...
@@ -14,11 +16,11 @@ export class FaceUp extends Command {
     this.targets = new TargetsHolder<TwoSidedTrait>(entities)
   }
 
-  async execute(state?, room?): Promise<void> {
+  async execute(state: State, room: Room<any>): Promise<void> {
     this.targets.get().forEach((e) => e.flipUp())
   }
 
-  async undo(state?, room?): Promise<void> {
+  async undo(state: State, room: Room<any>): Promise<void> {
     this.targets.get().forEach((e) => e.flipDown())
   }
 }
@@ -34,11 +36,11 @@ export class FaceDown extends Command {
     this.targets = new TargetsHolder<TwoSidedTrait>(entities)
   }
 
-  async execute(state?, room?): Promise<void> {
+  async execute(state: State, room: Room<any>): Promise<void> {
     this.targets.get().forEach((e) => e.flipDown())
   }
 
-  async undo(state?, room?): Promise<void> {
+  async undo(state: State, room: Room<any>): Promise<void> {
     this.targets.get().forEach((e) => e.flipUp())
   }
 }
@@ -54,11 +56,11 @@ export class Flip extends Command {
     this.targets = new TargetsHolder<TwoSidedTrait>(entities)
   }
 
-  async execute(state?, room?): Promise<void> {
+  async execute(state: State, room: Room<any>): Promise<void> {
     this.targets.get().forEach((e) => e.flip())
   }
 
-  async undo(state?, room?): Promise<void> {
+  async undo(state: State, room: Room<any>): Promise<void> {
     this.targets.get().forEach((e) => e.flip())
   }
 }

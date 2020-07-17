@@ -1,18 +1,12 @@
 import { chalk, IS_CHROME, logs } from "@cardsgame/utils"
 
-import { Conditions } from "./conditions"
-import {
-  cloneConditions,
-  getFlag,
-  iconStyle,
-  resetNegation,
-  setFlag,
-} from "./utils"
+import { Conditions } from "./"
+import { getFlag, iconStyle, resetNegation, setFlag } from "./utils"
 
-type EitherCallback = () => any
-type EitherTuple = [string, EitherCallback]
+type EitherCallback<C> = (con: C) => any
+type EitherTuple<C> = [string, EitherCallback<C>]
 
-class ConditionGrouping<S, C extends Conditions<S>> {
+class ConditionGrouping<S, C extends Conditions<S, C>> {
   /**
    * Loops through every item in subject's collection, executing provided function.
    * If one of the items fail any assertions, whole `every` block fails.
@@ -20,7 +14,9 @@ class ConditionGrouping<S, C extends Conditions<S>> {
    * Each item is automatically set as the `subject` within each iteration.
    * After all iterations are done, the `subject` will be reset back to what it originally was.
    *
-   * @param predicate a function in style of native `array.forEach`, but first argument is new Conditions instance. This `con` will have its own subject set to each item of current subject.
+   * @param predicate a function in style of native `array.forEach`,
+   * but first argument is new Conditions instance.
+   * This `con` will have its own subject set to each item of current subject.
    * @example
    * con.get("chosenCards").children.every((con, item, index, array) => {
    *   con.its("rank").oneOf(["2", "3"])
@@ -42,8 +38,9 @@ class ConditionGrouping<S, C extends Conditions<S>> {
     }
 
     subject.forEach((item, index) => {
-      const con = cloneConditions<C>(this)
-      setFlag(con, "subject", item)
+      setFlag(this, "defaultSubject", item)
+      setFlag(this, "subject", item)
+      const con = getFlag(this, "_rootReference")
       predicate.call(con, con, item, index, subject)
     })
 
@@ -58,7 +55,9 @@ class ConditionGrouping<S, C extends Conditions<S>> {
    * Each item is automatically set as the `subject` within each iteration.
    * After all iterations are done, the `subject` will be reset back to what it originally was.
    *
-   * @param predicate a function in style of native `array.some`, but first argument is new Conditions instance. This `con` will have its own subject set to each item of current subject.
+   * @param predicate a function in style of native `array.some`,
+   * but first argument is new Conditions instance.
+   * This `con` will have its own subject set to each item of current subject.
    * @example
    * con.get("chosenCards").children.some((con, item, index, array) => {
    *   con.its("rank").matchesPropOf("pileTop")
@@ -80,9 +79,10 @@ class ConditionGrouping<S, C extends Conditions<S>> {
     }
 
     const result = subject.some((item, index) => {
-      const con = cloneConditions<C>(this)
-      setFlag(con, "subject", item)
+      setFlag(this, "defaultSubject", item)
+      setFlag(this, "subject", item)
       try {
+        const con = getFlag(this, "_rootReference")
         predicate.call(con, con, item, index, subject)
         // Ok, this one didn't fail, `some` block succeeds
         return true
@@ -101,13 +101,18 @@ class ConditionGrouping<S, C extends Conditions<S>> {
 
   /**
    * Checks if at least one of the functions pass.
-   * Resets `subject` back to `state` before each iteration
+   * Resets `subject` back to `state` before each iteration.
+   *
+   * Effectively works like `OR` in logical operations
    */
-  either(groupName: string, ...args: (EitherCallback | EitherTuple)[]): this
-  either(...args: (EitherCallback | EitherTuple)[]): this
   either(
-    nameOrFunc: string | (EitherCallback | EitherTuple),
-    ...args: (EitherCallback | EitherTuple)[]
+    groupName: string,
+    ...args: (EitherCallback<C> | EitherTuple<C>)[]
+  ): this
+  either(...args: (EitherCallback<C> | EitherTuple<C>)[]): this
+  either(
+    nameOrFunc: string | (EitherCallback<C> | EitherTuple<C>),
+    ...args: (EitherCallback<C> | EitherTuple<C>)[]
   ): this {
     // TODO: early quit on first passing function.
 
@@ -117,7 +122,7 @@ class ConditionGrouping<S, C extends Conditions<S>> {
     // At least one of these must pass
     const results = []
 
-    const funcs: EitherTuple[] = [...args].map((value) => {
+    const funcs: EitherTuple<C>[] = [...args].map((value) => {
       if (!Array.isArray(value)) {
         return ["", value]
       }
@@ -147,7 +152,7 @@ class ConditionGrouping<S, C extends Conditions<S>> {
       const prefix = idx < funcs.length - 1 ? "╞╴" : "╘╴"
 
       try {
-        test()
+        test((this as unknown) as C)
 
         IS_CHROME
           ? logs.notice(
@@ -175,7 +180,9 @@ class ConditionGrouping<S, C extends Conditions<S>> {
         result,
       })
 
-      if (result) break
+      if (result) {
+        break
+      }
 
       idx++
     }
@@ -183,11 +190,10 @@ class ConditionGrouping<S, C extends Conditions<S>> {
     setFlag(this, "eitherLevel", eitherLevel - 1)
 
     if (results.every(({ result }) => result === false)) {
+      const quotedGroupName = groupName ? ` "${groupName}"` : ""
       throw new Error(
         [
-          `either${
-            groupName ? ` "${groupName}"` : ""
-          } | none of the tests passed:`,
+          `either${quotedGroupName} | none of the tests passed:`,
           ...results.map(({ error }) => error),
         ].join(`\n`)
       )

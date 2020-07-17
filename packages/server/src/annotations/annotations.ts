@@ -1,11 +1,10 @@
 import { logs } from "@cardsgame/utils"
 
-import { Entity } from "../traits/entity"
 import { type } from "./type"
 
 export const synchChildrenArray = (
-  parentConstructor: typeof Entity,
-  childrenConstructor: Function
+  parentConstructor: AnyClass,
+  childrenConstructor: AnyClass
 ): void => {
   const arr = []
   arr.push(childrenConstructor)

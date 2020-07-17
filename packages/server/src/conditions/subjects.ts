@@ -1,7 +1,14 @@
-import { QuerableProps } from "../../queryRunner"
-import { isParent } from "../../traits/parent"
-import { hasSelectableChildren } from "../../traits/selectableChildren"
-import { getFlag, ref, resetPropDig, resetSubject, setFlag } from "./utils"
+import { QuerableProps } from "../queryRunner"
+import { isParent } from "../traits/parent"
+import { hasSelectableChildren } from "../traits/selectableChildren"
+import {
+  getFlag,
+  getInitialSubject,
+  ref,
+  resetPropDig,
+  resetSubject,
+  setFlag,
+} from "./utils"
 
 /**
  * Getters and methods which change subject
@@ -9,32 +16,10 @@ import { getFlag, ref, resetPropDig, resetSubject, setFlag } from "./utils"
 
 class ConditionSubjects {
   /**
-   * Changes subject to game's state
-   * @yields `state`
-   */
-  get state(): this {
-    resetSubject(this)
-    resetPropDig(this)
-
-    return this
-  }
-
-  /**
-   * Changes subject to a player of current interaction
-   * @yields `player` of current interaction
-   */
-  get player(): this {
-    setFlag(this, "subject", getFlag(this, "player"))
-    resetPropDig(this)
-
-    return this
-  }
-
-  /**
    * Sets new subject. This can be anything.
    * @yields completely new subject, provided in the argument
    */
-  set(newSubject): this {
+  set(newSubject: unknown): this {
     setFlag(this, "subject", newSubject)
 
     return this
@@ -48,9 +33,10 @@ class ConditionSubjects {
    * con.state.get({name: 'deck'}).as('deck')
    * ```
    */
-  get(props: QuerableProps): this
+  private get(props: QuerableProps): this
   /**
-   * Changes subject to previously remembered entity by an `alias`.
+   * Changes subject to previously remembered entity by an `alias`,
+   * or sone of the already remembered "initial subjects".
    * If `props` are also provided, it'll instead search the aliased entity
    * for another entity by their `props`.
    *
@@ -59,8 +45,8 @@ class ConditionSubjects {
    * con.get('deck', {rank: 'K'})
    * ```
    */
-  get(alias: string, props?: QuerableProps): this
-  get(arg0: string | QuerableProps, arg1?: QuerableProps): this {
+  private get(alias: string, props?: QuerableProps): this
+  private get(arg0: string | QuerableProps, arg1?: QuerableProps): this {
     let newSubject
     if (typeof arg0 === "string") {
       const alias = arg0
@@ -79,7 +65,9 @@ class ConditionSubjects {
           : getFlag(this, "subject")
 
       if (!isParent(parent)) {
-        throw new Error(`get(props) | current subject is not a parent`)
+        throw new Error(
+          `get(props) | current subject is not a parent: "${typeof parent}" = ${parent}`
+        )
       }
 
       newSubject = parent.query(arg0)
@@ -116,18 +104,24 @@ class ConditionSubjects {
 
   /**
    * Remembers the subject with a given alias
-   * @example ```
-   * con.get({name: 'deck'}).as('deck')
-   * ```
+   * @example
+   * con.get({ name: 'deck' }).as('deck')
    */
-  as(refName: string | symbol): void {
+  as(refName: string): void {
     ref(this, refName, getFlag(this, "subject"))
 
     resetSubject(this)
   }
 
   /**
-   * @yields children of current subject
+   * @returns if there exists a reference to `subject` by the name of `refName`
+   */
+  hasReferenceTo(refName: string): boolean {
+    return Boolean(ref(this, refName))
+  }
+
+  /**
+   * @yields children of current subject (an array)
    */
   get children(): this {
     const children = getFlag(this, "subject").getChildren()
@@ -206,7 +200,7 @@ class ConditionSubjects {
   /**
    * @yields {number} `length` property of a collection (or string)
    */
-  get length(): this {
+  get itsLength(): this {
     const subject = getFlag(this, "subject")
 
     if (subject.length === undefined) {
@@ -307,6 +301,19 @@ class ConditionSubjects {
 
     const count = subject.countUnselectedChildren()
     setFlag(this, "subject", count)
+
+    return this
+  }
+
+  /**
+   * **REQUIRES** `"player"` initial subject
+   *
+   * Changes subject to owner of current entity
+   * @yields `player`
+   */
+  get owner(): this {
+    setFlag(this, "subject", getInitialSubject(this, "player").owner)
+    resetPropDig(this)
 
     return this
   }

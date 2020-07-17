@@ -13,8 +13,9 @@ export class NextPlayer extends Command {
     super()
   }
   async execute(state: State, room: Room<any>): Promise<void> {
-    if (!state.turnBased)
+    if (!state.turnBased) {
       throw new Error(`Can't use NextPlayer in non turn based game.`)
+    }
 
     const next = getNextPlayerIdx(state)
 
@@ -44,7 +45,7 @@ export class NextPlayer extends Command {
 
     room.botRunner.onPlayerTurnStarted(state.currentPlayer)
   }
-  async undo(state: State, room): Promise<void> {
+  async undo(state: State, room: Room<any>): Promise<void> {
     super.undo(state, room)
     state.currentPlayerIdx = this.lastIdx
   }
@@ -57,8 +58,9 @@ export class PreviousPlayer extends Command {
     super()
   }
   async execute(state: State, room: Room<any>): Promise<void> {
-    if (!state.turnBased)
+    if (!state.turnBased) {
       throw new Error(`Can't use PreviousPlayer in non turn based game.`)
+    }
 
     const previous = getPreviousPlayerIdx(state)
 
@@ -86,7 +88,7 @@ export class PreviousPlayer extends Command {
 
     room.botRunner.onPlayerTurnStarted(state.currentPlayer)
   }
-  async undo(state: State, room): Promise<void> {
+  async undo(state: State, room: Room<any>): Promise<void> {
     super.undo(state, room)
     state.currentPlayerIdx = this.lastIdx
   }

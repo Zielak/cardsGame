@@ -6,8 +6,7 @@ export { canBeChild } from "./annotations/canBeChild"
 export { containsChildren } from "./annotations/containsChildren"
 export { defineTypes, type } from "./annotations/type"
 
-export * from "./bots/goal"
-export * from "./bots/action"
+export * from "./bots/botNeuron"
 
 import * as commands from "./commands"
 
@@ -21,8 +20,12 @@ export * from "./state/helpers"
 
 export * from "./actionTemplate"
 
-export { InteractionConditions } from "./conditions/interaction"
-export { BotConditions } from "./conditions/bot"
+export { Conditions } from "./conditions"
+export { getFlag, setFlag } from "./conditions/utils"
+export { BotConditions, EntityConditions } from "./bots/conditions"
+export { ClientEventConditions } from "./interaction"
+
+export { testAction } from "./interaction"
 
 export { Player, ServerPlayerEvent } from "./players/player"
 export { Bot } from "./players/bot"

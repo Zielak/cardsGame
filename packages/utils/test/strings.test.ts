@@ -1,4 +1,4 @@
-import { trim, camelCase } from "../src/strings"
+import { camelCase, sentenceCase, trim } from "../src/strings"
 
 describe("trim", () => {
   test(`default arguments`, () => {
@@ -20,7 +20,23 @@ describe("trim", () => {
 })
 
 describe("camelCase", () => {
-  test(`doesn't fail on empty string`, () => {
-    expect(camelCase).not.toThrow()
+  test("produces correctly", () => {
+    expect(camelCase("foo")).toBe("foo")
+    expect(camelCase("foo bar")).toBe("fooBar")
+    expect(camelCase("foo bar baz QUX")).toBe("fooBarBazQUX")
+  })
+  test(`doesn't throw on empty string`, () => {
+    expect(() => camelCase()).not.toThrow()
+  })
+})
+
+describe("sentenceCase", () => {
+  test("produces correctly", () => {
+    expect(sentenceCase("foo")).toBe("Foo")
+    expect(sentenceCase("foo bar")).toBe("Foo Bar")
+    expect(sentenceCase("foo bar baz QUX")).toBe("Foo Bar Baz QUX")
+  })
+  test(`doesn't throw on empty string`, () => {
+    expect(() => sentenceCase()).not.toThrow()
   })
 })

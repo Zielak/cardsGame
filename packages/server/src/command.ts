@@ -9,8 +9,8 @@ export interface Command {
 }
 
 export class Command {
-  protected _subCommands: Command[]
-  private _name: string
+  protected _subCommands: Command[] = []
+  private readonly _name: string
   get name(): string {
     return this._name
   }
@@ -58,9 +58,6 @@ export class Command {
     room: Room<any>,
     command: Command
   ): Promise<void> {
-    if (!this._subCommands) {
-      this._subCommands = []
-    }
     this._subCommands.push(command)
     await command.execute(state, room)
   }
@@ -68,7 +65,7 @@ export class Command {
 
 export type Targets<T> = T | T[] | (() => T | T[])
 export class TargetsHolder<T> {
-  constructor(private value: Targets<T>) {}
+  constructor(private readonly value: Targets<T>) {}
   // TODO: These could be "value" getters?
   get(): T[] {
     const targets =
@@ -80,7 +77,7 @@ export class TargetsHolder<T> {
 
 export type Target<T> = T | (() => T)
 export class TargetHolder<T> {
-  constructor(private value: Target<T>) {}
+  constructor(private readonly value: Target<T>) {}
   // TODO: These could be "value" getters?
   get(): T {
     return typeof this.value === "function"

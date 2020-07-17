@@ -19,7 +19,7 @@ export class CommandsManager<S extends State> {
 
   possibleActions: ActionsSet<S>
 
-  constructor(private room: Room<S>) {
+  constructor(private readonly room: Room<S>) {
     this.possibleActions = room.possibleActions
   }
 
@@ -67,7 +67,7 @@ export class CommandsManager<S extends State> {
       )
     }
 
-    return this.executeCommand(state, actions[0].getCommand(state, event))
+    return this.executeCommand(state, actions[0].command(state, event))
   }
 
   async executeCommand(state: S, command: Command): Promise<boolean> {

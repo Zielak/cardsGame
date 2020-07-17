@@ -12,7 +12,7 @@ export const noop = (): void => {}
  * @param initial value to be passed through the pipeline
  */
 export const compose = (
-  value: any,
+  value: unknown,
   ...functions: ((...args) => any)[]
 ): any => {
   return functions.reduce((arg, fn) => {
@@ -58,7 +58,7 @@ export const isObject = (thing: unknown): boolean => {
   return true
 }
 
-export function applyMixins(derivedCtor: any, baseCtors: any[]): void {
+export function applyMixins(derivedCtor: AnyClass, baseCtors: any[]): void {
   baseCtors.forEach((baseCtor) => {
     Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
       Object.defineProperty(

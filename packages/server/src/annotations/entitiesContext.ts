@@ -12,7 +12,7 @@ export class EntitiesContext {
 
   registeredTypeDefinitions: Map<string, Map<string, DefinitionType>>
 
-  registeredChildren: typeof Entity[]
+  registeredChildren: AnyClass[]
   registeredParents: RegisteredParent[]
 
   constructor() {

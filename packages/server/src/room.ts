@@ -12,7 +12,7 @@ import {
 } from "@cardsgame/utils"
 
 import { ActionsSet } from "./actionTemplate"
-import { BotGoalsSet } from "./bots/goal"
+import { BotNeuron } from "./bots/botNeuron"
 import { BotRunner } from "./bots/runner"
 import { Command } from "./command"
 import { Sequence } from "./commands"
@@ -24,7 +24,7 @@ import { hasLabel, LabelTrait } from "./traits/label"
 import { populatePlayerEvent } from "./utils"
 
 export interface IRoom<S extends State> {
-  botActivities?: BotGoalsSet<S>
+  botActivities?: BotNeuron<S>[]
   canGameStart(): boolean
   onInitGame(options: any): void
   onStartGame(state: S): void | Command[]
@@ -42,7 +42,7 @@ export class Room<S extends State> extends colRoom<S> {
 
   possibleActions: ActionsSet<S>
 
-  botActivities: BotGoalsSet<S>
+  botActivities: BotNeuron<S>[]
   botClients: Bot[] = []
 
   /**
@@ -56,7 +56,7 @@ export class Room<S extends State> extends colRoom<S> {
     return this.constructor.name
   }
 
-  onCreate(options?: any): void {
+  onCreate(options?: Record<string, any>): void {
     logs.info(`Room:${this.name}`, "creating new room")
 
     if (!this.possibleActions) {
@@ -85,7 +85,7 @@ export class Room<S extends State> extends colRoom<S> {
    * Create and add new Bot player to clients list.
    * @returns clientID of newly created bot, if added successfully.
    */
-  protected addBot(botOptions: Omit<BotOptions, "clientID"> = {}): string {
+  protected addBot(botOptions: Omit<BotOptions, "clientID"> = {}): void {
     const { state } = this
 
     if (state.isGameStarted) {
@@ -99,17 +99,16 @@ export class Room<S extends State> extends colRoom<S> {
         clientID,
       })
       this.botClients.push(bot)
-      return clientID
     }
   }
 
   /**
    * Add human client or bot to `state.clients`
+   * @returns `false` is client is already there or if the game is not yet started
    */
   protected addClient(id: string): boolean {
     const { state } = this
 
-    // Add to `state.clients` only if the game is not yet started
     if (
       !state.isGameStarted &&
       map2Array(state.clients).every((clientID) => id !== clientID)
@@ -129,11 +128,11 @@ export class Room<S extends State> extends colRoom<S> {
 
   onJoin(newClient: Client): void {
     const added = this.addClient(newClient.id)
+    const statusString = added ? " and" : `, wasn't`
+
     logs.notice(
       "onJoin",
-      `client "${newClient.id}" joined, ${
-        added ? "and" : `wasn't`
-      } added to state.clients`
+      `client "${newClient.id}" joined${statusString} added to state.clients`
     )
   }
 
@@ -182,7 +181,7 @@ export class Room<S extends State> extends colRoom<S> {
 
     if (!newEvent.player) {
       logs.error("parseMessage", "You're not a player, get out!", event)
-      return
+      return false
     }
 
     debugLogMessage(newEvent)

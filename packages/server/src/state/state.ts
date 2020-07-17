@@ -12,7 +12,7 @@ import { ParentArrayTrait } from "../traits/parentArray"
 
 @containsChildren()
 @applyTraitsMixins([IdentityTrait, LabelTrait, ParentArrayTrait])
-export class State extends Entity<{}> {
+export class State extends Entity<Record<string, unknown>> {
   type = "state"
 
   @type("number") tableWidth = 60 // 60 cm
@@ -74,7 +74,7 @@ export class State extends Entity<{}> {
   /**
    * Map of every Entity in this state.
    */
-  private _allEntities = new Map<number, IdentityTrait>()
+  private readonly _allEntities = new Map<number, IdentityTrait>()
 
   constructor() {
     super(undefined)
@@ -97,7 +97,9 @@ export class State extends Entity<{}> {
       return
     }
 
-    const newID = ++this._lastID
+    this._lastID++
+    const newID = this._lastID
+
     Object.defineProperty(entity, "id", {
       configurable: false,
       writable: false,

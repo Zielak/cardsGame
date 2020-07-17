@@ -18,21 +18,21 @@ const command = new Command("dummyCommand")
 const actions: ActionTemplate<State>[] = [
   {
     name: "Action1",
-    interactions: () => [{ name: "one", type: "foo" }],
-    checkConditions: (con) => {},
-    getCommand: () => command,
+    interaction: () => [{ name: "one", type: "foo" }],
+    conditions: (con) => {},
+    command: () => command,
   },
   {
     name: "Action2",
-    interactions: () => [{ name: "two", type: "bar" }],
-    checkConditions: (con) => {},
-    getCommand: () => command,
+    interaction: () => [{ name: "two", type: "bar" }],
+    conditions: (con) => {},
+    command: () => command,
   },
   {
     name: "Action3",
-    interactions: () => [{ name: "three", type: "foo" }],
-    checkConditions: (con) => {},
-    getCommand: () => command,
+    interaction: () => [{ name: "three", type: "foo" }],
+    conditions: (con) => {},
+    command: () => command,
   },
 ]
 

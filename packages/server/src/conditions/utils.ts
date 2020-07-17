@@ -1,16 +1,13 @@
 type ConditionsFlag =
   | "state"
-  | "event"
-  | "player"
-  | "entity"
-  | "data"
   | "subject"
+  | "initialSubjects"
+  | "defaultSubject"
   | "propName"
   | "propParent"
   | "not"
   | "eitherLevel"
-  | "_constructor"
-  | "_constructorArguments"
+  | "_rootReference"
 
 export function getFlag(target, flagName: ConditionsFlag): any {
   if (!target._flags) {
@@ -26,25 +23,37 @@ export function setFlag(target, flagName: ConditionsFlag, value: any): void {
   target._flags.set(flagName, value)
 }
 
-export function ref(target, refName, value?): any {
+/**
+ * Get a reference to previously remembered `subject` by the name of `refName`.
+ * May be one of the `initialSubjects` or run-time, user-defined references.
+ */
+export function ref(target, refName: string): any
+/**
+ * Remember a reference to current `subject` by the name `refName`
+ */
+export function ref(target, refName: string, value: any): void
+export function ref(target, refName: string, value?: any): any {
   if (!target._refs) {
     throw new Error(`ref | Incompatible target.`)
   }
   if (arguments.length === 3) {
+    // SET
+    if (refName in getFlag(target, "initialSubjects")) {
+      throw new Error(
+        `Subject named "${refName}" already exists in "initialSubjects". Choose different name.`
+      )
+    }
     target._refs.set(refName, value)
-  } else {
-    return target._refs.get(refName)
   }
+  // GET
+  if (refName in getFlag(target, "initialSubjects")) {
+    return getFlag(target, "initialSubjects")[refName]
+  }
+  return target._refs.get(refName)
 }
 
-export const cloneConditions = <C>(con: any): C => {
-  const Constr = getFlag(con, "_constructor")
-  const args = getFlag(con, "_constructorArguments")
-  const newCon = new Constr(...args)
-
-  con._flags.forEach((value, key) => newCon._flags.set(key, value))
-
-  return newCon
+export function getInitialSubject(target, refName): any {
+  return getFlag(target, "initialSubjects")[refName]
 }
 
 export const resetPropDig = (target): void => {
@@ -57,17 +66,17 @@ export const resetNegation = (target): void => {
 }
 
 /**
- * reset subject back to its default value - the State
+ * Reset subject back to its default value
  */
 export const resetSubject = (target): void => {
-  setFlag(target, "subject", getFlag(target, "state"))
+  setFlag(target, "subject", getFlag(target, "defaultSubject"))
 }
 
 export const postAssertion = (target): void => {
-  if (target._propParent) {
+  if (getFlag(target, "propParent")) {
     // Reset subject to the object, if we were
     // just asserting its key value
-    setFlag(target, "subject", target._propParent)
+    setFlag(target, "subject", getFlag(target, "propParent"))
     resetPropDig(target)
   }
 }

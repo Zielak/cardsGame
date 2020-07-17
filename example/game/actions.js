@@ -1,8 +1,4 @@
-const {
-  commands,
-  InteractionConditions,
-  getPlayersIndex,
-} = require("@cardsgame/server")
+const { commands, Conditions, getPlayersIndex } = require("@cardsgame/server")
 
 const { WarState } = require("./state")
 const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
@@ -32,19 +28,17 @@ const PlayCardWithAnte = (state, event) => {
 const PickCard = {
   name: "PickCard",
   description: `Player picks a card from his deck, while other didn't choose yet`,
-  interactions: () => [
+  interactions: (player) => [
     {
       type: "deck",
       name: "playersDeck",
+      owner: player,
     },
   ],
   /**
-   * @param {InteractionConditions<WarState>} con
+   * @param {Conditions<WarState>} con
    */
   checkConditions: (con) => {
-    // Player is interacting with his own Deck
-    con.playerOwnsThisEntity()
-
     // Both players didn't chose their cards yet
     con.state.its("playersPlayed").every((con) => {
       con.equals(false)
@@ -60,15 +54,13 @@ const PickCardLast = {
     {
       type: "deck",
       name: "playersDeck",
+      owner: player,
     },
   ],
   /**
-   * @param {InteractionConditions<WarState>} con
+   * @param {Conditions<WarState>} con
    */
   checkConditions: (con) => {
-    // Player is interacting with his own Deck
-    con.playerOwnsThisEntity()
-
     // Get the index of currently acting player
     const currentPlayerIdx = getPlayersIndex(con.getState(), con.getPlayer())
 

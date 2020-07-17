@@ -25,10 +25,10 @@ LabelTrait["trait"] = function constructorLabelTrait(
   this.type = def(options.type, this.type, "entity")
 }
 
-export function hasLabel(entity): entity is LabelTrait {
+export function hasLabel(entity: unknown): entity is LabelTrait {
   return (
     !!entity &&
-    typeof entity.name === "string" &&
-    typeof entity.type === "string"
+    typeof entity["name"] === "string" &&
+    typeof entity["type"] === "string"
   )
 }

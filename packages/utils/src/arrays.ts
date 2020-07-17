@@ -43,7 +43,7 @@ export const sortAlphaNumerically = (a: string, b: string): number => {
 /**
  * Returns new array with items shuffled around.
  */
-export const shuffle = (array): any[] => {
+export const shuffle = (array: any[]): any[] => {
   const res = [...array]
   for (let i = res.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))

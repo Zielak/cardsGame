@@ -15,13 +15,13 @@ import {
   sortByIdx,
 } from "./parent"
 
-export function isParentMap(entity: any): entity is ParentMapTrait {
+export function isParentMap(entity: unknown): entity is ParentMapTrait {
   return (
     typeof entity == "object" &&
     typeof (entity as ParentTrait).query !== "undefined" &&
     typeof (entity as ParentTrait).getChildren !== "undefined" &&
     "maxChildren" in entity &&
-    typeof entity.maxChildren === "number"
+    typeof entity["maxChildren"] === "number"
   )
 }
 
@@ -47,9 +47,6 @@ export class ParentMapTrait implements ParentTrait {
   removeChildAt(idx: number): boolean {
     // ------ check
 
-    // if (idx < 0)
-    //   throw new Error(`removeChildAt(): idx must be >= 0, but is ${idx}`)
-
     const child: ChildTrait = this.getChild(idx)
     if (!child) {
       logs.error("removeChildAt", `getChild - I don't have ${idx} child?`)
@@ -58,7 +55,7 @@ export class ParentMapTrait implements ParentTrait {
 
     // ------ remove
 
-    const targetArrayName = "children" + this.childrenPointers.get(child)
+    const targetArrayName = `children${this.childrenPointers.get(child)}`
 
     const targetArray: ArraySchema = this[targetArrayName]
 
@@ -103,7 +100,9 @@ export class ParentMapTrait implements ParentTrait {
 
       for (let i = target - 1; i >= 0; i--) {
         const child = this.getChild(i)
-        if (!child) continue
+        if (!child) {
+          continue
+        }
         const oldIdx = child.idx
         child.idx += 1
         executeHook.call(this, "childIndexUpdated", oldIdx, child.idx)
@@ -139,7 +138,7 @@ export class ParentMapTrait implements ParentTrait {
     entity.parent = this
 
     const con = getKnownConstructor(entity)
-    const targetArray = this["children" + con.name] as ArraySchema<ChildTrait>
+    const targetArray = this[`children${con.name}`] as ArraySchema<ChildTrait>
     targetArray.push(entity)
 
     this.childrenPointers.set(entity, con.name)
@@ -279,6 +278,8 @@ export class ParentMapTrait implements ParentTrait {
         return right
       }
     }
+    // I don't know
+    return -1
   }
 
   isIndexOutOfBounds(index: number): boolean {
