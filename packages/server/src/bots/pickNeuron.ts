@@ -80,11 +80,9 @@ const grabAllInteractionEntities = <S extends State>(
 
   // results = results.reduce((all, query) => all.push(query) && all, new Array<QuerableProps>())
 
-  const entities = queries
+  return queries
     .map((query) => state.queryAll(query))
     .reduce((all, entities) => all.concat(entities), new Array<ChildTrait>())
-
-  return entities
 }
 
 const getNeuronsAvailableEvents = <S extends State>(
@@ -149,7 +147,7 @@ export const pickNeuron = <S extends State>(
 
   // 1. Filter all current level neurons by their own conditions
   logs.group("Conditions of Neurons")
-  let neurons = rootNeuron.children.filter(filterNeuronConditions(state, bot))
+  const neurons = rootNeuron.children.filter(filterNeuronConditions(state, bot))
   logs.groupEnd()
   if (neurons.length === 0) {
     logs.notice(`Discarded ALL neurons, abort.`)
@@ -158,12 +156,11 @@ export const pickNeuron = <S extends State>(
 
   // 2. Sort by their values
   logs.group("Values")
-  neurons = neurons
-    .sort((a, b) => b.value(state, bot) - a.value(state, bot))
-    .map((neuron) => {
-      logs.notice(`${neuron.name} $${neuron.value(state, bot)}`)
-      return neuron
-    })
+  neurons.sort((a, b) => b.value(state, bot) - a.value(state, bot))
+  neurons.forEach((neuron) => {
+    logs.notice(`${neuron.name} $${neuron.value(state, bot)}`)
+    return neuron
+  })
   logs.groupEnd()
 
   logs.group("Simulating events")

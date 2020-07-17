@@ -72,10 +72,10 @@ const syntaxHighlight = (arg: any) => {
   return arg
 }
 
-let indentLevel = 0
+let _indentLevel = 0
 
-function getIndent(): string {
-  return Array(indentLevel).fill("│ ").join("")
+function _getIndent(): string {
+  return Array(_indentLevel).fill("│ ").join("")
 }
 
 export let logs: {
@@ -104,7 +104,7 @@ if (isBrowser) {
   logs = {
     verbose: function (...args: any[]) {
       console.debug.apply(console, [
-        getIndent(),
+        _getIndent(),
         `\t`,
         ...args.map((arg) => chalk.gray(arg)),
       ])
@@ -112,42 +112,42 @@ if (isBrowser) {
     notice: function (first, ...args: any[]) {
       if (args.length > 0) {
         console.log.apply(console, [
-          getIndent(),
+          _getIndent(),
           `${first}:`,
           ...args.map(syntaxHighlight),
         ])
       } else {
-        console.log.call(console, chalk.gray(getIndent() + first))
+        console.log.call(console, chalk.gray(_getIndent() + first))
       }
     },
     info: function (first, ...args: any[]) {
       console.info.apply(console, [
-        getIndent() + chalk.bgBlue.black(` ${first} `),
+        _getIndent() + chalk.bgBlue.black(` ${first} `),
         ...args.map(syntaxHighlight),
       ])
     },
     warn: function (first, ...args: any[]) {
       console.warn.apply(console, [
-        getIndent() + chalk.bgYellow.black(` ${first} `),
+        _getIndent() + chalk.bgYellow.black(` ${first} `),
         ...args.map(syntaxHighlight),
       ])
     },
     error: function (first, ...args: any[]) {
       console.error.apply(console, [
-        getIndent() + chalk.bgRed(` ${first} `),
+        _getIndent() + chalk.bgRed(` ${first} `),
         ...args.map(syntaxHighlight),
       ])
     },
     group: function (first, ...args: any[]) {
       logs.notice(`┍━${first}`, ...args)
-      indentLevel++
+      _indentLevel++
     },
     groupCollapsed: function (first, ...args: any[]) {
       logs.notice(`┍━${first}`, ...args)
-      indentLevel++
+      _indentLevel++
     },
     groupEnd: function (first = "────────────", ...args: any[]) {
-      indentLevel = Math.max(--indentLevel, 0)
+      _indentLevel = Math.max(--_indentLevel, 0)
       logs.notice(`┕━${first}`, ...args)
     },
   }
