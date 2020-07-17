@@ -77,7 +77,7 @@ export const postAssertion = (target): void => {
   if (getFlag(target, "propParent")) {
     // Reset subject to the object, if we were
     // just asserting its key value
-    setFlag(target, "subject", target._propParent)
+    setFlag(target, "subject", getFlag(target, "propParent"))
     resetPropDig(target)
   }
 }

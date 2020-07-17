@@ -28,7 +28,7 @@ LabelTrait["trait"] = function constructorLabelTrait(
 export function hasLabel(entity: unknown): entity is LabelTrait {
   return (
     !!entity &&
-    typeof entity.name === "string" &&
-    typeof entity.type === "string"
+    typeof entity["name"] === "string" &&
+    typeof entity["type"] === "string"
   )
 }

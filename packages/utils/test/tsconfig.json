@@ -2,6 +2,8 @@
   "extends": "../../../tsconfig.test.json",
   "compilerOptions": {
     "experimentalDecorators": true,
-    "downlevelIteration": true
+    "lib": ["es6", "es2016", "DOM"],
+    "downlevelIteration": true,
+    "types": ["@cardsgame/types", "jest", "node"]
   }
 }

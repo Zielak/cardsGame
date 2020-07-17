@@ -36,7 +36,7 @@ export interface ParentTrait {
 export const hasChildren = (entity): boolean =>
   isParent(entity) ? entity.countChildren() > 0 : false
 
-export const getKnownConstructor = (entity: ChildTrait): typeof Entity =>
+export const getKnownConstructor = (entity: ChildTrait): AnyClass =>
   globalEntitiesContext.registeredChildren.find((con) => entity instanceof con)
 
 /**
