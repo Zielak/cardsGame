@@ -1,23 +1,40 @@
 # Bots
 
-A bot player ideally would need two things to make a decision:
+Bots, just like human players, can't break the rules defined by `ActionTemplate`s. They can't make decisions fully autonomously, they need your guidance for each game.
 
-- access to the game state - list of players, their items and any other items in play
-- list of all possible moves it can make
+## Setup in Room
 
-In theory we could train some AI system to make its best decision based on just that.
+Define `botActivities` field in your `Room` class.
 
-Here I settled on a solution similar to **Utility AI**, which involves scoring each possible/legal move and executing an action with highest calculated value.
+> PROTIP: Ideally you could have this array extracted in a separate folder with all "bot-related" things and import the array here
 
-[Action Templates](./actionTemplates.md) gives bots a list of **all possible actions**. This by its own may not sometimes be ideal. For example: in game Makao, a single action describes "selecting a single card from player's hand". It doesn't progress the player in any way, a player then needs to finalize his choice by clicking main pile of cards OR by selecting more cards of the same kind.
+```typescript
+// bots/index.ts
+// ...
+export const allBotGoals: BotNeuron<MyGameState> = [PlayCardGoal, DrawCardGoal]
 
-## Bot guidance
+// index.ts
+import { allBotGoals } from "./bots/index"
 
-It should include
+class MyGame extends Room<MyGameState> {
+  botActivities = allBotGoals
+}
+```
 
-- when should the bot react (in some games players may interrupt each other)
-- what are the possible scenarios to take
+## How bots take action
 
-## Bot players
+Bots will asked to decide on their goals at many events:
 
-There's no other special class to handle bot player. It's just `Player` with it's `clientID` in different format (?good idea?)
+- new round starts
+- bot's turn just started
+- any message sent to the room
+
+This broad spectrum enables bots to take actions not only during their own turns, but also try interrupting other players if the game is designed as non-turn-based.
+
+Each neuron will first be checked if it's possible to run by evaluating its own "conditions". Then, each neuron is sorted by the results of their "value" functions. Lastly, in order from _most valuable_, neurons will be simulated to execute its assigned `ActionTemplate` (for example, by _clicking_ all related cards).
+
+Neuron which was possible to simulate will be sent to the Room with prepared `event`, the same way human players send events to the Room. This ensures bots follow the same rules human players do.
+
+## BotNeuron
+
+A Neuron must either be assigned with an `ActionTemplate` or be a parent for other "child" neurons. This allows for grouping complex, multi-step interactions within one Neuron, for example: click to select card -> click the pile to play that card -> answer UI popup.

@@ -1,6 +1,6 @@
 # Development
 
-Install external dependencies in all packages (root project and all sub packages), and link the rest together with lerna.
+Install external dependencies in all packages (root project and all sub packages), and link the rest together with lerna:
 
 ```
 npm install

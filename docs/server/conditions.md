@@ -9,8 +9,8 @@ Conditions are mainly used in [Action Templates](./actionTemplates.md#checkCondi
 With each statement you're going to check if _something_ matches your expectations/game rules. Each statement has its **subject**, which by default is the game state itself. You can change current **subject** at any time, to check many things in the game.
 
 ```typescript
-con.state
-con.player.its("name").is.equal("Testing")
+con("player").its("name").equals("Bob")
+con({ type: "deck" }).top.its("rank").is.oneOf(["S", "C"])
 ```
 
 Below properties and methods will change current subject to be tested.
@@ -60,11 +60,10 @@ Changes subject to current subjects key.
 
 ```typescript
 // On state
-con.state.its("round").above(10)
-con.its("round").above(10)
+con().its("round").above(10)
 
 // On an entity
-con.get({ type: "deck" }).its("angle").equals(90)
+con({ type: "deck" }).its("angle").equals(90)
 
 // Or anything else
 con

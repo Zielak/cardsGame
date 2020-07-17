@@ -15,12 +15,12 @@ const TakeOneCard: ActionTemplate<MyGameState> = {
     },
   ],
 
-  checkConditions: (con) => {
+  conditions: (con) => {
     con.is.playersTurn
   },
 
-  getCommand: (state: MyGameState, event: ServerPlayerEvent) => {
-    return ChangeParent(
+  getCommand: (state, event) => {
+    return commands.ChangeParent(
       () => state.deck.getTop(),
       state.query<Hand>({ owner: event.player })
     )
@@ -28,83 +28,97 @@ const TakeOneCard: ActionTemplate<MyGameState> = {
 }
 ```
 
-> NOTE: `MyGameState` here would refer to your game's `State` class.
+> NOTE: `MyGameState` here would refer to the game's own `State` class.
 
 `name` and `description` are simply just that.
 
 ## interactions
 
-_With what elements is this action related to?_
+Interactions definition may relate to player interacting with an in-game object, or sending a custom event.
 
-Describe what kind of elements relate to this actions. Don't mind about player's event and ownerships here. This is just the first place to quickly filter out unwanted actions.
+### A) _Player interacts with a game object_
 
-Return an array of `InteractionDefinition` objects. In each object describe either an entity, of which you want to capture an interaction, or provide a `command` name.
+Describe what kind of elements relate to this actions by any of their props. This is just the first place to quickly filter out unrelated interactions. Here you would define `interactions` as a function which returns an array of `QuerableProps`.
 
-An entity can be described by any of its props. You can also describe `parent` of each entity the same way.
+Think of `QuerableProps` as a search query.
 
 ```typescript
-// Interaction with any deck
-return [{ type: "deck" }]
+// Try executing this action when player
+// taps any deck named "mainDeck"
+interactions: () => [{ type: "deck", name: "mainDeck" }]
 
-// Any deck named 'mainDeck'
-return [{ type: "deck", name: "mainDeck" }]
-
-// Any classic card, sitting in container named 'playersHand'
-return [
+// Any classic card,
+// of suit either Hearth or Spades,
+// sitting inside a container named "playersHand"
+interactions: () => [
   {
     type: "classicCard",
+    suit: ["H", "S"],
     parent: {
       name: "playersHand",
     },
   },
 ]
+```
 
-// Command "passTurn", most likely invoked by clicking a button.
-return [{ command: "passTurn" }]
+This function will also be provided with the `Player` - reference to the currently interacting player. Use that to quickly query for ownership.
 
-// It's an array, so you can provide multiple possibilities:
-// Either click of a button, or click on a pile
-return [
+```typescript
+// Any deck which belongs to interacting player
+interactions: (player: Player) => [
   {
-    command: "discard",
-  },
-  {
-    type: "pile",
-    name: "mainPile",
+    type: "deck",
+    owner: player,
   },
 ]
 ```
 
-> NOTE: A single `InteractionDefinition` is either an object of [`QuerableProps`](./types.md#QuerableProps) type or an object describing a command: `{ command: "commandName" }`.
+// TODO: link that somewhere?
+Read the full description of `QuerableProps`.
 
-## checkConditions
+### B) _Player is sending a custom event_
+
+Custom event may relate to user clicking some UI button, but it's completely up to you. In `interactions` field provide the name of desired event.
+
+```typescript
+interactions: "passTurn"
+```
+
+Such events may also come with some details in `data` field. That can be asserted in the next step: "conditions".
+
+## conditions
 
 _Is players intention legal?_
 
 Use [`conditions`](./conditions.md), first and only argument of this function, to define a set of rules for this action. If one of these rules fail, the action will be ignored.
 
-[`conditions`](./conditions.md) object has a reference to player's event and current game's state. You can use its pre-defined methods and properties to construct easily readable assertions.
+[`conditions`](./conditions.md) object has a reference to the player, their whole event object and current game's state. You can use its API to construct easily readable assertions.
 
 ```typescript
+// Example for card interaction
 // You can name it `con` for short.
 checkConditions: (con) => {
-  con.is.playersTurn
+  con().itsPlayersTurn()
 
   // Grab current player's `hand` and remember it
   // under alias "chosenCards"
-  con
-    .get({
-      type: "hand",
-      parent: {
-        owner: con.getPlayer(),
-        type: "container",
-      },
-    })
-    .as("chosenCards")
+  con({
+    type: "hand",
+    parent: {
+      owner: con.getPlayer(),
+      type: "container",
+    },
+  }).as("chosenCards")
 
   // Change subject to previously remembered "chosenCards"
   // and ensure its got nothing inside.
-  con.get("chosenCards").children.not.empty()
+  con("chosenCards").children.not.empty()
+}
+
+// Example of custom event
+checkConditions: (con) => {
+  con().itsPlayersTurn()
+  con("data").its("suit").equals("S")
 }
 ```
 
@@ -112,4 +126,23 @@ If any of these conditions fail, the whole action is disregarded, and internal C
 
 [Read more about Conditions](./conditions.md).
 
-## getCommand
+## command
+
+Construct and return an actual `Command` to execute.
+
+```typescript
+command: (state, event) => {
+  const source = state.query<Hand>({
+    type: "hand",
+    owner: event.player,
+  })
+  const cards = source.getSelectedChildren<ClassicCard>()
+  const pile = state.query<Pile>({ type: "pile" })
+
+  return new commands.Sequence("PlayCards", [
+    new commands.ChangeParent(cards, pile),
+    new commands.FaceUp(cards),
+    new commands.NextPlayer(),
+  ])
+},
+```
