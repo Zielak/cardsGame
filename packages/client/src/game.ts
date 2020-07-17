@@ -35,9 +35,9 @@ export class Game {
       port: def(options.wss && options.wss.port, 2657),
     }
 
-    this.client = new Client(
-      `wss://${this.wss.host}${this.wss.port ? ":" + this.wss.port : ""}`
-    )
+    const portString = this.wss.port ? `:${this.wss.port}` : ""
+
+    this.client = new Client(`wss://${this.wss.host}${portString}`)
   }
 
   get sessionID(): string {

@@ -6,7 +6,9 @@ export const map2Array = <T>(map: { [key: string]: T | any }): T[] =>
 export const mapGetIdx = (map: Record<string, any>, entry: unknown): number => {
   const max = Object.keys(map).length
   for (let i = 0; i < max; i++) {
-    if (map[i] === entry) return i
+    if (map[i] === entry) {
+      return i
+    }
   }
   return -1
 }
@@ -25,7 +27,9 @@ export const mapRemoveIdx = (
   map: Record<string, any>,
   idx: number
 ): boolean => {
-  if (typeof map[idx] === "undefined") return false
+  if (typeof map[idx] === "undefined") {
+    return false
+  }
   const max = Object.keys(map).length - 1
   for (let i = idx + 1; i <= max; i++) {
     map[i - 1] = map[i]
@@ -40,6 +44,8 @@ export const mapRemoveEntry = (
   entry: unknown
 ): boolean => {
   const idx = mapGetIdx(map, entry)
-  if (idx === -1) return false
+  if (idx === -1) {
+    return false
+  }
   return mapRemoveIdx(map, idx)
 }

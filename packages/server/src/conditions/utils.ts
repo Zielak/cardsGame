@@ -44,13 +44,12 @@ export function ref(target, refName: string, value?: any): any {
       )
     }
     target._refs.set(refName, value)
-  } else {
-    // GET
-    if (refName in getFlag(target, "initialSubjects")) {
-      return getFlag(target, "initialSubjects")[refName]
-    }
-    return target._refs.get(refName)
   }
+  // GET
+  if (refName in getFlag(target, "initialSubjects")) {
+    return getFlag(target, "initialSubjects")[refName]
+  }
+  return target._refs.get(refName)
 }
 
 export function getInitialSubject(target, refName): any {

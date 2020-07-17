@@ -33,7 +33,7 @@ export class Entity<T> extends Schema {
     this._executeHook("postConstructor", state, options)
   }
 
-  private _executeHook = executeHook
+  private readonly _executeHook = executeHook
 
   create(state: State, options: Partial<T> = {}): void {
     logs.warn(

@@ -34,14 +34,6 @@ export class ParentArrayTrait implements ParentTrait {
   removeChildAt(idx: number): boolean {
     // ------ check
 
-    // if (idx < 0)
-    //   throw new Error(`removeChildAt(): idx must be >= 0, but is ${idx}`)
-    // if (idx > this.childrenPointers.length - 1) {
-    //   throw new Error(
-    //     `removeChildAt(): Tried to remove idx out of bounds:
-    //   ${idx}/${this.childrenPointers.length}`
-    //   )
-    // }
     const child: ChildTrait = this.getChild(idx)
     if (!child) {
       logs.error("removeChildAt", `getChild - I don't have ${idx} child?`)
@@ -50,7 +42,7 @@ export class ParentArrayTrait implements ParentTrait {
 
     // ------ remove
 
-    const targetArrayName = "children" + this.childrenPointers[idx]
+    const targetArrayName = `children${this.childrenPointers[idx]}`
 
     const targetArray: ArraySchema = this[targetArrayName]
 
@@ -84,7 +76,7 @@ export class ParentArrayTrait implements ParentTrait {
     }
 
     const con = getKnownConstructor(entity)
-    const targetArray = this["children" + con.name] as ArraySchema<ChildTrait>
+    const targetArray = this[`children${con.name}`] as ArraySchema<ChildTrait>
 
     if (arg1 === true) {
       // Prepend = true
@@ -173,10 +165,6 @@ export class ParentArrayTrait implements ParentTrait {
     // 3. plop entry to desired target place
     child.idx = to
 
-    // const entries = getChildren(parent).map(child => chalk.yellow(child.name))
-
-    // logs.verbose(`moveChildTo, [`, entries.join(", "), `]`)
-    // logs.verbose(`moveChildTo, done, now updatePointers()`)
     this.updateIndexes()
   }
 
@@ -207,7 +195,7 @@ export class ParentArrayTrait implements ParentTrait {
    * Get one direct child of `parent` by its `idx`
    */
   getChild<T extends ChildTrait>(idx: number): T {
-    const targetArray = this["children" + this.childrenPointers[idx]]
+    const targetArray = this[`children${this.childrenPointers[idx]}`]
     return targetArray && targetArray.find(pickByIdx(idx))
   }
 

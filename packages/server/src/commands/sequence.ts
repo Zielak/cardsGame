@@ -10,7 +10,7 @@ export class Sequence extends Command {
    * @param subCommands
    */
   constructor(name: string, subCommands: Command[]) {
-    super(name + "Sequence")
+    super(`${name}Sequence`)
     this._subCommands = subCommands
       ? subCommands.filter((c) => typeof c === "object")
       : []
@@ -24,11 +24,8 @@ export class Sequence extends Command {
    */
   async execute(state: State, room: Room<any>): Promise<void> {
     logs.group(`Commands group: ${this.name}._executeSubCommands()`)
-    for (let i = 0; i < this._subCommands.length; i++) {
-      const command = this._subCommands[i]
-
+    for (const command of this._subCommands) {
       logs.notice(`- ${command.name}: executing`)
-
       await command.execute(state, room)
     }
     logs.groupEnd()

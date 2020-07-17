@@ -127,6 +127,7 @@ const getNeuronsAvailableEvents = <S extends State>(
 
     return [{ command: neuron.action.interaction, data }]
   }
+  throw new Error(`Somehow got "action" in unexpected format`)
 }
 
 export type ChosenBotNeuronResult<S extends State> = {
@@ -151,7 +152,7 @@ export const pickNeuron = <S extends State>(
   logs.groupEnd()
   if (neurons.length === 0) {
     logs.notice(`Discarded ALL neurons, abort.`)
-    return
+    return undefined
   }
 
   // 2. Sort by their values
@@ -175,9 +176,8 @@ export const pickNeuron = <S extends State>(
 
       if (events.length > 0) {
         return { neuron, event: events[0] } as ChosenBotNeuronResult<S>
-      } else {
-        return
       }
+      return undefined
     })
     // 5. Filter our any failed attempts
     .filter((v) => v)

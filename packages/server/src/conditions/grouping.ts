@@ -14,7 +14,9 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
    * Each item is automatically set as the `subject` within each iteration.
    * After all iterations are done, the `subject` will be reset back to what it originally was.
    *
-   * @param predicate a function in style of native `array.forEach`, but first argument is new Conditions instance. This `con` will have its own subject set to each item of current subject.
+   * @param predicate a function in style of native `array.forEach`,
+   * but first argument is new Conditions instance.
+   * This `con` will have its own subject set to each item of current subject.
    * @example
    * con.get("chosenCards").children.every((con, item, index, array) => {
    *   con.its("rank").oneOf(["2", "3"])
@@ -53,7 +55,9 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
    * Each item is automatically set as the `subject` within each iteration.
    * After all iterations are done, the `subject` will be reset back to what it originally was.
    *
-   * @param predicate a function in style of native `array.some`, but first argument is new Conditions instance. This `con` will have its own subject set to each item of current subject.
+   * @param predicate a function in style of native `array.some`,
+   * but first argument is new Conditions instance.
+   * This `con` will have its own subject set to each item of current subject.
    * @example
    * con.get("chosenCards").children.some((con, item, index, array) => {
    *   con.its("rank").matchesPropOf("pileTop")
@@ -176,7 +180,9 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
         result,
       })
 
-      if (result) break
+      if (result) {
+        break
+      }
 
       idx++
     }
@@ -184,11 +190,10 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
     setFlag(this, "eitherLevel", eitherLevel - 1)
 
     if (results.every(({ result }) => result === false)) {
+      const quotedGroupName = groupName ? ` "${groupName}"` : ""
       throw new Error(
         [
-          `either${
-            groupName ? ` "${groupName}"` : ""
-          } | none of the tests passed:`,
+          `either${quotedGroupName} | none of the tests passed:`,
           ...results.map(({ error }) => error),
         ].join(`\n`)
       )

@@ -10,7 +10,7 @@ import { pickNeuron } from "./pickNeuron"
 export class BotRunner<S extends State> {
   neuronTree: BotNeuron<S>
 
-  constructor(private room: Room<S>) {
+  constructor(private readonly room: Room<S>) {
     this.neuronTree = {
       name: "Root",
       value: (): number => 0,

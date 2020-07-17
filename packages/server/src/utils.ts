@@ -6,11 +6,17 @@ import { State } from "./state/state"
 import { isChild } from "./traits/child"
 
 const sanitizeIdxPath = (value: unknown): number => {
-  if (typeof value === "number") return value
+  if (typeof value === "number") {
+    return value
+  }
   if (typeof value === "string") {
     const num = parseInt(value)
-    // Notice me, I'm highly improbable number, you did sumting wong!
-    return num !== num ? 999 : parseInt(value)
+    if (num !== num) {
+      throw new Error(
+        `sanitizeIdxPath | received "${value}", parsed to "${num}".`
+      )
+    }
+    return num
   }
   return 998
 }

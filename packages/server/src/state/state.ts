@@ -74,7 +74,7 @@ export class State extends Entity<Record<string, unknown>> {
   /**
    * Map of every Entity in this state.
    */
-  private _allEntities = new Map<number, IdentityTrait>()
+  private readonly _allEntities = new Map<number, IdentityTrait>()
 
   constructor() {
     super(undefined)
@@ -97,7 +97,9 @@ export class State extends Entity<Record<string, unknown>> {
       return
     }
 
-    const newID = ++this._lastID
+    this._lastID++
+    const newID = this._lastID
+
     Object.defineProperty(entity, "id", {
       configurable: false,
       writable: false,

@@ -13,8 +13,9 @@ export class NextPlayer extends Command {
     super()
   }
   async execute(state: State, room: Room<any>): Promise<void> {
-    if (!state.turnBased)
+    if (!state.turnBased) {
       throw new Error(`Can't use NextPlayer in non turn based game.`)
+    }
 
     const next = getNextPlayerIdx(state)
 
@@ -57,8 +58,9 @@ export class PreviousPlayer extends Command {
     super()
   }
   async execute(state: State, room: Room<any>): Promise<void> {
-    if (!state.turnBased)
+    if (!state.turnBased) {
       throw new Error(`Can't use PreviousPlayer in non turn based game.`)
+    }
 
     const previous = getPreviousPlayerIdx(state)
 

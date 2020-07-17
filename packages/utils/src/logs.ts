@@ -55,12 +55,14 @@ const setLogLevel = (val: string): void => {
 const minifyEntity = ({ type, name }): string => `${type}:${name}`
 
 const syntaxHighlight = (arg: any) => {
-  if (IS_CHROME) return arg
+  if (IS_CHROME) {
+    return arg
+  }
   if (typeof arg === "string") {
     return chalk.gray(arg)
   }
   if (typeof arg === "number") {
-    return chalk.red.bold("" + arg)
+    return chalk.red.bold(arg.toString())
   }
   if (typeof arg === "boolean") {
     return chalk.green.bold(arg.toString())
@@ -147,7 +149,7 @@ if (isBrowser) {
       _indentLevel++
     },
     groupEnd: function (first = "────────────", ...args: any[]) {
-      _indentLevel = Math.max(--_indentLevel, 0)
+      _indentLevel = Math.max(_indentLevel - 1, 0)
       logs.notice(`┕━${first}`, ...args)
     },
   }
@@ -226,14 +228,17 @@ export interface Logs {
 }
 /**
  * Local logging utility
- * TODO: whoops, port it to server environment too!
  */
 type LogsOptions = {
   browserStyle?: string
   serverStyle?: Chalk.Chalk
 }
 export class Logs {
-  constructor(name: string, private enabled = false, options?: LogsOptions) {
+  constructor(
+    name: string,
+    private readonly enabled = false,
+    options?: LogsOptions
+  ) {
     if (isBrowser) {
       this.setupBrowserLogs(name, options.browserStyle)
     } else {
@@ -293,7 +298,7 @@ export class Logs {
         ? noop
         : function (...args: any[]) {
             console.debug.apply(console, [
-              style(getIndent() + `\t`),
+              style(`${getIndent()}\t`),
               ...args.map((arg) => chalk.gray(arg)),
             ])
           }
@@ -312,7 +317,7 @@ export class Logs {
     this["groupEnd"] = !this.enabled
       ? noop
       : function (first = "────────────", ...args: any[]) {
-          indentLevel = Math.max(--indentLevel, 0)
+          indentLevel = Math.max(indentLevel - 1, 0)
           notice(`┕━${first}`, ...args)
         }
   }
