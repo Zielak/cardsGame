@@ -32,10 +32,16 @@ export type ActionsSet<S extends State> = Set<ActionTemplate<S>>
 
 export interface EntitiesActionTemplate<S extends State>
   extends ActionTemplate<S> {
+  /**
+   * Function returning queries for associated entities.
+   */
   interaction: (player: Player) => QuerableProps[]
 }
 export interface EventActionTemplate<S extends State>
   extends ActionTemplate<S> {
+  /**
+   * A string for event type.
+   */
   interaction: string
 }
 

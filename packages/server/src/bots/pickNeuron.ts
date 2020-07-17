@@ -1,6 +1,9 @@
 import { chalk, Logs } from "@cardsgame/utils"
 
-import { isInteractionOfEntities } from "../actionTemplate"
+import {
+  isInteractionOfEntities,
+  isInteractionOfEvent,
+} from "../actionTemplate"
 import { filterActionsByConditions } from "../interaction"
 import { Bot } from "../players/bot"
 import { QuerableProps, queryRunner } from "../queryRunner"
@@ -10,7 +13,7 @@ import { populatePlayerEvent } from "../utils"
 import { BotNeuron } from "./botNeuron"
 import { BotConditions, EntityConditions } from "./conditions"
 
-const logs = new Logs("pickNeuron", true, { serverStyle: chalk.bgCyan })
+const logs = new Logs("pickNeuron", true, { serverStyle: chalk.bgGreen })
 
 /**
  * Considers only Neuron's own `conditions`
@@ -43,9 +46,9 @@ export const auxillaryEntitiesFilter = <S extends State>(
   { action, entitiesFilter }: BotNeuron<S>
 ) => (entity: ChildTrait): boolean => {
   if (!action || !isInteractionOfEntities(action)) {
-    return false
+    return true
   } else if (Array.isArray(entitiesFilter)) {
-    return queryRunner(entitiesFilter)(entity)
+    return entitiesFilter.some((query) => queryRunner(query)(entity))
   } else if (typeof entitiesFilter === "function") {
     const con = new EntityConditions<S>(state, { entity }, "entity")
     try {
@@ -65,15 +68,22 @@ const grabAllInteractionEntities = <S extends State>(
   const { action } = neuron
 
   if (!action || !isInteractionOfEntities(action)) {
+    logs.verbose(`not an action of entities`)
     return []
   }
 
   // Grab all entities from INTERACTIONS
-  return action
-    .interaction(bot)
-    .reduce((all, query) => all.push(query) && all, new Array<QuerableProps>())
+  const queries = action.interaction(bot)
+
+  logs.verbose(`has ${queries.length} QuerableProps`)
+
+  // results = results.reduce((all, query) => all.push(query) && all, new Array<QuerableProps>())
+
+  const entities = queries
     .map((query) => state.queryAll(query))
     .reduce((all, entities) => all.concat(entities), new Array<ChildTrait>())
+
+  return entities
 }
 
 const getNeuronsAvailableEvents = <S extends State>(
@@ -81,24 +91,40 @@ const getNeuronsAvailableEvents = <S extends State>(
   bot: Bot,
   neuron: BotNeuron<S>
 ): ClientPlayerEvent[] => {
-  // TODO: also consider Command Events!
-  // Grab only interesting entities
-  const interactionTargets = grabAllInteractionEntities(
-    state,
-    bot,
-    neuron
-  ).filter(auxillaryEntitiesFilter(state, bot, neuron))
+  if (isInteractionOfEntities(neuron.action)) {
+    // Grab only interesting entities
+    const allEntities = grabAllInteractionEntities(state, bot, neuron)
 
-  const testedEvents = interactionTargets
-    // Create events for clicking those entities
-    .map((entity) => ({ entityPath: entity.idxPath } as ClientPlayerEvent))
-    // and test if such event would pass
-    .filter((event) => {
-      const serverEvent = populatePlayerEvent(state, event, bot)
-      return filterActionsByConditions(state, serverEvent)(neuron.action)
-    })
+    logs.verbose(`allEntities: ${allEntities.length}`)
 
-  return testedEvents
+    const interactionTargets = allEntities.filter(
+      auxillaryEntitiesFilter(state, bot, neuron)
+    )
+
+    logs.verbose(`post aux filter: ${allEntities.length}`)
+
+    const testedEvents = interactionTargets
+      // Create events for clicking those entities
+      .map((entity) => {
+        logs.verbose("entity.idxPath:", entity.idxPath)
+        return { entityPath: entity.idxPath } as ClientPlayerEvent
+      })
+      // and test if such event would pass
+      .filter((event) => {
+        const serverEvent = populatePlayerEvent(state, event, bot)
+        return filterActionsByConditions(state, serverEvent)(neuron.action)
+      })
+
+    logs.verbose(`\`-> testedEvents ${testedEvents.length}`)
+
+    return testedEvents
+  } else if (isInteractionOfEvent(neuron.action)) {
+    const data = neuron.playerEventData
+      ? neuron.playerEventData(state, bot)
+      : undefined
+
+    return [{ command: neuron.action.interaction, data }]
+  }
 }
 
 export type ChosenBotNeuronResult<S extends State> = {
@@ -143,7 +169,7 @@ export const pickNeuron = <S extends State>(
       if (neuron.children) {
         return pickNeuron(neuron, state, bot)
       }
-      // 4. Simulate all possible events on all neurons and filter any fails
+      // 4. Simulate all possible events on all neurons and filter out any fails
       const events = getNeuronsAvailableEvents(state, bot, neuron)
 
       if (events.length > 0) {

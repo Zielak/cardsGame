@@ -34,12 +34,13 @@ export class Bot extends Player {
   }
 }
 
-export function isBot(player: any): player is Bot {
+export function isBot(player: unknown): player is Bot {
   return (
     player &&
+    typeof player === "object" &&
     "clientID" in player &&
-    typeof player.name === "string" &&
+    typeof player["name"] === "string" &&
     "isBot" in player &&
-    player.isBot === true
+    player["isBot"] === true
   )
 }

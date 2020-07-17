@@ -1,3 +1,5 @@
+import { def } from "@cardsgame/utils"
+
 import { canBeChild } from "../../src/annotations/canBeChild"
 import { containsChildren } from "../../src/annotations/containsChildren"
 import { State } from "../../src/state/state"
@@ -18,11 +20,12 @@ import { ParentArrayTrait } from "../../src/traits/parentArray"
   OwnershipTrait,
 ])
 export class SmartParent extends Entity<SmartParentOptions> {
-  type = "smartParent"
+  // @deprecate
   customProp: string
 
   create(state: State, options: SmartParentOptions = {}) {
     this.customProp = options.customProp || ""
+    this.type = def(options.type, "smartParent")
   }
 }
 
@@ -46,11 +49,11 @@ export interface SmartParent extends ParentMixin {}
 @canBeChild
 @applyTraitsMixins([IdentityTrait, ChildTrait, LabelTrait, OwnershipTrait])
 export class SmartEntity extends Entity<SmartEntityOptions> {
-  type = "smartEntity"
   customProp: string
 
   create(state: State, options: SmartEntityOptions = {}) {
-    this.customProp = options.customProp || ""
+    this.customProp = def(options.customProp, "")
+    this.type = def(options.type, "smartEntity")
   }
 }
 

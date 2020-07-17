@@ -1,4 +1,4 @@
-import { Conditions } from "../../src/conditions"
+import { getPlayersIndex } from "../../src"
 import { Grid } from "../../src/entities/grid"
 import { Player, ServerPlayerEvent } from "../../src/players/player"
 import { State } from "../../src/state/state"
@@ -15,6 +15,8 @@ let child: SmartEntity
 let top: SmartEntity
 let bottom: SmartEntity
 let con: ConditionsMock<State>
+let player1: Player
+let player2: Player
 
 beforeEach(() => {
   state = new State()
@@ -32,7 +34,10 @@ beforeEach(() => {
   new SmartEntity(state, { parent: selectableParent })
   new SmartEntity(state, { parent: selectableParent })
 
-  con = new ConditionsMock<State>(state, { $example: "foo" })
+  player1 = new Player({ clientID: "player1" })
+  player2 = new Player({ clientID: "player2" })
+
+  con = new ConditionsMock<State>(state, { example: "foo", player: player1 })
 })
 
 describe("equals", () => {
@@ -69,6 +74,26 @@ test("false", () => {
   expect(() => con().set(0).false()).toThrow()
   expect(() => con().set({}).false()).toThrow()
   expect(() => con().set([]).false()).toThrow()
+})
+
+test("defined", () => {
+  expect(() => con().set("test").defined()).not.toThrow()
+  expect(() => con().set({}).defined()).not.toThrow()
+  expect(() => con().set([1, 2]).defined()).not.toThrow()
+  expect(() => con().set(null).defined()).not.toThrow()
+
+  expect(() => con().set(undefined).defined()).toThrow()
+  expect(() => con().set(undefined).not.defined()).toThrow(/silly/)
+})
+
+test("undefined", () => {
+  expect(() => con().set("test").undefined()).toThrow()
+  expect(() => con().set({}).undefined()).toThrow()
+  expect(() => con().set([1, 2]).undefined()).toThrow()
+  expect(() => con().set(null).undefined()).toThrow()
+
+  expect(() => con().set(undefined).undefined()).not.toThrow()
+  expect(() => con().set(1).not.undefined()).toThrow(/silly/)
 })
 
 test("above", () => {
@@ -296,4 +321,15 @@ test("matchesPropOf", () => {
 
   expect(() => con().set(top).matchesPropOf("bottom")).toThrow()
   expect(() => con().set([]).matchesPropOf("bottom")).toThrow()
+})
+
+test("itsPlayersTurn", () => {
+  state.players[0] = player1
+  state.players[1] = player2
+
+  state.currentPlayerIdx = 0
+  expect(() => con().itsPlayersTurn()).not.toThrow()
+
+  state.currentPlayerIdx = 1
+  expect(() => con().itsPlayersTurn()).toThrow()
 })

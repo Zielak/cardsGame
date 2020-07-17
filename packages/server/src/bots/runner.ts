@@ -92,25 +92,4 @@ export class BotRunner<S extends State> {
         )
       )
   }
-
-  prepareBotEvent(
-    action: EventActionTemplate<S>,
-    neuron: BotNeuron<S>,
-    bot: Bot
-  ): ClientPlayerEvent {
-    const state = this.room.state
-    const playerEvent = action.interaction
-
-    const data = neuron.playerEventData || neuron.playerEventData(state, bot)
-
-    logs.group("prepareBotEvent")
-    logs.notice("playerEvent", `"${playerEvent}"`)
-    logs.notice("data", data)
-    logs.groupEnd
-
-    return {
-      command: playerEvent,
-      data,
-    }
-  }
 }
