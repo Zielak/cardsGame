@@ -1,6 +1,6 @@
 coverage
-example
 node_modules
+example/dist
 lib
 packages/**/node_modules
 packages/**/lib

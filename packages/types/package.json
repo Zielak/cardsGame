@@ -4,5 +4,12 @@
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zielak/cardsGame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zielak/cardsGame/issues"
+  },
   "types": "index"
 }

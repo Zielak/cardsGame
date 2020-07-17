@@ -4,6 +4,13 @@
   "main": "index.js",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zielak/cardsGame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zielak/cardsGame/issues"
+  },
   "scripts": {
     "bootstrap": "lerna exec --concurrency 1 npm install && lerna bootstrap && scripts/linkup.sh",
     "bootstrap:ci": "lerna exec --concurrency 1 npm install && lerna bootstrap",
@@ -25,26 +32,15 @@
     "build:utils-w": "lerna run --stream --concurrency 1 --scope '*/utils' build:watch",
     "ci:publish": "lerna publish from-git --yes"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx,json,html,scss,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.{js,jsx,ts,tsx}": [
-      "eslint"
-    ]
-  },
   "devDependencies": {
+    "@commitlint/cli": "^9.1.1",
+    "@commitlint/config-conventional": "^9.1.1",
     "@types/jest": "^26.0.4",
     "@typescript-eslint/eslint-plugin": "^3.6.0",
     "@typescript-eslint/parser": "^3.6.0",
     "chalk": "^4.1.0",
     "coveralls": "^3.1.0",
+    "cz-conventional-changelog": "^3.2.0",
     "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-jest": "^23.18.0",

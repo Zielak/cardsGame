@@ -1,4 +1,9 @@
-const { commands, Conditions, getPlayersIndex } = require("@cardsgame/server")
+const {
+  commands,
+  Conditions,
+  getPlayersIndex,
+  Player,
+} = require("@cardsgame/server")
 
 const { WarState } = require("./state")
 const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
@@ -19,7 +24,7 @@ const PlayCardWithAnte = (state, event) => {
 
   return new commands.Sequence("PlayCardWithAnte", [
     new MarkPlayerPlayed(getPlayersIndex(state, event.player)),
-    new commands.ChangeParent(ante, pile),
+    ante && new commands.ChangeParent(ante, pile),
     new commands.ChangeParent(card, pile),
     new commands.FaceUp(card),
   ])
@@ -27,8 +32,10 @@ const PlayCardWithAnte = (state, event) => {
 
 const PickCard = {
   name: "PickCard",
-  description: `Player picks a card from his deck, while other didn't choose yet`,
-  interactions: (player) => [
+  /**
+   * @param {Player} player
+   */
+  interaction: (player) => [
     {
       type: "deck",
       name: "playersDeck",
@@ -38,56 +45,41 @@ const PickCard = {
   /**
    * @param {Conditions<WarState>} con
    */
-  checkConditions: (con) => {
-    // Both players didn't chose their cards yet
-    con.state.its("playersPlayed").every((con) => {
-      con.equals(false)
-    })
-  },
-  getCommand: PlayCardWithAnte,
-}
-
-const PickCardLast = {
-  name: "PickCardLast",
-  description: `Player is the last one to pick a card. Some calculations will follow.`,
-  interactions: () => [
-    {
-      type: "deck",
-      name: "playersDeck",
-      owner: player,
-    },
-  ],
-  /**
-   * @param {Conditions<WarState>} con
-   */
-  checkConditions: (con) => {
+  conditions: (con) => {
     // Get the index of currently acting player
-    const currentPlayerIdx = getPlayersIndex(con.getState(), con.getPlayer())
+    const currentPlayerIdx = getPlayersIndex(
+      con().grabState(),
+      con().grab("player")
+    )
 
     // Current player didn't pick yet
-    con.state.its("playersPlayed").nthChild(currentPlayerIdx).equals(false)
-
-    // There's exactly one last player who didn't pick yet
-    const coundDidntPick = con
-      .getState()
-      .playersPlayed.filter((val) => val === false).length
-
-    con.set(coundDidntPick).equals(1)
+    con().its("playersPlayed").nthChild(currentPlayerIdx).equals(false)
   },
-
   /**
    * @param {WarState} state
    * @param {ServerPlayerEvent} event
    */
-  getCommand: (state, event) => {
-    return new commands.Sequence("PickCardLast", [
+  command: (state, event) => {
+    // There's exactly one last player who didn't pick yet
+    const isLastToPick =
+      state.playersPlayed.filter((val) => val === false).length === 1
+
+    const roundFinishingCommands = isLastToPick
+      ? [
+          new Battle(),
+          new commands.Wait(1000),
+          new ResetPlayersPlayed(),
+          new commands.NextRound(),
+        ]
+      : []
+
+    return new commands.Sequence("PickCard", [
       PlayCardWithAnte(state, event),
-      new Battle(),
-      new commands.Wait(1000),
-      new ResetPlayersPlayed(),
-      new commands.NextRound(),
+      ...roundFinishingCommands,
     ])
   },
 }
 
-module.exports = [PickCard, PickCardLast]
+module.exports = [PickCard]
+
+module.exports.PickCard = PickCard

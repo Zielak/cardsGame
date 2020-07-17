@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/example",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Simplest implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -12,12 +12,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@cardsgame/client": "^0.7.0",
-    "@cardsgame/server": "^0.7.0",
-    "@cardsgame/utils": "^0.7.0",
-    "@cardsgame/types": "^0.7.0",
+    "@cardsgame/client": "^0.8.0",
+    "@cardsgame/server": "^0.8.0",
+    "@cardsgame/utils": "^0.8.0",
+    "@cardsgame/types": "^0.8.0",
     "express": "^4.17.1",
-    "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11"
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
   }
 }
