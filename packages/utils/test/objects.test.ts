@@ -11,7 +11,7 @@ test("deepClone", () => {
     one: 1,
     arr: ["string"],
     obj: { foo: "bar" },
-    func: () => "hello",
+    func: (): string => "hello",
   }
   const result = deepClone(source)
 

@@ -21,19 +21,19 @@ const actions: ActionTemplate<State>[] = [
     interaction: () => [{ name: "one", type: "foo" }],
     conditions: (con) => {},
     command: () => command,
-  },
+  } as ActionTemplate<State>,
   {
     name: "Action2",
     interaction: () => [{ name: "two", type: "bar" }],
     conditions: (con) => {},
     command: () => command,
-  },
+  } as ActionTemplate<State>,
   {
     name: "Action3",
     interaction: () => [{ name: "three", type: "foo" }],
     conditions: (con) => {},
     command: () => command,
-  },
+  } as ActionTemplate<State>,
 ]
 
 describe("action", () => {

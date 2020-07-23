@@ -3,10 +3,11 @@ import { def } from "@cardsgame/utils"
 import { State } from "../state/state"
 import { ParentTrait } from "./parent"
 
-export function isChild(entity: any): entity is ChildTrait {
+export function isChild(entity: unknown): entity is ChildTrait {
   return (
-    typeof (entity as ChildTrait).idx !== "undefined" &&
-    typeof (entity as ChildTrait).parent !== "undefined"
+    typeof entity === "object" &&
+    typeof entity["idx"] !== "undefined" &&
+    typeof entity["parent"] !== "undefined"
   )
 }
 

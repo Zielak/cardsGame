@@ -92,7 +92,7 @@ export const UnachievableGoal: BotNeuron<State> = {
       value: () => 50,
       entitiesFilter: (con) => con().its("rank").equals("NOPE"),
       action: DoNothingAction,
-    },
+    } as BotNeuron<State>,
   ],
 }
 

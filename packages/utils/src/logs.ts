@@ -54,7 +54,7 @@ const setLogLevel = (val: string): void => {
 
 const minifyEntity = ({ type, name }): string => `${type}:${name}`
 
-const syntaxHighlight = (arg: any) => {
+const syntaxHighlight = (arg: any): any => {
   if (IS_CHROME) {
     return arg
   }
@@ -104,14 +104,14 @@ if (isBrowser) {
   }
 } else if (!IS_CHROME) {
   logs = {
-    verbose: function (...args: any[]) {
+    verbose: function (...args: any[]): void {
       console.debug.apply(console, [
         _getIndent(),
         `\t`,
         ...args.map((arg) => chalk.gray(arg)),
       ])
     },
-    notice: function (first, ...args: any[]) {
+    notice: function (first, ...args: any[]): void {
       if (args.length > 0) {
         console.log.apply(console, [
           _getIndent(),
@@ -122,33 +122,33 @@ if (isBrowser) {
         console.log.call(console, chalk.gray(_getIndent() + first))
       }
     },
-    info: function (first, ...args: any[]) {
+    info: function (first, ...args: any[]): void {
       console.info.apply(console, [
         _getIndent() + chalk.bgBlue.black(` ${first} `),
         ...args.map(syntaxHighlight),
       ])
     },
-    warn: function (first, ...args: any[]) {
+    warn: function (first, ...args: any[]): void {
       console.warn.apply(console, [
         _getIndent() + chalk.bgYellow.black(` ${first} `),
         ...args.map(syntaxHighlight),
       ])
     },
-    error: function (first, ...args: any[]) {
+    error: function (first, ...args: any[]): void {
       console.error.apply(console, [
         _getIndent() + chalk.bgRed(` ${first} `),
         ...args.map(syntaxHighlight),
       ])
     },
-    group: function (first, ...args: any[]) {
+    group: function (first, ...args: any[]): void {
       logs.notice(`┍━${first}`, ...args)
       _indentLevel++
     },
-    groupCollapsed: function (first, ...args: any[]) {
+    groupCollapsed: function (first, ...args: any[]): void {
       logs.notice(`┍━${first}`, ...args)
       _indentLevel++
     },
-    groupEnd: function (first = "────────────", ...args: any[]) {
+    groupEnd: function (first = "────────────", ...args: any[]): void {
       _indentLevel = Math.max(_indentLevel - 1, 0)
       logs.notice(`┕━${first}`, ...args)
     },
@@ -162,7 +162,7 @@ if (isBrowser) {
   logs = {
     verbose: console.debug.bind(console),
     notice: console.log.bind(console),
-    info: function (first, ...args: any[]) {
+    info: function (first, ...args: any[]): void {
       return console.info.apply(console, [
         `%c ${first} `,
         styles.common + styles.info,
@@ -171,14 +171,14 @@ if (isBrowser) {
     },
     warn: console.warn.bind(console),
     error: console.error.bind(console),
-    group: (...args) => {
+    group: (...args): void => {
       // Silence one-off console.log
       const tmp = console.log
       global.console.log = noop
       global.console.group.apply(console, args)
       global.console.log = tmp
     },
-    groupCollapsed: (...args) => {
+    groupCollapsed: (...args): void => {
       // Silence one-off console.log
       const tmp = console.log
       global.console.log = noop
@@ -246,7 +246,7 @@ export class Logs {
     }
   }
 
-  setupServerLogs(name: string, style: Chalk.Chalk) {
+  setupServerLogs(name: string, style: Chalk.Chalk): void {
     let indentLevel = 0
     const getIndent = (): string => {
       return Array(indentLevel).fill("│ ").join("")
@@ -255,7 +255,7 @@ export class Logs {
     this["error"] =
       logLevel < LogLevels.error && this.enabled
         ? noop
-        : function (first, ...args: any[]) {
+        : function (first, ...args: any[]): void {
             console.error.apply(console, [
               style(getIndent() + chalk.bgRed(` ${first} `)),
               ...args.map(syntaxHighlight),
@@ -264,7 +264,7 @@ export class Logs {
     this["warn"] =
       logLevel < LogLevels.warn && this.enabled
         ? noop
-        : function (first, ...args: any[]) {
+        : function (first, ...args: any[]): void {
             console.warn.apply(console, [
               style(getIndent() + chalk.bgYellow.black(` ${first} `)),
               ...args.map(syntaxHighlight),
@@ -273,7 +273,7 @@ export class Logs {
     this["info"] =
       logLevel < LogLevels.info && this.enabled
         ? noop
-        : function (first, ...args: any[]) {
+        : function (first, ...args: any[]): void {
             console.info.apply(console, [
               style(getIndent() + chalk.bgBlue.black(` ${first} `)),
               ...args.map(syntaxHighlight),
@@ -282,7 +282,7 @@ export class Logs {
     this["notice"] =
       logLevel < LogLevels.notice && this.enabled
         ? noop
-        : function (first, ...args: any[]) {
+        : function (first, ...args: any[]): void {
             if (args.length > 0) {
               console.log.apply(console, [
                 style(getIndent(), `${first}:`),
@@ -296,7 +296,7 @@ export class Logs {
     this["verbose"] =
       logLevel < LogLevels.verbose && this.enabled
         ? noop
-        : function (...args: any[]) {
+        : function (...args: any[]): void {
             console.debug.apply(console, [
               style(`${getIndent()}\t`),
               ...args.map((arg) => chalk.gray(arg)),
@@ -304,29 +304,29 @@ export class Logs {
           }
     this["group"] = !this.enabled
       ? noop
-      : function (first, ...args: any[]) {
+      : function (first, ...args: any[]): void {
           notice(`┍━${first}`, ...args)
           indentLevel++
         }
     this["groupCollapsed"] = !this.enabled
       ? noop
-      : function (first, ...args: any[]) {
+      : function (first, ...args: any[]): void {
           notice(`┍━${first}`, ...args)
           indentLevel++
         }
     this["groupEnd"] = !this.enabled
       ? noop
-      : function (first = "────────────", ...args: any[]) {
+      : function (first = "────────────", ...args: any[]): void {
           indentLevel = Math.max(indentLevel - 1, 0)
           notice(`┕━${first}`, ...args)
         }
   }
 
-  setupBrowserLogs(name: string, style: string) {
+  setupBrowserLogs(name: string, style: string): void {
     this["error"] =
       logLevel < LogLevels.error && this.enabled
         ? noop
-        : (function () {
+        : (function (): any {
             return Function.prototype.bind.call(
               console.error,
               console,
@@ -337,7 +337,7 @@ export class Logs {
     this["warn"] =
       logLevel < LogLevels.warn && this.enabled
         ? noop
-        : (function () {
+        : (function (): any {
             return Function.prototype.bind.call(
               console.warn,
               console,
@@ -348,7 +348,7 @@ export class Logs {
     this["info"] =
       logLevel < LogLevels.info && this.enabled
         ? noop
-        : (function () {
+        : (function (): any {
             return Function.prototype.bind.call(
               console.info,
               console,
@@ -359,7 +359,7 @@ export class Logs {
     this["notice"] =
       logLevel < LogLevels.notice && this.enabled
         ? noop
-        : (function () {
+        : (function (): any {
             return Function.prototype.bind.call(
               console.log,
               console,
@@ -370,7 +370,7 @@ export class Logs {
     this["verbose"] =
       logLevel < LogLevels.verbose && this.enabled
         ? noop
-        : (function () {
+        : (function (): any {
             return Function.prototype.bind.call(
               console.debug,
               console,
@@ -386,7 +386,7 @@ export class Logs {
       : console.groupCollapsed.bind(console, `%c ${name} `, style)
     this["groupEnd"] = !this.enabled
       ? noop
-      : (function () {
+      : (function (): any {
           return Function.prototype.bind.call(console.groupEnd, console)
         })()
   }

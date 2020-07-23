@@ -18,7 +18,7 @@ class SelectedChildData extends Schema {
 }
 
 export function hasSelectableChildren(
-  entity: any
+  entity: unknown
 ): entity is SelectableChildrenTrait {
   return (
     typeof entity == "object" &&

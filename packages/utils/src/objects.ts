@@ -1,4 +1,4 @@
-export const deepClone = (value: any) => {
+export const deepClone = (value: unknown): any => {
   if (typeof value === "function") {
     return value
   }

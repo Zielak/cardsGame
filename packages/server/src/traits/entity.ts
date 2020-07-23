@@ -4,7 +4,7 @@ import { Schema } from "@colyseus/schema"
 import { type } from "../annotations/type"
 import { State } from "../state/state"
 
-export function executeHook(hookName: string, ...args): void {
+export function executeHook(hookName: string, ...args: any[]): void {
   const proto = Object.getPrototypeOf(this)
   const { hooks } = proto
 

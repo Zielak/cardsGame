@@ -13,8 +13,8 @@ import { OwnershipTrait } from "../traits/ownership"
 import { ParentMapTrait } from "../traits/parentMap"
 import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
-export function isGrid(entity: any): entity is Grid {
-  return "columns" in entity && "rows" in entity
+export function isGrid(entity: unknown): entity is Grid {
+  return typeof entity === "object" && "columns" in entity && "rows" in entity
 }
 
 /**

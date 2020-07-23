@@ -6,7 +6,8 @@ export const trim = (string = "", maxLength = 7): string => {
 }
 
 export const randomName = (): string => {
-  const randomLetter = () => String.fromCharCode(Math.random() * (90 - 65) + 65)
+  const randomLetter = (): string =>
+    String.fromCharCode(Math.random() * (90 - 65) + 65)
   return randomLetter() + randomLetter() + randomLetter()
 }
 

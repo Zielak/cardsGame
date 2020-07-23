@@ -2,7 +2,7 @@ import { ChildTrait } from "../../traits/child"
 
 export type SortingFunction = (childA: ChildTrait, childB: ChildTrait) => number
 
-export function sortOnChildAdded(child: ChildTrait) {
+export function sortOnChildAdded(child: ChildTrait): void {
   if (!this.autoSort) return
   const count = this.countChildren()
 

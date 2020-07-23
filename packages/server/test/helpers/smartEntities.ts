@@ -23,7 +23,7 @@ export class SmartParent extends Entity<SmartParentOptions> {
   // @deprecate
   customProp: string
 
-  create(state: State, options: SmartParentOptions = {}) {
+  create(state: State, options: SmartParentOptions = {}): void {
     this.customProp = options.customProp || ""
     this.type = def(options.type, "smartParent")
   }
@@ -51,7 +51,7 @@ export interface SmartParent extends ParentMixin {}
 export class SmartEntity extends Entity<SmartEntityOptions> {
   customProp: string
 
-  create(state: State, options: SmartEntityOptions = {}) {
+  create(state: State, options: SmartEntityOptions = {}): void {
     this.customProp = def(options.customProp, "")
     this.type = def(options.type, "smartEntity")
   }

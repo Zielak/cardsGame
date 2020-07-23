@@ -29,7 +29,7 @@ export class Hand extends Entity<HandOptions> {
 
   hijacksInteractionTarget = false
 
-  create(state: State, options: HandOptions = {}) {
+  create(state: State, options: HandOptions = {}): void {
     this.name = def(options.name, "Hand")
     this.type = def(options.type, "hand")
 

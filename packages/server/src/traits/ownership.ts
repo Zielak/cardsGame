@@ -5,7 +5,7 @@ import { State } from "../state/state"
 import { isChild } from "./child"
 import { isParent } from "./parent"
 
-export function hasOwnership(entity: any): entity is OwnershipTrait {
+export function hasOwnership(entity: unknown): entity is OwnershipTrait {
   return (
     "owner" in (entity as OwnershipTrait) &&
     "ownerID" in (entity as OwnershipTrait)

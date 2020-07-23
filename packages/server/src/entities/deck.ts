@@ -65,7 +65,7 @@ export class Deck extends Entity<DeckOptions> {
     }
   }
 
-  updateTopElement(child: { [key: string]: any }) {
+  updateTopElement(child: { [key: string]: any }): void {
     if (!child) {
       Object.keys(this.topDeck).forEach(
         (key) => (this.topDeck[key] = undefined)

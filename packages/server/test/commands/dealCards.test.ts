@@ -1,5 +1,6 @@
 import { times } from "@cardsgame/utils"
 
+import { Command } from "../../src"
 import { ChangeParent } from "../../src/commands/changeParent"
 import { DealCards } from "../../src/commands/dealCards"
 import { State } from "../../src/state/state"
@@ -115,7 +116,8 @@ describe("Emptying source", () => {
   it("handles onDeckEmptied", async () => {
     const cmd = new DealCards(source, [playerA, playerB], {
       count: 10,
-      onDeckEmptied: () => new ChangeParent(() => backup.getChildren(), source),
+      onDeckEmptied: (): Command =>
+        new ChangeParent(() => backup.getChildren(), source),
     })
 
     await cmd.execute(state, room)
