@@ -17,7 +17,8 @@ export interface ActionTemplate<S extends State> {
   /**
    * This action will be ignored when one of the assertions fail.
    *
-   * Default `subject` is set to the game state.
+   * @param {ClientEventConditions<S>} con contains references to "command",
+   * "event", "data", "player" and "entity". Default subject is set to the game state.
    */
   conditions: (con: ClientEventConditions<S>) => void
 

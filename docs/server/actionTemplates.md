@@ -34,7 +34,7 @@ const TakeOneCard: ActionTemplate<MyGameState> = {
 
 ## interactions
 
-Interactions definition may relate to player interacting with an in-game object, or sending a custom event.
+Interactions definition may relate to player interacting with an in-game object, or sending a custom command.
 
 ### A) _Player interacts with a game object_
 
@@ -76,9 +76,9 @@ interactions: (player: Player) => [
 // TODO: link that somewhere?
 Read the full description of `QuerableProps`.
 
-### B) _Player is sending a custom event_
+### B) _Player is sending a custom command_
 
-Custom event may relate to user clicking some UI button, but it's completely up to you. In `interactions` field provide the name of desired event.
+Custom command may relate to user clicking some UI button, but it's completely up to you. In `interactions` field provide the name of desired event.
 
 ```typescript
 interactions: "passTurn"
@@ -115,7 +115,7 @@ checkConditions: (con) => {
   con("chosenCards").children.not.empty()
 }
 
-// Example of custom event
+// Example for custom command with expected additional data
 checkConditions: (con) => {
   con().itsPlayersTurn()
   con("data").its("suit").equals("S")

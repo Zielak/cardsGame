@@ -115,9 +115,7 @@ describe("Emptying source", () => {
   it("handles onDeckEmptied", async () => {
     const cmd = new DealCards(source, [playerA, playerB], {
       count: 10,
-      onDeckEmptied: () => [
-        new ChangeParent(() => backup.getChildren(), source),
-      ],
+      onDeckEmptied: () => new ChangeParent(() => backup.getChildren(), source),
     })
 
     await cmd.execute(state, room)

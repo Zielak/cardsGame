@@ -23,7 +23,7 @@ export class DealCards extends Command {
 
   count: number
   step: number
-  onDeckEmptied: () => Command[]
+  onDeckEmptied: () => Command
 
   /**
    * Deals `count` cards from this container to other containers.
@@ -80,17 +80,13 @@ export class DealCards extends Command {
       }
 
       if (childrenLeft === 0 && targetI < maxDeals && maxDeals !== Infinity) {
-        const emptiedCmds = this.onDeckEmptied && this.onDeckEmptied()
-        if (!emptiedCmds) {
+        const onDeckEmptiedCommand = this.onDeckEmptied && this.onDeckEmptied()
+        if (!onDeckEmptiedCommand) {
           throw new Error(
             `Source emptied before dealing every requested card. Add onDeckEmptied in options to for example refill the source with new entities.`
           )
         }
-        await this.subExecute(
-          state,
-          room,
-          new Sequence("onDeckEmptied", emptiedCmds)
-        )
+        await this.subExecute(state, room, onDeckEmptiedCommand)
       }
     } while (
       (maxDeals === Infinity && childrenLeft > 0) ||
@@ -104,5 +100,5 @@ export class DealCards extends Command {
 interface DealCardsOptions {
   count?: number
   step?: number
-  onDeckEmptied?: () => Command[]
+  onDeckEmptied?: () => Command
 }

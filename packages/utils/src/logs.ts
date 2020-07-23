@@ -193,7 +193,7 @@ try {
   if (isBrowser && localStorage && localStorage.getItem("cardsDebug")) {
     setLogLevel(localStorage.getItem("cardsDebug"))
   } else if (!isBrowser) {
-    setLogLevel(process.env.IN_PASSENGER ? "verbose" : process.env.LOGS)
+    setLogLevel(process.env.LOGS)
   }
 } catch (e) {
   // disabled

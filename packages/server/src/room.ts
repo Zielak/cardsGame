@@ -3,10 +3,12 @@ import { BroadcastOptions } from "colyseus/lib/Room"
 
 import {
   chalk,
+  def,
   IS_CHROME,
   logs,
   map2Array,
   mapAdd,
+  mapGetIdx,
   mapRemoveEntry,
   shuffle,
 } from "@cardsgame/utils"
@@ -103,7 +105,18 @@ export class Room<S extends State> extends colRoom<S> {
   }
 
   /**
-   * Add human client or bot to `state.clients`
+   * Remove bot client from `state.clients`
+   */
+  protected removeBot(id: string): void {
+    const bot = this.botClients.find((bot) => bot.clientID === id)
+    if (bot && mapGetIdx(this.state.clients, id)) {
+      mapRemoveEntry(this.state.clients, id)
+      this.botClients = this.botClients.filter((b) => b !== bot)
+    }
+  }
+
+  /**
+   * Add human client to `state.clients`
    * @returns `false` is client is already there or if the game is not yet started
    */
   protected addClient(id: string): boolean {
@@ -120,7 +133,7 @@ export class Room<S extends State> extends colRoom<S> {
   }
 
   /**
-   * Remove human client or bot from `state.clients`
+   * Remove human client from `state.clients`
    */
   protected removeClient(id: string): void {
     mapRemoveEntry(this.state.clients, id)
@@ -156,10 +169,15 @@ export class Room<S extends State> extends colRoom<S> {
       return this.handleGameStart()
       // No need to parse/do anything else
     }
-    if (event.command === "add_bot") {
+    if (event.command === "bot_add") {
       this.addBot({
-        actionDelay: () => Math.random() + 1,
+        actionDelay: () => Math.random() + 0.5,
+        intelligence: def(event.data?.intelligence, 0.5),
       })
+      return
+    }
+    if (event.command === "bot_remove") {
+      this.removeBot(event.data?.id)
       return
     }
 
