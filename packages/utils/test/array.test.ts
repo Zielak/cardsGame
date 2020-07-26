@@ -1,6 +1,8 @@
 import {
   arrayWith,
+  compare,
   pickMostCommonProp,
+  shuffle,
   sortAlphabetically,
   sortAlphaNumerically,
 } from "../src/arrays"
@@ -8,6 +10,26 @@ import {
 test("arrayWith", () => {
   expect(arrayWith(0)).toStrictEqual([])
   expect(arrayWith(3)).toStrictEqual([0, 1, 2])
+})
+
+test("compare", () => {
+  expect(compare([0, "foo", 1], [1, 0, "foo"])).toBe(true)
+  expect(compare([0, 0, 0], [0, 0, 0])).toBe(true)
+  expect(compare([], [])).toBe(true)
+
+  expect(compare([0, 0, 0], [0])).toBe(false)
+  expect(compare([0, "foo", 1], [1, 0, "bar"])).toBe(false)
+  expect(compare([0, "foo", 1], [0, "foo", 1, 1])).toBe(false)
+})
+
+test("shuffle", () => {
+  const arr = [0, 1, 2, 3]
+  const shuffled = shuffle(arr)
+
+  expect(shuffled).not.toBe(arr)
+  expect(shuffled.length).toBe(arr.length)
+
+  expect(() => shuffle([])).not.toThrow()
 })
 
 test("sortAlphabetically", () => {

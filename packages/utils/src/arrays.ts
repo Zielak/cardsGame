@@ -1,25 +1,8 @@
 /**
- * Runs every provided function on `array` using .map(), ignores every function which turns out to be `undefined` instead.
- * @throws if one of arg1+ turn out to be something other than Function or undefined.
+ * Compares if two arrays contain same elements.
  */
-export const mapCompose = (
-  array: any[],
-  ...functions: ((...args) => any)[]
-): any[] => {
-  return functions.reduce((prevArr, fn, idx) => {
-    if (typeof fn === "function") {
-      return prevArr.map(fn)
-    } else if (typeof fn === "undefined" || fn === false) {
-      return prevArr
-    } else {
-      throw new Error(
-        `utils/mapCompose, I expected a function at arg${
-          idx + 1
-        }, got "${typeof fn}" instead...`
-      )
-    }
-  }, array || [])
-}
+export const compare = (arrayA: any[], arrayB: any[]): boolean =>
+  arrayA.length === arrayB.length && arrayA.every((a) => arrayB.includes(a))
 
 /**
  * Function for `array.sort()`.
@@ -55,7 +38,8 @@ export const shuffle = (array: any[]): any[] => {
 }
 
 /**
- *
+ * Returns an array which holds `count` items, each being the index
+ * number starting from 0.
  * @param count
  */
 export const arrayWith = (count: number): any[] => [...Array(count).keys()]
