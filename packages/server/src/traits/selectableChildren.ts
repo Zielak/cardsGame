@@ -171,11 +171,11 @@ SelectableChildrenTrait["hooks"] = {
     oldIdx: number,
     newIdx: number
   ): void {
-    const data = this.selectedChildren.find(
-      (selectionData) => selectionData.selectionIndex === oldIdx
+    const selectionData = this.selectedChildren.find(
+      (data) => data.childIndex === oldIdx
     )
-    if (data) {
-      data.selectionIndex = newIdx
+    if (selectionData) {
+      selectionData.childIndex = newIdx
     }
   },
 }

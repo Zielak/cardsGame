@@ -25,6 +25,34 @@ describe("constructor", () => {
   })
 })
 
+describe("hooks", () => {
+  describe("childRemoved", () => {
+    it("fixes up indexes of other children", () => {
+      parent.selectChildAt(1)
+      parent.selectChildAt(3)
+
+      parent.removeChildAt(1)
+
+      expect(parent.selectedChildren.length).toBe(1)
+      expect(parent.selectedChildren[0].childIndex).toBe(2)
+      expect(parent.isChildSelected(2)).toBe(true)
+    })
+  })
+
+  describe("childIndexUpdated", () => {
+    it("fixes up indexes of other children", () => {
+      parent.selectChildAt(3)
+
+      const newItem = new DumbEntity(state)
+      parent.addChild(newItem, true)
+
+      expect(parent.selectedChildren.length).toBe(1)
+      expect(parent.selectedChildren[0].childIndex).toBe(4)
+      expect(parent.isChildSelected(4)).toBe(true)
+    })
+  })
+})
+
 describe("selectChildAt", () => {
   it("changes", () => {
     parent.selectChildAt(0)

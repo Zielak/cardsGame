@@ -83,6 +83,7 @@ export class CommandsManager<S extends State> {
       // TODO: Undo anything that recently failed
       // logs.error("parseAction", `action FAILED, will try do undo it.`, error)
       // await this.currentCommand.undo(state, this.room)
+      logs.error("parseAction", `action FAILED`, error)
       logs.groupEnd(commandName, "failed")
 
       return false
