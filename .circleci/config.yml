@@ -154,6 +154,8 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+            branches:
+              ignore: /master/
 
       - build:
           requires:
@@ -161,6 +163,8 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+            branches:
+              ignore: /master/
 
       - linting:
           requires:
@@ -168,6 +172,8 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+            branches:
+              ignore: /master/
 
       - test-cover:
           requires:
@@ -175,6 +181,8 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+            branches:
+              ignore: /master/
 
       - coveralls:
           requires:
@@ -182,6 +190,8 @@ workflows:
           filters:
             tags:
               ignore: /^v.*/
+            branches:
+              ignore: /master/
 
       - sonarcloud:
           context: SonarCloud
@@ -190,6 +200,8 @@ workflows:
           filters:
             tags:
               ignore: /^v.*/
+            branches:
+              ignore: /master/
 
       - publish:
           requires:
@@ -200,5 +212,3 @@ workflows:
           filters:
             tags:
               only: /^v.*/
-            branches:
-              ignore: /.*/
