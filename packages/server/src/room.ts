@@ -166,8 +166,11 @@ export class Room<S extends State> extends colRoom<S> {
 
     // Player signals START
     if (event.command === "start") {
-      return this.handleGameStart()
-      // No need to parse/do anything else
+      if (!this.state.isGameOver) {
+        return this.handleGameStart()
+      } else {
+        return this.handleGameRestart()
+      }
     }
     if (event.command === "bot_add") {
       this.addBot({
@@ -247,7 +250,31 @@ export class Room<S extends State> extends colRoom<S> {
       state.players[idx] = player
     })
 
+    this.startTheGame()
+  }
+
+  /**
+   * @deprecated ON HOLD
+   * When first creating the room, players give it some options.
+   * How would you want to "Restart" the game?
+   * Remember those options and quickly restart it or be able to re-configure the room again?
+   */
+  private handleGameRestart(): void {
+    const { state } = this
+
+    // We can go, shuffle players into new seats.
+    shuffle(map2Array(state.players)).forEach((player, idx) => {
+      state.players[idx] = player
+    })
+
+    this.startTheGame()
+  }
+
+  private startTheGame(): void {
+    const { state } = this
+
     state.isGameStarted = true
+    state.isGameOver = false
 
     const postStartCommands = this.onStartGame(state)
 

@@ -1,0 +1,9 @@
+{
+  "extends": "../../../tsconfig.test.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "lib": ["dom", "es6", "es2016"],
+    "types": ["@cardsgame/types", "jest"]
+  }
+}

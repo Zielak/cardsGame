@@ -79,13 +79,19 @@ describe("#removeChild", () => {
       parent.getChildren().map((e: ChildTrait & IdentityTrait) => e.id)
     ).toMatchSnapshot()
   })
+
+  it("returns false for not its child", () => {
+    const child = new DumbEntity(state)
+
+    expect(parent.removeChild(child)).toBe(false)
+  })
 })
 
 describe("#addChild", () => {
   let parent: DumbMapParent
   let entity: DumbEntity
   beforeEach(() => {
-    parent = new DumbMapParent(state)
+    parent = new DumbMapParent(state, { maxChildren: 5 })
     new DumbEntity(state, { parent })
   })
   it("adds new item", () => {
@@ -124,6 +130,28 @@ describe("#addChild", () => {
     expect(e3.idx).toBe(3)
 
     expect(parent.countChildren()).toBe(4)
+  })
+  it("throws at out of bounds index", () => {
+    expect(() => parent.addChild(new DumbEntity(state), 10)).toThrow()
+  })
+  it("add item at index", () => {
+    const entityA = new DumbEntity(state)
+    const entityB = new DumbEntity(state)
+
+    // index 0 is already set at beforeEach()
+    expect(() => parent.addChild(entityA, 0)).toThrow()
+
+    parent.addChild(entityA, 3)
+
+    expect(entityA.parent).toBe(parent)
+    expect(entityA.idx).toBe(3)
+    expect(parent.countChildren()).toBe(2)
+
+    parent.addChild(entityB, 4)
+
+    expect(entityB.parent).toBe(parent)
+    expect(entityB.idx).toBe(4)
+    expect(parent.countChildren()).toBe(3)
   })
 })
 

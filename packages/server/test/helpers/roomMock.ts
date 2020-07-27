@@ -1,6 +1,8 @@
 import { noop } from "@cardsgame/utils"
 
-function RoomMock(): void {
+function RoomMock(state = {}): void {
+  this.state = state
+
   this.broadcast = noop
   this.commandsManager = {
     execute: noop,

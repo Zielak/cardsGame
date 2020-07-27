@@ -51,6 +51,11 @@ describe("#removeChildAt", () => {
     expect(parent.removeChildAt(1)).toBe(true)
     expect(parent.countChildren()).toBe(2)
   })
+  it("returns false for not its child", () => {
+    const child = new DumbEntity(state)
+
+    expect(parent.removeChild(child)).toBe(false)
+  })
 })
 
 describe("#removeChild", () => {
@@ -99,6 +104,27 @@ describe("#addChild", () => {
     expect(entity.parent).toBe(parent)
     expect(entity.idx).toBe(0)
     expect(parent.countChildren()).toBe(2)
+  })
+  it("add item at index", () => {
+    const entityA = new DumbEntity(state)
+    const entityB = new DumbEntity(state)
+
+    parent.addChild(entityA, 0)
+
+    expect(entityA.parent).toBe(parent)
+    expect(entityA.idx).toBe(0)
+    expect(parent.countChildren()).toBe(2)
+
+    parent.addChild(entityB, 1)
+
+    expect(entityB.parent).toBe(parent)
+    expect(entityB.idx).toBe(1)
+    expect(entityA.idx).toBe(0)
+    expect(parent.countChildren()).toBe(3)
+  })
+  it("throws on incorrect indexes", () => {
+    const e = new DumbEntity(state)
+    expect(() => parent.addChild(e, -1)).toThrow()
   })
 })
 

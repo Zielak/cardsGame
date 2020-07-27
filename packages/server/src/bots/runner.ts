@@ -9,29 +9,42 @@ import { pickNeuron } from "./pickNeuron"
 
 export class BotRunner<S extends State> {
   neuronTree: BotNeuron<S>
+  private readonly room: Room<S>
 
-  constructor(private readonly room: Room<S>) {
+  get canRun(): boolean {
+    return !this.room.state.isGameOver
+  }
+
+  constructor(room: Room<S>) {
     this.neuronTree = {
       name: "Root",
       value: (): number => 0,
       children: room.botActivities ? [...room.botActivities] : [],
     }
+
+    this.room = room
   }
 
   onRoundStart(): void {
     logs.info("Bots:onRoundStart")
 
-    setTimeout(() => this.runAllBots(), 0)
+    if (this.canRun) {
+      this.runAllBots()
+    }
   }
   onAnyMessage(): void {
     logs.info("Bots:onAnyMessage")
 
-    setTimeout(() => this.runAllBots(), 0)
+    if (this.canRun) {
+      this.runAllBots()
+    }
   }
   onPlayerTurnStarted(currentPlayer: Player): void {
     logs.info("Bots:onPlayerTurnStarted", currentPlayer?.clientID)
 
-    setTimeout(() => this.runAllBots(), 0)
+    if (this.canRun) {
+      this.runAllBots()
+    }
   }
 
   runAllBots(): void {

@@ -90,7 +90,7 @@ export class ParentArrayTrait implements ParentTrait {
           executeHook.call(this, "childIndexUpdated", child.idx - 1, child.idx)
         })
     } else if (typeof arg1 === "number") {
-      if (this.isIndexOutOfBounds(this.countChildren())) {
+      if (this.isIndexOutOfBounds(arg1)) {
         throw new Error(`addChild(), incorrect index ${arg1}`)
       }
       entity.idx = arg1
@@ -214,7 +214,7 @@ export class ParentArrayTrait implements ParentTrait {
   }
 
   isIndexOutOfBounds(index: number): boolean {
-    return index > 0
+    return index < 0
   }
 
   protected updateIndexes(): void {

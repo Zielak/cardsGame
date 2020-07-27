@@ -1,9 +1,4 @@
 module.exports = {
-  collectCoverageFrom: [
-    "**/*.{ts,tsx}",
-    "!**/*.d.ts",
-    "!**/node_modules/**",
-    "!**/test/**/*.ts",
-  ],
+  collectCoverageFrom: ["src/**/*.{ts,tsx}"],
   projects: ["<rootDir>/packages/*/jest.config.js"],
 }

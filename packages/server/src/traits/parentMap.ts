@@ -109,6 +109,11 @@ export class ParentMapTrait implements ParentTrait {
       }
       entity.idx = 0
     } else if (typeof arg1 === "number") {
+      if (this.isIndexOutOfBounds(arg1)) {
+        throw new Error(
+          `addChild(), trying to place item out of bounds: desired:${arg1}, max:${this.maxChildren}`
+        )
+      }
       // Want to place entity in certain index spot
       if (!this.getChild(arg1)) {
         entity.idx = arg1
