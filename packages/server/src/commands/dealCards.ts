@@ -11,7 +11,6 @@ import { Room } from "../room"
 import { State } from "../state/state"
 import { ParentTrait } from "../traits/parent"
 import { ChangeParent } from "./changeParent"
-import { Sequence } from "./sequence"
 
 /**
  * A command which by itself changes nothing,
