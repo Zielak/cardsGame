@@ -1,4 +1,4 @@
-import { logs, map2Array } from "@cardsgame/utils"
+import { limit, logs, map2Array } from "@cardsgame/utils"
 
 import { Bot, isBot } from "../players/bot"
 import { Player } from "../players/player"
@@ -17,7 +17,7 @@ export function getPlayersIndex(state: State, player: Player): number {
 }
 
 export function getNextPlayerIdx(state: State): number {
-  const current = state.currentPlayerIdx
+  const current = limit(state.currentPlayerIdx, 0, state.playersCount - 1)
   return current + 1 === state.playersCount ? 0 : current + 1
 }
 
@@ -26,7 +26,7 @@ export function getNextPlayer(state: State): Player {
 }
 
 export function getPreviousPlayerIdx(state: State): number {
-  const current = state.currentPlayerIdx
+  const current = limit(state.currentPlayerIdx, 0, state.playersCount - 1)
   return current - 1 === -1 ? state.playersCount - 1 : current - 1
 }
 
