@@ -12,12 +12,15 @@ import {
   getKnownConstructor,
   isParent,
   ParentTrait,
-  pickByIdx,
   sortByIdx,
 } from "./parent"
 
 export class ParentArrayTrait implements ParentTrait {
   childrenPointers: string[]
+
+  private _allChildren: any[]
+  private _allChildrenDirty: boolean
+
   hijacksInteractionTarget: boolean
 
   childAdded: ChildAddedHandler
@@ -49,6 +52,7 @@ export class ParentArrayTrait implements ParentTrait {
     const childIdx = targetArray.findIndex((el) => el.idx === idx)
 
     this.childrenPointers.splice(idx, 1)
+    this._allChildrenDirty = true
 
     const removedChild = this[targetArrayName].splice(
       childIdx,
@@ -83,7 +87,8 @@ export class ParentArrayTrait implements ParentTrait {
       entity.idx = 0
       this.childrenPointers.unshift(con.name)
 
-      this.getChildren()
+      this.allChildren
+        .slice()
         .reverse()
         .forEach((child) => {
           child.idx = child.idx + 1
@@ -98,7 +103,8 @@ export class ParentArrayTrait implements ParentTrait {
         .slice(0, arg1)
         .concat([con.name], this.childrenPointers.slice(arg1))
 
-      this.getChildren()
+      this.allChildren
+        .slice()
         .reverse()
         .filter((child) => child.idx >= arg1)
         .forEach((child) => {
@@ -112,6 +118,7 @@ export class ParentArrayTrait implements ParentTrait {
 
     entity.parent = this
     targetArray.push(entity)
+    this._allChildrenDirty = true
     executeHook.call(this, "childAdded", entity)
   }
 
@@ -165,14 +172,28 @@ export class ParentArrayTrait implements ParentTrait {
     // 3. plop entry to desired target place
     child.idx = to
 
+    this._allChildrenDirty = true
     this.updateIndexes()
+  }
+
+  private get allChildren(): any[] {
+    if (this._allChildrenDirty) {
+      this._allChildren = globalEntitiesContext.registeredChildren
+        .reduce((prev, con) => {
+          prev.push(...this[`children${con.name}`])
+          return prev
+        }, [])
+        .sort(sortByIdx)
+      this._allChildrenDirty = false
+    }
+    return this._allChildren
   }
 
   /**
    * Number of child elements
    */
   countChildren(): number {
-    return this.childrenPointers.length
+    return this.allChildren.length
   }
 
   /**
@@ -183,34 +204,28 @@ export class ParentArrayTrait implements ParentTrait {
       return []
     }
 
-    return globalEntitiesContext.registeredChildren
-      .reduce((prev, con) => {
-        prev.push(...this[`children${con.name}`])
-        return prev
-      }, [])
-      .sort(sortByIdx)
+    return this.allChildren
   }
 
   /**
    * Get one direct child of `parent` by its `idx`
    */
   getChild<T extends ChildTrait>(idx: number): T {
-    const targetArray = this[`children${this.childrenPointers[idx]}`]
-    return targetArray && targetArray.find(pickByIdx(idx))
+    return this.allChildren[idx]
   }
 
   /**
    * Get the element with highest 'idx' value
    */
   getTop<T extends ChildTrait>(): T {
-    return this.getChild<T>(Math.max(0, this.childrenPointers.length - 1))
+    return this.allChildren[Math.max(0, this.allChildren.length - 1)]
   }
 
   /**
    * Get the element with the lowest 'idx' value
    */
   getBottom<T extends ChildTrait>(): T {
-    return this.getChild<T>(0)
+    return this.allChildren[0]
   }
 
   isIndexOutOfBounds(index: number): boolean {
@@ -220,7 +235,7 @@ export class ParentArrayTrait implements ParentTrait {
   protected updateIndexes(): void {
     this.childrenPointers = []
 
-    this.getChildren().forEach((child, newIdx) => {
+    this.allChildren.forEach((child, newIdx) => {
       const con = globalEntitiesContext.registeredChildren.find(
         (c) => child instanceof c
       )
@@ -245,6 +260,7 @@ ParentArrayTrait["trait"] = function constructorParentArrayTrait(
   options: Partial<ParentArrayTrait> = {}
 ): void {
   this.childrenPointers = []
+  this._allChildren = []
 
   this.hijacksInteractionTarget = def(
     options.hijacksInteractionTarget,
