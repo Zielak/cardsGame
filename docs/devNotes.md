@@ -15,6 +15,15 @@ npm run build:client-w
 npm run build:server-w
 ```
 
+# Maintenance
+
+Keep generating changelog with these, until we hit 1.0
+
+```
+npx conventional-changelog --preset angular --release-count 0 --outfile ./CHANGELOG.md --verbose
+npx lerna exec --concurrency 1 --stream -- 'conventional-changelog --preset angular --release-count 0 --commit-path $PWD --pkg $PWD/package.json --outfile $PWD/CHANGELOG.md --verbose'
+```
+
 # Server
 
 ## Traits updates and QueryRunner

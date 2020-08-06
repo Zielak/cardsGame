@@ -3,7 +3,8 @@
   "packages": ["packages/*"],
   "command": {
     "publish": {
-      "ignoreChanges": ["*.md", "test/**"]
+      "ignoreChanges": ["*.md", "test/**"],
+      "message": "chore(release): publish %s"
     },
     "version": {
       "allowBranch": "master"
