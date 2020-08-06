@@ -22,7 +22,7 @@ export class DealCards extends Command {
 
   count: number
   step: number
-  onDeckEmptied: () => Command
+  onEmptied: () => Command
 
   /**
    * Deals `count` cards from this container to other containers.
@@ -30,9 +30,6 @@ export class DealCards extends Command {
    *
    * @param source will take cards from here
    * @param targets and put them in these containers
-   * @param {DealCardsOptions} options
-   * @param {number=Infinity} options.count how many cards should I deal for each target in total?
-   * @param {number=1} options.step number of cards on each singular deal
    */
   constructor(
     source: Target<ParentTrait>,
@@ -45,51 +42,65 @@ export class DealCards extends Command {
 
     this.count = def(options.count, Infinity)
     this.step = Math.max(def(options.step, 1), 1)
-    this.onDeckEmptied = options.onDeckEmptied
+    this.onEmptied = options.onEmptied
   }
 
   async execute(state: State, room: Room<any>): Promise<void> {
     const _ = this.constructor.name
     logs.notice(_, "count:", this.count, ", step:", this.step)
 
-    let targetI = 0
-    let stepI = 0
+    let targetIter = 0
+    let stepIdx = 0
 
     const source = this.source.get()
     const targets = this.targets.get()
 
     const maxDeals = this.count * targets.length
 
-    let childrenLeft
+    let childrenLeft: number
+    let currentTarget: ParentTrait
 
     do {
-      const currentTarget = targets[targetI % targets.length]
-
-      // This command thing moves the entity
-      await this.subExecute(
-        state,
-        room,
-        new ChangeParent(() => source.getTop(), currentTarget)
-      )
       childrenLeft = source.countChildren()
+      if (childrenLeft > 0) {
+        currentTarget = targets[targetIter % targets.length]
+        // Move the entity
+        await this.subExecute(
+          state,
+          room,
+          new ChangeParent(() => source.getTop(), currentTarget)
+        )
 
-      // Pick next target if we dealt `this.step` cards to current target
-      if (++stepI % this.step === 0) {
-        targetI++
+        // Pick next target if we dealt `this.step` cards to current target
+        if (++stepIdx % this.step === 0) {
+          targetIter++
+        }
+
+        childrenLeft = source.countChildren()
       }
 
-      if (childrenLeft === 0 && targetI < maxDeals && maxDeals !== Infinity) {
-        const onDeckEmptiedCommand = this.onDeckEmptied && this.onDeckEmptied()
-        if (!onDeckEmptiedCommand) {
-          throw new Error(
-            `Source emptied before dealing every requested card. Add onDeckEmptied in options to for example refill the source with new entities.`
+      if (childrenLeft === 0) {
+        // Try refilling the container
+        const onEmptiedCommand = this.onEmptied && this.onEmptied()
+        if (!onEmptiedCommand) {
+          logs.warn(
+            "DealCards",
+            `Source emptied before dealing every requested card. Add onEmptied in options to for example refill the source with new entities.`
           )
+          break
+        } else {
+          await this.subExecute(state, room, onEmptiedCommand)
+
+          // Confirm it actually replenished the source
+          childrenLeft = source.countChildren()
+          if (childrenLeft === 0) {
+            break
+          }
         }
-        await this.subExecute(state, room, onDeckEmptiedCommand)
       }
     } while (
       (maxDeals === Infinity && childrenLeft > 0) ||
-      (maxDeals !== Infinity && targetI < maxDeals)
+      (maxDeals !== Infinity && targetIter < maxDeals)
     )
 
     logs.notice(_, `Done dealing cards.`)
@@ -97,7 +108,16 @@ export class DealCards extends Command {
 }
 
 interface DealCardsOptions {
+  /**
+   * How many cards should I deal for each target in total?
+   */
   count?: number
+  /**
+   * Number of cards on each singular deal
+   */
   step?: number
-  onDeckEmptied?: () => Command
+  /**
+   *
+   */
+  onEmptied?: () => Command
 }

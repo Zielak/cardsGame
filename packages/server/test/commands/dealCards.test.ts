@@ -1,6 +1,7 @@
 import { times } from "@cardsgame/utils"
 
 import { Command } from "../../src"
+import { Noop } from "../../src/commands"
 import { ChangeParent } from "../../src/commands/changeParent"
 import { DealCards } from "../../src/commands/dealCards"
 import { State } from "../../src/state/state"
@@ -108,15 +109,29 @@ describe("Emptying source", () => {
   test("expecting more cards then there are in a deck", async () => {
     const cmd = new DealCards(source, [playerA, playerB], { count: 10 })
 
-    await expect(cmd.execute(state, room)).rejects.toThrowError(
-      /Source emptied before dealing/
-    )
+    expect(source.countChildren()).toBe(7)
+    await cmd.execute(state, room)
+
+    expect(source.countChildren()).toBe(0)
+    expect(playerA.countChildren()).toBe(4)
+    expect(playerB.countChildren()).toBe(3)
   })
 
-  it("handles onDeckEmptied", async () => {
+  test("emptying with very high step", async () => {
+    const cmd = new DealCards(source, [playerA, playerB], { step: 5 })
+
+    expect(source.countChildren()).toBe(7)
+    await cmd.execute(state, room)
+
+    expect(source.countChildren()).toBe(0)
+    expect(playerA.countChildren()).toBe(5)
+    expect(playerB.countChildren()).toBe(2)
+  })
+
+  it("handles onEmptied", async () => {
     const cmd = new DealCards(source, [playerA, playerB], {
       count: 10,
-      onDeckEmptied: (): Command =>
+      onEmptied: (): Command =>
         new ChangeParent(() => backup.getChildren(), source),
     })
 
@@ -124,5 +139,34 @@ describe("Emptying source", () => {
 
     expect(playerA.countChildren()).toBe(10)
     expect(playerB.countChildren()).toBe(10)
+  })
+
+  test("onEmptied not replenishing the source container", async () => {
+    const cmd = new DealCards(source, [playerA, playerB], {
+      count: 10,
+      onEmptied: (): Command => new Noop(),
+    })
+
+    await cmd.execute(state, room)
+
+    expect(source.countChildren()).toBe(0)
+    expect(playerA.countChildren()).toBe(4)
+    expect(playerB.countChildren()).toBe(3)
+  })
+
+  it("calls onEmptied on last card to pick which also is last in source", async () => {
+    source = new LabeledParent(state, { name: "source" })
+    new LabeledEntity(state, { parent: source })
+
+    const spy = jest.fn()
+    const cmd = new DealCards(source, playerA, {
+      count: 1,
+      onEmptied: spy,
+    })
+
+    await cmd.execute(state, room)
+
+    expect(spy).toHaveBeenCalled()
+    expect(playerA.countChildren()).toBe(1)
   })
 })
