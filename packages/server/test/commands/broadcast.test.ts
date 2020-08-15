@@ -5,9 +5,7 @@ import { RoomMock } from "../helpers/roomMock"
 let state: State
 let room
 const messageType = "testing"
-const message: ServerMessage = {
-  data: 123,
-}
+const message = 123
 
 beforeEach(() => {
   state = new State()
@@ -36,7 +34,8 @@ describe("execute", () => {
 
     new Broadcast(messageType, message).execute(state, room)
 
-    expect(room.broadcast).toHaveBeenCalledWith(messageType, message)
+    expect(room.broadcast.mock.calls[0][0]).toBe(messageType)
+    expect(room.broadcast.mock.calls[0][1]).toMatchObject({ data: message })
   })
 
   it("calls room.broadcast with just messageType", () => {
@@ -44,7 +43,8 @@ describe("execute", () => {
 
     new Broadcast(messageType).execute(state, room)
 
-    expect(room.broadcast).toHaveBeenCalledWith(messageType, undefined)
+    expect(room.broadcast.mock.calls[0][0]).toBe(messageType)
+    expect(room.broadcast.mock.calls[0][1]).toBeUndefined()
   })
 })
 
@@ -57,7 +57,7 @@ describe("undo", () => {
     expect(room.broadcast).toHaveBeenCalled()
     expect(room.broadcast.mock.calls[0][0]).toBe(messageType)
     expect(room.broadcast.mock.calls[0][1]).toMatchObject({
-      ...message,
+      data: message,
       undo: true,
     })
   })
