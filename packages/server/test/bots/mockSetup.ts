@@ -6,7 +6,8 @@ const ScreamAction: ActionTemplate<State> = {
   conditions: (con) => {
     con("data").is.defined()
   },
-  command: (state, event) => new commands.Broadcast(event.data),
+  command: (state, event) =>
+    new commands.Broadcast(event.messageType, event.data),
 }
 
 const PlayCardAction: ActionTemplate<State> = {
