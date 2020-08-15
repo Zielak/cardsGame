@@ -27,12 +27,12 @@ beforeEach(() => {
 test("Bot1, their turn, can pick only S and C", () => {
   const goal = pickNeuron(rootNeuron, state, bot1)
   expect(goal.neuron.name).toBe(PlayCardGoal.name)
-  expect(goal.event.entityPath).toBeDefined()
+  expect(goal.message.entityPath).toBeDefined()
 })
 
 test("Bot2, not their turn, can only scream", () => {
   const goal = pickNeuron(rootNeuron, state, bot2)
   expect(goal.neuron.name).toBe(ScreamYESGoal.name)
-  expect(goal.event.command).toBe("scream")
-  expect(goal.event.data).toBe("yes")
+  expect(goal.message.messageType).toBe("scream")
+  expect(goal.message.data).toBe("yes")
 })

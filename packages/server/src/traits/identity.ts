@@ -2,7 +2,7 @@ import { State } from "../state/state"
 
 export class IdentityTrait {
   // Value is set in State._registerEntity()
-  readonly id: EntityID
+  readonly id: number
 }
 
 IdentityTrait["trait"] = function constructorIdentityTrait(state: State): void {

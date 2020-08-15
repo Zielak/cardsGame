@@ -51,7 +51,7 @@ export interface BotNeuron<S extends State> {
 
   /**
    * Make bot generate additional `data`, if needed.
-   * Will be passed to `ClientPlayerEvent.data`
+   * Will be passed to `ClientPlayerMessage.data`
    */
   playerEventData?: (state: S, bot: Bot) => any
 }

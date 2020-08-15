@@ -1,6 +1,6 @@
 import { Command } from "./command"
-import { ClientEventConditions } from "./interaction"
-import { Player, ServerPlayerEvent } from "./players/player"
+import { ClientMessageConditions } from "./interaction"
+import { Player, ServerPlayerMessage } from "./players/player"
 import { QuerableProps } from "./queryRunner"
 import { State } from "./state/state"
 
@@ -17,16 +17,16 @@ export interface ActionTemplate<S extends State> {
   /**
    * This action will be ignored when one of the assertions fail.
    *
-   * @param {ClientEventConditions<S>} con contains references to "command",
+   * @param {ClientMessageConditions<S>} con contains references to "command",
    * "event", "data", "player" and "entity". Default subject is set to the game state.
    */
-  conditions: (con: ClientEventConditions<S>) => void
+  conditions: (con: ClientMessageConditions<S>) => void
 
   /**
    * Generate a `Command` to run for this action.
    * Use `Sequence()` if you need to run multiple commands.
    */
-  command: (state: S, event: ServerPlayerEvent) => Command
+  command: (state: S, event: ServerPlayerMessage) => Command
 }
 
 export type ActionsSet<S extends State> = Set<ActionTemplate<S>>

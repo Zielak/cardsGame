@@ -24,7 +24,7 @@ class MyCommand extends Command {
     this.lastX = this.target.get().x
     this.target.get().x += Math.random()*10
 
-    room.broadcast({data: `Hello ${this.name}!`})
+    room.broadcast("message", `Hello ${this.name}!`)
   }
 
   async undo(state, room){

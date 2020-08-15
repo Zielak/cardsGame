@@ -84,7 +84,7 @@ module.exports.Battle = class Battle extends Command {
     }
 
     const subCommands = [
-      new commands.Broadcast({ type: "battleResult", data }),
+      new commands.Broadcast("battleResult", data),
       new commands.Wait(500),
     ]
 

@@ -1,13 +1,8 @@
-// === Entity ===
-
-type EntityID = number
-
 /**
  * Message sent by server, either directly to one client
  * or broadcast to all.
  */
 type ServerMessage = {
-  type: string
   data?: unknown
 
   /**
@@ -17,27 +12,31 @@ type ServerMessage = {
   undo?: boolean
 }
 
-type ClientPlayerEvent = {
+/**
+ * First point of entry has this type.
+ * With Colyseus lib `messageType` comes separately.
+ */
+type RawInteractionClientPlayerMessage = {
   /**
-   * Defaults to `EntityInteraction` when sending via `room.sendInteraction()`.
-   * May be any other Game-specific command.
+   * Custom command's data.
    */
-  command?: string
+  data?: unknown
   /**
    * Interaction-related events ("click", "touchstart"...)
    */
   event?: string
-  /**
-   * Custom command's data.
-   */
-  data?: any
   /**
    * Path to target Entity as an array: `[0,2,0]`
    */
   entityPath?: number[]
 }
 
-type PlayerInteractionEvent = { type: string; data?: any }
+type ClientPlayerMessage = RawInteractionClientPlayerMessage & {
+  /**
+   * Either "EntityInteraction" or game's custom command
+   */
+  messageType: string
+}
 
 /**
  * How to transform current player's containers/entities on client's screen.

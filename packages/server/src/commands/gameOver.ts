@@ -13,10 +13,7 @@ export class GameOver extends Command {
   async execute(state: State, room: Room<any>): Promise<void> {
     state.isGameOver = true
 
-    room.broadcast({
-      type: "gameFinished",
-      data: this.data,
-    })
+    room.broadcast("gameFinished", this.data)
   }
 
   async undo(state: State, room: Room<any>): Promise<void> {

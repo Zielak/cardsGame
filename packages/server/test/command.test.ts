@@ -26,15 +26,6 @@ describe("constructor", () => {
   })
 })
 
-describe("plain Command", () => {
-  it(`executes with empty list`, () => {
-    const command = new Command()
-
-    expect(async () => await command.execute(state, room)).not.toThrow()
-    expect(async () => await command.undo(state, room)).not.toThrow()
-  })
-})
-
 describe("extended Command", () => {
   it(`executed injected sub commands`, async () => {
     const subCommand = new DummieCommand()

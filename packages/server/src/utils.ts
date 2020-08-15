@@ -1,6 +1,6 @@
 import { map2Array } from "@cardsgame/utils"
 
-import { Player, ServerPlayerEvent } from "./players/player"
+import { Player, ServerPlayerMessage } from "./players/player"
 import { getEntitiesAlongPath } from "./state/helpers"
 import { State } from "./state/state"
 import { isChild } from "./traits/child"
@@ -23,28 +23,31 @@ const sanitizeIdxPath = (value: unknown): number => {
 
 export function populatePlayerEvent(
   state: State,
-  event: ClientPlayerEvent,
+  message: ClientPlayerMessage,
   clientID: string
-): ServerPlayerEvent
+): ServerPlayerMessage
 export function populatePlayerEvent(
   state: State,
-  event: ClientPlayerEvent,
+  message: ClientPlayerMessage,
   player: Player
-): ServerPlayerEvent
+): ServerPlayerMessage
+/**
+ * Converts players message from the Client into `ServerPlayerMessage`.
+ * Populates message with known server-side data
+ */
 export function populatePlayerEvent(
   state: State,
-  event: ClientPlayerEvent,
+  message: ClientPlayerMessage,
   clientOrPlayer: string | Player
-): ServerPlayerEvent {
-  // TODO: event may be an empty object. Maybe push that as last and optional argument?
-  // Populate event with server-side known data
-  const newEvent: ServerPlayerEvent = {
-    command: event.command,
-    data: event.data,
+): ServerPlayerMessage {
+  const newEvent: ServerPlayerMessage = {
+    messageType: message.messageType,
+    data: message.data,
     timestamp: +Date.now(),
   }
-  if (event.entityPath) {
-    newEvent.entityPath = event.entityPath.map(sanitizeIdxPath)
+
+  if (message.entityPath) {
+    newEvent.entityPath = message.entityPath.map(sanitizeIdxPath)
     newEvent.entities = getEntitiesAlongPath(state, newEvent.entityPath)
       .reverse()
       .filter((target) => (isChild(target) ? target.isInteractive() : false))

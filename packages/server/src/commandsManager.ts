@@ -6,13 +6,13 @@ import {
   filterActionsByConditions,
   filterActionsByInteraction,
 } from "./interaction"
-import { Player, ServerPlayerEvent } from "./players/player"
+import { Player, ServerPlayerMessage } from "./players/player"
 import { Room } from "./room"
 import { State } from "./state/state"
 
 export class CommandsManager<S extends State> {
   history: Command[] = []
-  incoming: Map<Player, ServerPlayerEvent> = new Map()
+  incoming: Map<Player, ServerPlayerMessage> = new Map()
 
   currentCommand: Command
   actionPending = false
@@ -26,7 +26,7 @@ export class CommandsManager<S extends State> {
   /**
    * @returns `false` when command throws with an error/fails to execute.
    */
-  handlePlayerEvent(event: ServerPlayerEvent): Promise<boolean> {
+  handlePlayerEvent(message: ServerPlayerMessage): Promise<boolean> {
     const { state } = this.room
 
     if (this.actionPending) {
@@ -37,25 +37,25 @@ export class CommandsManager<S extends State> {
         `Other action is still in progress, tossing new one to "incoming"...`
       )
       // TODO: actually handle that...
-      this.incoming.set(event.player, event)
+      this.incoming.set(message.player, message)
     }
 
     let actions = Array.from(this.possibleActions.values())
     let subCountActions = actions.length
 
     logs.group(chalk.blue("Interactions"))
-    actions = actions.filter(filterActionsByInteraction(event))
+    actions = actions.filter(filterActionsByInteraction(message))
     logs.groupEnd(`actions count: ${subCountActions} => ${actions.length}`)
     subCountActions = actions.length
 
     logs.group(chalk.blue("Conditions"))
-    actions = actions.filter(filterActionsByConditions(state, event))
+    actions = actions.filter(filterActionsByConditions(state, message))
     logs.groupEnd(`actions count: ${subCountActions} => ${actions.length}`)
 
     if (actions.length === 0) {
       throw new Error(
         `No actions found for "${
-          event.player ? event.player.clientID : event.event
+          message.player ? message.player.clientID : message.event
         }" event, ignoring...`
       )
     }
@@ -67,7 +67,7 @@ export class CommandsManager<S extends State> {
       )
     }
 
-    return this.executeCommand(state, actions[0].command(state, event))
+    return this.executeCommand(state, actions[0].command(state, message))
   }
 
   async executeCommand(state: S, command: Command): Promise<boolean> {

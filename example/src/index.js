@@ -137,11 +137,11 @@ class GameHandler {
     const clientID = room.sessionID
 
     EL.start_btn.addEventListener("click", () => {
-      room.send({ command: "start" })
+      room.send("start")
     })
 
     EL.addBot_btn.addEventListener("click", () => {
-      room.send({ command: "add_bot" })
+      room.send("bot_add")
     })
 
     EL.player.deck.addEventListener("click", (event) => {
@@ -150,18 +150,18 @@ class GameHandler {
       room.sendInteraction(event, idxPath.split(","))
     })
 
-    room.onMessage = (message) => {
-      console.log("MSG:", message.type, message.data)
+    room.onMessage = (messageType, message) => {
+      console.log("MSG:", messageType, message)
 
-      if (message.type === "battleResult") {
-        if (message.data.outcome === "tie") {
+      if (messageType === "battleResult") {
+        if (message.outcome === "tie") {
           UI.playersTie()
         } else {
-          UI.playerLost(message.data.loser === clientID)
+          UI.playerLost(message.loser === clientID)
         }
       }
-      if (message.type === "gameOver") {
-        UI.gameOver(message.data)
+      if (messageType === "gameOver") {
+        UI.gameOver(message)
       }
     }
 

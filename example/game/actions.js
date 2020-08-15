@@ -11,7 +11,7 @@ const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
 /**
  * Ante is optional, and won't be added in early stages of the game
  * @param {WarState} state
- * @param {ServerPlayerEvent} event
+ * @param {ServerPlayerMessage} event
  */
 const PlayCardWithAnte = (state, event) => {
   const container = state.query({ owner: event.player })
@@ -57,7 +57,7 @@ const PickCard = {
   },
   /**
    * @param {WarState} state
-   * @param {ServerPlayerEvent} event
+   * @param {ServerPlayerMessage} event
    */
   command: (state, event) => {
     // There's exactly one last player who didn't pick yet

@@ -106,11 +106,8 @@ class WarGame extends Room {
         .queryAll({ name: "playersDeck" })
         .find((deck) => deck.countChildren() > 0).owner
 
-      this.broadcast({
-        type: "gameOver",
-        data: {
-          winner: winner.clientID,
-        },
+      this.broadcast("gameOver", {
+        winner: winner.clientID,
       })
     }
   }

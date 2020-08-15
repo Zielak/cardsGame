@@ -4,6 +4,7 @@ import { Bot } from "../players/bot"
 import { Player } from "../players/player"
 import { Room } from "../room"
 import { State } from "../state/state"
+import { populatePlayerEvent } from "../utils"
 import { BotNeuron } from "./botNeuron"
 import { pickNeuron } from "./pickNeuron"
 
@@ -83,7 +84,7 @@ export class BotRunner<S extends State> {
 
   private executeThough(bot: Bot): void {
     logs.verbose("Bots.executeThough")
-    const { event, neuron } = bot.currentThought
+    const { message, neuron } = bot.currentThought
 
     if (!neuron.action) {
       throw new Error(
@@ -95,8 +96,10 @@ export class BotRunner<S extends State> {
     bot.currentThoughtTimer = null
     logs.verbose("\n===============[ BOT MESSAGE ]================\n")
 
+    const newMessage = populatePlayerEvent(this.room.state, message, bot)
+
     this.room
-      .handleMessage(bot.clientID, event)
+      .handleMessage(newMessage)
       .catch((e) =>
         logs.error(
           "Bot.act",

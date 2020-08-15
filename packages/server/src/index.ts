@@ -1,4 +1,4 @@
-export { Server } from "colyseus"
+export { LobbyRoom, Server } from "colyseus"
 export { RoomConstructor } from "colyseus/lib/Room"
 export { Schema, ArraySchema, MapSchema } from "@colyseus/schema"
 
@@ -23,11 +23,11 @@ export * from "./actionTemplate"
 export { Conditions } from "./conditions"
 export { getFlag, setFlag } from "./conditions/utils"
 export { BotConditions, EntityConditions } from "./bots/conditions"
-export { ClientEventConditions } from "./interaction"
+export { ClientMessageConditions } from "./interaction"
 
 export { testAction } from "./interaction"
 
-export { Player, ServerPlayerEvent } from "./players/player"
+export { Player, ServerPlayerMessage } from "./players/player"
 export { Bot } from "./players/bot"
 
 export * from "./traits/boxModel"

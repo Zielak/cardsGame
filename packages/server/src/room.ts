@@ -1,5 +1,4 @@
 import { Client, Room as colRoom } from "colyseus"
-import { BroadcastOptions } from "colyseus/lib/Room"
 
 import {
   chalk,
@@ -20,7 +19,7 @@ import { Command } from "./command"
 import { Sequence } from "./commands"
 import { CommandsManager } from "./commandsManager"
 import { Bot, BotOptions } from "./players/bot"
-import { Player, ServerPlayerEvent } from "./players/player"
+import { Player, ServerPlayerMessage } from "./players/player"
 import { State } from "./state/state"
 import { hasLabel, LabelTrait } from "./traits/label"
 import { populatePlayerEvent } from "./utils"
@@ -69,18 +68,59 @@ export class Room<S extends State> extends colRoom<S> {
     this.commandsManager = new CommandsManager<S>(this)
     this.botRunner = new BotRunner<S>(this)
 
+    this.onMessage("start", (client: Client, message: any) => {
+      logs.verbose("\n================[ MESSAGE ]==================\n")
+      if (!this.state.isGameOver) {
+        return this.handleGameStart()
+      } else {
+        return this.handleGameRestart()
+      }
+    })
+
+    // TODO: Typedef all these specific message types
+    this.onMessage("bot_add", (client, message: { intelligence: number }) => {
+      this.addBot({
+        actionDelay: () => Math.random() + 0.5,
+        intelligence: def(message?.intelligence, 0.5),
+      })
+    })
+
+    this.onMessage("bot_remove", (client, message: { id: string }) => {
+      this.removeBot(message?.id)
+    })
+
+    this.onMessage(
+      "EntityInteraction",
+      (client, message: RawInteractionClientPlayerMessage) => {
+        const newMessage = populatePlayerEvent(
+          this.state,
+          { ...message, messageType: "EntityInteraction" },
+          client.id
+        )
+        this.handleMessage(newMessage).catch((e) =>
+          logs.error(
+            "ROOM",
+            `EntityInteraction failed for client: "${client.id}": ${e}`
+          )
+        )
+      }
+    )
+
+    this.onMessage("*", (client, messageType: string, message: any) => {
+      const newMessage = populatePlayerEvent(
+        this.state,
+        { ...message, messageType },
+        client.id
+      )
+      this.handleMessage(newMessage).catch((e) =>
+        logs.error(
+          "ROOM",
+          `message type "${messageType}" failed for client: "${client.id}": ${e}`
+        )
+      )
+    })
+
     this.onInitGame(options)
-  }
-
-  /**
-   * Send message to EVERY connected client.
-   * @param data
-   * @param options
-   */
-  broadcast(data: ServerMessage, options?: BroadcastOptions): boolean {
-    logs.notice("BROADCAST 📢", data)
-
-    return super.broadcast(data, options)
   }
 
   /**
@@ -161,59 +201,27 @@ export class Room<S extends State> extends colRoom<S> {
     }
   }
 
-  onMessage(client: Client, event: ClientPlayerEvent): void {
-    logs.verbose("\n================[ MESSAGE ]==================\n")
-
-    // Player signals START
-    if (event.command === "start") {
-      if (!this.state.isGameOver) {
-        return this.handleGameStart()
-      } else {
-        return this.handleGameRestart()
-      }
-    }
-    if (event.command === "bot_add") {
-      this.addBot({
-        actionDelay: () => Math.random() + 0.5,
-        intelligence: def(event.data?.intelligence, 0.5),
-      })
-      return
-    }
-    if (event.command === "bot_remove") {
-      this.removeBot(event.data?.id)
-      return
-    }
-
-    this.handleMessage(client.id, event).catch((e) =>
-      logs.error("ROOM", `action() failed for client: "${client.id}": ${e}`)
-    )
-  }
-
   /**
    * Handles new incoming event from client (human or bot).
    * @returns `true` if action was executed, `false` if not, or if it failed.
    */
-  async handleMessage(
-    clientID: string,
-    event: ClientPlayerEvent
-  ): Promise<boolean> {
+  async handleMessage(message: ServerPlayerMessage): Promise<boolean> {
     let result = false
-    const newEvent = populatePlayerEvent(this.state, event, clientID)
 
-    if (!newEvent.player) {
-      logs.error("parseMessage", "You're not a player, get out!", event)
+    if (!message.player) {
+      logs.notice("handleMessage", "You're not a player, get out!", message)
       return false
     }
 
-    debugLogMessage(newEvent)
+    debugLogMessage(message)
 
     if (this.state.isGameOver) {
-      logs.warn("handleMessage", "Game's already over!")
+      logs.notice("handleMessage", "Game's already over!")
       return false
     }
 
     try {
-      result = await this.commandsManager.handlePlayerEvent(newEvent)
+      result = await this.commandsManager.handlePlayerEvent(message)
     } catch (e) {
       logs.notice("handleMessage FAILED", e.message)
       return false
@@ -230,18 +238,18 @@ export class Room<S extends State> extends colRoom<S> {
     const { state } = this
 
     if (state.isGameStarted) {
-      logs.notice("onMessage", `Game is already started, ignoring...`)
+      logs.notice("handleGameStart", `Game is already started, ignoring...`)
       return
     }
     if (this.canGameStart && !this.canGameStart()) {
       logs.notice(
-        "onMessage",
+        "handleGameStart",
         `Someone requested game start, but we can't go yet...`
       )
       return
     }
 
-    // We can go, convert all connected "clients" into players
+    // We can go, convert all connected clients into players
     shuffle(
       this.clients
         .map((client) => new Player({ clientID: client.id }))
@@ -361,9 +369,11 @@ export class Room<S extends State> extends colRoom<S> {
       `"nextRound" action was called, but "room.onRoundEnd()" is not implemented!`
     )
   }
+
+  onDispose(): void {}
 }
 
-function debugLogMessage(newEvent: ServerPlayerEvent): void {
+function debugLogMessage(message: ServerPlayerMessage): void {
   const minifyTarget = (e: LabelTrait): string => {
     return `${e.type}:${e.name}`
   }
@@ -371,26 +381,26 @@ function debugLogMessage(newEvent: ServerPlayerEvent): void {
     return `${p.name}[${p.clientID}]`
   }
 
-  const entity = hasLabel(newEvent.entity) ? minifyTarget(newEvent.entity) : ""
+  const entity = hasLabel(message.entity) ? minifyTarget(message.entity) : ""
   const entities =
-    newEvent.entities &&
-    newEvent.entities
+    message.entities &&
+    message.entities
       .map((e) => (hasLabel(e) ? minifyTarget(e) : "?"))
       .join(", ")
   const entityPath =
-    newEvent.entityPath && chalk.green(newEvent.entityPath.join(", "))
+    message.entityPath && chalk.green(message.entityPath.join(", "))
 
-  const { command, event, data } = newEvent
+  const { data, event } = message
 
-  const playerString = newEvent.player
-    ? `Player: ${minifyPlayer(newEvent.player)} | `
+  const playerString = message.player
+    ? `Player: ${minifyPlayer(message.player)} | `
     : ""
 
   if (IS_CHROME) {
     logs.info(
       "onMessage",
       playerString,
-      `${command} "${event}"`,
+      `${message.messageType}`,
       `\n\tpath: `,
       entityPath,
       ", ",
@@ -406,11 +416,12 @@ function debugLogMessage(newEvent: ServerPlayerEvent): void {
       "onMessage",
       [
         playerString,
-        chalk.white.bold(command),
-        ` "${chalk.yellow(event)}"`,
-        entityPath ? `\n\tpath: [${entityPath}], ` : "",
-        entity ? ` entity:"${entity}"` : "",
-        entities ? `\n\tentities: [${entities}]` : "",
+        chalk.white.bold(message.messageType),
+        event ? ` "${chalk.yellow(event)}"` : "",
+        "\n\t",
+        entityPath ? `path: [${entityPath}], ` : "",
+        entity ? `entity:"${entity}", ` : "",
+        entities ? `entities: [${entities}], ` : "",
         data ? `\n\tdata: ${JSON.stringify(data)}` : "",
       ].join("")
     )

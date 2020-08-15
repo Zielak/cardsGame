@@ -1,13 +1,13 @@
 import { ActionTemplate } from "../src/actionTemplate"
 import { Command } from "../src/command"
 import { CommandsManager } from "../src/commandsManager"
-import { ServerPlayerEvent } from "../src/players/player"
+import { ServerPlayerMessage } from "../src/players/player"
 import { Room } from "../src/room"
 import { State } from "../src/state/state"
 import { populatePlayerEvent } from "../src/utils"
 
 let state: State
-let event: ServerPlayerEvent
+let event: ServerPlayerMessage
 let room: Room<State>
 let manager: CommandsManager<State>
 

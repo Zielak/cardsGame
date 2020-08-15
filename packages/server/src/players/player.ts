@@ -28,7 +28,7 @@ export interface PlayerOptions {
 }
 
 // Event from client, with stuff auto filled when coming to server
-export type ServerPlayerEvent = ClientPlayerEvent & {
+export type ServerPlayerMessage = ClientPlayerMessage & {
   player?: Player
   entity?: unknown
   entities?: unknown[]

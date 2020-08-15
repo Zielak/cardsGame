@@ -1,13 +1,13 @@
 import { getPlayersIndex } from "../../src"
 import { Grid } from "../../src/entities/grid"
-import { Player, ServerPlayerEvent } from "../../src/players/player"
+import { Player, ServerPlayerMessage } from "../../src/players/player"
 import { State } from "../../src/state/state"
 import { ConditionsMock } from "../helpers/conditionsMock"
 import { SelectableParent } from "../helpers/selectableParent"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 
 let state: State
-let event: ServerPlayerEvent
+let event: ServerPlayerMessage
 let parent: SmartParent
 let grid: Grid
 let selectableParent: SelectableParent

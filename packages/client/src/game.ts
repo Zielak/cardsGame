@@ -3,6 +3,7 @@ import { RoomAvailable } from "colyseus.js/lib/Room"
 
 import { def, logs } from "@cardsgame/utils"
 
+import { LobbyRoom } from "./lobbyRoom"
 import { Room } from "./room"
 
 interface IGameOptions {
@@ -21,6 +22,7 @@ interface WSSOptions {
 export class Game {
   client: Client
   room: Room
+  lobby: LobbyRoom
 
   wss: WSSOptions
 
@@ -42,6 +44,15 @@ export class Game {
 
   get sessionID(): string {
     return this.room ? this.room.sessionID : undefined
+  }
+
+  async joinLobby(): Promise<LobbyRoom> {
+    if (this.lobby) {
+      return this.lobby
+    }
+    this.lobby = new LobbyRoom(await this.client.joinOrCreate("lobby"))
+
+    return this.lobby
   }
 
   joinOrCreate(roomName: string, options?: Record<string, any>): Promise<Room> {

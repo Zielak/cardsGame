@@ -6,16 +6,19 @@ import {
   isInteractionOfEvent,
 } from "./actionTemplate"
 import { Conditions, ConditionsMethods } from "./conditions"
-import { ServerPlayerEvent } from "./players/player"
+import { ServerPlayerMessage } from "./players/player"
 import { queryRunner } from "./queryRunner"
 import { State } from "./state/state"
 import { isChild } from "./traits/child"
 
 export const filterActionsByInteraction = <S extends State>(
-  event: ServerPlayerEvent
+  message: ServerPlayerMessage
 ) => (action: ActionTemplate<S>): boolean => {
-  if (event.entity && isInteractionOfEntities(action)) {
-    const interactions = action.interaction(event.player)
+  if (
+    message.messageType === "EntityInteraction" &&
+    isInteractionOfEntities(action)
+  ) {
+    const interactions = action.interaction(message.player)
 
     logs.verbose(
       action.name,
@@ -27,7 +30,7 @@ export const filterActionsByInteraction = <S extends State>(
 
     return interactions.some((definition) => {
       // Check props for every interactive entity in `targets` array
-      return event.entities
+      return message.entities
         .filter((currentTarget) =>
           isChild(currentTarget) ? currentTarget.isInteractive() : false
         )
@@ -39,66 +42,69 @@ export const filterActionsByInteraction = <S extends State>(
           return result
         })
     })
-  } else if (event.command && isInteractionOfEvent(action)) {
-    return action.interaction === event.command
+  } else if (message.messageType && isInteractionOfEvent(action)) {
+    return action.interaction === message.messageType
   }
   return false
 }
 
-export class ClientEventConditions<S extends State> extends Conditions<
+export class ClientMessageConditions<S extends State> extends Conditions<
   S,
-  ClientEventConditions<S>
+  ClientMessageConditions<S>
 > {}
 
-export interface ClientEventConditions<S extends State> {
+export interface ClientMessageConditions<S extends State> {
   /**
    * Changes current `subject` to game-specific player command. Defaults to "EntityInteraction"
    */
-  command: ConditionsMethods<S, ClientEventConditions<S>> //string;
+  messageType: ConditionsMethods<S, ClientMessageConditions<S>> //string;
   /**
    * Changes current `subject` to Interaction-related events ("click", "touchstart"...)
    */
-  event: ConditionsMethods<S, ClientEventConditions<S>> //string;
+  event: ConditionsMethods<S, ClientMessageConditions<S>> //string;
   /**
    * Changes current `subject` to event's additional data
    */
-  data: ConditionsMethods<S, ClientEventConditions<S>> //any;
+  data: ConditionsMethods<S, ClientMessageConditions<S>> //any;
   /**
    * Changes current `subject` to interacting `Player`
    */
-  player: ConditionsMethods<S, ClientEventConditions<S>> //Player;
+  player: ConditionsMethods<S, ClientMessageConditions<S>> //Player;
   /**
    * Changes current `subject` to entity being interacted with
    */
-  entity: ConditionsMethods<S, ClientEventConditions<S>> //unknown;
+  entity: ConditionsMethods<S, ClientMessageConditions<S>> //unknown;
 }
 
 export const filterActionsByConditions = <S extends State>(
   state: S,
-  event: ServerPlayerEvent
+  message: ServerPlayerMessage
 ) => (action: ActionTemplate<S>): boolean => {
   logs.group(`action: ${chalk.white(action.name)}`)
 
-  const initialSubjects = Object.keys(event)
+  const initialSubjects = Object.keys(message)
     .filter((key) => !["timestamp", "entities", "entityPath"].includes(key))
     .reduce((o, key) => {
-      o[key] = event[key]
+      o[key] = message[key]
       return o
     }, {})
 
-  const conditionsChecker = new ClientEventConditions<S>(state, initialSubjects)
+  const conditionsChecker = new ClientMessageConditions<S>(
+    state,
+    initialSubjects
+  )
 
   let result = true
-  let message = ""
+  let errorMessage = ""
   try {
     action.conditions(conditionsChecker)
   } catch (e) {
     result = false
-    message = (e as Error).message
+    errorMessage = (e as Error).message
   }
 
-  if (message) {
-    logs.verbose("\t", message)
+  if (errorMessage) {
+    logs.verbose("\t", errorMessage)
   }
 
   logs.groupEnd(
@@ -114,10 +120,10 @@ export const filterActionsByConditions = <S extends State>(
 export const testAction = <S extends State>(
   action: ActionTemplate<S>,
   state: S,
-  event: ServerPlayerEvent
+  message: ServerPlayerMessage
 ): boolean => {
   return (
-    filterActionsByInteraction(event)(action) &&
-    filterActionsByConditions(state, event)(action)
+    filterActionsByInteraction(message)(action) &&
+    filterActionsByConditions(state, message)(action)
   )
 }

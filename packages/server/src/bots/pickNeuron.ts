@@ -89,7 +89,7 @@ const getNeuronsAvailableEvents = <S extends State>(
   state: S,
   bot: Bot,
   neuron: BotNeuron<S>
-): ClientPlayerEvent[] => {
+): ClientPlayerMessage[] => {
   if (!neuron.action) {
     throw new Error(`Neuron without children should have an "action" assigned!`)
   }
@@ -107,7 +107,13 @@ const getNeuronsAvailableEvents = <S extends State>(
 
     const testedEvents = interactionTargets
       // Create events for clicking those entities
-      .map((entity) => ({ entityPath: entity.idxPath } as ClientPlayerEvent))
+      .map(
+        (entity) =>
+          ({
+            messageType: "EntityInteraction",
+            entityPath: entity.idxPath,
+          } as ClientPlayerMessage)
+      )
       // and test if such event would pass
       .filter((event) => {
         logs.verbose("entity.idxPath:", event.entityPath)
@@ -119,18 +125,21 @@ const getNeuronsAvailableEvents = <S extends State>(
 
     return testedEvents
   } else if (isInteractionOfEvent(neuron.action)) {
-    const data = neuron.playerEventData
-      ? neuron.playerEventData(state, bot)
-      : undefined
+    const message: ClientPlayerMessage = {
+      messageType: neuron.action.interaction,
+      data: neuron.playerEventData
+        ? neuron.playerEventData(state, bot)
+        : undefined,
+    }
 
-    return [{ command: neuron.action.interaction, data }]
+    return [message]
   }
   throw new Error(`Somehow got "action" in unexpected format`)
 }
 
 export type ChosenBotNeuronResult<S extends State> = {
+  message: ClientPlayerMessage
   neuron: BotNeuron<S>
-  event: ClientPlayerEvent
 }
 
 const _time = (_start): string => {
@@ -195,7 +204,7 @@ export const pickNeuron = <S extends State>(
       const events = getNeuronsAvailableEvents(state, bot, neuron)
 
       if (events.length > 0) {
-        return { neuron, event: events[0] } as ChosenBotNeuronResult<S>
+        return { neuron, message: events[0] } as ChosenBotNeuronResult<S>
       }
       return undefined
     })
