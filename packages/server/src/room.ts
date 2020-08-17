@@ -109,7 +109,7 @@ export class Room<S extends State> extends colRoom<S> {
     this.onMessage("*", (client, messageType: string, message: any) => {
       const newMessage = populatePlayerEvent(
         this.state,
-        { ...message, messageType },
+        { data: message, messageType },
         client.id
       )
       this.handleMessage(newMessage).catch((e) =>
@@ -147,10 +147,13 @@ export class Room<S extends State> extends colRoom<S> {
   /**
    * Remove bot client from `state.clients`
    */
-  protected removeBot(id: string): void {
-    const bot = this.botClients.find((bot) => bot.clientID === id)
-    if (bot && mapGetIdx(this.state.clients, id)) {
-      mapRemoveEntry(this.state.clients, id)
+  protected removeBot(id?: string): void {
+    const bot = id
+      ? this.botClients.find((bot) => bot.clientID === id)
+      : this.botClients[this.botClients.length - 1]
+
+    if (bot) {
+      mapRemoveEntry(this.state.clients, bot.clientID)
       this.botClients = this.botClients.filter((b) => b !== bot)
     }
   }
