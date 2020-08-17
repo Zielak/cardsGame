@@ -75,7 +75,7 @@ export class BotRunner<S extends State> {
         logs.verbose("Bots", `setting up thought timer: ${delay} sec`)
         bot.currentThoughtTimer = setTimeout(() => {
           this.executeThough(bot)
-        }, delay * 1000)
+        }, delay * 1000 * (goal.neuron.thinkScale || 1))
       }
     } else {
       logs.notice("Bots", `no goals for ${bot.clientID}`)

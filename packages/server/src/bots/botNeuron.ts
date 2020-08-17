@@ -13,19 +13,27 @@ export interface BotNeuron<S extends State> {
    * `Conditions` here is limited, you can only assess current player and game state.
    *
    * Optional, use as _"energy saver"_.
-   * For example, if an action requires player to have certain kind of card in their hand, you can quickly assert that here.
-   * Otherwise, bot will brute force its way to understand if this action can be played.
+   * For example, if an action requires player to have certain kind of card
+   * in their hand, you can quickly assert that here.
+   * Otherwise, bot will brute force its way through all game elements
+   * to understand if this action can be played.
    */
   conditions?: (con: BotConditions<S>) => void
 
   /**
    * With higher values bot is more likely to pick that Neuron.
    *
-   * Bots may try to pick the same child-Neuron multiple times in a row, if the game still allows it (eg.: picking multiple cards of the same rank).
+   * Bots may try to pick the same child-Neuron multiple times in a row,
+   * if the game still allows it (eg.: picking multiple cards of the same rank).
    *
    * Optional, by default the value is considered to be `0`.
    */
   value: (state: S, bot: Bot) => number
+
+  /**
+   * Scale up/down the time it takes the bot to act on this neuron.
+   */
+  thinkScale?: number
 
   /**
    * `ActionTemplate` associated with this Neuron.
