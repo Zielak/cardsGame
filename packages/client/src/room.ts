@@ -2,6 +2,8 @@ import { Room as colyseusRoom } from "colyseus.js/lib/Room"
 
 import { logs } from "@cardsgame/utils"
 
+import { State } from "./schema"
+
 export class Room {
   constructor(public room: colyseusRoom) {
     room.onMessage<ServerMessage>("game.info", (message) => {
@@ -18,6 +20,10 @@ export class Room {
       logs.verbose("? Server:", message)
     })
 
+    room.onStateChange.once((state) => {
+      logs.notice("ROOM, state initiated:", state)
+      this.onFirstStateChange(state)
+    })
     room.onStateChange((state) => {
       logs.notice("ROOM, state updated:", state)
       this.onStateChange(state)
@@ -51,6 +57,10 @@ export class Room {
   onStateChange(state: any): void {}
   /**
    * @override
+   */
+  onFirstStateChange(state: any): void {}
+  /**
+   * @override
    * @param {number} code webSocket shutdown code
    */
   onLeave(code: number): void {}
@@ -79,6 +89,12 @@ export class Room {
     entityIdxPath: number[],
     data = undefined
   ): void {
+    logs.verbose(
+      "Sending Interaction:",
+      event.type,
+      "entityIdxPath:",
+      entityIdxPath
+    )
     const playerEvent: RawInteractionClientPlayerMessage = {
       event: event.type,
       entityPath: entityIdxPath,
@@ -98,7 +114,7 @@ export class Room {
     this.room.leave()
   }
 
-  get state(): any {
+  get state(): State {
     return this.room ? this.room.state : undefined
   }
 

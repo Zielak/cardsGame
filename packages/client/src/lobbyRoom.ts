@@ -12,17 +12,14 @@ export class LobbyRoom {
   constructor(public room: colyseusRoom) {
     room.onMessage<RoomAvailable[]>("rooms", (rooms) => {
       this.onInit(rooms)
-      logs.verbose("Lobby", "init", rooms)
     })
 
     room.onMessage<[string, RoomAvailable]>("+", ([roomId, room]) => {
       this.onAdd(room)
-      logs.verbose("Lobby", "++", room.name, roomId)
     })
 
     room.onMessage<string>("-", (roomId) => {
       this.onRemove(roomId)
-      logs.verbose("Lobby", "--", roomId)
     })
 
     room.onLeave((code) => {

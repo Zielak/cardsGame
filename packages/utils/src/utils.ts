@@ -11,10 +11,10 @@ export const noop = (): void => {}
  * and its result is used for the next call
  * @param initial value to be passed through the pipeline
  */
-export const compose = (
+export const compose = <T>(
   value: unknown,
   ...functions: ((...args) => any)[]
-): any => {
+): T => {
   return functions.reduce((arg, fn) => {
     if (typeof fn === "function") {
       return fn(arg)
@@ -25,7 +25,7 @@ export const compose = (
         `utils/compose, I expected a function here, got "${typeof fn}" instead...`
       )
     }
-  }, value)
+  }, value as T)
 }
 
 /**
