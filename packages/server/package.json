@@ -24,6 +24,6 @@
   "dependencies": {
     "@cardsgame/types": "file:../types",
     "@cardsgame/utils": "file:../utils",
-    "colyseus": "^0.13.7"
+    "colyseus": "^0.14.2"
   }
 }

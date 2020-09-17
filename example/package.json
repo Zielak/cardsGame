@@ -12,10 +12,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@cardsgame/client": "^0.8.0",
-    "@cardsgame/server": "^0.8.0",
-    "@cardsgame/utils": "^0.8.0",
-    "@cardsgame/types": "^0.8.0",
+    "@cardsgame/client": "file:../packages/client",
+    "@cardsgame/server": "file:../packages/server",
+    "@cardsgame/utils": "file:../packages/utils",
+    "@cardsgame/types": "file:../packages/types",
     "express": "^4.17.1",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12"

@@ -1,16 +1,6 @@
 import { Client, Room as colRoom } from "colyseus"
 
-import {
-  chalk,
-  def,
-  IS_CHROME,
-  logs,
-  map2Array,
-  mapAdd,
-  mapGetIdx,
-  mapRemoveEntry,
-  shuffle,
-} from "@cardsgame/utils"
+import { chalk, def, IS_CHROME, logs, shuffle } from "@cardsgame/utils"
 
 import { ActionsSet } from "./actionTemplate"
 import { BotNeuron } from "./bots/botNeuron"
@@ -153,7 +143,7 @@ export class Room<S extends State> extends colRoom<S> {
       : this.botClients[this.botClients.length - 1]
 
     if (bot) {
-      mapRemoveEntry(this.state.clients, bot.clientID)
+      this.state.clients.delete(bot.clientID)
       this.botClients = this.botClients.filter((b) => b !== bot)
     }
   }
@@ -167,10 +157,9 @@ export class Room<S extends State> extends colRoom<S> {
 
     if (
       !state.isGameStarted &&
-      map2Array(state.clients).every((clientID) => id !== clientID)
+      Array.from(state.clients.values()).every((clientID) => id !== clientID)
     ) {
-      mapAdd(state.clients, id)
-      return true
+      return typeof state.clients.add(id) === "number"
     }
     return false
   }
@@ -179,7 +168,7 @@ export class Room<S extends State> extends colRoom<S> {
    * Remove human client from `state.clients`
    */
   protected removeClient(id: string): void {
-    mapRemoveEntry(this.state.clients, id)
+    this.state.clients.delete(id)
   }
 
   onJoin(newClient: Client): void {
@@ -274,7 +263,7 @@ export class Room<S extends State> extends colRoom<S> {
     const { state } = this
 
     // We can go, shuffle players into new seats.
-    shuffle(map2Array(state.players)).forEach((player, idx) => {
+    shuffle(Array.from(state.players.values())).forEach((player, idx) => {
       state.players[idx] = player
     })
 

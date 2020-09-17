@@ -1,4 +1,4 @@
-import { limit, logs, map2Array } from "@cardsgame/utils"
+import { limit, logs } from "@cardsgame/utils"
 
 import { Bot, isBot } from "../players/bot"
 import { Player } from "../players/player"
@@ -11,14 +11,12 @@ import { State } from "./state"
  * Useful if you happen to have just a `Player` reference at hand.
  */
 export function getPlayersIndex(state: State, player: Player): number {
-  return parseInt(
-    Object.keys(state.players).find((idx) => state.players[idx] === player)
-  )
+  return state.players.findIndex((p) => p === player)
 }
 
 export function getNextPlayerIdx(state: State): number {
-  const current = limit(state.currentPlayerIdx, 0, state.playersCount - 1)
-  return current + 1 === state.playersCount ? 0 : current + 1
+  const current = limit(state.currentPlayerIdx, 0, state.players.length - 1)
+  return current + 1 === state.players.length ? 0 : current + 1
 }
 
 export function getNextPlayer(state: State): Player {
@@ -26,8 +24,8 @@ export function getNextPlayer(state: State): Player {
 }
 
 export function getPreviousPlayerIdx(state: State): number {
-  const current = limit(state.currentPlayerIdx, 0, state.playersCount - 1)
-  return current - 1 === -1 ? state.playersCount - 1 : current - 1
+  const current = limit(state.currentPlayerIdx, 0, state.players.length - 1)
+  return current - 1 === -1 ? state.players.length - 1 : current - 1
 }
 
 export function getPreviousPlayer(state: State): Player {
@@ -35,11 +33,15 @@ export function getPreviousPlayer(state: State): Player {
 }
 
 export function getPlayerByName(state: State, name: string): Player {
-  return map2Array<Player>(state.players).find((player) => player.name === name)
+  return Array.from(state.players.values()).find(
+    (player) => player.name === name
+  )
 }
 
 export function getAllBots(state: State): Bot[] {
-  return map2Array<any>(state.players).filter((player) => isBot(player))
+  return Array.from(state.players.values()).filter((player) =>
+    isBot(player)
+  ) as Bot[]
 }
 
 /**

@@ -1,5 +1,4 @@
 const { commands, Command } = require("@cardsgame/server")
-const { logs } = require("@cardsgame/utils")
 const { WarState } = require("./state")
 const { sortRank } = require("./utils")
 
@@ -29,7 +28,7 @@ module.exports.ResetPlayersPlayed = class ResetPlayersPlayed extends Command {
 
   /** @param {WarState} state */
   async execute(state) {
-    for (let idx = 0; idx < state.playersCount; idx++) {
+    for (let idx = 0; idx < state.players.length; idx++) {
       this.memory[idx] = state.playersPlayed[idx]
       state.playersPlayed[idx] = false
     }
@@ -37,7 +36,7 @@ module.exports.ResetPlayersPlayed = class ResetPlayersPlayed extends Command {
 
   /** @param {WarState} state */
   async undo(state) {
-    for (let idx = 0; idx < state.playersCount; idx++) {
+    for (let idx = 0; idx < state.players.length; idx++) {
       state.playersPlayed[idx] = this.memory[idx]
     }
   }

@@ -36,6 +36,7 @@ export function type(
         .set(field, typeDef)
     }
 
+    console.log(`Type @${constructor.name}, field: ${field}`)
     return colType(typeDef, typesContext)(target, field)
   }
 }
@@ -43,7 +44,7 @@ export function type(
 export function defineTypes(
   target: typeof Schema,
   fields: { [property: string]: DefinitionType },
-  context: Context = globalContext
+  context?: Context // = globalContext
 ): typeof Schema {
   for (const field in fields) {
     type(fields[field], context)(target.prototype, field)

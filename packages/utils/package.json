@@ -24,10 +24,9 @@
   },
   "dependencies": {
     "@cardsgame/types": "file:../types",
-    "@colyseus/schema": "^0.5.41",
     "chalk": "^4.1.0"
   },
   "devDependencies": {
-    "@types/node": "^14.0.27"
+    "@types/node": "^14.14.6"
   }
 }
