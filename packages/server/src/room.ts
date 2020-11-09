@@ -1,6 +1,6 @@
 import { Client, Room as colRoom } from "colyseus"
 
-import { chalk, def, IS_CHROME, logs, shuffle } from "@cardsgame/utils"
+import { chalk, def, logs, shuffle } from "@cardsgame/utils"
 
 import { ActionsSet } from "./actionTemplate"
 import { BotNeuron } from "./bots/botNeuron"
@@ -388,34 +388,17 @@ function debugLogMessage(message: ServerPlayerMessage): void {
     ? `Player: ${minifyPlayer(message.player)} | `
     : ""
 
-  if (IS_CHROME) {
-    logs.info(
-      "onMessage",
+  logs.info(
+    "onMessage",
+    [
       playerString,
-      `${message.messageType}`,
-      `\n\tpath: `,
-      entityPath,
-      ", ",
-      ` entity:`,
-      entity,
-      `\n\tentities: `,
-      entities,
-      `\n\tdata: `,
-      data
-    )
-  } else {
-    logs.info(
-      "onMessage",
-      [
-        playerString,
-        chalk.white.bold(message.messageType),
-        event ? ` "${chalk.yellow(event)}"` : "",
-        "\n\t",
-        entityPath ? `path: [${entityPath}], ` : "",
-        entity ? `entity:"${entity}", ` : "",
-        entities ? `entities: [${entities}], ` : "",
-        data ? `\n\tdata: ${JSON.stringify(data)}` : "",
-      ].join("")
-    )
-  }
+      chalk.white.bold(message.messageType),
+      event ? ` "${chalk.yellow(event)}"` : "",
+      "\n\t",
+      entityPath ? `path: [${entityPath}], ` : "",
+      entity ? `entity:"${entity}", ` : "",
+      entities ? `entities: [${entities}], ` : "",
+      data ? `\n\tdata: ${JSON.stringify(data)}` : "",
+    ].join("")
+  )
 }

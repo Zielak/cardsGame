@@ -6,10 +6,21 @@ const isBrowser = new Function(
   "try {return this===window;}catch(e){ return false;}"
 )()
 
-export const IS_CHROME = process ? Boolean(process.env.LOGS_CHROME) : false
+/**
+ * Ditch chrome dev node debugging. It was an adventure,
+ * but cli logs are enough.
+ * @deprecated
+ */
+export const IS_SERVER_DEBUGGER_CHROME = (function () {
+  try {
+    return process ? Boolean(process.env.LOGS_CHROME) : false
+  } catch (e) {
+    return false
+  }
+})()
 
 export const chalk = new Chalk.Instance({
-  level: isBrowser ? 0 : IS_CHROME ? 0 : 1,
+  level: isBrowser ? 0 : IS_SERVER_DEBUGGER_CHROME ? 0 : 1,
 })
 
 export enum LogLevels {
@@ -55,7 +66,7 @@ const setLogLevel = (val: string): void => {
 const minifyEntity = ({ type, name }): string => `${type}:${name}`
 
 const syntaxHighlight = (arg: any): any => {
-  if (IS_CHROME) {
+  if (IS_SERVER_DEBUGGER_CHROME) {
     return arg
   }
   if (typeof arg === "string") {
@@ -102,7 +113,7 @@ if (isBrowser) {
     groupCollapsed: console.groupCollapsed.bind(window.console),
     groupEnd: console.groupEnd.bind(window.console),
   }
-} else if (!IS_CHROME) {
+} else if (!IS_SERVER_DEBUGGER_CHROME) {
   logs = {
     verbose: function (...args: any[]): void {
       console.debug.apply(console, [
