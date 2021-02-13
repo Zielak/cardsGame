@@ -20,7 +20,7 @@ export const deepClone = (value: unknown): any => {
 }
 
 /**
- * @returns an object without provided `keys`
+ * @returns new object without provided `keys`
  */
 export const omit = (
   object: Record<string, any>,

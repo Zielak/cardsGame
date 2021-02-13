@@ -15,6 +15,10 @@ class SelectedChildData extends Schema {
     this.childIndex = childIndex
     this.selectionIndex = selectionIndex
   }
+
+  toString(): string {
+    return `{${this.selectionIndex}: ${this.childIndex}}`
+  }
 }
 
 export function hasSelectableChildren(
@@ -38,9 +42,9 @@ export class SelectableChildrenTrait {
   ): void {
     this._selectableEnsureIndex(childIndex)
 
-    // Also ensure we won't push duplicate here
+    // Also ensure we won't push duplicates here
     const alreadyThere = this.selectedChildren.find(
-      (data) => data.childIndex === childIndex
+      (data) => data?.childIndex === childIndex
     )
     if (!alreadyThere) {
       this.selectedChildren.push(
@@ -59,19 +63,20 @@ export class SelectableChildrenTrait {
     this._selectableEnsureIndex(childIndex)
 
     const dataIdx = this.selectedChildren.findIndex(
-      (data) => data.childIndex === childIndex
+      (data) => data?.childIndex === childIndex
     )
     if (dataIdx >= 0) {
       this.selectedChildren.splice(dataIdx, 1)
     }
+
     // Ensure selectedIndexes are right
-    this.selectedChildren.forEach((data, idx) => {
+    this.selectedChildren.sort(sortBySelectionIndex).forEach((data, idx) => {
       data.selectionIndex = idx
     })
   }
 
   isChildSelected(childIndex: number): boolean {
-    return this.selectedChildren.some((data) => data.childIndex === childIndex)
+    return this.selectedChildren.some((data) => data?.childIndex === childIndex)
   }
 
   /**
@@ -79,7 +84,7 @@ export class SelectableChildrenTrait {
    * @param childIndex
    */
   getSelectionIndex(childIndex: number): number {
-    return this.selectedChildren.find((data) => data.childIndex === childIndex)
+    return this.selectedChildren.find((data) => data?.childIndex === childIndex)
       .selectionIndex
   }
 
@@ -87,7 +92,7 @@ export class SelectableChildrenTrait {
    * Number of selected child elements
    */
   countSelectedChildren(): number {
-    return this.selectedChildren.length
+    return this.selectedChildren.filter((v) => v).length
   }
 
   /**
@@ -107,8 +112,9 @@ export class SelectableChildrenTrait {
       return []
     }
 
-    return Array.from(this.selectedChildren)
-      .sort((a, b) => a.selectionIndex - b.selectionIndex)
+    return this.selectedChildren
+      .filter((v) => v)
+      .sort(sortBySelectionIndex)
       .map((data) => this.getChild(data.childIndex))
   }
 
@@ -148,7 +154,7 @@ export class SelectableChildrenTrait {
 
 SelectableChildrenTrait[
   "trait"
-] = function constructorSelectableChildrenTrait(): void {
+] = function constructSelectableChildrenTrait(): void {
   this.selectedChildren = new ArraySchema()
 }
 SelectableChildrenTrait["typeDef"] = {
@@ -159,11 +165,12 @@ SelectableChildrenTrait["hooks"] = {
     this: SelectableChildrenTrait,
     childIndex: number
   ): void {
-    const index = this.selectedChildren.findIndex(
-      (data) => data.childIndex === childIndex
-    )
-    if (index >= 0) {
-      this.selectedChildren.splice(index, 1)
+    const selectionIndex = this.selectedChildren.find(
+      (data) => data?.childIndex === childIndex
+    )?.selectionIndex
+
+    if (selectionIndex >= 0) {
+      this.selectedChildren.splice(selectionIndex, 1)
     }
   },
   childIndexUpdated: function (
@@ -172,10 +179,14 @@ SelectableChildrenTrait["hooks"] = {
     newIdx: number
   ): void {
     const selectionData = this.selectedChildren.find(
-      (data) => data.childIndex === oldIdx
+      (data) => data?.childIndex === oldIdx
     )
     if (selectionData) {
       selectionData.childIndex = newIdx
     }
   },
+}
+
+function sortBySelectionIndex(a, b): number {
+  return a.selectionIndex - b.selectionIndex
 }

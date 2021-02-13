@@ -1,4 +1,5 @@
 export * from "./arrays"
+export * from "./entities"
 export * from "./logs"
 export * from "./numbers"
 export * from "./objects"

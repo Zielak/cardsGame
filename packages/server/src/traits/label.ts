@@ -8,6 +8,8 @@ export class LabelTrait {
    */
   name: string
   /**
+   * Type should be unique to schema object! If you're extending this schema
+   * and adding new fields - set the new type string!
    * @memberof LabelTrait
    */
   type: string
@@ -17,7 +19,7 @@ LabelTrait["typeDef"] = {
   type: "string",
   name: "string",
 }
-LabelTrait["trait"] = function constructorLabelTrait(
+LabelTrait["trait"] = function constructLabelTrait(
   state: State,
   options: Partial<LabelTrait> = {}
 ): void {

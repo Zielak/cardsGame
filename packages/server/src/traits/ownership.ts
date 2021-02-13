@@ -57,7 +57,7 @@ OwnershipTrait["typeDef"] = {
   ownersMainFocus: "boolean",
   ownerID: "string",
 }
-OwnershipTrait["trait"] = function constructorOwnershipTrait(
+OwnershipTrait["trait"] = function constructOwnershipTrait(
   state: State,
   options: Partial<OwnershipTrait> = {}
 ): void {

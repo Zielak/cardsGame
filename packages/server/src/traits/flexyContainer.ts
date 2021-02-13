@@ -23,7 +23,7 @@ export class FlexyTrait {
     | "spaceEvenly"
 }
 
-FlexyTrait["trait"] = function constructorFlexyTrait(
+FlexyTrait["trait"] = function constructFlexyTrait(
   state: State,
   options: Partial<FlexyTrait> = {}
 ): void {

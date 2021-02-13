@@ -1,12 +1,6 @@
 export { LobbyRoom, Server } from "colyseus"
 export { RoomConstructor } from "colyseus/lib/Room"
-export {
-  Schema,
-  ArraySchema,
-  MapSchema,
-  CollectionSchema,
-  SetSchema,
-} from "@colyseus/schema"
+export { Schema, ArraySchema, MapSchema } from "@colyseus/schema"
 
 export { canBeChild } from "./annotations/canBeChild"
 export { containsChildren } from "./annotations/containsChildren"

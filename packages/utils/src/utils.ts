@@ -44,15 +44,36 @@ export const times = (length: number, func: (idx: number) => any): void => {
 export const timeout = (ms: number): Promise<unknown> =>
   new Promise((resolve) => setTimeout(resolve, ms))
 
+export const isMap = (thing: unknown): thing is Map<any, any> => {
+  try {
+    // throws if o is not an object or has no [[MapData]]
+    Map.prototype.has.call(thing)
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
+export const isSet = (thing: unknown): thing is Set<any> => {
+  try {
+    // throws if o is not an object or has no [[SetData]]
+    Set.prototype.has.call(thing)
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
 /**
  * Check if a `thing` is just a literal object (using typeof), and not Array or anything else.
+ * @deprecated never used and there are probably better ways of doing that
  * @param thing
  */
-export const isObject = (thing: unknown): boolean => {
+export const isObject = (thing: unknown): thing is Record<any, any> => {
   if (typeof thing !== "object") {
     return false
   }
-  if (Array.isArray(thing)) {
+  if (Array.isArray(thing) || isMap(thing) || isSet(thing)) {
     return false
   }
   return true

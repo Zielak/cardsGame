@@ -22,7 +22,7 @@ LocationTrait["typeDef"] = {
   y: "number",
   angle: "number",
 }
-LocationTrait["trait"] = function constructorLocationTrait(
+LocationTrait["trait"] = function constructLocationTrait(
   state: State,
   options: Partial<LocationTrait>
 ): void {

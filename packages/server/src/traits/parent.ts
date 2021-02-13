@@ -38,16 +38,5 @@ export const hasChildren = (entity: unknown): boolean =>
 export const getKnownConstructor = (entity: ChildTrait): AnyClass =>
   globalEntitiesContext.registeredChildren.find((con) => entity instanceof con)
 
-/**
- * Finding function, for `find()` iteration
- */
-export const pickByIdx = (idx: number) => (child: ChildTrait): boolean =>
-  child.idx === idx
-
-/**
- * Sorting function, for `sort()`
- */
-export const sortByIdx = (a: ChildTrait, b: ChildTrait): number => a.idx - b.idx
-
 export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void

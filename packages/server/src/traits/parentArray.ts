@@ -1,4 +1,4 @@
-import { def, limit, logs } from "@cardsgame/utils"
+import { def, limit, logs, sortByIdx } from "@cardsgame/utils"
 import { ArraySchema } from "@colyseus/schema"
 
 import { globalEntitiesContext } from "../annotations/entitiesContext"
@@ -12,7 +12,6 @@ import {
   getKnownConstructor,
   isParent,
   ParentTrait,
-  sortByIdx,
 } from "./parent"
 
 export class ParentArrayTrait implements ParentTrait {
@@ -255,7 +254,7 @@ export interface ParentArrayTrait extends ParentTrait {}
 
 ParentArrayTrait.prototype.query = query
 ParentArrayTrait.prototype.queryAll = queryAll
-ParentArrayTrait["trait"] = function constructorParentArrayTrait(
+ParentArrayTrait["trait"] = function constructParentArrayTrait(
   state: State,
   options: Partial<ParentArrayTrait> = {}
 ): void {

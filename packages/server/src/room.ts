@@ -143,7 +143,8 @@ export class Room<S extends State> extends colRoom<S> {
       : this.botClients[this.botClients.length - 1]
 
     if (bot) {
-      this.state.clients.delete(bot.clientID)
+      const clientIdx = this.state.clients.indexOf(bot.clientID)
+      this.state.clients.splice(clientIdx, 1)
       this.botClients = this.botClients.filter((b) => b !== bot)
     }
   }
@@ -159,7 +160,8 @@ export class Room<S extends State> extends colRoom<S> {
       !state.isGameStarted &&
       Array.from(state.clients.values()).every((clientID) => id !== clientID)
     ) {
-      return typeof state.clients.add(id) === "number"
+      state.clients.push(id)
+      return true
     }
     return false
   }
@@ -168,7 +170,8 @@ export class Room<S extends State> extends colRoom<S> {
    * Remove human client from `state.clients`
    */
   protected removeClient(id: string): void {
-    this.state.clients.delete(id)
+    const clientIndex = this.state.clients.indexOf(id)
+    this.state.clients.splice(clientIndex, 1)
   }
 
   onJoin(newClient: Client): void {

@@ -1,4 +1,4 @@
-import { ArraySchema, MapSchema, SetSchema } from "@colyseus/schema"
+import { ArraySchema, MapSchema } from "@colyseus/schema"
 
 import { containsChildren } from "../annotations/containsChildren"
 import { type } from "../annotations/type"
@@ -23,7 +23,7 @@ export class State extends Entity<Record<string, unknown>> {
    * A "client" is someone who just stopped by in this room
    * and not necessarily someone who is playing the game.
    */
-  @type({ set: "string" }) clients = new SetSchema<string>()
+  @type(["string"]) clients = new ArraySchema<string>()
 
   /**
    * Games are turn-based by default. Each player takes their turns one by one.
@@ -38,7 +38,7 @@ export class State extends Entity<Record<string, unknown>> {
   @type("uint16") round = 0
 
   /**
-   * List of player - game participants, after the game starts.
+   * List of players - game participants, after the game starts.
    */
   @type([Player]) players = new ArraySchema<Player>()
 

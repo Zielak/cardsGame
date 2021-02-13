@@ -5,7 +5,7 @@ export class IdentityTrait {
   readonly id: number
 }
 
-IdentityTrait["trait"] = function constructorIdentityTrait(state: State): void {
+IdentityTrait["trait"] = function constructIdentityTrait(state: State): void {
   // State itself can also report in here.
   state?._registerEntity(this)
 }

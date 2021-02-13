@@ -1,3 +1,5 @@
+import { logs } from "@cardsgame/utils"
+
 import { Command, Target, TargetHolder } from "../command"
 import { Room } from "../room"
 import { State } from "../state/state"
@@ -5,6 +7,21 @@ import { ParentTrait } from "../traits/parent"
 import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
 type ParentSelecta = SelectableChildrenTrait & ParentTrait
+
+const logSelectedChildren = (parent: ParentSelecta): void => {
+  logs.verbose(
+    "selected.$items:",
+    Array.from(parent.selectedChildren["$items"].entries()).map(
+      ([key, value]) => `[${key}]=${value}`
+    )
+  )
+  logs.verbose(
+    "selected.$indexes:",
+    Array.from(parent.selectedChildren["$indexes"].entries()).map(
+      ([key, value]) => `[${key}]=${value}`
+    )
+  )
+}
 
 export class Select extends Command {
   private indexes: number[]
@@ -37,6 +54,11 @@ export class Select extends Command {
         parent.selectChildAt(child.idx)
       })
     }
+
+    logs.verbose(
+      `Parent currently has ${parent.countSelectedChildren()} selected children`
+    )
+    logSelectedChildren(parent)
   }
   async undo(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()
@@ -76,6 +98,11 @@ export class Deselect extends Command {
         parent.deselectChildAt(child.idx)
       })
     }
+
+    logs.verbose(
+      `Parent currently has ${parent.countSelectedChildren()} selected children`
+    )
+    logSelectedChildren(parent)
   }
   async undo(state: State, room: Room<any>): Promise<void> {
     const parent = this.parent.get()

@@ -24,7 +24,7 @@ export class TwoSidedTrait {
 TwoSidedTrait["typeDef"] = {
   faceUp: "boolean",
 }
-TwoSidedTrait["trait"] = function constructorTwoSidedTrait(
+TwoSidedTrait["trait"] = function constructTwoSidedTrait(
   state: State,
   options: Partial<TwoSidedTrait>
 ): void {

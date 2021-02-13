@@ -26,6 +26,7 @@ beforeEach(() => {
 describe("Select", () => {
   test("single", () => {
     const cmd = new Select(hand, 1)
+    expect(hand.isChildSelected(1)).toBe(false)
 
     cmd.execute(state, room)
     expect(hand.isChildSelected(1)).toBe(true)

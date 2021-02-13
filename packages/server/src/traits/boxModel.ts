@@ -14,7 +14,7 @@ export class BoxModelTrait {
 }
 
 BoxModelTrait["typeDef"] = { height: "number", width: "number" }
-BoxModelTrait["trait"] = function constructorBoxModelTrait(
+BoxModelTrait["trait"] = function constructBoxModelTrait(
   state: State,
   options: Partial<BoxModelTrait>
 ): void {
