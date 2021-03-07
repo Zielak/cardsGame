@@ -5,6 +5,7 @@ import { Room } from "../room"
 import { State } from "../state/state"
 import { ChildTrait } from "../traits/child"
 import { ParentTrait } from "../traits/parent"
+
 import { ChangeParent } from "./changeParent"
 import { FaceDown, FaceUp, Flip } from "./twoSided"
 import { Wait } from "./wait"

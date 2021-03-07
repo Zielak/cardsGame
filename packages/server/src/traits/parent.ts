@@ -1,5 +1,6 @@
 import { globalEntitiesContext } from "../annotations/entitiesContext"
 import { QuerableProps } from "../queryRunner"
+
 import { ChildTrait } from "./child"
 
 export function isParent(entity: unknown): entity is ParentTrait {

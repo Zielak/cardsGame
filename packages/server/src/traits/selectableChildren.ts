@@ -1,6 +1,7 @@
 import { ArraySchema, Schema } from "@colyseus/schema"
 
 import { type } from "../annotations/type"
+
 import { ChildTrait } from "./child"
 import { isParent, ParentTrait } from "./parent"
 

@@ -1,8 +1,5 @@
-import { Room as colyseusRoom } from "colyseus.js/lib/Room"
-
 import { logs } from "@cardsgame/utils"
-
-import { RoomAvailable } from "./"
+import { Room as colyseusRoom, RoomAvailable } from "colyseus.js/lib/Room"
 
 export class LobbyRoom {
   onInit: (rooms: RoomAvailable[]) => void

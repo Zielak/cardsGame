@@ -1,7 +1,6 @@
+import { def, logs } from "@cardsgame/utils"
 import { Client } from "colyseus.js"
 import { RoomAvailable } from "colyseus.js/lib/Room"
-
-import { def, logs } from "@cardsgame/utils"
 
 import { LobbyRoom } from "./lobbyRoom"
 import { Room } from "./room"

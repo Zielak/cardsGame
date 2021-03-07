@@ -2,6 +2,7 @@ import { ActionTemplate } from "../actionTemplate"
 import { Bot } from "../players/bot"
 import { QuerableProps } from "../queryRunner"
 import { State } from "../state/state"
+
 import { BotConditions, EntityConditions } from "./conditions"
 
 export interface BotNeuron<S extends State> {

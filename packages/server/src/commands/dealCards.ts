@@ -10,6 +10,7 @@ import {
 import { Room } from "../room"
 import { State } from "../state/state"
 import { ParentTrait } from "../traits/parent"
+
 import { ChangeParent } from "./changeParent"
 
 /**

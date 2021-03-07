@@ -1,4 +1,4 @@
-import * as utils from "../src/index"
+import * as utils from "../src"
 
 test("index", () => {
   expect(utils).toBeDefined()

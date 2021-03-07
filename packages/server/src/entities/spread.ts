@@ -10,6 +10,7 @@ import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
 import { OwnershipTrait } from "../traits/ownership"
 import { ParentArrayTrait } from "../traits/parentArray"
+
 import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
 
 /**

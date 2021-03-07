@@ -11,6 +11,7 @@ import { LocationTrait } from "../traits/location"
 import { OwnershipTrait } from "../traits/ownership"
 import { ParentArrayTrait } from "../traits/parentArray"
 import { SelectableChildrenTrait } from "../traits/selectableChildren"
+
 import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
 
 @canBeChild

@@ -1,6 +1,5 @@
-import { Client, Room as colRoom } from "colyseus"
-
 import { chalk, def, logs, shuffle } from "@cardsgame/utils"
+import { Client, Room as colRoom } from "colyseus"
 
 import { ActionsSet } from "./actionTemplate"
 import { BotNeuron } from "./bots/botNeuron"

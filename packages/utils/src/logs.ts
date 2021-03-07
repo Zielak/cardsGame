@@ -91,7 +91,7 @@ function _getIndent(): string {
   return Array(_indentLevel).fill("│ ").join("")
 }
 
-export let logs: {
+let logsPreExport: {
   error: (...args: any[]) => void
   warn: (...args: any[]) => void
   info: (...args: any[]) => void
@@ -103,7 +103,7 @@ export let logs: {
 }
 
 if (isBrowser) {
-  logs = {
+  logsPreExport = {
     verbose: console.debug.bind(window.console),
     notice: console.log.bind(window.console),
     info: console.info.bind(window.console),
@@ -114,7 +114,7 @@ if (isBrowser) {
     groupEnd: console.groupEnd.bind(window.console),
   }
 } else if (!IS_SERVER_DEBUGGER_CHROME) {
-  logs = {
+  logsPreExport = {
     verbose: function (...args: any[]): void {
       console.debug.apply(console, [
         _getIndent(),
@@ -152,16 +152,16 @@ if (isBrowser) {
       ])
     },
     group: function (first, ...args: any[]): void {
-      logs.notice(`┍━${first}`, ...args)
+      logsPreExport.notice(`┍━${first}`, ...args)
       _indentLevel++
     },
     groupCollapsed: function (first, ...args: any[]): void {
-      logs.notice(`┍━${first}`, ...args)
+      logsPreExport.notice(`┍━${first}`, ...args)
       _indentLevel++
     },
     groupEnd: function (first = "────────────", ...args: any[]): void {
       _indentLevel = Math.max(_indentLevel - 1, 0)
-      logs.notice(`┕━${first}`, ...args)
+      logsPreExport.notice(`┕━${first}`, ...args)
     },
   }
 } else {
@@ -170,7 +170,7 @@ if (isBrowser) {
     info: "color: white; background: #2196f3",
   }
 
-  logs = {
+  logsPreExport = {
     verbose: console.debug.bind(console),
     notice: console.log.bind(console),
     info: function (first, ...args: any[]): void {
@@ -212,20 +212,22 @@ try {
 
 // Override log functions in case of lower desired audacity
 if (logLevel < LogLevels.error) {
-  logs.error = noop
+  logsPreExport.error = noop
 }
 if (logLevel < LogLevels.warn) {
-  logs.warn = noop
+  logsPreExport.warn = noop
 }
 if (logLevel < LogLevels.info) {
-  logs.info = noop
+  logsPreExport.info = noop
 }
 if (logLevel < LogLevels.notice) {
-  logs.notice = noop
+  logsPreExport.notice = noop
 }
 if (logLevel < LogLevels.verbose) {
-  logs.verbose = noop
+  logsPreExport.verbose = noop
 }
+
+export const logs = logsPreExport
 
 export interface Logs {
   error: (...any) => void

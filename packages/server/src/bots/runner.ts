@@ -5,6 +5,7 @@ import { Player } from "../players/player"
 import { Room } from "../room"
 import { State } from "../state/state"
 import { populatePlayerEvent } from "../utils"
+
 import { BotNeuron } from "./botNeuron"
 import { pickNeuron } from "./pickNeuron"
 

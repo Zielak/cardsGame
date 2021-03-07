@@ -4,6 +4,7 @@ import { Bot, isBot } from "../players/bot"
 import { Player } from "../players/player"
 import { IdentityTrait } from "../traits/identity"
 import { hasChildren, isParent, ParentTrait } from "../traits/parent"
+
 import { State } from "./state"
 
 /**

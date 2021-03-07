@@ -1,6 +1,7 @@
 import { def } from "@cardsgame/utils"
 
 import { State } from "../state/state"
+
 import { ParentTrait } from "./parent"
 
 export function isChild(entity: unknown): entity is ChildTrait {

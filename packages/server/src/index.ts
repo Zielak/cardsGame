@@ -1,3 +1,5 @@
+import * as commands from "./commands"
+
 export { LobbyRoom, Server } from "colyseus"
 export { RoomConstructor } from "colyseus/lib/Room"
 export { Schema, ArraySchema, MapSchema } from "@colyseus/schema"
@@ -7,8 +9,6 @@ export { containsChildren } from "./annotations/containsChildren"
 export { defineTypes, type } from "./annotations/type"
 
 export * from "./bots/botNeuron"
-
-import * as commands from "./commands"
 
 export { commands }
 

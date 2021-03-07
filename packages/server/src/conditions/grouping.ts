@@ -1,7 +1,8 @@
 import { chalk, logs } from "@cardsgame/utils"
 
-import { Conditions } from "./"
 import { getFlag, iconStyle, resetNegation, setFlag } from "./utils"
+
+import { Conditions } from "."
 
 type EitherCallback<C> = (con: C) => any
 type EitherTuple<C> = [string, EitherCallback<C>]

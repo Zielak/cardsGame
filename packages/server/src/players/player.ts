@@ -2,6 +2,7 @@ import { def, logs } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
 import { type } from "../annotations/type"
+
 import { getRandomName } from "./names"
 
 export class Player extends Schema {

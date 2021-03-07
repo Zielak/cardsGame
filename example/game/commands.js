@@ -1,4 +1,5 @@
 const { commands, Command } = require("@cardsgame/server")
+
 const { WarState } = require("./state")
 const { sortRank } = require("./utils")
 

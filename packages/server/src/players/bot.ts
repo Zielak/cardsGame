@@ -1,6 +1,7 @@
 import { def, limit } from "@cardsgame/utils"
 
 import { ChosenBotNeuronResult } from "../bots/pickNeuron"
+
 import { Player, PlayerOptions } from "./player"
 
 export interface BotOptions extends PlayerOptions {

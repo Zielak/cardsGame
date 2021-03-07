@@ -1,9 +1,34 @@
 module.exports = {
   root: true,
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint", "jest"],
-  extends: ["eslint:recommended"],
+  plugins: ["@typescript-eslint", "import", "jest"],
+  extends: ["eslint:recommended", "plugin:import/typescript"],
   rules: {
+    "import/first": "error",
+    "import/named": "error",
+    "import/no-absolute-path": "error",
+    // "import/no-cycle": "error",
+    "import/no-mutable-exports": "error",
+    "import/no-self-import": "error",
+    "import/no-unused-modules": "error",
+    "import/no-useless-path-segments": [
+      "error",
+      {
+        noUselessIndex: true,
+      },
+    ],
+    "import/no-default-export": "error",
+    "import/order": [
+      "error",
+      {
+        alphabetize: {
+          order: "asc",
+          caseInsensitive: true,
+        },
+        // "groups": ["index", "sibling", "parent", "internal", "external", "builtin", "object"],
+        "newlines-between": "always",
+      },
+    ],
     "no-extra-semi": "off",
     "no-undef": "off",
     "no-unused-vars": "off",
