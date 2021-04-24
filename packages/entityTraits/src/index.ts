@@ -1,0 +1,7 @@
+export { BoxModelTypeDef } from "./boxModel"
+export { ChildTraitTypeDef } from "./child"
+export { FlexyTraitTypeDef } from "./flexyContainer"
+export { LabelTraitTypeDef } from "./label"
+export { LocationTraitTypeDef } from "./location"
+export { OwnershipTraitTypeDef } from "./ownership"
+export { TwoSidedTraitTypeDef } from "./twoSided"

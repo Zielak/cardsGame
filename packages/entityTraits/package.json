@@ -1,5 +1,5 @@
 {
-  "name": "@cardsgame/server",
+  "name": "@cardsgame/entity-traits",
   "version": "0.10.0",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
@@ -12,20 +12,11 @@
     "url": "https://github.com/zielak/cardsGame/issues"
   },
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],
   "scripts": {
     "build": "tsc -b src",
-    "build:watch": "tsc -b src --watch",
-    "test": "jest"
-  },
-  "dependencies": {
-    "@cardsgame/entity-traits": "file:../entityTraits",
-    "@cardsgame/types": "file:../types",
-    "@cardsgame/utils": "file:../utils",
-    "@colyseus/schema": "^1.0.0",
-    "colyseus": "^0.14.0"
+    "test": "echo \"¯\\_(ツ)_/¯\""
   }
 }

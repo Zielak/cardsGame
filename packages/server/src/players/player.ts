@@ -12,8 +12,6 @@ export class Player extends Schema {
   @type("number") score = 0
   @type("number") timeLeft = -1
 
-  finishedPlaying = false
-
   constructor(options: PlayerOptions) {
     super()
     this.clientID = options.clientID

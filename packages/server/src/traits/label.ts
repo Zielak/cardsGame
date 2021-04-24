@@ -1,6 +1,7 @@
+import { LabelTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import { State } from "../state/state"
+import type { State } from "../state/state"
 
 export class LabelTrait {
   /**
@@ -15,10 +16,7 @@ export class LabelTrait {
   type: string
 }
 
-LabelTrait["typeDef"] = {
-  type: "string",
-  name: "string",
-}
+LabelTrait["typeDef"] = LabelTraitTypeDef
 LabelTrait["trait"] = function constructLabelTrait(
   state: State,
   options: Partial<LabelTrait> = {}

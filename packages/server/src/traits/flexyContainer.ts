@@ -1,6 +1,7 @@
+import { FlexyTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import { State } from "../state/state"
+import type { State } from "../state/state"
 
 export class FlexyTrait {
   /**
@@ -31,8 +32,4 @@ FlexyTrait["trait"] = function constructFlexyTrait(
   this.directionReverse = def(options.directionReverse, false)
   this.justifyContent = def(options.justifyContent, "start")
 }
-FlexyTrait["typeDef"] = {
-  alignItems: "string",
-  directionReverse: "boolean",
-  justifyContent: "string",
-}
+FlexyTrait["typeDef"] = FlexyTraitTypeDef

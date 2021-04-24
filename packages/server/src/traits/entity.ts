@@ -2,7 +2,7 @@ import { logs } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
 import { type } from "../annotations/type"
-import { State } from "../state/state"
+import type { State } from "../state/state"
 
 export function executeHook(hookName: string, ...args: any[]): void {
   const proto = Object.getPrototypeOf(this)

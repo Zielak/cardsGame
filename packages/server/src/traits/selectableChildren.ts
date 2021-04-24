@@ -2,7 +2,7 @@ import { ArraySchema, Schema } from "@colyseus/schema"
 
 import { type } from "../annotations/type"
 
-import { ChildTrait } from "./child"
+import type { ChildTrait } from "./child"
 import { isParent, ParentTrait } from "./parent"
 
 // TODO: This trait is clearly dependant on ParentTrait. There should be a way of checking/ensuring this dependency is met

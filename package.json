@@ -23,13 +23,14 @@
     "test:ci_coveralls": "coveralls < coverage/lcov.info",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
-    "build": "npm run build:utils && npm run build:client && npm run build:server",
+    "build": "npm run build:utils && npm run build:entityTraits && npm run build:client && npm run build:server",
     "build:server": "lerna run --stream --concurrency 1 --scope '*/server' build",
     "build:server-w": "lerna run --stream --concurrency 1 --scope '*/server' build:watch",
     "build:client": "lerna run --stream --concurrency 1 --scope '*/client' build",
     "build:client-w": "lerna run --stream --concurrency 1 --scope '*/client' build:watch",
     "build:utils": "lerna run --stream --concurrency 1 --scope '*/utils' build",
     "build:utils-w": "lerna run --stream --concurrency 1 --scope '*/utils' build:watch",
+    "build:entityTraits": "lerna run --stream --concurrency 1 --scope '*/entity-traits' build",
     "ci:publish": "lerna publish from-git --yes"
   },
   "devDependencies": {
