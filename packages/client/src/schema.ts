@@ -17,8 +17,8 @@ export type SchemaDefinitionValue =
   | MapSchemaDefinition
   | WithSchemaDefinition // Just another schema object inside
 
-export type CollectionCallbacks = (
-  instance: Schema,
+export type CollectionCallbacks<T = any> = (
+  instance: T & Schema,
   key: string | number
 ) => void
 export type PrimitiveCollectionCallbacks<T = any> = (
@@ -33,10 +33,10 @@ export interface ObjectSchema extends WithSchemaDefinition {
   onChange: SchemaChangeCallback
 }
 
-export interface ObjectsCollectionSchema extends WithSchemaDefinition {
+export interface ObjectsCollectionSchema<T = any> extends WithSchemaDefinition {
   [key: string]: any
-  onAdd: CollectionCallbacks
-  onRemove: CollectionCallbacks
+  onAdd: CollectionCallbacks<T>
+  onRemove: CollectionCallbacks<T>
 }
 
 export interface PrimitivesCollectionSchema<T = any>
@@ -58,8 +58,22 @@ export type Schema =
 /**
  * Root game state
  */
-export type State = {
-  [key: string]: Schema
+export type ClientGameState = {
+  [key: string]: Schema | number | string | boolean
+
+  clients: PrimitivesCollectionSchema<string>
+
+  currentPlayerIdx?: number
+  isGameStarted: boolean
+  isGameOver: boolean
+
+  playerViewPosition: ObjectSchema & IPlayerViewPosition
+  players: ObjectsCollectionSchema<IPlayerDefinition>
+
+  tableHeight: number
+  tableWidth: number
+
+  ui?: ObjectSchema & { [key: string]: string }
 } & {
   [prop in "onChange"]: SchemaChangeCallback
 } &

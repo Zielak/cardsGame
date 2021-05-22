@@ -5,7 +5,7 @@ import { type } from "../annotations/type"
 
 import { getRandomName } from "./names"
 
-export class Player extends Schema {
+export class Player extends Schema implements IPlayerDefinition {
   @type("string") clientID: string
   @type("string") name: string
 

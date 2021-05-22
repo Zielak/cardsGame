@@ -1,7 +1,7 @@
 import { logs } from "@cardsgame/utils"
 import { Room as colyseusRoom } from "colyseus.js/lib/Room"
 
-import { State } from "./schema"
+import type { ClientGameState } from "./schema"
 
 export class Room {
   constructor(public room: colyseusRoom) {
@@ -53,11 +53,11 @@ export class Room {
   /**
    * @override
    */
-  onStateChange(state: any): void {}
+  onStateChange(state: ClientGameState): void {}
   /**
    * @override
    */
-  onFirstStateChange(state: any): void {}
+  onFirstStateChange(state: ClientGameState): void {}
   /**
    * @override
    * @param {number} code webSocket shutdown code
@@ -113,7 +113,7 @@ export class Room {
     this.room.leave()
   }
 
-  get state(): State {
+  get state(): ClientGameState {
     return this.room ? this.room.state : undefined
   }
 
