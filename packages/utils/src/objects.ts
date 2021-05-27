@@ -32,3 +32,15 @@ export const omit = (
       obj[key] = object[key]
       return obj
     }, {} as Record<string, any>)
+
+/**
+ * Resolves target object/property given source object and path.
+ */
+export const resolve = (
+  sourceObject: Record<string, any>,
+  path: (string | number)[] | string,
+  separator = "."
+): any => {
+  const properties = Array.isArray(path) ? path : path.split(separator)
+  return properties.reduce((prev, curr) => prev && prev[curr], sourceObject)
+}
