@@ -1,3 +1,6 @@
+/**
+ * Trim long string with nice ell…
+ */
 export const trim = (string = "", maxLength = 7): string => {
   if (typeof string !== "string") return
   return string.length <= maxLength
