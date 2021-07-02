@@ -1,11 +1,11 @@
+const { createServer } = require("https")
+
 const { Server } = require("@cardsgame/server")
 const express = require("express")
-const { createServer } = require("https")
+
 const exitHandler = require("./exitHandler")
 const { WarGame } = require("./game/room")
-
-// Generate certificates if needed
-const { key, cert } = require("./genCerts")()
+const { key, cert } = require("./genCerts")() // Generate certificates if needed
 
 // Prepare Express app
 const app = express()

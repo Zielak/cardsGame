@@ -1,4 +1,4 @@
-import { def, noop, times, isObject } from "../src/utils"
+import { def, isMap, isSet, noop, times } from "../src/utils"
 
 describe("noop", () => {
   it(`is a function`, () => {
@@ -43,19 +43,26 @@ describe("times", () => {
   })
 })
 
-describe("isObject", () => {
-  it(`verifies {}`, () => {
-    expect(isObject({})).toBe(true)
-    expect(isObject({ a: "", b: "b" })).toBe(true)
+describe("isMap", () => {
+  it(`verifies Map()`, () => {
+    expect(isMap(new Map())).toBe(true)
   })
   it(`verifies the rest`, () => {
-    expect(isObject([])).toBe(false)
-    expect(isObject(() => {})).toBe(false)
-    expect(isObject(function () {})).toBe(false)
-    // I'm not even using this function...
-    // expect(isObject(new Map())).toBe(false)
-    // expect(isObject(new Set())).toBe(false)
-    // expect(isObject(new MapSchema())).toBe(false)
-    // expect(isObject(new ArraySchema())).toBe(false)
+    expect(isMap([])).toBe(false)
+    expect(isMap({})).toBe(false)
+    expect(isMap(new Set())).toBe(false)
+    expect(isMap("")).toBe(false)
+  })
+})
+
+describe("isSet", () => {
+  it(`verifies Map()`, () => {
+    expect(isSet(new Set())).toBe(true)
+  })
+  it(`verifies the rest`, () => {
+    expect(isSet([])).toBe(false)
+    expect(isSet({})).toBe(false)
+    expect(isSet(new Map())).toBe(false)
+    expect(isSet("")).toBe(false)
   })
 })

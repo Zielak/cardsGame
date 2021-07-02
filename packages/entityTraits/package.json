@@ -1,0 +1,22 @@
+{
+  "name": "@cardsgame/entity-traits",
+  "version": "0.10.0",
+  "description": "",
+  "author": "Darek Greenly (https://darekgreenly.com)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zielak/cardsGame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zielak/cardsGame/issues"
+  },
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc -b src",
+    "test": "echo \"¯\\_(ツ)_/¯\""
+  }
+}

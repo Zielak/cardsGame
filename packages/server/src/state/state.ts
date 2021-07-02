@@ -1,5 +1,4 @@
-import { mapCount } from "@cardsgame/utils"
-import { MapSchema } from "@colyseus/schema"
+import { ArraySchema, MapSchema } from "@colyseus/schema"
 
 import { containsChildren } from "../annotations/containsChildren"
 import { type } from "../annotations/type"
@@ -24,7 +23,7 @@ export class State extends Entity<Record<string, unknown>> {
    * A "client" is someone who just stopped by in this room
    * and not necessarily someone who is playing the game.
    */
-  @type({ map: "string" }) clients = new MapSchema<string>()
+  @type(["string"]) clients = new ArraySchema<string>()
 
   /**
    * Games are turn-based by default. Each player takes their turns one by one.
@@ -39,9 +38,9 @@ export class State extends Entity<Record<string, unknown>> {
   @type("uint16") round = 0
 
   /**
-   * List of player - game participants, after the game starts.
+   * List of players - game participants, after the game starts.
    */
-  @type({ map: Player }) players = new MapSchema<Player>()
+  @type([Player]) players = new ArraySchema<Player>()
 
   @type("uint8") currentPlayerIdx = 0
 
@@ -49,14 +48,10 @@ export class State extends Entity<Record<string, unknown>> {
     return this.turnBased ? this.players[this.currentPlayerIdx] : null
   }
 
-  get playersCount(): number {
-    return mapCount(this.players)
-  }
-
   @type("boolean") isGameStarted = false
   @type("boolean") isGameOver = false
 
-  @type({ map: "string" }) ui: StateUI = new MapSchema<string | string[]>()
+  @type({ map: "string" }) ui = new MapSchema<string>()
 
   /**
    * A construct describing how should player's "focused" items
@@ -112,10 +107,3 @@ export class State extends Entity<Record<string, unknown>> {
 interface Mixin extends IdentityTrait, LabelTrait, ParentArrayTrait {}
 
 export interface State extends Mixin {}
-
-export interface StateUI {
-  clone: () => MapSchema
-  onAdd: (item: any, key: string) => void
-  onRemove: (item: any, key: string) => void
-  onChange: (item: any, key: string) => void
-}

@@ -1,5 +1,3 @@
-import { map2Array } from "@cardsgame/utils"
-
 import { Player, ServerPlayerMessage } from "./players/player"
 import { getEntitiesAlongPath } from "./state/helpers"
 import { State } from "./state/state"
@@ -57,7 +55,7 @@ export function populatePlayerEvent(
 
   const player =
     typeof clientOrPlayer === "string"
-      ? map2Array<Player>(state.players).find(
+      ? Array.from(state.players.values()).find(
           (p) => p.clientID === clientOrPlayer
         )
       : clientOrPlayer

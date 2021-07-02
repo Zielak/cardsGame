@@ -42,7 +42,7 @@ export const PlayCardGoal: BotNeuron<State> = {
   },
   entitiesFilter: [{ suit: ["S", "C"] }],
   value: (state) => {
-    return 10 - state.playersCount
+    return 10 - state.players.length
   },
   action: PlayCardAction,
 }

@@ -1,5 +1,6 @@
 import { Bot, ClassicCard, Hand, State } from "../../src"
 import { pickNeuron } from "../../src/bots/pickNeuron"
+
 import {
   PlayCardGoal,
   rootNeuron,

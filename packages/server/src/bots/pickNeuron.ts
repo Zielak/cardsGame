@@ -12,6 +12,7 @@ import { queryRunner } from "../queryRunner"
 import { State } from "../state/state"
 import { ChildTrait } from "../traits/child"
 import { populatePlayerEvent } from "../utils"
+
 import { BotNeuron } from "./botNeuron"
 import { BotConditions, EntityConditions } from "./conditions"
 

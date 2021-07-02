@@ -6,3 +6,4 @@ export interface RoomAvailable<T = any> extends colRoomAvailable<T> {
 export * from "./game"
 export * from "./lobbyRoom"
 export * from "./room"
+export * from "./schema"

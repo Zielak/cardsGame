@@ -1,6 +1,7 @@
 import { QuerableProps } from "../queryRunner"
 import { isParent } from "../traits/parent"
 import { hasSelectableChildren } from "../traits/selectableChildren"
+
 import {
   getFlag,
   getInitialSubject,

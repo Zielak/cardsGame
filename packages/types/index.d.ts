@@ -39,6 +39,16 @@ type ClientPlayerMessage = RawInteractionClientPlayerMessage & {
 }
 
 /**
+ * Player's entry in the game state
+ */
+interface IPlayerDefinition {
+  clientID: string
+  name: string
+  score: number
+  timeLeft: number
+}
+
+/**
  * How to transform current player's containers/entities on client's screen.
  * Units are in pixels.
  */

@@ -1,5 +1,5 @@
+import { Deck, Grid, Hand, Line, Pile, Spread } from "../../src/entities"
 import { Container } from "../../src/entities/container"
-import { Deck, Grid, Hand, Line, Pile, Spread } from "../../src/entities/index"
 import { State } from "../../src/state/state"
 
 let state: State

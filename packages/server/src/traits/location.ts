@@ -1,6 +1,7 @@
+import { LocationTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import { State } from "../state/state"
+import type { State } from "../state/state"
 
 export class LocationTrait {
   /**
@@ -17,12 +18,8 @@ export class LocationTrait {
   angle: number
 }
 
-LocationTrait["typeDef"] = {
-  x: "number",
-  y: "number",
-  angle: "number",
-}
-LocationTrait["trait"] = function constructorLocationTrait(
+LocationTrait["typeDef"] = LocationTraitTypeDef
+LocationTrait["trait"] = function constructLocationTrait(
   state: State,
   options: Partial<LocationTrait>
 ): void {

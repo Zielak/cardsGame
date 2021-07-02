@@ -5,8 +5,8 @@ const {
   Player,
 } = require("@cardsgame/server")
 
-const { WarState } = require("./state")
 const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
+const { WarState } = require("./state")
 
 /**
  * Ante is optional, and won't be added in early stages of the game

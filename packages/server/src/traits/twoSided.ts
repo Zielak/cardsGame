@@ -1,6 +1,7 @@
+import { TwoSidedTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import { State } from "../state/state"
+import type { State } from "../state/state"
 
 export class TwoSidedTrait {
   /**
@@ -21,10 +22,8 @@ export class TwoSidedTrait {
   }
 }
 
-TwoSidedTrait["typeDef"] = {
-  faceUp: "boolean",
-}
-TwoSidedTrait["trait"] = function constructorTwoSidedTrait(
+TwoSidedTrait["typeDef"] = TwoSidedTraitTypeDef
+TwoSidedTrait["trait"] = function constructTwoSidedTrait(
   state: State,
   options: Partial<TwoSidedTrait>
 ): void {

@@ -14,6 +14,7 @@ Libraries for creating card games in general.
 - `@cardsgame/client` - base client-side lib. No rendering included/enforced. Gives you neatly packed game state updates, so you could render your game in whatever way you want.
 - `@cardsgame/utils` - some utilities used by both server and client side code. You too might find them useful.
 - `@cardsgame/types` - TS types for things used in both server and client side code.
+- `@cardsgame/entity-traits` - more type definitions, used in server-side lib, can optionally be exposed to your client-side implementation.
 
 ## Example usage
 

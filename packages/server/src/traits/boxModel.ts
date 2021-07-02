@@ -1,6 +1,7 @@
+import { BoxModelTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import { State } from "../state/state"
+import type { State } from "../state/state"
 
 export class BoxModelTrait {
   /**
@@ -13,8 +14,8 @@ export class BoxModelTrait {
   height: number
 }
 
-BoxModelTrait["typeDef"] = { height: "number", width: "number" }
-BoxModelTrait["trait"] = function constructorBoxModelTrait(
+BoxModelTrait["typeDef"] = BoxModelTypeDef
+BoxModelTrait["trait"] = function constructBoxModelTrait(
   state: State,
   options: Partial<BoxModelTrait>
 ): void {

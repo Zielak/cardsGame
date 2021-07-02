@@ -1,7 +1,8 @@
-import { chalk, IS_CHROME, logs } from "@cardsgame/utils"
+import { chalk, logs } from "@cardsgame/utils"
 
-import { Conditions } from "./"
 import { getFlag, iconStyle, resetNegation, setFlag } from "./utils"
+
+import { Conditions } from "."
 
 type EitherCallback<C> = (con: C) => any
 type EitherTuple<C> = [string, EitherCallback<C>]
@@ -154,24 +155,15 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
       try {
         test((this as unknown) as C)
 
-        IS_CHROME
-          ? logs.notice(
-              `${prefix}[${idx}] ${testName}-> %c✔︎`,
-              iconStyle("green", "white")
-            )
-          : logs.notice(
-              `${prefix}[${idx}] ${testName}-> ${chalk.bgGreen.white(" ✔︎ ")}`
-            )
+        logs.notice(
+          `${prefix}[${idx}] ${testName}-> ${chalk.bgGreen.white(" ✔︎ ")}`
+        )
       } catch (i) {
         logs.verbose(`err:`, i.message)
-        IS_CHROME
-          ? logs.notice(
-              `${prefix}[${idx}] ${testName}-> %c✘`,
-              iconStyle("red", "white")
-            )
-          : logs.notice(
-              `${prefix}[${idx}] ${testName}-> ${chalk.bgRed.white(" ✘ ")}`
-            )
+
+        logs.notice(
+          `${prefix}[${idx}] ${testName}-> ${chalk.bgRed.white(" ✘ ")}`
+        )
         error = "  ".repeat(eitherLevel) + i.message
         result = false
       }

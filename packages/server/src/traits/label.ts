@@ -1,6 +1,7 @@
+import { LabelTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import { State } from "../state/state"
+import type { State } from "../state/state"
 
 export class LabelTrait {
   /**
@@ -8,16 +9,15 @@ export class LabelTrait {
    */
   name: string
   /**
+   * Type should be unique to schema object! If you're extending this schema
+   * and adding new fields - set the new type string!
    * @memberof LabelTrait
    */
   type: string
 }
 
-LabelTrait["typeDef"] = {
-  type: "string",
-  name: "string",
-}
-LabelTrait["trait"] = function constructorLabelTrait(
+LabelTrait["typeDef"] = LabelTraitTypeDef
+LabelTrait["trait"] = function constructLabelTrait(
   state: State,
   options: Partial<LabelTrait> = {}
 ): void {

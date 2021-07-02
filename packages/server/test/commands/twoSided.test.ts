@@ -1,6 +1,6 @@
 import { Room } from "../../src"
 import { FaceDown, FaceUp, Flip } from "../../src/commands/twoSided"
-import { ClassicCard } from "../../src/entities/index"
+import { ClassicCard } from "../../src/entities"
 import { State } from "../../src/state/state"
 import { RoomMock } from "../helpers/roomMock"
 

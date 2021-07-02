@@ -22,8 +22,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@cardsgame/entity-traits": "file:../entityTraits",
     "@cardsgame/types": "file:../types",
     "@cardsgame/utils": "file:../utils",
-    "colyseus": "^0.13.7"
+    "@colyseus/schema": "^1.0.0",
+    "colyseus": "^0.14.0"
   }
 }

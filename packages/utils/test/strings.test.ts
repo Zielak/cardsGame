@@ -33,6 +33,7 @@ describe("camelCase", () => {
 describe("sentenceCase", () => {
   test("produces correctly", () => {
     expect(sentenceCase("foo")).toBe("Foo")
+    expect(sentenceCase("fooBar")).toBe("FooBar")
     expect(sentenceCase("foo bar")).toBe("Foo Bar")
     expect(sentenceCase("foo bar baz QUX")).toBe("Foo Bar Baz QUX")
   })

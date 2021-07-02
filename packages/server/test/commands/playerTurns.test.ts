@@ -8,10 +8,12 @@ let room
 
 beforeEach(() => {
   state = new State()
-  state.players[0] = new Player({ clientID: "a" })
-  state.players[1] = new Player({ clientID: "b" })
-  state.players[2] = new Player({ clientID: "c" })
-  state.players[3] = new Player({ clientID: "d" })
+  state.players.push(
+    new Player({ clientID: "a" }),
+    new Player({ clientID: "b" }),
+    new Player({ clientID: "c" }),
+    new Player({ clientID: "d" })
+  )
 
   room = new RoomMock()
 })

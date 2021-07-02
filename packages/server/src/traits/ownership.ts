@@ -1,7 +1,9 @@
+import { OwnershipTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import { Player } from "../players/player"
-import { State } from "../state/state"
+import type { Player } from "../players/player"
+import type { State } from "../state/state"
+
 import { isChild } from "./child"
 import { isParent } from "./parent"
 
@@ -53,11 +55,8 @@ export class OwnershipTrait {
   ownersMainFocus: boolean
 }
 
-OwnershipTrait["typeDef"] = {
-  ownersMainFocus: "boolean",
-  ownerID: "string",
-}
-OwnershipTrait["trait"] = function constructorOwnershipTrait(
+OwnershipTrait["typeDef"] = OwnershipTraitTypeDef
+OwnershipTrait["trait"] = function constructOwnershipTrait(
   state: State,
   options: Partial<OwnershipTrait> = {}
 ): void {

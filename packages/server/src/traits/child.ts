@@ -1,7 +1,9 @@
+import { ChildTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import { State } from "../state/state"
-import { ParentTrait } from "./parent"
+import type { State } from "../state/state"
+
+import type { ParentTrait } from "./parent"
 
 export function isChild(entity: unknown): entity is ChildTrait {
   return (
@@ -65,7 +67,7 @@ export class ChildTrait {
   }
 }
 
-ChildTrait["typeDef"] = { idx: "number" }
+ChildTrait["typeDef"] = ChildTraitTypeDef
 ChildTrait["hooks"] = {
   postConstructor: function addMyselfToParent(
     state: State,

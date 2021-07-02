@@ -2,16 +2,15 @@ import { def, logs } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
 import { type } from "../annotations/type"
+
 import { getRandomName } from "./names"
 
-export class Player extends Schema {
+export class Player extends Schema implements IPlayerDefinition {
   @type("string") clientID: string
   @type("string") name: string
 
   @type("number") score = 0
   @type("number") timeLeft = -1
-
-  finishedPlaying = false
 
   constructor(options: PlayerOptions) {
     super()

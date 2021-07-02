@@ -27,13 +27,4 @@ describe(`State`, () => {
 
     expect(state.currentPlayer.clientID).toBe("player1")
   })
-  test("#get playersCount", () => {
-    expect(state.playersCount).toBe(0)
-
-    state.players[0] = new Player({ clientID: "player1" })
-    expect(state.playersCount).toBe(1)
-
-    state.players[1] = new Player({ clientID: "player2" })
-    expect(state.playersCount).toBe(2)
-  })
 })

@@ -4,6 +4,7 @@ import { Command } from "../command"
 import { Room } from "../room"
 import { getNextPlayerIdx, getPreviousPlayerIdx } from "../state/helpers"
 import { State } from "../state/state"
+
 import { Sequence } from "./sequence"
 
 export class NextPlayer extends Command {

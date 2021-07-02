@@ -1,6 +1,6 @@
 export * from "./arrays"
+export * from "./entities"
 export * from "./logs"
-export * from "./mapSchema"
 export * from "./numbers"
 export * from "./objects"
 export * from "./random"

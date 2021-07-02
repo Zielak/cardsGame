@@ -1,4 +1,3 @@
-const { mapAdd } = require("@cardsgame/utils")
 const cardsGameServer = require("@cardsgame/server")
 const {
   commands,
@@ -11,9 +10,9 @@ const {
   Bot,
 } = cardsGameServer
 
-const { WarState } = require("./state")
 const actions = require("./actions")
 const botActivities = require("./bot")
+const { WarState } = require("./state")
 
 class WarGame extends Room {
   constructor(options) {
