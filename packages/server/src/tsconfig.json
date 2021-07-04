@@ -4,8 +4,9 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "module": "commonjs",
+    "lib": ["ES6"],
     "outDir": "../lib",
     "target": "ES2019",
-    "types": ["@cardsgame/types", "colyseus"]
+    "types": ["@cardsgame/types", "colyseus", "node"]
   }
 }

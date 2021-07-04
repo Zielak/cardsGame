@@ -3,7 +3,7 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    "lib": ["es6", "es2016"],
+    "lib": ["es6"],
     "target": "ES2019",
     "types": ["@cardsgame/types", "jest", "node"]
   }

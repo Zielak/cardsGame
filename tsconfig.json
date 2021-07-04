@@ -2,6 +2,7 @@
   "compilerOptions": {
     "declaration": true,
     "esModuleInterop": true,
+    "lib": ["es6"],
     "sourceMap": true,
     "target": "es5"
   }

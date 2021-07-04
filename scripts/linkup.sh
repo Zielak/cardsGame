@@ -4,7 +4,7 @@ cd ./packages/client
 npm link
 cd ../server
 npm link
-cd ../entity-traits
+cd ../entityTraits
 npm link
 cd ../types
 npm link
