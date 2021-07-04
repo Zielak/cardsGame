@@ -1,16 +1,10 @@
-import { Schema } from "@colyseus/schema"
-
 import { Room } from "../src/room"
-import { State } from "../src/state/state"
 
 let room: Room<any>
 
 beforeEach(() => {
   room = new Room()
-})
-
-test("constructor", () => {
-  expect(() => new Room()).not.toThrow()
+  room.setPatchRate(0)
 })
 
 describe("onCreate", () => {
