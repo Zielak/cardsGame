@@ -1,4 +1,11 @@
 /**
+ * Returns the last item of an array
+ */
+export const lastItem = <T = any>(array: T[]): T => {
+  return Array.isArray(array) ? array[array.length - 1] : undefined
+}
+
+/**
  * Compares if two arrays contain same elements.
  */
 export const compare = (arrayA: any[], arrayB: any[]): boolean =>

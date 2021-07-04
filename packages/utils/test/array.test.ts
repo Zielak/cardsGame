@@ -1,11 +1,20 @@
 import {
   arrayWith,
   compare,
+  lastItem,
   pickMostCommonProp,
   shuffle,
   sortAlphabetically,
   sortAlphaNumerically,
 } from "../src/arrays"
+
+test("lastItem", () => {
+  expect(lastItem([0, 1, 2])).toBe(2)
+  expect(lastItem([])).toBeUndefined()
+  expect(lastItem("" as any)).toBeUndefined()
+  expect(lastItem(5 as any)).toBeUndefined()
+  expect(lastItem({} as any)).toBeUndefined()
+})
 
 test("arrayWith", () => {
   expect(arrayWith(0)).toStrictEqual([])
