@@ -8,8 +8,22 @@ interface SchemaDefinition {
 export interface WithSchemaDefinition {
   _definition: SchemaDefinition
 }
-type MapSchemaDefinition = Record<"map", string | WithSchemaDefinition>
-type ArraySchemaDefinition = Record<"array", string | WithSchemaDefinition>
+
+// This is fun
+type MapOfPrimitivesDefinition = Record<"map", string>
+type MapOfSchemaObjectsDefinition = Record<"map", WithSchemaDefinition>
+type MapSchemaDefinition = MapOfPrimitivesDefinition &
+  MapOfSchemaObjectsDefinition
+
+type ArrayOfPrimitivesDefinition = Record<"array", string>
+type ArrayOfSchemaObjectsDefinition = Record<"array", WithSchemaDefinition>
+type ArraySchemaDefinition = ArrayOfPrimitivesDefinition &
+  ArrayOfSchemaObjectsDefinition
+
+type CollectionOfPrimitivesDefinition = MapOfPrimitivesDefinition &
+  ArrayOfPrimitivesDefinition
+type CollectionOfObjectsDefinition = MapOfSchemaObjectsDefinition &
+  ArrayOfSchemaObjectsDefinition
 
 export type SchemaDefinitionValue =
   | string
@@ -110,4 +124,26 @@ export function isDefinitionOfArraySchema(
   o: unknown
 ): o is ArraySchemaDefinition {
   return typeof o === "object" && o !== null && "array" in o
+}
+
+export function isDefinitionOfPrimitivesCollection(
+  o: unknown
+): o is CollectionOfPrimitivesDefinition {
+  if (isDefinitionOfMapSchema(o)) {
+    return typeof o.map === "string"
+  } else if (isDefinitionOfArraySchema(o)) {
+    return typeof o.array === "string"
+  }
+  return false
+}
+
+export function isDefinitionOfObjectsCollection(
+  o: unknown
+): o is CollectionOfObjectsDefinition {
+  if (isDefinitionOfMapSchema(o)) {
+    return isDefinitionOfSchema(o.map)
+  } else if (isDefinitionOfArraySchema(o)) {
+    return isDefinitionOfSchema(o.array)
+  }
+  return false
 }
