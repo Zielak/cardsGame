@@ -1,4 +1,5 @@
 export * from "./broadcast"
+export * from "./changeIdx"
 export * from "./changeParent"
 export * from "./dealCards"
 export * from "./drawOutUntil"
