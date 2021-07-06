@@ -14,8 +14,4 @@ npm link
 echo Going to example directory!
 
 cd ../../example
-npm link @cardsgame/server
-npm link @cardsgame/client
-npm link @cardsgame/entity-traits
-npm link @cardsgame/utils
-npm link @cardsgame/types
+npm link @cardsgame/server @cardsgame/client @cardsgame/entity-traits @cardsgame/utils @cardsgame/types
