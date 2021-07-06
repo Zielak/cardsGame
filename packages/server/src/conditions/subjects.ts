@@ -26,6 +26,7 @@ class ConditionSubjects {
     return this
   }
 
+  // TODO: Why was it private?
   /**
    * Looks for a child entity by their `props`, starting from current subject.
    *
@@ -34,7 +35,7 @@ class ConditionSubjects {
    * con.state.get({name: 'deck'}).as('deck')
    * ```
    */
-  private get(props: QuerableProps): this
+  get(props: QuerableProps): this
   /**
    * Changes subject to previously remembered entity by an `alias`,
    * or sone of the already remembered "initial subjects".
@@ -46,8 +47,8 @@ class ConditionSubjects {
    * con.get('deck', {rank: 'K'})
    * ```
    */
-  private get(alias: string, props?: QuerableProps): this
-  private get(arg0: string | QuerableProps, arg1?: QuerableProps): this {
+  get(alias: string, props?: QuerableProps): this
+  get(arg0: string | QuerableProps, arg1?: QuerableProps): this {
     let newSubject
     if (typeof arg0 === "string") {
       const alias = arg0
@@ -122,10 +123,30 @@ class ConditionSubjects {
   }
 
   /**
+   * @yields parent of current subject
+   */
+  get parent(): this {
+    const parent = getFlag(this, "subject").parent
+
+    if (!parent) {
+      throw new Error(`parent | Subject is the root state.`)
+    }
+    setFlag(this, "subject", parent)
+
+    return this
+  }
+
+  /**
    * @yields children of current subject (an array)
    */
   get children(): this {
-    const children = getFlag(this, "subject").getChildren()
+    const parent = getFlag(this, "subject")
+
+    if (!isParent(parent)) {
+      throw new Error(`children | Current subject can't have children`)
+    }
+
+    const children = parent.getChildren()
 
     setFlag(this, "subject", children)
 
@@ -133,20 +154,26 @@ class ConditionSubjects {
   }
 
   /**
-   * @yields a child at a specific index (array or Parent)
+   * @yields a child at a specific index (of array or Parent)
    * @param index
    */
   nthChild(index: number): this {
     const subject = getFlag(this, "subject")
 
-    if (typeof subject !== "object") {
-      throw new Error(`nthChild | Subject must be an object`)
-    }
-
     if (isParent(subject)) {
+      if (index > subject.countChildren() || index < 0) {
+        throw new Error(`nthChild | Out of bounds`)
+      }
+
       setFlag(this, "subject", subject.getChild(index))
-    } else {
+    } else if (Array.isArray(subject)) {
+      if (index > subject.length || index < 0) {
+        throw new Error(`nthChild | Out of bounds`)
+      }
+
       setFlag(this, "subject", subject[index])
+    } else {
+      throw new Error(`nthChild | Subject must be an array or Parent`)
     }
 
     return this

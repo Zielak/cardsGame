@@ -1,9 +1,12 @@
+// TODO: Document all these flags. What is propParent??
 type ConditionsFlag =
   | "state"
   | "subject"
   | "initialSubjects"
   | "defaultSubject"
   | "propName"
+  // "parent of current prop subject". Cache for current entity subject
+  // so we can go back after prop-digging
   | "propParent"
   | "not"
   | "eitherLevel"
