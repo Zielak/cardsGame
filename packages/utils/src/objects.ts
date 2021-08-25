@@ -34,6 +34,20 @@ export const omit = (
     }, {} as Record<string, any>)
 
 /**
+ * @returns new object only with provided `keys`
+ */
+export const pick = (
+  object: Record<string, any>,
+  keys: string[]
+): Record<string, any> =>
+  Object.keys(object)
+    .filter((key) => keys.includes(key))
+    .reduce((obj, key) => {
+      obj[key] = object[key]
+      return obj
+    }, {} as Record<string, any>)
+
+/**
  * Resolves target object/property given source object and path.
  */
 export const resolve = (

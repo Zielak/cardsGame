@@ -202,12 +202,12 @@ export class Room<S extends State> extends colRoom<S> {
   async handleMessage(message: ServerPlayerMessage): Promise<boolean> {
     let result = false
 
+    debugLogMessage(message)
+
     if (!message.player) {
-      logs.notice("handleMessage", "You're not a player, get out!", message)
+      logs.notice("handleMessage", "You're not a player, get out!")
       return false
     }
-
-    debugLogMessage(message)
 
     if (this.state.isGameOver) {
       logs.notice("handleMessage", "Game's already over!")

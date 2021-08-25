@@ -1,8 +1,14 @@
-import { deepClone, omit, resolve } from "../src/objects"
+import { deepClone, omit, pick, resolve } from "../src/objects"
 
 describe("omit", () => {
   test("works", () => {
     expect(omit({ one: 1, two: 2 }, ["two"])).toStrictEqual({ one: 1 })
+  })
+})
+
+describe("pick", () => {
+  test("works", () => {
+    expect(pick({ one: 1, two: 2 }, ["two"])).toStrictEqual({ two: 2 })
   })
 })
 

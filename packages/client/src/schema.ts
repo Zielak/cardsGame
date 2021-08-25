@@ -42,19 +42,27 @@ export type PrimitiveCollectionCallbacks<T = any> = (
 
 export type SchemaChangeCallback = (changes: DataChange[]) => void
 
-export interface ObjectSchema extends WithSchemaDefinition {
+export interface ObjectSchema<T = Record<string, any>>
+  extends WithSchemaDefinition {
   [key: string]: any
   onChange: SchemaChangeCallback
+  listen<K extends keyof T>(
+    propName: K,
+    callback: (value: T[K], previousValue: T[K]) => void
+  ): () => void
 }
 
-export interface ObjectsCollectionSchema<T = any> extends WithSchemaDefinition {
+export interface ObjectsCollectionSchema<T = any>
+  extends Array<T>,
+    WithSchemaDefinition {
   [key: string]: any
   onAdd: CollectionCallbacks<T>
   onRemove: CollectionCallbacks<T>
 }
 
 export interface PrimitivesCollectionSchema<T = any>
-  extends WithSchemaDefinition {
+  extends Array<T>,
+    WithSchemaDefinition {
   [key: string]: any
   onAdd: PrimitiveCollectionCallbacks<T>
   onRemove: PrimitiveCollectionCallbacks<T>
