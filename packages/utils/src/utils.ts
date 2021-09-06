@@ -4,8 +4,6 @@
 export const def = <T>(...values: T[]): T =>
   values.find((value) => typeof value !== "undefined")
 
-export const noop = (): void => {}
-
 /**
  * Calls each function with the current argument
  * and its result is used for the next call
@@ -26,15 +24,6 @@ export const compose = <T>(
       )
     }
   }, value as T)
-}
-
-/**
- * Executes function multiple times
- * @param length number of times function will be executed
- * @param func a function
- */
-export const times = (length: number, func: (idx: number) => any): void => {
-  Array.from({ length }, func)
 }
 
 /**

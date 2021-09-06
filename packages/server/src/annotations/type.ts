@@ -4,7 +4,7 @@ import {
   Schema,
   type as colType,
 } from "@colyseus/schema"
-import { globalContext } from "@colyseus/schema/lib/annotations"
+// import { globalContext } from "@colyseus/schema/lib/annotations"
 
 import { globalEntitiesContext } from "./entitiesContext"
 

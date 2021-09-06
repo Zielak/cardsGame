@@ -1,5 +1,12 @@
 import { DataChange } from "@colyseus/schema/lib/Schema"
 
+export type PrimitiveValue = string | boolean | number
+
+export type SchemaDefinitionValue =
+  | string
+  | ArraySchemaDefinition
+  | MapSchemaDefinition
+  | WithSchemaDefinition // Just another schema object inside
 export type SchemaDefinitionFieldTypes = Record<string, SchemaDefinitionValue>
 interface SchemaDefinition {
   schema: SchemaDefinitionFieldTypes
@@ -12,33 +19,24 @@ export interface WithSchemaDefinition {
 // This is fun
 type MapOfPrimitivesDefinition = Record<"map", string>
 type MapOfSchemaObjectsDefinition = Record<"map", WithSchemaDefinition>
-type MapSchemaDefinition = MapOfPrimitivesDefinition &
-  MapOfSchemaObjectsDefinition
+export type MapSchemaDefinition =
+  | MapOfPrimitivesDefinition
+  | MapOfSchemaObjectsDefinition
 
 type ArrayOfPrimitivesDefinition = Record<"array", string>
 type ArrayOfSchemaObjectsDefinition = Record<"array", WithSchemaDefinition>
-type ArraySchemaDefinition = ArrayOfPrimitivesDefinition &
-  ArrayOfSchemaObjectsDefinition
+export type ArraySchemaDefinition =
+  | ArrayOfPrimitivesDefinition
+  | ArrayOfSchemaObjectsDefinition
 
-type CollectionOfPrimitivesDefinition = MapOfPrimitivesDefinition &
-  ArrayOfPrimitivesDefinition
-type CollectionOfObjectsDefinition = MapOfSchemaObjectsDefinition &
-  ArrayOfSchemaObjectsDefinition
+type CollectionOfPrimitivesDefinition =
+  | MapOfPrimitivesDefinition
+  | ArrayOfPrimitivesDefinition
+type CollectionOfObjectsDefinition =
+  | MapOfSchemaObjectsDefinition
+  | ArrayOfSchemaObjectsDefinition
 
-export type SchemaDefinitionValue =
-  | string
-  | ArraySchemaDefinition
-  | MapSchemaDefinition
-  | WithSchemaDefinition // Just another schema object inside
-
-export type CollectionCallbacks<T = any> = (
-  instance: T & Schema,
-  key: string | number
-) => void
-export type PrimitiveCollectionCallbacks<T = any> = (
-  instance: T,
-  key: string | number
-) => void
+type CollectionCallback<T, K> = (instance: T, key: K) => void
 
 export type SchemaChangeCallback = (changes: DataChange[]) => void
 
@@ -52,21 +50,25 @@ export interface ObjectSchema<T = Record<string, any>>
   ): () => void
 }
 
-export interface ObjectsCollectionSchema<T = any>
-  extends Array<T>,
-    WithSchemaDefinition {
+/**
+ * Client-side, could also be wrapped with array-like or map-like functions.
+ */
+export interface ObjectsCollectionSchema<T = any, K = string>
+  extends WithSchemaDefinition {
   [key: string]: any
-  onAdd: CollectionCallbacks<T>
-  onRemove: CollectionCallbacks<T>
+  onAdd: CollectionCallback<T & Schema, K>
+  onRemove: CollectionCallback<T & Schema, K>
 }
 
-export interface PrimitivesCollectionSchema<T = any>
-  extends Array<T>,
-    WithSchemaDefinition {
+/**
+ * Client-side, could also be wrapped with array-like or map-like functions.
+ */
+export interface PrimitivesCollectionSchema<T = PrimitiveValue, K = string>
+  extends WithSchemaDefinition {
   [key: string]: any
-  onAdd: PrimitiveCollectionCallbacks<T>
-  onRemove: PrimitiveCollectionCallbacks<T>
-  onChange: PrimitiveCollectionCallbacks<T>
+  onAdd: CollectionCallback<T, K>
+  onRemove: CollectionCallback<T, K>
+  onChange: CollectionCallback<T, K>
 }
 
 /**
@@ -80,26 +82,22 @@ export type Schema =
 /**
  * Root game state
  */
-export type ClientGameState = {
-  [key: string]: Schema | number | string | boolean
-
-  clients: PrimitivesCollectionSchema<string>
+export type ClientGameStateProps = {
+  clients: string[]
 
   currentPlayerIdx?: number
   isGameStarted: boolean
   isGameOver: boolean
 
   playerViewPosition: ObjectSchema & IPlayerViewPosition
-  players: ObjectsCollectionSchema<IPlayerDefinition>
+  players: IPlayerDefinition[]
 
   tableHeight: number
   tableWidth: number
 
   ui?: ObjectSchema & { [key: string]: string }
-} & {
-  [prop in "onChange"]: SchemaChangeCallback
-} &
-  WithSchemaDefinition
+}
+export type ClientGameState = ObjectSchema<ClientGameStateProps>
 
 export function isSchemaObject(o: unknown): o is Schema {
   return (
@@ -118,6 +116,10 @@ export function isSchemaDefinition(o: unknown): o is SchemaDefinition {
     !("$changes" in o["schema"]) &&
     !("_definition" in o["schema"])
   )
+}
+
+export function isDefinitionOfPrimitive(o: unknown): o is string {
+  return typeof o === "string"
 }
 
 export function isDefinitionOfSchema(o: unknown): o is WithSchemaDefinition {

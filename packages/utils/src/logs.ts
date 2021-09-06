@@ -1,27 +1,13 @@
 import Chalk from "chalk"
 
-import { noop } from "./utils"
-
-const isBrowser = new Function(
-  "try {return this===window;}catch(e){ return false;}"
-)()
-
-/**
- * Ditch chrome dev node debugging. It was an adventure,
- * but cli logs are enough.
- * @deprecated
- */
-export const IS_SERVER_DEBUGGER_CHROME = (function () {
-  try {
-    return process ? Boolean(process.env.LOGS_CHROME) : false
-  } catch (e) {
-    return false
-  }
-})()
+import { noop } from "./functions"
+import { isBrowser, minifyEntity } from "./logger/utils"
 
 export const chalk = new Chalk.Instance({
-  level: isBrowser ? 0 : IS_SERVER_DEBUGGER_CHROME ? 0 : 1,
+  level: isBrowser ? 0 : 1,
 })
+
+const BROWSER_DEBUG_STYLE = "margin-left:2em;"
 
 export enum LogLevels {
   silent,
@@ -63,12 +49,7 @@ const setLogLevel = (val: string): void => {
   console.log("setLogLevel", logLevel)
 }
 
-const minifyEntity = ({ type, name }): string => `${type}:${name}`
-
 const syntaxHighlight = (arg: any): any => {
-  if (IS_SERVER_DEBUGGER_CHROME) {
-    return arg
-  }
   if (typeof arg === "string") {
     return chalk.gray(arg)
   }
@@ -95,8 +76,16 @@ let logsPreExport: {
   error: (...args: any[]) => void
   warn: (...args: any[]) => void
   info: (...args: any[]) => void
+  /**
+   * @deprecated use `log()` instead
+   */
   notice: (...args: any[]) => void
+  log: (...args: any[]) => void
+  /**
+   * @deprecated use `debug()` instead
+   */
   verbose: (...args: any[]) => void
+  debug: (...args: any[]) => void
   group: (...args: any[]) => void
   groupCollapsed: (...args: any[]) => void
   groupEnd: (...args: any[]) => void
@@ -105,7 +94,9 @@ let logsPreExport: {
 if (isBrowser) {
   logsPreExport = {
     verbose: console.debug.bind(window.console),
+    debug: console.debug.bind(window.console),
     notice: console.log.bind(window.console),
+    log: console.log.bind(window.console),
     info: console.info.bind(window.console),
     warn: console.warn.bind(window.console),
     error: console.error.bind(window.console),
@@ -113,7 +104,7 @@ if (isBrowser) {
     groupCollapsed: console.groupCollapsed.bind(window.console),
     groupEnd: console.groupEnd.bind(window.console),
   }
-} else if (!IS_SERVER_DEBUGGER_CHROME) {
+} else {
   logsPreExport = {
     verbose: function (...args: any[]): void {
       console.debug.apply(console, [
@@ -122,7 +113,25 @@ if (isBrowser) {
         ...args.map((arg) => chalk.gray(arg)),
       ])
     },
+    debug: function (...args: any[]): void {
+      console.debug.apply(console, [
+        _getIndent(),
+        `\t`,
+        ...args.map((arg) => chalk.gray(arg)),
+      ])
+    },
     notice: function (first, ...args: any[]): void {
+      if (args.length > 0) {
+        console.log.apply(console, [
+          _getIndent(),
+          `${first}:`,
+          ...args.map(syntaxHighlight),
+        ])
+      } else {
+        console.log.call(console, chalk.gray(_getIndent() + first))
+      }
+    },
+    log: function (first, ...args: any[]): void {
       if (args.length > 0) {
         console.log.apply(console, [
           _getIndent(),
@@ -152,51 +161,17 @@ if (isBrowser) {
       ])
     },
     group: function (first, ...args: any[]): void {
-      logsPreExport.notice(`┍━${first}`, ...args)
+      logsPreExport.log(`┍━${first}`, ...args)
       _indentLevel++
     },
     groupCollapsed: function (first, ...args: any[]): void {
-      logsPreExport.notice(`┍━${first}`, ...args)
+      logsPreExport.log(`┍━${first}`, ...args)
       _indentLevel++
     },
     groupEnd: function (first = "────────────", ...args: any[]): void {
       _indentLevel = Math.max(_indentLevel - 1, 0)
-      logsPreExport.notice(`┕━${first}`, ...args)
+      logsPreExport.log(`┕━${first}`, ...args)
     },
-  }
-} else {
-  const styles = {
-    common: "padding: 1px 5px; margin: -1px 0;",
-    info: "color: white; background: #2196f3",
-  }
-
-  logsPreExport = {
-    verbose: console.debug.bind(console),
-    notice: console.log.bind(console),
-    info: function (first, ...args: any[]): void {
-      return console.info.apply(console, [
-        `%c ${first} `,
-        styles.common + styles.info,
-        ...args.map(syntaxHighlight),
-      ])
-    },
-    warn: console.warn.bind(console),
-    error: console.error.bind(console),
-    group: (...args): void => {
-      // Silence one-off console.log
-      const tmp = console.log
-      global.console.log = noop
-      global.console.group.apply(console, args)
-      global.console.log = tmp
-    },
-    groupCollapsed: (...args): void => {
-      // Silence one-off console.log
-      const tmp = console.log
-      global.console.log = noop
-      global.console.groupCollapsed.apply(console, args)
-      global.console.log = tmp
-    },
-    groupEnd: console.groupEnd.bind(console),
   }
 }
 
@@ -222,9 +197,11 @@ if (logLevel < LogLevels.info) {
 }
 if (logLevel < LogLevels.notice) {
   logsPreExport.notice = noop
+  logsPreExport.log = noop
 }
 if (logLevel < LogLevels.verbose) {
   logsPreExport.verbose = noop
+  logsPreExport.debug = noop
 }
 
 export const logs = logsPreExport
@@ -233,8 +210,16 @@ export interface Logs {
   error: (...any) => void
   warn: (...any) => void
   info: (...any) => void
+  /**
+   * @deprecated use `log()` instead
+   */
   notice: (...any) => void
+  log: (...any) => void
+  /**
+   * @deprecated use `debug()` instead
+   */
   verbose: (...any) => void
+  debug: (...any) => void
   group: (...any) => void
   groupCollapsed: (...any) => void
   groupEnd: (...any) => void
@@ -292,7 +277,7 @@ export class Logs {
               ...args.map(syntaxHighlight),
             ])
           }
-    this["notice"] =
+    this["log"] = this["notice"] =
       logLevel < LogLevels.notice && this.enabled
         ? noop
         : function (first, ...args: any[]): void {
@@ -305,8 +290,8 @@ export class Logs {
               console.log.call(console, style(chalk.gray(getIndent() + first)))
             }
           }
-    const notice = this["notice"]
-    this["verbose"] =
+    const _log = this["log"]
+    this["debug"] = this["verbose"] =
       logLevel < LogLevels.verbose && this.enabled
         ? noop
         : function (...args: any[]): void {
@@ -318,20 +303,20 @@ export class Logs {
     this["group"] = !this.enabled
       ? noop
       : function (first, ...args: any[]): void {
-          notice(`┍━${first}`, ...args)
+          _log(`┍━${first}`, ...args)
           indentLevel++
         }
     this["groupCollapsed"] = !this.enabled
       ? noop
       : function (first, ...args: any[]): void {
-          notice(`┍━${first}`, ...args)
+          _log(`┍━${first}`, ...args)
           indentLevel++
         }
     this["groupEnd"] = !this.enabled
       ? noop
       : function (first = "────────────", ...args: any[]): void {
           indentLevel = Math.max(indentLevel - 1, 0)
-          notice(`┕━${first}`, ...args)
+          _log(`┕━${first}`, ...args)
         }
   }
 
@@ -369,7 +354,7 @@ export class Logs {
               style
             )
           })()
-    this["notice"] =
+    this["log"] = this["notice"] =
       logLevel < LogLevels.notice && this.enabled
         ? noop
         : (function (): any {
@@ -380,7 +365,7 @@ export class Logs {
               style
             )
           })()
-    this["verbose"] =
+    this["debug"] = this["verbose"] =
       logLevel < LogLevels.verbose && this.enabled
         ? noop
         : (function (): any {
@@ -388,7 +373,7 @@ export class Logs {
               console.debug,
               console,
               `%c ${name} `,
-              style
+              style + BROWSER_DEBUG_STYLE
             )
           })()
     this["group"] = !this.enabled

@@ -55,7 +55,7 @@ export class State extends Entity<Record<string, unknown>> {
 
   /**
    * A construct describing how should player's "focused" items
-   * be positioned in his view. Containers of other players
+   * be positioned in their view. Containers of other players
    * will not follow these rules.
    * Default is: center/bottom.
    */
