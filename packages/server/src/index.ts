@@ -1,7 +1,8 @@
 import * as commands from "./commands"
 
-export { LobbyRoom, Server } from "colyseus"
-export { RoomConstructor } from "colyseus/lib/Room"
+export { LobbyRoom, Server } from "@colyseus/core"
+export { WebSocketTransport } from "@colyseus/ws-transport"
+export type { RoomConstructor } from "@colyseus/core/build/Room"
 export { Schema, ArraySchema, MapSchema } from "@colyseus/schema"
 
 export { canBeChild } from "./annotations/canBeChild"

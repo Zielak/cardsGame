@@ -55,9 +55,7 @@ export function populatePlayerEvent(
 
   const player =
     typeof clientOrPlayer === "string"
-      ? Array.from(state.players.values()).find(
-          (p) => p.clientID === clientOrPlayer
-        )
+      ? state.players.find((p) => p.clientID === clientOrPlayer)
       : clientOrPlayer
 
   if (player) {

@@ -1,5 +1,5 @@
 import { chalk, def, logs, shuffle } from "@cardsgame/utils"
-import { Client, Room as colRoom } from "colyseus"
+import { Client, Room as colRoom } from "@colyseus/core"
 
 import { ActionsSet } from "./actionTemplate"
 import { BotNeuron } from "./bots/botNeuron"
@@ -84,12 +84,12 @@ export class Room<S extends State> extends colRoom<S> {
         const newMessage = populatePlayerEvent(
           this.state,
           { ...message, messageType: "EntityInteraction" },
-          client.id
+          client.sessionId
         )
         this.handleMessage(newMessage).catch((e) =>
           logs.error(
             "ROOM",
-            `EntityInteraction failed for client: "${client.id}": ${e}`
+            `EntityInteraction failed for client: "${client.sessionId}": ${e}`
           )
         )
       }
@@ -99,12 +99,12 @@ export class Room<S extends State> extends colRoom<S> {
       const newMessage = populatePlayerEvent(
         this.state,
         { data: message, messageType },
-        client.id
+        client.sessionId
       )
       this.handleMessage(newMessage).catch((e) =>
         logs.error(
           "ROOM",
-          `message type "${messageType}" failed for client: "${client.id}": ${e}`
+          `message type "${messageType}" failed for client: "${client.sessionId}": ${e}`
         )
       )
     })
@@ -152,14 +152,16 @@ export class Room<S extends State> extends colRoom<S> {
    * Add human client to `state.clients`
    * @returns `false` is client is already there or if the game is not yet started
    */
-  protected addClient(id: string): boolean {
+  protected addClient(sessionId: string): boolean {
     const { state } = this
 
     if (
       !state.isGameStarted &&
-      Array.from(state.clients.values()).every((clientID) => id !== clientID)
+      Array.from(state.clients.values()).every(
+        (clientID) => sessionId !== clientID
+      )
     ) {
-      state.clients.push(id)
+      state.clients.push(sessionId)
       return true
     }
     return false
@@ -168,29 +170,29 @@ export class Room<S extends State> extends colRoom<S> {
   /**
    * Remove human client from `state.clients`
    */
-  protected removeClient(id: string): void {
-    const clientIndex = this.state.clients.indexOf(id)
+  protected removeClient(sessionId: string): void {
+    const clientIndex = this.state.clients.indexOf(sessionId)
     this.state.clients.splice(clientIndex, 1)
   }
 
   onJoin(newClient: Client): void {
-    const added = this.addClient(newClient.id)
+    const added = this.addClient(newClient.sessionId)
     const statusString = added ? " and" : `, wasn't`
 
-    logs.notice(
+    logs.log(
       "onJoin",
-      `client "${newClient.id}" joined${statusString} added to state.clients`
+      `client "${newClient.sessionId}" joined${statusString} added to state.clients`
     )
   }
 
   onLeave(client: Client, consented: boolean): void {
     if (consented || !this.state.isGameStarted) {
-      this.removeClient(client.id)
-      logs.notice("onLeave", `client "${client.id}" left permanently`)
+      this.removeClient(client.sessionId)
+      logs.log("onLeave", `client "${client.sessionId}" left permanently`)
     } else {
-      logs.notice(
+      logs.log(
         "onLeave",
-        `client "${client.id}" disconnected, might be back`
+        `client "${client.sessionId}" disconnected, might be back`
       )
     }
   }
@@ -205,19 +207,19 @@ export class Room<S extends State> extends colRoom<S> {
     debugLogMessage(message)
 
     if (!message.player) {
-      logs.notice("handleMessage", "You're not a player, get out!")
+      logs.log("handleMessage", "You're not a player, get out!")
       return false
     }
 
     if (this.state.isGameOver) {
-      logs.notice("handleMessage", "Game's already over!")
+      logs.log("handleMessage", "Game's already over!")
       return false
     }
 
     try {
       result = await this.commandsManager.handlePlayerEvent(message)
     } catch (e) {
-      logs.notice("handleMessage FAILED", e.message)
+      logs.log("handleMessage FAILED", e.message)
       return false
     }
 
@@ -232,11 +234,11 @@ export class Room<S extends State> extends colRoom<S> {
     const { state } = this
 
     if (state.isGameStarted) {
-      logs.notice("handleGameStart", `Game is already started, ignoring...`)
+      logs.log("handleGameStart", `Game is already started, ignoring...`)
       return
     }
     if (this.canGameStart && !this.canGameStart()) {
-      logs.notice(
+      logs.log(
         "handleGameStart",
         `Someone requested game start, but we can't go yet...`
       )
@@ -246,10 +248,10 @@ export class Room<S extends State> extends colRoom<S> {
     // We can go, convert all connected clients into players
     shuffle(
       this.clients
-        .map((client) => new Player({ clientID: client.id }))
+        .map((client) => new Player({ clientID: client.sessionId }))
         .concat(this.botClients)
-    ).forEach((player, idx) => {
-      state.players[idx] = player
+    ).forEach((player) => {
+      state.players.push(player)
     })
 
     this.startTheGame()
@@ -265,8 +267,8 @@ export class Room<S extends State> extends colRoom<S> {
     const { state } = this
 
     // We can go, shuffle players into new seats.
-    shuffle(Array.from(state.players.values())).forEach((player, idx) => {
-      state.players[idx] = player
+    shuffle(Array.from(state.players.values())).forEach((player) => {
+      state.players.push(player)
     })
 
     this.startTheGame()

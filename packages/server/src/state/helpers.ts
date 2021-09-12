@@ -34,15 +34,11 @@ export function getPreviousPlayer(state: State): Player {
 }
 
 export function getPlayerByName(state: State, name: string): Player {
-  return Array.from(state.players.values()).find(
-    (player) => player.name === name
-  )
+  return state.players.find((player) => player.name === name)
 }
 
 export function getAllBots(state: State): Bot[] {
-  return Array.from(state.players.values()).filter((player) =>
-    isBot(player)
-  ) as Bot[]
+  return state.players.filter((player) => isBot(player)) as Bot[]
 }
 
 /**

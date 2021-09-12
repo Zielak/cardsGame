@@ -7,4 +7,5 @@ module.exports = {
       diagnostics: true,
     },
   },
+  setupFiles: ["./testSetup.ts"],
 }

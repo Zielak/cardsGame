@@ -25,7 +25,8 @@
     "@cardsgame/entity-traits": "file:../entityTraits",
     "@cardsgame/types": "file:../types",
     "@cardsgame/utils": "file:../utils",
+    "@colyseus/core": "^0.14.24",
     "@colyseus/schema": "^1.0.0",
-    "colyseus": "^0.14.0"
+    "@colyseus/ws-transport": "^0.14.21"
   }
 }

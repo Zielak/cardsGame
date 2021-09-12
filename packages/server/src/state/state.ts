@@ -39,6 +39,7 @@ export class State extends Entity<Record<string, unknown>> {
 
   /**
    * List of players - game participants, after the game starts.
+   * TODO: Make players have `idx` if you ever need them to change order mid-game
    */
   @type([Player]) players = new ArraySchema<Player>()
 
