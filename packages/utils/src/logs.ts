@@ -251,36 +251,35 @@ export class Logs {
     }
 
     this["error"] =
-      logLevel < LogLevels.error && this.enabled
-        ? noop
-        : function (first, ...args: any[]): void {
+      this.enabled && logLevel >= LogLevels.error
+        ? function (first, ...args: any[]): void {
             console.error.apply(console, [
               style(getIndent() + chalk.bgRed(` ${first} `)),
               ...args.map(syntaxHighlight),
             ])
           }
+        : noop
     this["warn"] =
-      logLevel < LogLevels.warn && this.enabled
-        ? noop
-        : function (first, ...args: any[]): void {
+      this.enabled && logLevel >= LogLevels.warn
+        ? function (first, ...args: any[]): void {
             console.warn.apply(console, [
               style(getIndent() + chalk.bgYellow.black(` ${first} `)),
               ...args.map(syntaxHighlight),
             ])
           }
+        : noop
     this["info"] =
-      logLevel < LogLevels.info && this.enabled
-        ? noop
-        : function (first, ...args: any[]): void {
+      this.enabled && logLevel >= LogLevels.info
+        ? function (first, ...args: any[]): void {
             console.info.apply(console, [
               style(getIndent() + chalk.bgBlue.black(` ${first} `)),
               ...args.map(syntaxHighlight),
             ])
           }
+        : noop
     this["log"] = this["notice"] =
-      logLevel < LogLevels.notice && this.enabled
-        ? noop
-        : function (first, ...args: any[]): void {
+      this.enabled && logLevel >= LogLevels.notice
+        ? function (first, ...args: any[]): void {
             if (args.length > 0) {
               console.log.apply(console, [
                 style(getIndent(), `${first}:`),
@@ -290,41 +289,41 @@ export class Logs {
               console.log.call(console, style(chalk.gray(getIndent() + first)))
             }
           }
+        : noop
     const _log = this["log"]
     this["debug"] = this["verbose"] =
-      logLevel < LogLevels.verbose && this.enabled
-        ? noop
-        : function (...args: any[]): void {
+      this.enabled && logLevel >= LogLevels.verbose
+        ? function (...args: any[]): void {
             console.debug.apply(console, [
               style(`${getIndent()}\t`),
               ...args.map((arg) => chalk.gray(arg)),
             ])
           }
-    this["group"] = !this.enabled
-      ? noop
-      : function (first, ...args: any[]): void {
+        : noop
+    this["group"] = this.enabled
+      ? function (first, ...args: any[]): void {
           _log(`┍━${first}`, ...args)
           indentLevel++
         }
-    this["groupCollapsed"] = !this.enabled
-      ? noop
-      : function (first, ...args: any[]): void {
+      : noop
+    this["groupCollapsed"] = this.enabled
+      ? function (first, ...args: any[]): void {
           _log(`┍━${first}`, ...args)
           indentLevel++
         }
-    this["groupEnd"] = !this.enabled
-      ? noop
-      : function (first = "────────────", ...args: any[]): void {
+      : noop
+    this["groupEnd"] = this.enabled
+      ? function (first = "────────────", ...args: any[]): void {
           indentLevel = Math.max(indentLevel - 1, 0)
           _log(`┕━${first}`, ...args)
         }
+      : noop
   }
 
   setupBrowserLogs(name: string, style: string): void {
     this["error"] =
-      logLevel < LogLevels.error && this.enabled
-        ? noop
-        : (function (): any {
+      this.enabled && logLevel >= LogLevels.error
+        ? (function (): any {
             return Function.prototype.bind.call(
               console.error,
               console,
@@ -332,10 +331,10 @@ export class Logs {
               style
             )
           })()
+        : noop
     this["warn"] =
-      logLevel < LogLevels.warn && this.enabled
-        ? noop
-        : (function (): any {
+      this.enabled && logLevel >= LogLevels.warn
+        ? (function (): any {
             return Function.prototype.bind.call(
               console.warn,
               console,
@@ -343,10 +342,10 @@ export class Logs {
               style
             )
           })()
+        : noop
     this["info"] =
-      logLevel < LogLevels.info && this.enabled
-        ? noop
-        : (function (): any {
+      this.enabled && logLevel >= LogLevels.info
+        ? (function (): any {
             return Function.prototype.bind.call(
               console.info,
               console,
@@ -354,10 +353,10 @@ export class Logs {
               style
             )
           })()
+        : noop
     this["log"] = this["notice"] =
-      logLevel < LogLevels.notice && this.enabled
-        ? noop
-        : (function (): any {
+      this.enabled && logLevel >= LogLevels.notice
+        ? (function (): any {
             return Function.prototype.bind.call(
               console.log,
               console,
@@ -365,10 +364,10 @@ export class Logs {
               style
             )
           })()
+        : noop
     this["debug"] = this["verbose"] =
-      logLevel < LogLevels.verbose && this.enabled
-        ? noop
-        : (function (): any {
+      this.enabled && logLevel >= LogLevels.verbose
+        ? (function (): any {
             return Function.prototype.bind.call(
               console.debug,
               console,
@@ -376,16 +375,17 @@ export class Logs {
               style + BROWSER_DEBUG_STYLE
             )
           })()
-    this["group"] = !this.enabled
-      ? noop
-      : console.group.bind(console, `%c ${name} `, style)
-    this["groupCollapsed"] = !this.enabled
-      ? noop
-      : console.groupCollapsed.bind(console, `%c ${name} `, style)
-    this["groupEnd"] = !this.enabled
-      ? noop
-      : (function (): any {
+        : noop
+    this["group"] = this.enabled
+      ? console.group.bind(console, `%c ${name} `, style)
+      : noop
+    this["groupCollapsed"] = this.enabled
+      ? console.groupCollapsed.bind(console, `%c ${name} `, style)
+      : noop
+    this["groupEnd"] = this.enabled
+      ? (function (): any {
           return Function.prototype.bind.call(console.groupEnd, console)
         })()
+      : noop
   }
 }
