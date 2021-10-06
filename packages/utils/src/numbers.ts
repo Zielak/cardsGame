@@ -2,7 +2,10 @@ export const limit = (val: number, min = 0, max = 1): number =>
   val < min ? min : val > max ? max : val
 
 // TODO: maybe allow negative values as min?
-export const wrap = (val: number, max = 1): number => ((val % max) + max) % max
+export const wrap = (val: number, max = 1): number => {
+  if (max === 0) return val
+  return ((val % max) + max) % max
+}
 
 export const rad2deg = (angle: number): number => {
   //  discuss at: http://locutus.io/php/rad2deg/

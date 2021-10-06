@@ -37,6 +37,11 @@ test("wrap", () => {
   expect(wrap(1.5, 1)).toBe(0.5)
   expect(wrap(2, 10)).toBe(2)
   expect(wrap(-2, 10)).toBe(8)
+
+  // Don't freak out with accidental zero
+  expect(wrap(3, 0)).toBe(3)
+  expect(wrap(-3, 0)).toBe(-3)
+  expect(wrap(0, 0)).toBe(0)
 })
 
 test("rad2deg", () => {
