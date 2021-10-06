@@ -9,7 +9,7 @@ export class NextRound extends Command {
     room.onRoundEnd()
 
     state.round++
-    logs.notice(this.name, `Round ${state.round}!`)
+    logs.log(this.name, `Round ${state.round}!`)
 
     room.onRoundStart()
     room.botRunner.onRoundStart()
@@ -19,7 +19,7 @@ export class NextRound extends Command {
     room.onRoundStart()
 
     state.round--
-    logs.notice(this.name, `Bringing back Round ${state.round}!`)
+    logs.log(this.name, `Bringing back Round ${state.round}!`)
 
     room.onRoundEnd()
   }

@@ -52,6 +52,14 @@ export class State extends Entity<Record<string, unknown>> {
   @type("boolean") isGameStarted = false
   @type("boolean") isGameOver = false
 
+  /**
+   * Describes which client-side UI component to reveal to which player.
+   * KEY = uiElement, VALUE = clientID
+   *
+   * NOTE: It's a very simple example, for more advanced use (eg. UI element
+   * visible for multiple certain players) feel free to
+   * create your own ui handler in your State
+   */
   @type({ map: "string" }) ui = new MapSchema<string>()
 
   /**

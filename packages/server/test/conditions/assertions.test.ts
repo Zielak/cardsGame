@@ -1,4 +1,3 @@
-import { getPlayersIndex } from "../../src"
 import { Grid } from "../../src/entities/grid"
 import { Player, ServerPlayerMessage } from "../../src/players/player"
 import { State } from "../../src/state/state"
@@ -18,6 +17,9 @@ let con: ConditionsMock<State>
 let player1: Player
 let player2: Player
 
+const UI_KEY1 = "uiKey1"
+const UI_KEY2 = "uiKey2"
+
 beforeEach(() => {
   state = new State()
   parent = new SmartParent(state, { name: "parent" })
@@ -36,6 +38,9 @@ beforeEach(() => {
 
   player1 = new Player({ clientID: "player1" })
   player2 = new Player({ clientID: "player2" })
+
+  state.ui.set(UI_KEY1, player1.clientID)
+  state.ui.set(UI_KEY2, "")
 
   con = new ConditionsMock<State>(state, { example: "foo", player: player1 })
 })
@@ -321,6 +326,28 @@ test("matchesPropOf", () => {
 
   expect(() => con().set(top).matchesPropOf("bottom")).toThrow()
   expect(() => con().set([]).matchesPropOf("bottom")).toThrow()
+})
+
+describe("revealedUI", () => {
+  test("passes", () => {
+    // player1
+    expect(() => con().revealedUI()).not.toThrow()
+    expect(() => con().revealedUI(UI_KEY1)).not.toThrow()
+    expect(() => con().has.not.revealedUI(UI_KEY2)).not.toThrow()
+
+    expect(() => con().revealedUI(UI_KEY2)).toThrow("client doesn't have")
+
+    // player2
+    con = new ConditionsMock<State>(state, { example: "foo", player: player2 })
+
+    expect(() => con().has.not.revealedUI()).not.toThrow()
+    expect(() => con().has.not.revealedUI(UI_KEY1)).not.toThrow()
+    expect(() => con().has.not.revealedUI(UI_KEY2)).not.toThrow()
+
+    expect(() => con().revealedUI()).toThrow()
+    expect(() => con().revealedUI(UI_KEY1)).toThrow()
+    expect(() => con().revealedUI(UI_KEY2)).toThrow()
+  })
 })
 
 test("itsPlayersTurn", () => {

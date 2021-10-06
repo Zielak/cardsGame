@@ -1,5 +1,6 @@
 import { isGrid } from "../entities"
 import { QuerableProps, queryRunner } from "../queryRunner"
+import { State } from "../state/state"
 import { isChild } from "../traits/child"
 import { isParent } from "../traits/parent"
 import { isParentMap } from "../traits/parentMap"
@@ -565,20 +566,19 @@ class ConditionAssertions {
    * con.not.revealedUI("rankChooser")
    */
   revealedUI(uiKey?: string): this {
-    const { ui } = getFlag(this, "state")
+    const { ui } = getFlag(this, "state") as State
     const clientID = getFlag(this, "initialSubjects").player.clientID
 
     if (uiKey) {
       // 1. uiKey needs to exist
-      if (!(uiKey in ui)) {
+      if (!ui.has(uiKey)) {
         throw new Error(
           `revealedUI | this UI doesn't have "${uiKey}" key defined`
         )
       }
 
-      // 2. Current client has to be on the list
-      const uiValues = Array.isArray(ui[uiKey]) ? ui[uiKey] : [ui[uiKey]]
-      const result = uiValues.some((client) => clientID === client)
+      // 2. Current client has to be set
+      const result = ui.get(uiKey) === clientID
       assert.call(
         this,
         result,
@@ -586,12 +586,9 @@ class ConditionAssertions {
         `revealedUI | client has "${uiKey}" UI presented to him, but shouldn't`
       )
     } else {
-      const uiKeys = Object.keys(ui).filter(
-        // FIXME: StateUI for some reason needs these keys...
-        (key) => !["clone", "onAdd", "onRemove", "onChange"].includes(key)
-      )
+      const uiKeys = Array.from(ui.keys())
 
-      const result = uiKeys.some((key) => ui[key].includes(clientID))
+      const result = uiKeys.some((key) => ui.get(key) === clientID)
       assert.call(
         this,
         result,
