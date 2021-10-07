@@ -7,7 +7,7 @@ import {
   Targets,
   TargetsHolder,
 } from "../command"
-import { State } from "../state/state"
+import { State } from "../state"
 import { ChildTrait } from "../traits/child"
 import { hasLabel } from "../traits/label"
 import { ParentTrait } from "../traits/parent"

@@ -1,5 +1,5 @@
 import { Player } from "../../src"
-import { State } from "../../src/state/state"
+import { State } from "../../src/state"
 import { DumbEntity } from "../helpers/dumbEntities"
 
 let state: State

@@ -1,6 +1,6 @@
 import { Player, Room } from "../../src"
 import { RevealUI, HideUI } from "../../src/commands/ui"
-import { State } from "../../src/state/state"
+import { State } from "../../src/state"
 import { RoomMock } from "../helpers/roomMock"
 
 let state: State

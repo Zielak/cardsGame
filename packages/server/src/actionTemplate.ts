@@ -2,7 +2,7 @@ import { Command } from "./command"
 import { ClientMessageConditions } from "./interaction"
 import { Player, ServerPlayerMessage } from "./players/player"
 import { QuerableProps } from "./queryRunner"
-import { State } from "./state/state"
+import { State } from "./state"
 
 export interface ActionTemplate<S extends State> {
   name: string

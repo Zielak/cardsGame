@@ -2,7 +2,7 @@ import { logs } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
 import { type } from "../annotations/type"
-import type { State } from "../state/state"
+import type { State } from "../state"
 
 export function executeHook(hookName: string, ...args: any[]): void {
   const proto = Object.getPrototypeOf(this)
@@ -50,48 +50,48 @@ export class Entity<T> extends Schema {
  * @param derivedCtor
  * @param baseCtors
  */
-export const applyTraitsMixins = (baseCtors: any[]) => (
-  derivedCtor: AnyClass
-): void => {
-  const derived = derivedCtor.prototype
+export const applyTraitsMixins =
+  (baseCtors: any[]) =>
+  (derivedCtor: AnyClass): void => {
+    const derived = derivedCtor.prototype
 
-  if (!Object.prototype.hasOwnProperty.call(derived, "traitsConstructors")) {
-    Object.defineProperty(derived, "traitsConstructors", {
-      value: [],
-    })
-  }
-  if (!Object.prototype.hasOwnProperty.call(derived, "hooks")) {
-    Object.defineProperty(derived, "hooks", {
-      value: new Map(),
-    })
-  }
-
-  baseCtors.forEach((baseCtor) => {
-    Object.getOwnPropertyNames(baseCtor.prototype)
-      .filter((name) => name !== "constructor")
-      .forEach((name) => {
-        Object.defineProperty(
-          derived,
-          name,
-          Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
-        )
+    if (!Object.prototype.hasOwnProperty.call(derived, "traitsConstructors")) {
+      Object.defineProperty(derived, "traitsConstructors", {
+        value: [],
       })
+    }
+    if (!Object.prototype.hasOwnProperty.call(derived, "hooks")) {
+      Object.defineProperty(derived, "hooks", {
+        value: new Map(),
+      })
+    }
 
-    Object.getOwnPropertyNames(baseCtor).forEach((name) => {
-      if (name === "typeDef") {
-        for (const field in baseCtor.typeDef) {
-          type(baseCtor.typeDef[field])(derived, field)
-        }
-      } else if (name === "trait") {
-        derived.traitsConstructors.push(baseCtor.trait)
-      } else if (name === "hooks" && typeof baseCtor.hooks === "object") {
-        Object.keys(baseCtor.hooks).forEach((hookKey) => {
-          if (!derived.hooks.has(hookKey)) {
-            derived.hooks.set(hookKey, [])
-          }
-          derived.hooks.get(hookKey).push(baseCtor.hooks[hookKey])
+    baseCtors.forEach((baseCtor) => {
+      Object.getOwnPropertyNames(baseCtor.prototype)
+        .filter((name) => name !== "constructor")
+        .forEach((name) => {
+          Object.defineProperty(
+            derived,
+            name,
+            Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
+          )
         })
-      }
+
+      Object.getOwnPropertyNames(baseCtor).forEach((name) => {
+        if (name === "typeDef") {
+          for (const field in baseCtor.typeDef) {
+            type(baseCtor.typeDef[field])(derived, field)
+          }
+        } else if (name === "trait") {
+          derived.traitsConstructors.push(baseCtor.trait)
+        } else if (name === "hooks" && typeof baseCtor.hooks === "object") {
+          Object.keys(baseCtor.hooks).forEach((hookKey) => {
+            if (!derived.hooks.has(hookKey)) {
+              derived.hooks.set(hookKey, [])
+            }
+            derived.hooks.get(hookKey).push(baseCtor.hooks[hookKey])
+          })
+        }
+      })
     })
-  })
-}
+  }

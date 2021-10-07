@@ -2,7 +2,7 @@ import { logs } from "@cardsgame/utils"
 
 import { Command, Target, TargetHolder } from "../command"
 import { Room } from "../room"
-import { State } from "../state/state"
+import { State } from "../state"
 import { ParentTrait } from "../traits/parent"
 import { SelectableChildrenTrait } from "../traits/selectableChildren"
 

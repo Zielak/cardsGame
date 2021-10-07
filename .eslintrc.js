@@ -43,7 +43,12 @@ module.exports = {
         "prettier",
       ],
       rules: {
-        "@typescript-eslint/explicit-function-return-type": "warn",
+        "@typescript-eslint/explicit-function-return-type": [
+          "warn",
+          {
+            allowExpressions: true,
+          },
+        ],
         "@typescript-eslint/interface-name-prefix": "off",
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/no-empty-interface": [

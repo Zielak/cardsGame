@@ -2,8 +2,8 @@ import { logs } from "@cardsgame/utils"
 
 import { Command } from "../command"
 import { Room } from "../room"
+import { State } from "../state"
 import { getNextPlayerIdx, getPreviousPlayerIdx } from "../state/helpers"
-import { State } from "../state/state"
 
 import { Sequence } from "./sequence"
 

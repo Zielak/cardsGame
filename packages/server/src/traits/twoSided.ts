@@ -1,7 +1,7 @@
 import { TwoSidedTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import type { State } from "../state/state"
+import type { State } from "../state"
 
 export class TwoSidedTrait {
   /**

@@ -1,6 +1,6 @@
 import { Player } from "../src"
 import { queryRunner } from "../src/queryRunner"
-import { State } from "../src/state/state"
+import { State } from "../src/state"
 
 import { SmartEntity, SmartParent } from "./helpers/smartEntities"
 

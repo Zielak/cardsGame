@@ -1,6 +1,6 @@
 import { Player } from "../../src"
 import { NextPlayer, PreviousPlayer } from "../../src/commands/playerTurns"
-import { State } from "../../src/state/state"
+import { State } from "../../src/state"
 import { RoomMock } from "../helpers/roomMock"
 
 let state: State

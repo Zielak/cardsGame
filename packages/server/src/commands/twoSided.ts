@@ -1,6 +1,6 @@
 import { Command, Targets, TargetsHolder } from "../command"
 import { Room } from "../room"
-import { State } from "../state/state"
+import { State } from "../state"
 import { TwoSidedTrait } from "../traits/twoSided"
 
 // Make it possible to provide functions as target...

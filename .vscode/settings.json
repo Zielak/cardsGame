@@ -7,5 +7,6 @@
     "**/dist": false,
     "**/lib": false,
     "**/node_modules": true
-  }
+  },
+  "cSpell.words": ["cardsgame", "colyseus"]
 }

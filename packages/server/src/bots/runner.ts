@@ -3,7 +3,7 @@ import { logs } from "@cardsgame/utils"
 import { Bot } from "../players/bot"
 import { Player } from "../players/player"
 import { Room } from "../room"
-import { State } from "../state/state"
+import { State } from "../state"
 import { populatePlayerEvent } from "../utils"
 
 import { BotNeuron } from "./botNeuron"

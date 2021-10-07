@@ -8,45 +8,45 @@ import {
 import { Conditions, ConditionsMethods } from "./conditions"
 import { ServerPlayerMessage } from "./players/player"
 import { queryRunner } from "./queryRunner"
-import { State } from "./state/state"
+import { State } from "./state"
 import { isChild } from "./traits/child"
 
-export const filterActionsByInteraction = <S extends State>(
-  message: ServerPlayerMessage
-) => (action: ActionTemplate<S>): boolean => {
-  if (
-    message.messageType === "EntityInteraction" &&
-    isInteractionOfEntities(action)
-  ) {
-    const interactions = action.interaction(message.player)
+export const filterActionsByInteraction =
+  <S extends State>(message: ServerPlayerMessage) =>
+  (action: ActionTemplate<S>): boolean => {
+    if (
+      message.messageType === "EntityInteraction" &&
+      isInteractionOfEntities(action)
+    ) {
+      const interactions = action.interaction(message.player)
 
-    logs.verbose(
-      action.name,
-      `got`,
-      interactions.length,
-      `entity interaction${interactions.length > 1 ? "s" : ""}`,
-      interactions.map((def) => JSON.stringify(def))
-    )
+      logs.verbose(
+        action.name,
+        `got`,
+        interactions.length,
+        `entity interaction${interactions.length > 1 ? "s" : ""}`,
+        interactions.map((def) => JSON.stringify(def))
+      )
 
-    return interactions.some((definition) => {
-      // Check props for every interactive entity in `targets` array
-      return message.entities
-        .filter((currentTarget) =>
-          isChild(currentTarget) ? currentTarget.isInteractive() : false
-        )
-        .some((entity) => {
-          const result = queryRunner(definition)(entity)
-          if (result) {
-            logs.notice(action.name, "match!")
-          }
-          return result
-        })
-    })
-  } else if (message.messageType && isInteractionOfEvent(action)) {
-    return action.interaction === message.messageType
+      return interactions.some((definition) => {
+        // Check props for every interactive entity in `targets` array
+        return message.entities
+          .filter((currentTarget) =>
+            isChild(currentTarget) ? currentTarget.isInteractive() : false
+          )
+          .some((entity) => {
+            const result = queryRunner(definition)(entity)
+            if (result) {
+              logs.notice(action.name, "match!")
+            }
+            return result
+          })
+      })
+    } else if (message.messageType && isInteractionOfEvent(action)) {
+      return action.interaction === message.messageType
+    }
+    return false
   }
-  return false
-}
 
 export class ClientMessageConditions<S extends State> extends Conditions<
   S,
@@ -76,43 +76,42 @@ export interface ClientMessageConditions<S extends State> {
   entity: ConditionsMethods<S, ClientMessageConditions<S>> //unknown;
 }
 
-export const filterActionsByConditions = <S extends State>(
-  state: S,
-  message: ServerPlayerMessage
-) => (action: ActionTemplate<S>): boolean => {
-  logs.group(`action: ${chalk.white(action.name)}`)
+export const filterActionsByConditions =
+  <S extends State>(state: S, message: ServerPlayerMessage) =>
+  (action: ActionTemplate<S>): boolean => {
+    logs.group(`action: ${chalk.white(action.name)}`)
 
-  const initialSubjects = Object.keys(message)
-    .filter((key) => !["timestamp", "entities", "entityPath"].includes(key))
-    .reduce((o, key) => {
-      o[key] = message[key]
-      return o
-    }, {})
+    const initialSubjects = Object.keys(message)
+      .filter((key) => !["timestamp", "entities", "entityPath"].includes(key))
+      .reduce((o, key) => {
+        o[key] = message[key]
+        return o
+      }, {})
 
-  const conditionsChecker = new ClientMessageConditions<S>(
-    state,
-    initialSubjects
-  )
+    const conditionsChecker = new ClientMessageConditions<S>(
+      state,
+      initialSubjects
+    )
 
-  let result = true
-  let errorMessage = ""
-  try {
-    action.conditions(conditionsChecker)
-  } catch (e) {
-    result = false
-    errorMessage = (e as Error).message
+    let result = true
+    let errorMessage = ""
+    try {
+      action.conditions(conditionsChecker)
+    } catch (e) {
+      result = false
+      errorMessage = (e as Error).message
+    }
+
+    if (errorMessage) {
+      logs.verbose("\t", errorMessage)
+    }
+
+    logs.groupEnd(
+      `result: ${result ? chalk.green(result) : chalk.yellow(result)}`
+    )
+
+    return result
   }
-
-  if (errorMessage) {
-    logs.verbose("\t", errorMessage)
-  }
-
-  logs.groupEnd(
-    `result: ${result ? chalk.green(result) : chalk.yellow(result)}`
-  )
-
-  return result
-}
 
 /**
  * Tests if given action would pass tests when pushed to Commands Manager

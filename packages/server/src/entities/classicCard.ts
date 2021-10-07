@@ -2,7 +2,7 @@ import { def, logs } from "@cardsgame/utils"
 
 import { canBeChild } from "../annotations/canBeChild"
 import { type } from "../annotations/type"
-import { State } from "../state/state"
+import { State } from "../state"
 import { ChildTrait } from "../traits/child"
 import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"

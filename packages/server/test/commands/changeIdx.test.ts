@@ -1,5 +1,5 @@
 import { ChangeIdx } from "../../src/commands/changeIdx"
-import { State } from "../../src/state/state"
+import { State } from "../../src/state"
 import { DumbArrayParent } from "../helpers/dumbEntities"
 import { LabeledEntity } from "../helpers/labeledEntities"
 

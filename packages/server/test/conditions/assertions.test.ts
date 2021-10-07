@@ -1,6 +1,6 @@
 import { Grid } from "../../src/entities/grid"
 import { Player, ServerPlayerMessage } from "../../src/players/player"
-import { State } from "../../src/state/state"
+import { State } from "../../src/state"
 import { ConditionsMock } from "../helpers/conditionsMock"
 import { SelectableParent } from "../helpers/selectableParent"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"

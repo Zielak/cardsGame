@@ -1,5 +1,5 @@
 import { NextRound } from "../../src/commands/nextRound"
-import { State } from "../../src/state/state"
+import { State } from "../../src/state"
 import { RoomMock } from "../helpers/roomMock"
 
 let state: State

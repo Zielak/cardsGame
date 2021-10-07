@@ -2,7 +2,7 @@ import { ChildTrait } from "../../src"
 import { setFlag } from "../../src/conditions/utils"
 import { ClassicCard } from "../../src/entities/classicCard"
 import { Hand } from "../../src/entities/hand"
-import { State } from "../../src/state/state"
+import { State } from "../../src/state"
 import { ConditionsMock } from "../helpers/conditionsMock"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 

@@ -2,7 +2,7 @@ import { chalk, def, logs } from "@cardsgame/utils"
 
 import { Command, Target, TargetHolder } from "../command"
 import { isGrid } from "../entities"
-import { State } from "../state/state"
+import { State } from "../state"
 import { ChildTrait } from "../traits/child"
 import { hasLabel } from "../traits/label"
 import { ParentTrait } from "../traits/parent"

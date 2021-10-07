@@ -1,7 +1,7 @@
-import { Player, ServerPlayerMessage } from "./players/player"
-import { getEntitiesAlongPath } from "./state/helpers"
-import { State } from "./state/state"
-import { isChild } from "./traits/child"
+import { Player, ServerPlayerMessage } from "../players/player"
+import { State } from "../state"
+import { getEntitiesAlongPath } from "../state/helpers"
+import { isChild } from "../traits/child"
 
 const sanitizeIdxPath = (value: unknown): number => {
   if (typeof value === "number") {

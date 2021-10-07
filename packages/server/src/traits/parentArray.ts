@@ -2,7 +2,7 @@ import { def, limit, logs, sortByIdx } from "@cardsgame/utils"
 import { ArraySchema } from "@colyseus/schema"
 
 import { globalEntitiesContext } from "../annotations/entitiesContext"
-import type { State } from "../state/state"
+import type { State } from "../state"
 
 import type { ChildTrait } from "./child"
 import { executeHook } from "./entity"

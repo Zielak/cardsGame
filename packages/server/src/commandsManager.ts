@@ -8,7 +8,7 @@ import {
 } from "./interaction"
 import { Player, ServerPlayerMessage } from "./players/player"
 import { Room } from "./room"
-import { State } from "./state/state"
+import { State } from "./state"
 
 export class CommandsManager<S extends State> {
   history: Command[] = []

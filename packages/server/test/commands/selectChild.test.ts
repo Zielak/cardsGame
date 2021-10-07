@@ -6,7 +6,7 @@ import {
 import { ClassicCard } from "../../src/entities/classicCard"
 import { Hand } from "../../src/entities/hand"
 import { Room } from "../../src/room"
-import { State } from "../../src/state/state"
+import { State } from "../../src/state"
 import { RoomMock } from "../helpers/roomMock"
 
 let state: State

@@ -1,5 +1,5 @@
 import { Conditions } from "../../src/conditions"
-import { State } from "../../src/state/state"
+import { State } from "../../src/state"
 import { ConditionsMock } from "../helpers/conditionsMock"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 

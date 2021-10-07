@@ -5,7 +5,7 @@ import { Player } from "../players/player"
 import { IdentityTrait } from "../traits/identity"
 import { hasChildren, isParent, ParentTrait } from "../traits/parent"
 
-import { State } from "./state"
+import { State } from "."
 
 /**
  * Will get you an index of given player in turn queue.

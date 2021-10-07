@@ -1,7 +1,7 @@
 import { logs } from "@cardsgame/utils"
 
 import { Room } from "./room"
-import { State } from "./state/state"
+import { State } from "./state"
 
 export interface Command {
   execute(state: State, room: Room<any>): Promise<void>

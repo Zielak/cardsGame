@@ -1,6 +1,6 @@
 import { isGrid } from "../entities"
 import { QuerableProps, queryRunner } from "../queryRunner"
-import { State } from "../state/state"
+import { State } from "../state"
 import { isChild } from "../traits/child"
 import { isParent } from "../traits/parent"
 import { isParentMap } from "../traits/parentMap"

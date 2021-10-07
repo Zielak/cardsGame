@@ -1,4 +1,4 @@
-import type { State } from "../state/state"
+import type { State } from "../state"
 
 export class IdentityTrait {
   // Value is set in State._registerEntity()

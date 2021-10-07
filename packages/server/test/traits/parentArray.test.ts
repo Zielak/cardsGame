@@ -1,4 +1,4 @@
-import { State } from "../../src/state/state"
+import { State } from "../../src/state"
 import { ChildTrait } from "../../src/traits/child"
 import { IdentityTrait } from "../../src/traits/identity"
 import {

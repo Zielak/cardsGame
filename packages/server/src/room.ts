@@ -1,17 +1,17 @@
-import { chalk, def, logs, shuffle } from "@cardsgame/utils"
+import { logs } from "@cardsgame/utils"
 import { Client, Room as colRoom } from "@colyseus/core"
 
 import { ActionsSet } from "./actionTemplate"
 import { BotNeuron } from "./bots/botNeuron"
 import { BotRunner } from "./bots/runner"
 import { Command } from "./command"
-import { Sequence } from "./commands"
 import { CommandsManager } from "./commandsManager"
-import { Bot, BotOptions } from "./players/bot"
+import { fallback } from "./messages/fallback"
+import { messages } from "./messages/messageHandler"
+import { Bot } from "./players/bot"
 import { Player, ServerPlayerMessage } from "./players/player"
-import { State } from "./state/state"
-import { hasLabel, LabelTrait } from "./traits/label"
-import { populatePlayerEvent } from "./utils"
+import { State } from "./state"
+import { debugRoomMessage } from "./utils"
 
 export interface IRoom<S extends State> {
   botActivities?: BotNeuron<S>[]
@@ -57,95 +57,13 @@ export class Room<S extends State> extends colRoom<S> {
     this.commandsManager = new CommandsManager<S>(this)
     this.botRunner = new BotRunner<S>(this)
 
-    this.onMessage("start", (client: Client, message: any) => {
-      logs.verbose("\n================[ MESSAGE ]==================\n")
-      if (!this.state.isGameOver) {
-        return this.handleGameStart()
-      } else {
-        return this.handleGameRestart()
-      }
+    // Register all known messages
+    messages.forEach((callback, type) => {
+      this.onMessage(type, callback)
     })
-
-    // TODO: Typedef all these specific message types
-    this.onMessage("bot_add", (client, message: { intelligence: number }) => {
-      this.addBot({
-        actionDelay: () => Math.random() + 0.5,
-        intelligence: def(message?.intelligence, 0.5),
-      })
-    })
-
-    this.onMessage("bot_remove", (client, message: { id: string }) => {
-      this.removeBot(message?.id)
-    })
-
-    this.onMessage(
-      "EntityInteraction",
-      (client, message: RawInteractionClientPlayerMessage) => {
-        const newMessage = populatePlayerEvent(
-          this.state,
-          { ...message, messageType: "EntityInteraction" },
-          client.sessionId
-        )
-        this.handleMessage(newMessage).catch((e) =>
-          logs.error(
-            "ROOM",
-            `EntityInteraction failed for client: "${client.sessionId}": ${e}`
-          )
-        )
-      }
-    )
-
-    this.onMessage("*", (client, messageType: string, message: any) => {
-      const newMessage = populatePlayerEvent(
-        this.state,
-        { data: message, messageType },
-        client.sessionId
-      )
-      this.handleMessage(newMessage).catch((e) =>
-        logs.error(
-          "ROOM",
-          `message type "${messageType}" failed for client: "${client.sessionId}": ${e}`
-        )
-      )
-    })
+    this.onMessage("*", fallback)
 
     this.onInitGame(options)
-  }
-
-  /**
-   * Create and add new Bot player to clients list.
-   * @returns clientID of newly created bot, if added successfully.
-   */
-  protected addBot(botOptions: Omit<BotOptions, "clientID"> = {}): void {
-    const { state } = this
-
-    if (state.isGameStarted) {
-      return
-    }
-
-    const clientID = `botPlayer${this.botClients.length}`
-    if (this.addClient(clientID)) {
-      const bot = new Bot({
-        ...botOptions,
-        clientID,
-      })
-      this.botClients.push(bot)
-    }
-  }
-
-  /**
-   * Remove bot client from `state.clients`
-   */
-  protected removeBot(id?: string): void {
-    const bot = id
-      ? this.botClients.find((bot) => bot.clientID === id)
-      : this.botClients[this.botClients.length - 1]
-
-    if (bot) {
-      const clientIdx = this.state.clients.indexOf(bot.clientID)
-      this.state.clients.splice(clientIdx, 1)
-      this.botClients = this.botClients.filter((b) => b !== bot)
-    }
   }
 
   /**
@@ -204,7 +122,7 @@ export class Room<S extends State> extends colRoom<S> {
   async handleMessage(message: ServerPlayerMessage): Promise<boolean> {
     let result = false
 
-    debugLogMessage(message)
+    debugRoomMessage(message)
 
     if (!message.player) {
       logs.log("handleMessage", "You're not a player, get out!")
@@ -228,76 +146,6 @@ export class Room<S extends State> extends colRoom<S> {
     }
 
     return result
-  }
-
-  private handleGameStart(): void {
-    const { state } = this
-
-    if (state.isGameStarted) {
-      logs.log("handleGameStart", `Game is already started, ignoring...`)
-      return
-    }
-    if (this.canGameStart && !this.canGameStart()) {
-      logs.log(
-        "handleGameStart",
-        `Someone requested game start, but we can't go yet...`
-      )
-      return
-    }
-
-    // We can go, convert all connected clients into players
-    shuffle(
-      this.clients
-        .map((client) => new Player({ clientID: client.sessionId }))
-        .concat(this.botClients)
-    ).forEach((player) => {
-      state.players.push(player)
-    })
-
-    this.startTheGame()
-  }
-
-  /**
-   * @deprecated ON HOLD
-   * When first creating the room, players give it some options.
-   * How would you want to "Restart" the game?
-   * Remember those options and quickly restart it or be able to re-configure the room again?
-   */
-  private handleGameRestart(): void {
-    const { state } = this
-
-    // We can go, shuffle players into new seats.
-    shuffle(Array.from(state.players.values())).forEach((player) => {
-      state.players.push(player)
-    })
-
-    this.startTheGame()
-  }
-
-  private startTheGame(): void {
-    const { state } = this
-
-    state.isGameStarted = true
-    state.isGameOver = false
-
-    const postStartCommands = this.onStartGame(state)
-
-    const postStartup = (): void => {
-      if (state.turnBased) {
-        this.onPlayerTurnStarted(state.currentPlayer)
-        this.botRunner.onPlayerTurnStarted(state.currentPlayer)
-      }
-      this.onRoundStart()
-      this.botRunner.onRoundStart()
-    }
-
-    if (postStartCommands) {
-      this.commandsManager
-        .executeCommand(state, new Sequence("onStartGame", postStartCommands))
-        .then(postStartup)
-    } else {
-      postStartup()
-    }
   }
 
   /**
@@ -367,42 +215,4 @@ export class Room<S extends State> extends colRoom<S> {
   }
 
   onDispose(): void {}
-}
-
-function debugLogMessage(message: ServerPlayerMessage): void {
-  const minifyTarget = (e: LabelTrait): string => {
-    return `${e.type}:${e.name}`
-  }
-  const minifyPlayer = (p: Player): string => {
-    return `${p.name}[${p.clientID}]`
-  }
-
-  const entity = hasLabel(message.entity) ? minifyTarget(message.entity) : ""
-  const entities =
-    message.entities &&
-    message.entities
-      .map((e) => (hasLabel(e) ? minifyTarget(e) : "?"))
-      .join(", ")
-  const entityPath =
-    message.entityPath && chalk.green(message.entityPath.join(", "))
-
-  const { data, event } = message
-
-  const playerString = message.player
-    ? `Player: ${minifyPlayer(message.player)} | `
-    : ""
-
-  logs.info(
-    "onMessage",
-    [
-      playerString,
-      chalk.white.bold(message.messageType),
-      event ? ` "${chalk.yellow(event)}"` : "",
-      "\n\t",
-      entityPath ? `path: [${entityPath}], ` : "",
-      entity ? `entity:"${entity}", ` : "",
-      entities ? `entities: [${entities}], ` : "",
-      data ? `\n\tdata: ${JSON.stringify(data)}` : "",
-    ].join("")
-  )
 }

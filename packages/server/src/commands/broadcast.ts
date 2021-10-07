@@ -1,6 +1,6 @@
 import { Command } from "../command"
 import { Room } from "../room"
-import { State } from "../state/state"
+import { State } from "../state"
 
 export class Broadcast extends Command {
   constructor(public type: string, public message?: unknown) {

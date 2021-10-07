@@ -9,7 +9,7 @@ import {
 import { filterActionsByConditions } from "../interaction"
 import { Bot } from "../players/bot"
 import { queryRunner } from "../queryRunner"
-import { State } from "../state/state"
+import { State } from "../state"
 import { ChildTrait } from "../traits/child"
 import { populatePlayerEvent } from "../utils"
 
@@ -21,44 +21,46 @@ const logs = new Logs("pickNeuron", true, { serverStyle: chalk.bgGreen.white })
 /**
  * Considers only Neuron's own `conditions`
  */
-const filterNeuronConditions = <S extends State>(state: S, bot: Bot) => (
-  neuron: BotNeuron<S>
-): boolean => {
-  if (neuron.conditions) {
-    const con = new BotConditions<S>(state, { player: bot })
-    try {
-      neuron.conditions(con)
-    } catch (e) {
-      return false
+const filterNeuronConditions =
+  <S extends State>(state: S, bot: Bot) =>
+  (neuron: BotNeuron<S>): boolean => {
+    if (neuron.conditions) {
+      const con = new BotConditions<S>(state, { player: bot })
+      try {
+        neuron.conditions(con)
+      } catch (e) {
+        return false
+      }
     }
-  }
 
-  return true
-}
+    return true
+  }
 
 /**
  * Grabs entities, which could become given neuron's interaction target
  */
-const auxillaryEntitiesFilter = <S extends State>(
-  state: S,
-  bot: Bot,
-  { action, entitiesFilter }: BotNeuron<S>
-) => (entity: ChildTrait): boolean => {
-  if (!action || !isInteractionOfEntities(action)) {
-    // `getNeuronsAvailableEvents()` already ensures this action is of entities...
-    return true
-  } else if (Array.isArray(entitiesFilter)) {
-    return entitiesFilter.some((query) => queryRunner(query)(entity))
-  } else if (typeof entitiesFilter === "function") {
-    const con = new EntityConditions<S>(state, { entity }, "entity")
-    try {
-      entitiesFilter(con)
-    } catch (e) {
-      return false
+const auxillaryEntitiesFilter =
+  <S extends State>(
+    state: S,
+    bot: Bot,
+    { action, entitiesFilter }: BotNeuron<S>
+  ) =>
+  (entity: ChildTrait): boolean => {
+    if (!action || !isInteractionOfEntities(action)) {
+      // `getNeuronsAvailableEvents()` already ensures this action is of entities...
+      return true
+    } else if (Array.isArray(entitiesFilter)) {
+      return entitiesFilter.some((query) => queryRunner(query)(entity))
+    } else if (typeof entitiesFilter === "function") {
+      const con = new EntityConditions<S>(state, { entity }, "entity")
+      try {
+        entitiesFilter(con)
+      } catch (e) {
+        return false
+      }
     }
+    return true
   }
-  return true
-}
 
 const grabAllInteractionEntities = <S extends State>(
   state: S,
