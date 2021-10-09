@@ -59,9 +59,9 @@ export class Room<S extends State> extends colRoom<S> {
 
     // Register all known messages
     messages.forEach((callback, type) => {
-      this.onMessage(type, callback)
+      this.onMessage(type, callback.bind(this))
     })
-    this.onMessage("*", fallback)
+    this.onMessage("*", fallback.bind(this))
 
     this.onInitGame(options)
   }

@@ -89,13 +89,13 @@ export type ClientGameStateProps = {
   isGameStarted: boolean
   isGameOver: boolean
 
-  playerViewPosition: ObjectSchema & IPlayerViewPosition
+  playerViewPosition: /*ObjectSchema &*/ IPlayerViewPosition
   players: IPlayerDefinition[]
 
   tableHeight: number
   tableWidth: number
 
-  ui?: ObjectSchema & { [key: string]: string }
+  ui?: Map<string, string>
 }
 export type ClientGameState = ObjectSchema<ClientGameStateProps>
 

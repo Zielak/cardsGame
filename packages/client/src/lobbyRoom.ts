@@ -1,5 +1,7 @@
 import { logs } from "@cardsgame/utils"
-import { Room as colyseusRoom, RoomAvailable } from "colyseus.js/lib/Room"
+import { Room as colyseusRoom } from "colyseus.js/lib/Room"
+
+import type { RoomAvailable } from "."
 
 export class LobbyRoom {
   onInit: (rooms: RoomAvailable[]) => void
@@ -20,12 +22,12 @@ export class LobbyRoom {
     })
 
     room.onLeave((code) => {
-      logs.notice("Lobby", "leaving", code)
+      logs.log("Lobby", "leaving", code)
     })
     room.onError((code, message) => {
       logs.error("Lobby", `oops, error ocurred: [${code}]`, message)
     })
 
-    logs.notice("Lobby", "joined")
+    logs.log("Lobby", "joined")
   }
 }
