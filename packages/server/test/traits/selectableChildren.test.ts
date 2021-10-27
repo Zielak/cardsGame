@@ -27,15 +27,83 @@ describe("constructor", () => {
 
 describe("hooks", () => {
   describe("childRemoved", () => {
-    it("fixes up indexes of other children", () => {
+    test("fixes up selectionIndex of all children", () => {
+      parent.selectChildAt(2) // sel:0
+      parent.selectChildAt(4) // sel:1
+
+      expect(parent.selectedChildren.toArray()).toMatchObject([
+        { selectionIndex: 0, childIndex: 2 },
+        { selectionIndex: 1, childIndex: 4 },
+      ])
+
+      parent.removeChildAt(2)
+
+      expect(parent.selectedChildren.toArray()).toMatchObject([
+        { selectionIndex: 0, childIndex: 3 },
+      ])
+      expect(parent.selectedChildren.length).toBe(1)
+      expect(parent.isChildSelected(3)).toBe(true)
+    })
+    test("fixes up indexes of other children", () => {
       parent.selectChildAt(1)
-      parent.selectChildAt(3)
+      parent.selectChildAt(4)
+
+      expect(parent.selectedChildren.toArray()).toMatchObject([
+        { selectionIndex: 0, childIndex: 1 },
+        { selectionIndex: 1, childIndex: 4 },
+      ])
 
       parent.removeChildAt(1)
 
-      expect(parent.selectedChildren.length).toBe(1)
-      expect(parent.selectedChildren[0].childIndex).toBe(2)
-      expect(parent.isChildSelected(2)).toBe(true)
+      expect(parent.selectedChildren.toArray()).toMatchObject([
+        { selectionIndex: 0, childIndex: 3 },
+      ])
+
+      parent.removeChildAt(3)
+
+      expect(parent.selectedChildren.toArray()).toMatchObject([])
+    })
+    describe("fixes up indexes of other children", () => {
+      test("1", () => {
+        parent.selectChildAt(1)
+        parent.selectChildAt(3)
+
+        parent.removeChildAt(1)
+
+        expect(parent.selectedChildren.length).toBe(1)
+        expect(parent.selectedChildren[0].childIndex).toBe(2)
+        expect(parent.isChildSelected(2)).toBe(true)
+      })
+      test("2", () => {
+        parent.selectChildAt(3)
+        parent.selectChildAt(1)
+
+        parent.removeChildAt(1)
+
+        expect(parent.selectedChildren.length).toBe(1)
+        expect(parent.selectedChildren[0].childIndex).toBe(2)
+        expect(parent.isChildSelected(2)).toBe(true)
+      })
+      test("3", () => {
+        parent.selectChildAt(1)
+        parent.selectChildAt(3)
+
+        parent.removeChildAt(3)
+
+        expect(parent.selectedChildren.length).toBe(1)
+        expect(parent.selectedChildren[0].childIndex).toBe(1)
+        expect(parent.isChildSelected(1)).toBe(true)
+      })
+      test("4", () => {
+        parent.selectChildAt(3)
+        parent.selectChildAt(1)
+
+        parent.removeChildAt(3)
+
+        expect(parent.selectedChildren.length).toBe(1)
+        expect(parent.selectedChildren[0].childIndex).toBe(1)
+        expect(parent.isChildSelected(1)).toBe(true)
+      })
     })
   })
 

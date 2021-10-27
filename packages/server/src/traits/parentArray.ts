@@ -49,13 +49,13 @@ export class ParentArrayTrait implements ParentTrait {
 
     const targetArray: ArraySchema = this[targetArrayName]
 
-    const childIdx = targetArray.findIndex((el) => el.idx === idx)
+    const childRefIndex = targetArray.findIndex((el) => el.idx === idx)
 
     this.childrenPointers.splice(idx, 1)
     this._allChildrenDirty = true
 
     const removedChild = this[targetArrayName].splice(
-      childIdx,
+      childRefIndex,
       1
     )[0] as ChildTrait
 
@@ -75,6 +75,9 @@ export class ParentArrayTrait implements ParentTrait {
   addChild(entity: ChildTrait, prepend: boolean): void
   addChild(entity: ChildTrait, index: number): void
   addChild(entity: ChildTrait, arg1?: boolean | number): void {
+    if (!entity) {
+      throw new Error(`addChild | missing required argument "entity"`)
+    }
     if (entity.parent !== undefined) {
       entity.parent.removeChildAt(entity.idx)
     }

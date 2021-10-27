@@ -126,6 +126,12 @@ describe("#addChild", () => {
     const e = new DumbEntity(state)
     expect(() => parent.addChild(e, -1)).toThrow()
   })
+  it("throws on empty argument", () => {
+    expect(() => {
+      // @ts-expect-error: testing empty argumentgetChild
+      parent.addChild()
+    }).toThrow(`missing required argument "entity"`)
+  })
 })
 
 describe("#moveChildTo", () => {
