@@ -114,9 +114,9 @@ export class SelectableChildrenTrait {
     }
 
     return this.selectedChildren
-      .filter((v) => v)
       .sort(sortBySelectionIndex)
-      .map((data) => this.getChild(data.childIndex))
+      .map((data) => this.getChild<T>(data.childIndex))
+      .filter((v) => v)
   }
 
   getUnselectedChildren<T extends ChildTrait>(
@@ -153,11 +153,10 @@ export class SelectableChildrenTrait {
   }
 }
 
-SelectableChildrenTrait[
-  "trait"
-] = function constructSelectableChildrenTrait(): void {
-  this.selectedChildren = new ArraySchema()
-}
+SelectableChildrenTrait["trait"] =
+  function constructSelectableChildrenTrait(): void {
+    this.selectedChildren = new ArraySchema()
+  }
 SelectableChildrenTrait["typeDef"] = {
   selectedChildren: [SelectedChildData],
 }
@@ -166,13 +165,17 @@ SelectableChildrenTrait["hooks"] = {
     this: SelectableChildrenTrait,
     childIndex: number
   ): void {
-    const selectionIndex = this.selectedChildren.find(
+    const selectionRefIndex = this.selectedChildren.findIndex(
       (data) => data?.childIndex === childIndex
-    )?.selectionIndex
+    )
 
-    if (selectionIndex >= 0) {
-      this.selectedChildren.splice(selectionIndex, 1)
+    if (selectionRefIndex >= 0) {
+      this.selectedChildren.splice(selectionRefIndex, 1)
     }
+
+    this.selectedChildren.forEach((data, idx) => {
+      data.selectionIndex = idx
+    })
   },
   childIndexUpdated: function (
     this: SelectableChildrenTrait,
