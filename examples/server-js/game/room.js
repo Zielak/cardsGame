@@ -54,7 +54,7 @@ class WarGame extends Room {
     // Prepare all (both) players
     const decks = []
 
-    for (let [idx, player] of Object.entries(state.players)) {
+    state.players.forEach((player, idx) => {
       // Eeach player will has his own Container.
       const container = new Container(state, {
         owner: player,
@@ -72,8 +72,8 @@ class WarGame extends Room {
       // A Pile container, to hold all currently played cards
       new Pile(state, { parent: container, y: -10 })
 
-      state.playersPlayed[idx] = false
-    }
+      state.playersPlayed.set(player.clientID, false)
+    })
 
     // Shuffle & Deal the cards
     return [
@@ -85,9 +85,9 @@ class WarGame extends Room {
   onRoundStart() {
     const { state } = this
 
-    for (let idx = 0; idx < state.playersPlayed.length; idx++) {
-      state.playersPlayed[idx] = false
-    }
+    state.players.forEach((player, idx) => {
+      state.playersPlayed.set(player.clientID, false)
+    })
   }
 
   onRoundEnd() {

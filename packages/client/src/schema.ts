@@ -95,9 +95,14 @@ export type ClientGameStateProps = {
   tableHeight: number
   tableWidth: number
 
+  turnBased: boolean
+  round: number
+
   ui?: Map<string, string>
 }
-export type ClientGameState = ObjectSchema<ClientGameStateProps>
+export type ClientGameState<MoreProps = Record<string, any>> = ObjectSchema<
+  ClientGameStateProps & MoreProps
+>
 
 export function isSchemaObject(o: unknown): o is Schema {
   return (

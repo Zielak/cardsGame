@@ -60,6 +60,8 @@ export class ParentArrayTrait implements ParentTrait {
     )[0] as ChildTrait
 
     if (removedChild !== child) {
+      console.error("child:", child.idx, child["name"])
+      console.error("removedChild:", removedChild.idx, removedChild["name"])
       throw new Error("How the fuck did that happen?")
     }
 

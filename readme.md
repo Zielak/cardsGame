@@ -18,7 +18,7 @@ Libraries for creating card games in general.
 
 ## Example usage
 
-In the `./example/` directory you'll find the most basic implementation of this lib. Client-side is "rendered" with vanilla JS.
+In the `./example/` directory you'll find the most basic implementations of this lib. There's one server-side code base and two clients. One is "rendered" with vanilla JS and the other using Svelte.
 
 ## Wishlist
 

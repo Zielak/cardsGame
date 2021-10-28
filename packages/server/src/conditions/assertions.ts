@@ -383,7 +383,7 @@ class ConditionAssertions {
     // don't? TODO: accept queryProps?
     const propName = getFlag(this, "propName")
 
-    if (!getFlag(this, "propParent")) {
+    if (!getFlag(this, "currentParent")) {
       throw new Error(
         `matchesPropOf | Needs to be preceded with ".its" to pick a prop name`
       )

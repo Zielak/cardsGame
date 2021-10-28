@@ -7,8 +7,8 @@ type ConditionsFlag =
   | "defaultSubject"
   | "propName"
   // "parent of current prop subject". Cache for current entity subject
-  // so we can go back after prop-digging
-  | "propParent"
+  // so we can go back after assertions
+  | "currentParent"
   | "not"
   | "eitherLevel"
   | "_rootReference"
@@ -79,7 +79,7 @@ export function getInitialSubject(
 }
 
 export const resetPropDig = (target: Record<string, any>): void => {
-  setFlag(target, "propParent", undefined)
+  setFlag(target, "currentParent", undefined)
   setFlag(target, "propName", undefined)
 }
 
@@ -95,11 +95,12 @@ export const resetSubject = (target: Record<string, any>): void => {
 }
 
 export const postAssertion = (target: Record<string, any>): void => {
-  if (getFlag(target, "propParent")) {
-    // Reset subject to the object, if we were
+  if (getFlag(target, "currentParent")) {
+    // Reset subject to the parent, if we were
     // just asserting its key value
-    setFlag(target, "subject", getFlag(target, "propParent"))
-    resetPropDig(target)
+    setFlag(target, "subject", getFlag(target, "currentParent"))
+    setFlag(target, "currentParent", undefined)
+    setFlag(target, "propName", undefined)
   }
 }
 

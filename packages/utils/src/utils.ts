@@ -43,6 +43,25 @@ export const isMap = (thing: unknown): thing is Map<any, any> => {
   }
 }
 
+/**
+ * Has somewhat same interface to native Map
+ */
+export const isMapLike = (thing: unknown): boolean => {
+  if (isMap(thing)) {
+    return true
+  } else {
+    return (
+      typeof thing === "object" &&
+      "size" in thing &&
+      typeof thing["size"] === "number" &&
+      "get" in thing &&
+      typeof thing["get"] === "function" &&
+      "set" in thing &&
+      typeof thing["set"] === "function"
+    )
+  }
+}
+
 export const isSet = (thing: unknown): thing is Set<any> => {
   try {
     // throws if o is not an object or has no [[SetData]]

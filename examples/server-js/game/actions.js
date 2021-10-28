@@ -23,7 +23,7 @@ const PlayCardWithAnte = (state, event) => {
   const card = deck.getTop()
 
   return new commands.Sequence("PlayCardWithAnte", [
-    new MarkPlayerPlayed(getPlayersIndex(state, event.player)),
+    new MarkPlayerPlayed(event.player.clientID),
     ante && new commands.ChangeParent(ante, pile),
     new commands.ChangeParent(card, pile),
     new commands.FaceUp(card),
@@ -46,14 +46,13 @@ const PickCard = {
    * @param {Conditions<WarState>} con
    */
   conditions: (con) => {
-    // Get the index of currently acting player
-    const currentPlayerIdx = getPlayersIndex(
-      con().grabState(),
-      con().grab("player")
-    )
+    const playerSessionID = con.player.grab().clientID
+    // console.log('playerSessionID:', playerSessionID)
+    // console.log('state.playersPlayed:', [...con().grabState().playersPlayed.entries()])
 
     // Current player didn't pick yet
-    con().its("playersPlayed").nthChild(currentPlayerIdx).equals(false)
+    con().its("playersPlayed").defined()
+    con().its("playersPlayed").its(playerSessionID).equals(false)
   },
   /**
    * @param {WarState} state
@@ -62,7 +61,8 @@ const PickCard = {
   command: (state, event) => {
     // There's exactly one last player who didn't pick yet
     const isLastToPick =
-      state.playersPlayed.filter((val) => val === false).length === 1
+      [...state.playersPlayed.values()].filter((val) => val === false)
+        .length === 1
 
     const roundFinishingCommands = isLastToPick
       ? [

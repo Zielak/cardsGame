@@ -7,7 +7,7 @@ import { ConditionBase } from "./base"
 import { ConditionChainers } from "./chainers"
 import { ConditionGrouping } from "./grouping"
 import { ConditionSubjects } from "./subjects"
-import { getFlag, resetSubject, setFlag } from "./utils"
+import { getFlag, resetPropDig, resetSubject, setFlag } from "./utils"
 
 export interface ConditionsMethods<S, C extends Conditions<S, C>>
   extends ConditionBase<S>,
@@ -40,6 +40,7 @@ abstract class Conditions<S, C extends Conditions<S, C>> extends Function {
     const proxy = new Proxy<Conditions<S, C>>(this, {
       apply: function (target, thisArg, args): ConditionsMethods<S, C> {
         resetSubject(core)
+        resetPropDig(core)
         if (args && args.length > 0) {
           return core["get"].apply(core, args)
         } else {
@@ -73,7 +74,7 @@ abstract class Conditions<S, C extends Conditions<S, C>> extends Function {
     setFlag(core, "defaultSubject", subjects[defaultSubjectKey] || state)
 
     setFlag(core, "propName", undefined)
-    setFlag(core, "propParent", undefined)
+    setFlag(core, "currentParent", undefined)
     setFlag(core, "not", false)
     setFlag(core, "eitherLevel", 0)
 

@@ -4,42 +4,42 @@ const { WarState } = require("./state")
 const { sortRank } = require("./utils")
 
 module.exports.MarkPlayerPlayed = class MarkPlayerPlayed extends Command {
-  /** @param {number} playerIdx */
-  constructor(playerIdx) {
+  /** @param {string} playerClientID */
+  constructor(playerClientID) {
     super("MarkPlayerPlayed")
-    this.playerIdx = playerIdx
+    this.playerClientID = playerClientID
   }
 
   /** @param {WarState} state */
   async execute(state) {
-    state.playersPlayed[this.playerIdx] = true
+    state.playersPlayed.set(this.playerClientID, true)
   }
 
   /** @param {WarState} state */
   async undo(state) {
-    state.playersPlayed[this.playerIdx] = false
+    state.playersPlayed.set(this.playerClientID, false)
   }
 }
 
 module.exports.ResetPlayersPlayed = class ResetPlayersPlayed extends Command {
   constructor() {
     super("ResetPlayersPlayed")
-    this.memory = []
+    this.memory = new Map()
   }
 
   /** @param {WarState} state */
   async execute(state) {
-    for (let idx = 0; idx < state.players.length; idx++) {
-      this.memory[idx] = state.playersPlayed[idx]
-      state.playersPlayed[idx] = false
-    }
+    state.players.forEach((player) => {
+      this.memory.set(player.clientID, state.playersPlayed.get(player.clientID))
+      state.playersPlayed.set(player.clientID, false)
+    })
   }
 
   /** @param {WarState} state */
   async undo(state) {
-    for (let idx = 0; idx < state.players.length; idx++) {
-      state.playersPlayed[idx] = this.memory[idx]
-    }
+    state.players.forEach((player) => {
+      state.playersPlayed.set(player.clientID, this.memory.get(player.clientID))
+    })
   }
 }
 

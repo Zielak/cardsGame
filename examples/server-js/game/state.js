@@ -1,4 +1,4 @@
-const { State, defineTypes, ArraySchema } = require("@cardsgame/server")
+const { State, defineTypes, MapSchema } = require("@cardsgame/server")
 
 class WarState extends State {
   constructor() {
@@ -12,8 +12,8 @@ class WarState extends State {
     /** @type {boolean} */
     this.isAtWar = false
 
-    /** @type {boolean[]} */
-    this.playersPlayed = new ArraySchema()
+    /** @type {Map<string, boolean>} */
+    this.playersPlayed = new MapSchema()
 
     /** @type {number} */
     this.ante = 0
@@ -26,7 +26,7 @@ class WarState extends State {
  */
 defineTypes(WarState, {
   isAtWar: "boolean",
-  playersPlayed: ["boolean"],
+  playersPlayed: { map: "boolean" },
   ante: "number",
 })
 

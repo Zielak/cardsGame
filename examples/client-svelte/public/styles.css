@@ -1,0 +1,14 @@
+header h2 {
+  margin-bottom: 0;
+}
+header p {
+  margin-top: 0;
+}
+
+.pile .card {
+  margin-right: -1.5em;
+  margin-bottom: -2.5em;
+}
+.pile .card.faceDown {
+  margin-right: -3.5em;
+}

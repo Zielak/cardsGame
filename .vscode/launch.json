@@ -14,7 +14,7 @@
       },
       "runtimeExecutable": "node",
       "sourceMaps": false,
-      "program": "${workspaceFolder}/example/app.js",
+      "program": "${workspaceFolder}/examples/server/app.js",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     }
