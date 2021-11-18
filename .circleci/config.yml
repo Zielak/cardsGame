@@ -39,7 +39,7 @@ jobs:
             - v1-utilsDeps-
 
       - run: npm install
-      - run: npm run bootstrap:ci
+      - run: npm run bootstrap -- --ci
 
       - save_cache:
           name: Save cache for root dependencies
@@ -63,7 +63,8 @@ jobs:
             - packages/utils/node_modules
 
       - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # Must be an absolute path, or relative path from working_directory.
+          # This is a directory on the container which is
           # taken to be the root directory of the workspace.
           root: ~/repo
           # Must be relative path from root
@@ -78,40 +79,28 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run:
-          name: Build Utils, Server and Client
-          command: |
-            npm run build:entityTraits
-            npm run build:utils
-            npm run build:server
-            npm run build:client
+      - run: npm run build
       - persist_to_workspace:
           root: ~/repo
           paths:
             - packages/*/lib
 
-  test-cover:
+  test:
     executor: my-executor
     steps:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run:
-          name: Test & save coverage report
-          command: npm run test:ci
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - coverage
+      - run: npm run test
 
-  coveralls:
+  test-coveralls:
     executor: my-executor
     steps:
       - checkout
       - attach_workspace:
           at: ~/repo
       - run:
-          name: Send coverage report to Coveralls
+          name: Test & send coverage report to Coveralls
           command: npm run test:ci_coveralls
 
   sonarcloud:
@@ -132,6 +121,14 @@ jobs:
           name: Linting
           command: npm run lint
 
+  bump-version:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run: npm run ci:version
+
   publish:
     executor: my-executor
     steps:
@@ -147,71 +144,98 @@ jobs:
 orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.1
 
+anchors:
+  - &filters-feature-branches
+    filters:
+      branches:
+        ignore:
+          - development
+          - master
+  - &filters-only-development
+    filters:
+      branches:
+        only: /development/
+  - &filters-only-master
+    filters:
+      branches:
+        only: /master/
+  - &filters-only-version-tag
+    filters:
+      tags:
+        only: /^v.*/
+      branches:
+        ignore: /.*/
+
 workflows:
   version: 2
-  build-test-and-publish:
+
+  # CI for feature/bugfix branches
+  feature-branch:
     jobs:
       - install:
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /master/
-
-      - build:
+          <<: *filters-feature-branches
+      - test:
+          <<: *filters-feature-branches
           requires:
             - install
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /master/
-
       - linting:
+          <<: *filters-feature-branches
           requires:
             - install
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /master/
 
-      - test-cover:
+  # CI for development, more reports and stuff
+  development-branch:
+    jobs:
+      - install:
+          <<: *filters-only-development
+      - test-coveralls:
+          <<: *filters-only-development
           requires:
-            - build
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /master/
-
-      - coveralls:
-          requires:
-            - test-cover
-          filters:
-            tags:
-              ignore: /^v.*/
-            branches:
-              ignore: /master/
-
+            - install
       - sonarcloud:
+          <<: *filters-only-development
           context: SonarCloud
           requires:
-            - test-cover
-          filters:
-            tags:
-              ignore: /^v.*/
-            branches:
-              ignore: /master/
+            - install
+      - linting:
+          <<: *filters-only-development
+          requires:
+            - install
 
-      - publish:
+  # Merge into master = new version
+  bump-version:
+    jobs:
+      - install:
+          <<: *filters-only-master
+      - build:
+          <<: *filters-only-master
+          requires:
+            - install
+      - linting:
+          <<: *filters-only-master
+          requires:
+            - install
+      - test-coveralls:
+          <<: *filters-only-master
+          requires:
+            - build
+            - linting
+      - sonarcloud:
+          <<: *filters-only-master
+          context: SonarCloud
+          requires:
+            - build
+            - linting
+
+      - bump-version:
+          <<: *filters-only-master
           requires:
             - install
             - build
             - linting
-            - test-cover
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
+            - test-coveralls
+      - publish:
+          <<: *filters-only-master
+          requires:
+            - bump-version
+
