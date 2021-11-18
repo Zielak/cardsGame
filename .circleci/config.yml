@@ -196,19 +196,21 @@ workflows:
           <<: *filters-only-development
           requires:
             - install
+      - linting:
+          <<: *filters-only-development
+          requires:
+            - install
       - test-coveralls:
           <<: *filters-only-development
           requires:
             - build
+            - install
       - sonarcloud:
           <<: *filters-only-development
           context: SonarCloud
           requires:
             - build
-      - linting:
-          <<: *filters-only-development
-          requires:
-            - build
+            - install
 
   # Merge into master = new version
   bump-version:
