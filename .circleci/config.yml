@@ -174,10 +174,14 @@ workflows:
     jobs:
       - install:
           <<: *filters-feature-branches
-      - test:
+      - build:
           <<: *filters-feature-branches
           requires:
             - install
+      - test:
+          <<: *filters-feature-branches
+          requires:
+            - build
       - linting:
           <<: *filters-feature-branches
           requires:
@@ -188,19 +192,23 @@ workflows:
     jobs:
       - install:
           <<: *filters-only-development
+      - build:
+          <<: *filters-feature-branches
+          requires:
+            - install
       - test-coveralls:
           <<: *filters-only-development
           requires:
-            - install
+            - build
       - sonarcloud:
           <<: *filters-only-development
           context: SonarCloud
           requires:
-            - install
+            - build
       - linting:
           <<: *filters-only-development
           requires:
-            - install
+            - build
 
   # Merge into master = new version
   bump-version:
