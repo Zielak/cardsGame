@@ -17,7 +17,7 @@
     "changed:ci": "lerna changed --json --all --toposort --loglevel=silent",
     "linkup": "scripts/linkup.sh",
     "linkup:colyseus": "scripts/linkupColyseus.sh",
-    "test": "lerna run test",
+    "test": "lerna run test -- -- --silent --maxWorkers=50%",
     "test:old": "jest --config config/jest.config.js --silent --maxWorkers=50%",
     "test:watch": "jest --config config/jest.config.js --silent --watch",
     "test:cover": "jest --config config/jest.config.js --silent --maxWorkers=50% --coverage",
