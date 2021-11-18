@@ -91,7 +91,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run: npm run test
+      - run: npm run test:ci
 
   test-coveralls:
     executor: my-executor
@@ -204,13 +204,13 @@ workflows:
           <<: *filters-only-development
           requires:
             - build
-            - install
+            - linting
       - sonarcloud:
           <<: *filters-only-development
           context: SonarCloud
           requires:
             - build
-            - install
+            - linting
 
   # Merge into master = new version
   bump-version:
@@ -240,9 +240,6 @@ workflows:
       - bump-version:
           <<: *filters-only-master
           requires:
-            - install
-            - build
-            - linting
             - test-coveralls
       - publish:
           <<: *filters-only-master
