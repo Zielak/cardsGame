@@ -193,7 +193,7 @@ workflows:
       - install:
           <<: *filters-only-development
       - build:
-          <<: *filters-feature-branches
+          <<: *filters-only-development
           requires:
             - install
       - test-coveralls:
