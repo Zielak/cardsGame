@@ -4,7 +4,7 @@ import { ArraySchema } from "@colyseus/schema"
 import { globalEntitiesContext } from "../annotations/entitiesContext"
 import type { State } from "../state"
 
-import { ChildTrait } from "./child"
+import type { ChildTrait } from "./child"
 import { executeHook } from "./entity"
 import { query, queryAll } from "./helpers/parentCommons"
 import {

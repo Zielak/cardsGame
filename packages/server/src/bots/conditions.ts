@@ -1,5 +1,5 @@
 import { Conditions, ConditionsMethods } from "../conditions"
-import { State } from "../state"
+import type { State } from "../state"
 
 export class BotConditions<S extends State> extends Conditions<
   S,

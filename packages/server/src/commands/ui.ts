@@ -1,6 +1,6 @@
 import { Command } from "../command"
-import { Room } from "../room"
-import { State } from "../state"
+import type { Room } from "../room"
+import type { State } from "../state"
 
 export class RevealUI extends Command {
   lastUiName: string

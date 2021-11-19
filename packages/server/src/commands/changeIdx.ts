@@ -1,10 +1,9 @@
-import { limit, logs } from "@cardsgame/utils"
+import { logs } from "@cardsgame/utils"
 
-import { Command, TargetHolder, Targets, TargetsHolder } from "../command"
-import { State } from "../state"
-import { ChildTrait } from "../traits/child"
+import { Command, Targets, TargetsHolder } from "../command"
+import type { State } from "../state"
+import type { ChildTrait } from "../traits/child"
 import { hasLabel } from "../traits/label"
-import { ParentTrait } from "../traits/parent"
 
 export class ChangeIdx extends Command {
   // FIXME: I keep holding references to objects! Maybe I should remember just to indexes?

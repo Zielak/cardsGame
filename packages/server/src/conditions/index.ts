@@ -1,6 +1,6 @@
 import { applyMixins } from "@cardsgame/utils"
 
-import { QuerableProps } from "../queryRunner"
+import type { QuerableProps } from "../queryRunner"
 
 import { ConditionAssertions } from "./assertions"
 import { ConditionBase } from "./base"

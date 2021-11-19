@@ -1,4 +1,4 @@
-import { Room } from "@colyseus/core"
+import type { Room } from "@colyseus/core"
 
 import { botAdd, botRemove } from "./bots"
 import { entityInteraction } from "./entityInteraction"

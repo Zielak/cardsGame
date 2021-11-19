@@ -127,7 +127,13 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run: npm run ci:version
+      - run:
+          name: Bump and commit
+          command: |
+            git config --global user.email 'zielak@users.noreply.github.com'
+            git config --global user.name 'Greenly Bot'
+            npm run ci:version
+
 
   publish:
     executor: my-executor

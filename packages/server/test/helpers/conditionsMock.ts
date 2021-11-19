@@ -1,5 +1,5 @@
 import { Conditions, State } from "../../src"
-import { ConditionsMethods } from "../../src/conditions"
+import type { ConditionsMethods } from "../../src/conditions"
 
 export class ConditionsMock<S extends State> extends Conditions<
   S,

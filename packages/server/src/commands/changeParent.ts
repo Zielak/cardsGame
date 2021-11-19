@@ -7,10 +7,10 @@ import {
   Targets,
   TargetsHolder,
 } from "../command"
-import { State } from "../state"
-import { ChildTrait } from "../traits/child"
+import type { State } from "../state"
+import type { ChildTrait } from "../traits/child"
 import { hasLabel } from "../traits/label"
-import { ParentTrait } from "../traits/parent"
+import type { ParentTrait } from "../traits/parent"
 
 export class ChangeParent extends Command {
   private entities: TargetsHolder<ChildTrait>

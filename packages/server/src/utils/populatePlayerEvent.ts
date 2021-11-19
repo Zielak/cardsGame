@@ -1,5 +1,5 @@
-import { Player, ServerPlayerMessage } from "../players/player"
-import { State } from "../state"
+import type { Player, ServerPlayerMessage } from "../players/player"
+import type { State } from "../state"
 import { getEntitiesAlongPath } from "../state/helpers"
 import { isChild } from "../traits/child"
 
