@@ -1,4 +1,4 @@
-import { ChildTrait } from "../../traits/child"
+import type { ChildTrait } from "../../traits/child"
 
 export type SortingFunction = (childA: ChildTrait, childB: ChildTrait) => number
 

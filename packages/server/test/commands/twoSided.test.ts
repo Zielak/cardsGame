@@ -1,4 +1,4 @@
-import { Room } from "../../src"
+import type { Room } from "../../src"
 import { FaceDown, FaceUp, Flip } from "../../src/commands/twoSided"
 import { ClassicCard } from "../../src/entities"
 import { State } from "../../src/state"

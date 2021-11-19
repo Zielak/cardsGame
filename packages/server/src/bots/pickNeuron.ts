@@ -7,13 +7,13 @@ import {
   isInteractionOfEvent,
 } from "../actionTemplate"
 import { filterActionsByConditions } from "../interaction"
-import { Bot } from "../players/bot"
+import type { Bot } from "../players/bot"
 import { queryRunner } from "../queryRunner"
-import { State } from "../state"
-import { ChildTrait } from "../traits/child"
+import type { State } from "../state"
+import type { ChildTrait } from "../traits/child"
 import { populatePlayerEvent } from "../utils"
 
-import { BotNeuron } from "./botNeuron"
+import type { BotNeuron } from "./botNeuron"
 import { BotConditions, EntityConditions } from "./conditions"
 
 const logs = new Logs("pickNeuron", true, { serverStyle: chalk.bgGreen.white })

@@ -1,5 +1,5 @@
 import { logs } from "@cardsgame/utils"
-import { Room as colyseusRoom } from "colyseus.js/lib/Room"
+import type { Room as colyseusRoom } from "colyseus.js/lib/Room"
 
 import type { ClientGameState } from "./schema"
 

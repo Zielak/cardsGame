@@ -1,6 +1,6 @@
 import { Command, Target, TargetHolder } from "../command"
-import { State } from "../state"
-import { ParentTrait } from "../traits/parent"
+import type { State } from "../state"
+import type { ParentTrait } from "../traits/parent"
 
 export class ShuffleChildren extends Command {
   target: TargetHolder<ParentTrait>

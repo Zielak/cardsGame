@@ -5,7 +5,7 @@ import {
 } from "../../src/commands/selectChild"
 import { ClassicCard } from "../../src/entities/classicCard"
 import { Hand } from "../../src/entities/hand"
-import { Room } from "../../src/room"
+import type { Room } from "../../src/room"
 import { State } from "../../src/state"
 import { RoomMock } from "../helpers/roomMock"
 

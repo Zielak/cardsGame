@@ -1,6 +1,6 @@
-import { DefinitionType } from "@colyseus/schema"
+import type { DefinitionType } from "@colyseus/schema"
 
-import { Entity } from "../traits/entity"
+import type { Entity } from "../traits/entity"
 
 type RegisteredParent = {
   con: typeof Entity

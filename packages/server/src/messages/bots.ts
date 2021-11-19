@@ -1,8 +1,8 @@
 import { def } from "@cardsgame/utils"
 
 import { Bot } from "../players/bot"
-import { Room } from "../room"
-import { State } from "../state"
+import type { Room } from "../room"
+import type { State } from "../state"
 
 /**
  * Create and add new Bot player to clients list.

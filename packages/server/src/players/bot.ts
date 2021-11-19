@@ -1,6 +1,6 @@
 import { def, limit } from "@cardsgame/utils"
 
-import { ChosenBotNeuronResult } from "../bots/pickNeuron"
+import type { ChosenBotNeuronResult } from "../bots/pickNeuron"
 
 import { Player, PlayerOptions } from "./player"
 

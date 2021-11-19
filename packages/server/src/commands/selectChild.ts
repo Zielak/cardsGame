@@ -1,10 +1,10 @@
 import { logs } from "@cardsgame/utils"
 
 import { Command, Target, TargetHolder } from "../command"
-import { Room } from "../room"
-import { State } from "../state"
-import { ParentTrait } from "../traits/parent"
-import { SelectableChildrenTrait } from "../traits/selectableChildren"
+import type { Room } from "../room"
+import type { State } from "../state"
+import type { ParentTrait } from "../traits/parent"
+import type { SelectableChildrenTrait } from "../traits/selectableChildren"
 
 type ParentSelecta = SelectableChildrenTrait & ParentTrait
 
