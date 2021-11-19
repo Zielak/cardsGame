@@ -1,14 +1,14 @@
 import { chalk, logs } from "@cardsgame/utils"
 
-import { ActionsSet } from "./actionTemplate"
-import { Command } from "./command"
+import type { ActionsSet } from "./actionTemplate"
+import type { Command } from "./command"
 import {
   filterActionsByConditions,
   filterActionsByInteraction,
 } from "./interaction"
-import { Player, ServerPlayerMessage } from "./players/player"
-import { Room } from "./room"
-import { State } from "./state"
+import type { Player, ServerPlayerMessage } from "./players/player"
+import type { Room } from "./room"
+import type { State } from "./state"
 
 export class CommandsManager<S extends State> {
   history: Command[] = []

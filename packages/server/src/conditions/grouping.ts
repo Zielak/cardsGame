@@ -1,8 +1,8 @@
 import { chalk, logs } from "@cardsgame/utils"
 
-import { getFlag, iconStyle, resetNegation, setFlag } from "./utils"
+import { getFlag, resetNegation, setFlag } from "./utils"
 
-import { Conditions } from "."
+import type { Conditions } from "."
 
 type EitherCallback<C> = (con: C) => any
 type EitherTuple<C> = [string, EitherCallback<C>]
@@ -153,7 +153,7 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
       const prefix = idx < funcs.length - 1 ? "╞╴" : "╘╴"
 
       try {
-        test((this as unknown) as C)
+        test(this as unknown as C)
 
         logs.notice(
           `${prefix}[${idx}] ${testName}-> ${chalk.bgGreen.white(" ✔︎ ")}`

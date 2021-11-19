@@ -1,6 +1,6 @@
 import { chalk, logs } from "@cardsgame/utils"
 
-import { Player, ServerPlayerMessage } from "../players/player"
+import type { Player, ServerPlayerMessage } from "../players/player"
 import { hasLabel, LabelTrait } from "../traits/label"
 
 export function debugRoomMessage(message: ServerPlayerMessage): void {

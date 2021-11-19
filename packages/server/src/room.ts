@@ -1,16 +1,16 @@
 import { logs } from "@cardsgame/utils"
 import { Client, Room as colRoom } from "@colyseus/core"
 
-import { ActionsSet } from "./actionTemplate"
-import { BotNeuron } from "./bots/botNeuron"
+import type { ActionsSet } from "./actionTemplate"
+import type { BotNeuron } from "./bots/botNeuron"
 import { BotRunner } from "./bots/runner"
-import { Command } from "./command"
+import type { Command } from "./command"
 import { CommandsManager } from "./commandsManager"
 import { fallback } from "./messages/fallback"
 import { messages } from "./messages/messageHandler"
-import { Bot } from "./players/bot"
-import { Player, ServerPlayerMessage } from "./players/player"
-import { State } from "./state"
+import type { Bot } from "./players/bot"
+import type { Player, ServerPlayerMessage } from "./players/player"
+import type { State } from "./state"
 import { debugRoomMessage } from "./utils"
 
 export interface IRoom<S extends State> {

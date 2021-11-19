@@ -6,9 +6,9 @@ import {
   isInteractionOfEvent,
 } from "./actionTemplate"
 import { Conditions, ConditionsMethods } from "./conditions"
-import { ServerPlayerMessage } from "./players/player"
+import type { ServerPlayerMessage } from "./players/player"
 import { queryRunner } from "./queryRunner"
-import { State } from "./state"
+import type { State } from "./state"
 import { isChild } from "./traits/child"
 
 export const filterActionsByInteraction =

@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "lib": ["es6"],
     "sourceMap": true,
-    "target": "es5"
+    "target": "es5",
+    "importsNotUsedAsValues": "error"
   }
 }

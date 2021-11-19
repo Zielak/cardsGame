@@ -1,10 +1,10 @@
 import { def } from "@cardsgame/utils"
 
 import { Command, Target, TargetHolder } from "../command"
-import { Room } from "../room"
-import { State } from "../state"
-import { ChildTrait } from "../traits/child"
-import { ParentTrait } from "../traits/parent"
+import type { Room } from "../room"
+import type { State } from "../state"
+import type { ChildTrait } from "../traits/child"
+import type { ParentTrait } from "../traits/parent"
 
 import { ChangeParent } from "./changeParent"
 import { FaceDown, FaceUp, Flip } from "./twoSided"

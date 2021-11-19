@@ -1,4 +1,4 @@
-import {
+import type {
   ClassicCard,
   Container,
   Deck,
@@ -42,21 +42,21 @@ export interface QuerableProps extends EntityOptions {
   selectionIndex?: number | number[]
 }
 
-export const queryRunner = <T>(props: QuerableProps) => (
-  entity: T
-): boolean => {
-  if (!isChild(entity)) {
-    return false
-  }
-
-  return Object.keys(props).every((propName) => {
-    if (Array.isArray(props[propName])) {
-      return props[propName].some(verifyValue(propName, entity))
-    } else {
-      return verifyValue(propName, entity)(props[propName])
+export const queryRunner =
+  <T>(props: QuerableProps) =>
+  (entity: T): boolean => {
+    if (!isChild(entity)) {
+      return false
     }
-  })
-}
+
+    return Object.keys(props).every((propName) => {
+      if (Array.isArray(props[propName])) {
+        return props[propName].some(verifyValue(propName, entity))
+      } else {
+        return verifyValue(propName, entity)(props[propName])
+      }
+    })
+  }
 
 function verifyValue(propName: string, entity: ChildTrait) {
   return function verifyValueIteration(value: any): boolean {

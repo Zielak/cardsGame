@@ -7,9 +7,9 @@ import {
   Targets,
   TargetsHolder,
 } from "../command"
-import { Room } from "../room"
-import { State } from "../state"
-import { ParentTrait } from "../traits/parent"
+import type { Room } from "../room"
+import type { State } from "../state"
+import type { ParentTrait } from "../traits/parent"
 
 import { ChangeParent } from "./changeParent"
 
