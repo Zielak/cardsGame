@@ -1,6 +1,6 @@
 import { logs } from "@cardsgame/utils"
 
-import { Entity } from "../traits/entity"
+import type { Entity } from "../traits/entity"
 
 import { synchChildrenArray } from "./annotations"
 import { globalEntitiesContext } from "./entitiesContext"

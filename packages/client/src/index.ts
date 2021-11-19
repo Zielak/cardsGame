@@ -1,4 +1,4 @@
-import { RoomAvailable as colRoomAvailable } from "colyseus.js/lib/Room"
+import type { RoomAvailable as colRoomAvailable } from "colyseus.js/lib/Room"
 
 export interface RoomAvailable<T = any> extends colRoomAvailable<T> {
   name: string

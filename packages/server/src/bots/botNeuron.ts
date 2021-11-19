@@ -1,9 +1,9 @@
-import { ActionTemplate } from "../actionTemplate"
-import { Bot } from "../players/bot"
-import { QuerableProps } from "../queryRunner"
-import { State } from "../state"
+import type { ActionTemplate } from "../actionTemplate"
+import type { Bot } from "../players/bot"
+import type { QuerableProps } from "../queryRunner"
+import type { State } from "../state"
 
-import { BotConditions, EntityConditions } from "./conditions"
+import type { BotConditions, EntityConditions } from "./conditions"
 
 export interface BotNeuron<S extends State> {
   name: string

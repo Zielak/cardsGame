@@ -1,8 +1,8 @@
-import { Command } from "./command"
-import { ClientMessageConditions } from "./interaction"
-import { Player, ServerPlayerMessage } from "./players/player"
-import { QuerableProps } from "./queryRunner"
-import { State } from "./state"
+import type { Command } from "./command"
+import type { ClientMessageConditions } from "./interaction"
+import type { Player, ServerPlayerMessage } from "./players/player"
+import type { QuerableProps } from "./queryRunner"
+import type { State } from "./state"
 
 export interface ActionTemplate<S extends State> {
   name: string

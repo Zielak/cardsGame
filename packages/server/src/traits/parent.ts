@@ -1,5 +1,5 @@
 import { globalEntitiesContext } from "../annotations/entitiesContext"
-import { QuerableProps } from "../queryRunner"
+import type { QuerableProps } from "../queryRunner"
 
 import type { ChildTrait } from "./child"
 

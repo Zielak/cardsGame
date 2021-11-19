@@ -1,6 +1,6 @@
 import { times } from "@cardsgame/utils"
 
-import { Command } from "../../src"
+import type { Command } from "../../src"
 import { Noop } from "../../src/commands"
 import { ChangeParent } from "../../src/commands/changeParent"
 import { DealCards } from "../../src/commands/dealCards"

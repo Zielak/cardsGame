@@ -1,7 +1,7 @@
 import { logs } from "@cardsgame/utils"
 
-import { Room } from "../room"
-import { State } from "../state"
+import type { Room } from "../room"
+import type { State } from "../state"
 import { populatePlayerEvent } from "../utils"
 
 export function fallback(

@@ -1,11 +1,11 @@
 import { limit, logs } from "@cardsgame/utils"
 
 import { Bot, isBot } from "../players/bot"
-import { Player } from "../players/player"
-import { IdentityTrait } from "../traits/identity"
+import type { Player } from "../players/player"
+import type { IdentityTrait } from "../traits/identity"
 import { hasChildren, isParent, ParentTrait } from "../traits/parent"
 
-import { State } from "."
+import type { State } from "."
 
 /**
  * Will get you an index of given player in turn queue.

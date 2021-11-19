@@ -1,10 +1,10 @@
 import { logs, shuffle } from "@cardsgame/utils"
-import { Client } from "@colyseus/core"
+import type { Client } from "@colyseus/core"
 
 import { Sequence } from "../commands"
 import { Player } from "../players/player"
-import { Room } from "../room"
-import { State } from "../state"
+import type { Room } from "../room"
+import type { State } from "../state"
 
 export function start(this: Room<State>, client: Client, message: any): void {
   const { state } = this

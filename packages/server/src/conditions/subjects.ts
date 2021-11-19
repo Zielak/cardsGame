@@ -1,4 +1,4 @@
-import { QuerableProps } from "../queryRunner"
+import type { QuerableProps } from "../queryRunner"
 import { isParent } from "../traits/parent"
 import { hasSelectableChildren } from "../traits/selectableChildren"
 

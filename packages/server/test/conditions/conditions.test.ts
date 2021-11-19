@@ -1,4 +1,4 @@
-import { ChildTrait } from "../../src"
+import type { ChildTrait } from "../../src"
 import { setFlag } from "../../src/conditions/utils"
 import { ClassicCard } from "../../src/entities/classicCard"
 import { Hand } from "../../src/entities/hand"

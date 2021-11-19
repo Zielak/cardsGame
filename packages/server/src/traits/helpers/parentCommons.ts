@@ -1,5 +1,5 @@
 import { QuerableProps, queryRunner } from "../../queryRunner"
-import { ChildTrait } from "../child"
+import type { ChildTrait } from "../child"
 import { isParent, ParentTrait } from "../parent"
 
 /**

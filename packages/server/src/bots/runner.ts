@@ -1,12 +1,12 @@
 import { logs } from "@cardsgame/utils"
 
-import { Bot } from "../players/bot"
-import { Player } from "../players/player"
-import { Room } from "../room"
-import { State } from "../state"
+import type { Bot } from "../players/bot"
+import type { Player } from "../players/player"
+import type { Room } from "../room"
+import type { State } from "../state"
 import { populatePlayerEvent } from "../utils"
 
-import { BotNeuron } from "./botNeuron"
+import type { BotNeuron } from "./botNeuron"
 import { pickNeuron } from "./pickNeuron"
 
 export class BotRunner<S extends State> {
