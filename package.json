@@ -13,15 +13,12 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "changed": "lerna changed --all --toposort",
-    "changed:ci": "lerna changed --json --all --toposort --loglevel=silent",
     "linkup": "scripts/linkup.sh",
     "linkup:colyseus": "scripts/linkupColyseus.sh",
     "test": "jest --config config/jest.config.js --silent --maxWorkers=50%",
     "test:ci": "jest --config config/jest.config.js --silent --ci --maxWorkers=1",
-    "test:ci_coveralls": "jest --config config/jest.config.js  --silent --ci --maxWorkers=1 --coverage --coverageReporters=lcovonly && coveralls < coverage/lcov.info",
+    "test:coveralls": "jest --config config/jest.config.js  --silent --ci --maxWorkers=1 --coverage --coverageReporters=lcovonly && coveralls < coverage/lcov.info",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "format": "prettier --write \"**/*.{js,ts,tsx,json,html,scss,md}\"",
     "build": "lerna run build",
     "build:server": "lerna run --stream --concurrency 1 --scope '*/server' build",
     "build:server-w": "lerna run --stream --concurrency 1 --scope '*/server' build:watch",
@@ -30,9 +27,10 @@
     "build:utils": "lerna run --stream --concurrency 1 --scope '*/utils' build",
     "build:utils-w": "lerna run --stream --concurrency 1 --scope '*/utils' build:watch",
     "build:entityTraits": "lerna run --stream --concurrency 1 --scope '*/entity-traits' build",
-    "ci:version": "lerna version --conventional-commits --yes",
-    "ci:publish": "lerna publish from-git --yes",
-    "prepare": "husky install"
+    "prerelease": "npm run lint && npm run test",
+    "release": "env-cmd lerna version",
+    "prepare": "husky install",
+    "postversion": "lerna publish from-git --yes"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
@@ -43,6 +41,7 @@
     "chalk": "^4.1.1",
     "coveralls": "^3.1.1",
     "cz-conventional-changelog": "^3.3.0",
+    "env-cmd": "^10.1.0",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",

@@ -15,7 +15,18 @@ npm run build:client-w
 npm run build:server-w
 ```
 
+# Release
+
+You'll need to set up a local `.env` file in the repo root to provide the required environment variables.
+The `.env.example` file is available in the root as a template.
+
+```sh
+npm run release
+```
+
 # Maintenance
+
+> Old notes here, ignore for now
 
 Keep generating changelog with these, until we hit 1.0
 

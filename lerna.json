@@ -1,18 +1,15 @@
 {
   "version": "0.12.5",
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "command": {
     "publish": {
-      "ignoreChanges": [
-        "*.md",
-        "test/**"
-      ],
+      "ignoreChanges": ["*.md", "test/**"],
       "message": "chore(release): publish %s"
     },
     "version": {
-      "allowBranch": "master"
+      "allowBranch": "master",
+      "conventionalCommits": true,
+      "createRelease": "github"
     }
   }
 }
