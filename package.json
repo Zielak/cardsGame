@@ -29,7 +29,7 @@
     "build:entityTraits": "lerna run --stream --concurrency 1 --scope '*/entity-traits' build",
     "prerelease": "npm run lint && npm run test",
     "release": "env-cmd lerna version",
-    "postrelease": "git rebase master development && git push origin develop --no-verify",
+    "postrelease": "git rebase master development && git push origin development --no-verify && git checkout -",
     "prepare": "husky install",
     "postversion": "lerna publish from-git --yes"
   },

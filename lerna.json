@@ -3,6 +3,7 @@
   "packages": ["packages/*"],
   "command": {
     "publish": {
+      "conventionalCommits": true,
       "ignoreChanges": ["*.md", "test/**"],
       "message": "chore(release): publish %s"
     },
