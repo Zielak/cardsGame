@@ -1,3 +1,12 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [0.12.6](https://github.com/zielak/cardsGame/compare/v0.12.5...v0.12.6) (2021-11-20)
+
+**Note:** Version bump only for package @cardsgame/utils
+
 ## [0.8.3](https://github.com/zielak/cardsGame/compare/v0.8.4...v0.8.3) (2020-08-06)
 
 ## [0.8.3](https://github.com/zielak/cardsGame/compare/v0.8.2...v0.8.3) (2020-07-27)

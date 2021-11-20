@@ -3,16 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.12.5](https://github.com/zielak/cardsGame/compare/v0.12.4...v0.12.5) (2021-11-20)
+## [0.12.6](https://github.com/zielak/cardsGame/compare/v0.12.5...v0.12.6) (2021-11-20)
 
+**Note:** Version bump only for package cardsgame
+
+## [0.12.5](https://github.com/zielak/cardsGame/compare/v0.12.4...v0.12.5) (2021-11-20)
 
 ### Bug Fixes
 
-* **server:** fixes around selection ([c1448ca](https://github.com/zielak/cardsGame/commit/c1448ca132e231d7ea606ad6d0b3b902cd4f20d3))
-
-
-
-
+- **server:** fixes around selection ([c1448ca](https://github.com/zielak/cardsGame/commit/c1448ca132e231d7ea606ad6d0b3b902cd4f20d3))
 
 # [](https://github.com/zielak/cardsGame/compare/v0.8.4...v) (2020-08-06)
 
