@@ -127,13 +127,22 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
+      - add_ssh_keys:
+          fingerprints:
+            - "44:79:fc:dd:59:85:d3:aa:83:38:49:ed:2b:0b:b4:b3"
       - run:
           name: Bump and commit
           command: |
             git config --global user.email 'zielak@users.noreply.github.com'
             git config --global user.name 'Greenly Bot'
             npm run ci:version
-
+      - run:
+          name: Bring development branch on same commit
+          command: |
+            git checkout development
+            git rebase master
+            git push --force --no-verify
+            git checkout master
 
   publish:
     executor: my-executor
