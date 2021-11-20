@@ -133,7 +133,13 @@ jobs:
             git config --global user.email 'zielak@users.noreply.github.com'
             git config --global user.name 'Greenly Bot'
             npm run ci:version
-
+      - run:
+          name: Bring development branch on same commit
+          command: |
+            git checkout development
+            git rebase master
+            git push --force --no-verify
+            git checkout master
 
   publish:
     executor: my-executor
