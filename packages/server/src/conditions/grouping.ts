@@ -155,15 +155,13 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
       try {
         test(this as unknown as C)
 
-        logs.notice(
+        logs.log(
           `${prefix}[${idx}] ${testName}-> ${chalk.bgGreen.white(" ✔︎ ")}`
         )
       } catch (i) {
-        logs.verbose(`err:`, i.message)
+        logs.debug(`err:`, i.message)
 
-        logs.notice(
-          `${prefix}[${idx}] ${testName}-> ${chalk.bgRed.white(" ✘ ")}`
-        )
+        logs.log(`${prefix}[${idx}] ${testName}-> ${chalk.bgRed.white(" ✘ ")}`)
         error = "  ".repeat(eitherLevel) + i.message
         result = false
       }

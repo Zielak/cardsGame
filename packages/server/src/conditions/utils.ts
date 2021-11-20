@@ -1,6 +1,7 @@
-// TODO: Document all these flags. What is propParent??
 type ConditionsFlag =
+  // reference to state object
   | "state"
+  // reference to or value of current subject
   | "subject"
   | "initialSubjects"
   | "defaultSubject"

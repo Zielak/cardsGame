@@ -104,7 +104,7 @@ export const standardDeckFactory = (
     []
   )
 
-  logs.notice(`created a deck of ${cards.length} cards`)
+  logs.log(`created a deck of ${cards.length} cards`)
 
   return cards
 }

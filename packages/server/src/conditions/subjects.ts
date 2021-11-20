@@ -26,7 +26,6 @@ class ConditionSubjects {
     return this
   }
 
-  // TODO: Why was it private?
   /**
    * Looks for a child entity by their `props`, starting from current subject.
    *

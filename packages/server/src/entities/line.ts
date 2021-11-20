@@ -77,7 +77,7 @@ export class Line extends Entity<LineOptions> {
 
     this.align = def(options.align, "start")
 
-    if (options.lineType == "column") {
+    if (options.lineType === "column") {
       this.itemAngle = def(options.itemAngle, 270)
       this.angle = def(options.angle, 90)
     } else {
