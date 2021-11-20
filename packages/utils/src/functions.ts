@@ -1,4 +1,6 @@
-export const noop = (): void => {}
+export const noop = (): void => {
+  // It's a noop, leave it be
+}
 
 /**
  * Executes function multiple times

@@ -1,10 +1,20 @@
-export const limit = (val: number, min = 0, max = 1): number =>
-  val < min ? min : val > max ? max : val
+export const limit = (val: number, min = 0, max = 1): number => {
+  if (val < min) {
+    return min
+  } else if (val > max) {
+    return max
+  } else {
+    return val
+  }
+}
 
 // TODO: maybe allow negative values as min?
 export const wrap = (val: number, max = 1): number => {
-  if (max === 0) return val
-  return ((val % max) + max) % max
+  if (max === 0) {
+    return val
+  } else {
+    return ((val % max) + max) % max
+  }
 }
 
 export const rad2deg = (angle: number): number => {
@@ -22,7 +32,7 @@ export const deg2rad = (angle: number): number => {
   // improved by: Thomas Grainger (http://graingert.co.uk)
   //   example 1: deg2rad(45)
   //   returns 1: 0.7853981633974483
-  return angle * 0.017453292519943295 // (angle / 180) * Math.PI;
+  return angle * 0.017453292519943295 // (angle / 180) * Math.PI
 }
 
 export const cm2px = (value: number): number => value * 11.5

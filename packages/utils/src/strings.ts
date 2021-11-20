@@ -2,10 +2,13 @@
  * Trim long string with nice ell…
  */
 export const trim = (string = "", maxLength = 7): string => {
-  if (typeof string !== "string") return
-  return string.length <= maxLength
-    ? string
-    : string.substr(0, maxLength - 1) + "…"
+  if (typeof string !== "string") {
+    return
+  } else {
+    return string.length <= maxLength
+      ? string
+      : string.substr(0, maxLength - 1) + "…"
+  }
 }
 
 /**
@@ -14,6 +17,7 @@ export const trim = (string = "", maxLength = 7): string => {
 export const randomName = (): string => {
   const randomLetter = (): string =>
     String.fromCharCode(Math.random() * (90 - 65) + 65)
+
   return randomLetter() + randomLetter() + randomLetter()
 }
 
