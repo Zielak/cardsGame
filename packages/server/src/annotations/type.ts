@@ -36,7 +36,6 @@ export function type(
         .set(field, typeDef)
     }
 
-    console.log(`Type @${constructor.name}, field: ${field}`)
     return colType(typeDef, typesContext)(target, field)
   }
 }
