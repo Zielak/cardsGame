@@ -12,7 +12,7 @@
     "url": "https://github.com/zielak/cardsGame/issues"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap && lerna exec --concurrency 1 npm install",
     "linkup": "scripts/linkup.sh",
     "linkup:colyseus": "scripts/linkupColyseus.sh",
     "test": "jest --config config/jest.config.js --silent --maxWorkers=50%",

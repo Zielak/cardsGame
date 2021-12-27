@@ -38,8 +38,8 @@ jobs:
             - v1-utilsDeps-{{ checksum "packages/utils/package-lock.json" }}
             - v1-utilsDeps-
 
-      - run: npm install
-      - run: npm run bootstrap -- --ci
+      - run: npm ci
+      - run: npm run bootstrap
 
       - save_cache:
           name: Save cache for root dependencies
@@ -62,6 +62,11 @@ jobs:
           paths:
             - packages/utils/node_modules
 
+      - run: ls -l packages/utils/node_modules/@cardsgame
+      - run: ls -l packages/client/node_modules/@cardsgame
+      - run: ls -l packages/server/node_modules/@cardsgame
+      - run: ls -l packages/utils/node_modules/@cardsgame
+
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory.
           # This is a directory on the container which is
@@ -80,6 +85,10 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run: npm run build
+      - run: ls -l packages/utils/node_modules/@cardsgame
+      - run: ls -l packages/client/node_modules/@cardsgame
+      - run: ls -l packages/server/node_modules/@cardsgame
+      - run: ls -l packages/utils/node_modules/@cardsgame
       - persist_to_workspace:
           root: ~/repo
           paths:
