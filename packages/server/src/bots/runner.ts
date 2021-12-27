@@ -4,7 +4,7 @@ import type { Bot } from "../players/bot"
 import type { Player } from "../players/player"
 import type { Room } from "../room"
 import type { State } from "../state"
-import { populatePlayerEvent } from "../utils"
+import { populatePlayerEvent } from "../utils/populatePlayerEvent"
 
 import type { BotNeuron } from "./botNeuron"
 import { pickNeuron } from "./pickNeuron"

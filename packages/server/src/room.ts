@@ -11,7 +11,7 @@ import { messages } from "./messages/messageHandler"
 import type { Bot } from "./players/bot"
 import type { Player, ServerPlayerMessage } from "./players/player"
 import type { State } from "./state"
-import { debugRoomMessage } from "./utils"
+import { debugRoomMessage } from "./utils/debugRoomMessage"
 
 export interface IRoom<S extends State> {
   botActivities?: BotNeuron<S>[]

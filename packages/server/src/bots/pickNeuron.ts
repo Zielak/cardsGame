@@ -11,7 +11,7 @@ import type { Bot } from "../players/bot"
 import { queryRunner } from "../queryRunner"
 import type { State } from "../state"
 import type { ChildTrait } from "../traits/child"
-import { populatePlayerEvent } from "../utils"
+import { populatePlayerEvent } from "../utils/populatePlayerEvent"
 
 import type { BotNeuron } from "./botNeuron"
 import { BotConditions, EntityConditions } from "./conditions"
