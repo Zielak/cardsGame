@@ -39,7 +39,8 @@ jobs:
             - v1-utilsDeps-
 
       - run: npm ci
-      - run: npm run bootstrap
+      - run: npx lerna bootstrap
+      - run: npx lerna exec npm ci --concurrency 1
 
       - save_cache:
           name: Save cache for root dependencies
