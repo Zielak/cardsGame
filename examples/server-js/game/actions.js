@@ -1,6 +1,8 @@
 const {
   commands,
   Conditions,
+  Pile,
+  Deck,
   getPlayersIndex,
   Player,
 } = require("@cardsgame/server")
@@ -9,56 +11,44 @@ const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
 const { WarState } = require("./state")
 
 /**
- * Ante is optional, and won't be added in early stages of the game
- * @param {WarState} state
- * @param {ServerPlayerMessage} event
+ * This comment block enables autocompletion and suggestions
+ * for ActionTemplate in JS projects. Neat!
+ * @type {import("@cardsgame/server").ActionTemplate<WarState>}
  */
-const PlayCardWithAnte = (state, event) => {
-  const container = state.query({ owner: event.player })
-  const deck = container.query({ type: "deck" })
-  const pile = container.query({ type: "pile" })
-
-  const ante =
-    state.ante > 0 ? deck.getChildren().splice(-state.ante - 1, state.ante) : []
-  const card = deck.getTop()
-
-  return new commands.Sequence("PlayCardWithAnte", [
-    new MarkPlayerPlayed(event.player.clientID),
-    ante && new commands.ChangeParent(ante, pile),
-    new commands.ChangeParent(card, pile),
-    new commands.FaceUp(card),
-  ])
-}
-
 const PickCard = {
   name: "PickCard",
-  /**
-   * @param {Player} player
-   */
   interaction: (player) => [
     {
       type: "deck",
-      name: "playersDeck",
       owner: player,
     },
   ],
-  /**
-   * @param {Conditions<WarState>} con
-   */
   conditions: (con) => {
     const playerSessionID = con.player.grab().clientID
-    // console.log('playerSessionID:', playerSessionID)
-    // console.log('state.playersPlayed:', [...con().grabState().playersPlayed.entries()])
+    console.log("playerSessionID:", playerSessionID)
+    console.log("state.playersPlayed:", [
+      ...con().grabState().playersPlayed.entries(),
+    ])
 
     // Current player didn't pick yet
     con().its("playersPlayed").defined()
     con().its("playersPlayed").its(playerSessionID).equals(false)
   },
-  /**
-   * @param {WarState} state
-   * @param {ServerPlayerMessage} event
-   */
   command: (state, event) => {
+    const container = state.query({ owner: event.player })
+    /** @type {Deck} */
+    const deck = container.query({ type: "deck" })
+    console.log("deck has", deck.childCount, "children")
+    /** @type {Pile} */
+    const pile = container.query({ type: "pile" })
+
+    const count = state.ante + 1
+    console.log("picking up", count, "cards")
+    const cards = deck.getChildren().splice(-count)
+    console.log("actually picked up", cards.length)
+    const topCard = cards[cards.length - 1]
+    console.log(`topCard: ${topCard.idx}:${topCard.name}`)
+
     // There's exactly one last player who didn't pick yet
     const isLastToPick =
       [...state.playersPlayed.values()].filter((val) => val === false)
@@ -74,7 +64,9 @@ const PickCard = {
       : []
 
     return new commands.Sequence("PickCard", [
-      PlayCardWithAnte(state, event),
+      new MarkPlayerPlayed(event.player.clientID),
+      new commands.ChangeParent(cards, pile),
+      new commands.FaceUp(topCard),
       ...roundFinishingCommands,
     ])
   },

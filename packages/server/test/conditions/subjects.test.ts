@@ -91,9 +91,18 @@ describe("children", () => {
   describe("pass", () => {
     it("changes the subject to array of children", () => {
       // Children of the state
-      expect(con().children.grab()).toBe(state.getChildren())
+      const stateGrabbed = con().children.grab<[]>()
+      const stateChildren = state.getChildren()
+      stateGrabbed.forEach((a, i) => {
+        expect(stateChildren[i]).toBe(a)
+      })
+
       // Children of parent entity
-      expect(con().set(parent).children.grab()).toBe(parent.getChildren())
+      const parentGrabbed = con().set(parent).children.grab<[]>()
+      const parentChildren = parent.getChildren()
+      parentGrabbed.forEach((a, i) => {
+        expect(parentChildren[i]).toBe(a)
+      })
     })
   })
 

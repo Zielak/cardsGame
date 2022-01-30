@@ -16,19 +16,19 @@ export class Room<MoreProps = Record<string, any>> {
     })
 
     room.onMessage<ServerMessage>("*", (message) => {
-      logs.verbose("? Server:", message)
+      logs.debug("? Server:", message)
     })
 
     room.onStateChange.once((state) => {
-      logs.notice("ROOM, state initiated:", state)
+      logs.log("ROOM, state initiated:", state)
       this.onFirstStateChange(state)
     })
     room.onStateChange((state) => {
-      logs.notice("ROOM, state updated:", state)
+      logs.log("ROOM, state updated:", state)
       this.onStateChange(state)
     })
     room.onLeave((code) => {
-      logs.notice("client left the room", code)
+      logs.log("client left the room", code)
       this.onLeave(code)
     })
     room.onError((code, message) => {
@@ -36,7 +36,7 @@ export class Room<MoreProps = Record<string, any>> {
       this.onError(code, message)
     })
 
-    logs.notice("client joined successfully")
+    logs.log("client joined successfully")
   }
 
   /**
@@ -73,7 +73,7 @@ export class Room<MoreProps = Record<string, any>> {
    * @param {ClientPlayerMessage} message
    */
   send(type: string, message = undefined): void {
-    logs.verbose("Sending:", type, JSON.stringify(message))
+    logs.debug("Sending:", type, JSON.stringify(message))
     this.room.send(type, message)
   }
 
@@ -88,7 +88,7 @@ export class Room<MoreProps = Record<string, any>> {
     entityIdxPath: number[],
     data = undefined
   ): void {
-    logs.verbose(
+    logs.debug(
       "Sending Interaction:",
       event.type,
       "entityIdxPath:",

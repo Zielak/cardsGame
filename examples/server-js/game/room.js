@@ -65,7 +65,7 @@ class WarGame extends Room {
       decks.push(
         new Deck(state, {
           parent: container,
-          name: "playersDeck",
+          name: `player${player.name}Deck`,
         })
       )
 

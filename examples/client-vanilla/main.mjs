@@ -1,4 +1,4 @@
-const { Game, Room } = require("@cardsgame/client")
+import { Game, Room } from "@cardsgame/client"
 
 const EL = {
   gameView: document.querySelector(".gameView"),
@@ -30,7 +30,7 @@ const UI = {
   updateStartButton: (state) => {
     if (state.isGameStarted) {
       EL.start_btn.disabled = true
-    } else if (Object.keys(state.clients).length === 2) {
+    } else if (state.clients.length === 2) {
       EL.start_btn.disabled = false
     } else {
       EL.start_btn.disabled = true
@@ -59,7 +59,7 @@ const UI = {
   deckCountUpdated: (isPlayer, cardsCount) => {
     EL[isPlayer ? "player" : "opponent"].deckCount.innerHTML = cardsCount
   },
-  pileAddedeCard: (isPlayer, card) => {
+  pileAddedCard: (isPlayer, card) => {
     const elem = document.createElement("div")
 
     elem.classList.add("card")
@@ -110,11 +110,14 @@ const UI = {
 }
 
 /**
- * @property {Room} room
+ * @property {import("@cardsgame/client").Room} room
  * @property {Game} game
  * @property {boolean} joined
  */
 class GameHandler {
+  /** @type {import("@cardsgame/client").Room} */
+  room = undefined
+
   constructor() {
     this.joined = false
     this.game = new Game({
@@ -134,6 +137,7 @@ class GameHandler {
 
   roomListeners() {
     const { room } = this
+    const { state } = room
     const clientID = room.sessionID
 
     EL.start_btn.addEventListener("click", () => {
@@ -144,26 +148,17 @@ class GameHandler {
       room.send("bot_add")
     })
 
-    EL.player.deck.addEventListener("click", (event) => {
-      const idxPath = event.currentTarget.dataset["idxPath"]
-      console.log("room.sendInteraction(", event, idxPath, ")")
-      room.sendInteraction(event, idxPath.split(","))
+    room.onMessage("gameOver", (message) => UI.gameOver(message))
+    room.onMessage("battleResult", (message) => {
+      if (message.outcome === "tie") {
+        UI.playersTie()
+      } else {
+        UI.playerLost(message.loser === clientID)
+      }
     })
-
-    room.onMessage = (messageType, message) => {
-      console.log("MSG:", messageType, message)
-
-      if (messageType === "battleResult") {
-        if (message.outcome === "tie") {
-          UI.playersTie()
-        } else {
-          UI.playerLost(message.loser === clientID)
-        }
-      }
-      if (messageType === "gameOver") {
-        UI.gameOver(message)
-      }
-    }
+    room.onMessage("*", (message) => {
+      console.log("Unknown message:", message)
+    })
 
     room.onStateChange = (state) => {
       UI.updateStartButton(state)
@@ -200,7 +195,8 @@ class GameHandler {
       }
 
       pile.childrenClassicCard.onAdd = (card) => {
-        UI.pileAddedeCard(isPlayer, card)
+        console.log("card added on pile", card.name)
+        UI.pileAddedCard(isPlayer, card)
       }
       pile.childrenClassicCard.onRemove = (card) => {
         UI.pileRemovedCard(isPlayer, card)
@@ -219,6 +215,12 @@ class GameHandler {
           EL.opponent.container.classList.remove("playerContainer--loser")
         } else if (field === "isGameStarted" && value === true) {
           UI.gameStarted()
+
+          EL.player.deck.addEventListener("click", (event) => {
+            const idxPath = event.currentTarget.dataset["idxPath"]
+            console.log("room.sendInteraction(", event, idxPath, ")")
+            room.sendInteraction(event, idxPath.split(","))
+          })
         }
       })
     }

@@ -1,10 +1,9 @@
 {
   "name": "@cardsgame/example-certs",
-  "version": "0.3.0",
+  "version": "0.12.8",
   "description": "Self-signed certificate generation",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
-  "private": true,
   "main": "index.js",
   "scripts": {
     "postinstall": "node postInstall",

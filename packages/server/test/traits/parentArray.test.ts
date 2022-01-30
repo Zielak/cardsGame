@@ -198,6 +198,9 @@ describe("#getChildren", () => {
     expect(result[0]).toBe(first)
     expect(result[result.length - 1]).toBe(last)
   })
+  it("doesn't return direct reference", () => {
+    expect(parent.getChildren() === parent["allChildren"]).toBeFalsy()
+  })
 })
 
 describe("#getChild", () => {

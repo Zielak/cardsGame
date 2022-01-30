@@ -7,6 +7,7 @@ import type { State } from "../state"
 import type { ChildTrait } from "./child"
 import { executeHook } from "./entity"
 import { query, queryAll } from "./helpers/parentCommons"
+import { hasLabel } from "./label"
 import {
   ChildAddedHandler,
   ChildRemovedHandler,
@@ -209,7 +210,7 @@ export class ParentArrayTrait implements ParentTrait {
       return []
     }
 
-    return this.allChildren
+    return this.allChildren.slice()
   }
 
   /**

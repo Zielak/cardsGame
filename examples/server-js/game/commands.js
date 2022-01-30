@@ -3,7 +3,10 @@ const { commands, Command } = require("@cardsgame/server")
 const { WarState } = require("./state")
 const { sortRank } = require("./utils")
 
-module.exports.MarkPlayerPlayed = class MarkPlayerPlayed extends Command {
+/**
+ * @type {import("@cardsgame/server").Command<WarState>}
+ */
+class MarkPlayerPlayed extends Command {
   /** @param {string} playerClientID */
   constructor(playerClientID) {
     super("MarkPlayerPlayed")
@@ -21,7 +24,10 @@ module.exports.MarkPlayerPlayed = class MarkPlayerPlayed extends Command {
   }
 }
 
-module.exports.ResetPlayersPlayed = class ResetPlayersPlayed extends Command {
+/**
+ * @type {import("@cardsgame/server").Command<WarState>}
+ */
+class ResetPlayersPlayed extends Command {
   constructor() {
     super("ResetPlayersPlayed")
     this.memory = new Map()
@@ -44,12 +50,14 @@ module.exports.ResetPlayersPlayed = class ResetPlayersPlayed extends Command {
 }
 
 /**
- * @param {WarState} state
+ * @type {import("@cardsgame/server").Command<WarState>}
  */
-module.exports.Battle = class Battle extends Command {
+class Battle extends Command {
   constructor() {
     super("Battle")
   }
+
+  /** @param {WarState} state */
   async execute(state, room) {
     // TODO: maybe prepare it for more than 2 players setup?
     const containerA = state.query({
@@ -70,12 +78,12 @@ module.exports.Battle = class Battle extends Command {
       loser: undefined,
     }
 
-    const res = sortRank(topA.rank, topB.rank)
-    if (res > 0) {
+    const result = sortRank(topA.rank, topB.rank)
+    if (result > 0) {
       data.outcome = "win"
       data.winner = state.players[0].clientID
       data.loser = state.players[1].clientID
-    } else if (res < 0) {
+    } else if (result < 0) {
       data.outcome = "win"
       data.winner = state.players[1].clientID
       data.loser = state.players[0].clientID
@@ -124,4 +132,10 @@ module.exports.Battle = class Battle extends Command {
       new commands.Sequence("PostBattle", subCommands)
     )
   }
+}
+
+module.exports = {
+  MarkPlayerPlayed,
+  ResetPlayersPlayed,
+  Battle,
 }

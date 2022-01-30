@@ -51,7 +51,7 @@ export class BotRunner<S extends State> {
 
   runAllBots(): void {
     if (this.room.botClients.length === 0) {
-      logs.verbose("Bots", "nobody is listening...")
+      logs.debug("Bots", "nobody is listening...")
       return
     }
 
@@ -73,7 +73,7 @@ export class BotRunner<S extends State> {
           typeof bot.actionDelay === "number"
             ? bot.actionDelay
             : bot.actionDelay()
-        logs.verbose("Bots", `setting up thought timer: ${delay} sec`)
+        logs.debug("Bots", `setting up thought timer: ${delay} sec`)
         bot.currentThoughtTimer = setTimeout(() => {
           this.executeThough(bot)
         }, delay * 1000 * (goal.neuron.thinkScale || 1))
@@ -84,7 +84,7 @@ export class BotRunner<S extends State> {
   }
 
   private executeThough(bot: Bot): void {
-    logs.verbose("Bots.executeThough")
+    logs.debug("Bots.executeThough")
     const { message, neuron } = bot.currentThought
 
     if (!neuron.action) {
@@ -95,7 +95,7 @@ export class BotRunner<S extends State> {
 
     bot.currentThought = null
     bot.currentThoughtTimer = null
-    logs.verbose("\n===============[ BOT MESSAGE ]================\n")
+    logs.debug("\n===============[ BOT MESSAGE ]================\n")
 
     const newMessage = populatePlayerEvent(this.room.state, message, bot)
 

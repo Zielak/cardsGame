@@ -1,10 +1,9 @@
 {
   "name": "@cardsgame/example-client-svelte",
-  "version": "0.3.0",
-  "description": "Simplest client-side implementation example of @cardsgame",
+  "version": "0.12.8",
+  "description": "Svelte client-side implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
-  "private": true,
   "main": "index.html",
   "scripts": {
     "start": "sirv dist --http2 --key node_modules/@cardsgame/example-certs/localhost.key --cert node_modules/@cardsgame/example-certs/localhost.crt",

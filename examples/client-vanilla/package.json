@@ -1,13 +1,13 @@
 {
   "name": "@cardsgame/example-client-vanilla",
-  "version": "0.3.0",
+  "version": "0.12.8",
   "description": "Simplest client-side implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
-  "private": true,
   "main": "index.html",
   "scripts": {
-    "start": "sirv --http2 --key node_modules/@cardsgame/example-certs/localhost.key --cert node_modules/@cardsgame/example-certs/localhost.crt",
+    "start": "sirv --dev  --http2 --key node_modules/@cardsgame/example-certs/localhost.key --cert node_modules/@cardsgame/example-certs/localhost.crt",
+    "build": "rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -15,6 +15,9 @@
     "@cardsgame/example-certs": "file:../certs"
   },
   "devDependencies": {
-    "sirv-cli": "^1.0.14"
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "rollup": "^2.66.1",
+    "sirv-cli": "^2.0.0"
   }
 }

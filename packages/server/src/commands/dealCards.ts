@@ -48,7 +48,7 @@ export class DealCards extends Command {
 
   async execute(state: State, room: Room<any>): Promise<void> {
     const _ = this.constructor.name
-    logs.notice(_, "count:", this.count, ", step:", this.step)
+    logs.log(_, "count:", this.count, ", step:", this.step)
 
     let targetIter = 0
     let stepIdx = 0
@@ -80,7 +80,7 @@ export class DealCards extends Command {
         childrenLeft = source.countChildren()
       }
 
-      if (childrenLeft === 0) {
+      if (childrenLeft === 0 && this.count !== Infinity) {
         // Try refilling the container
         const onEmptiedCommand = this.onEmptied && this.onEmptied()
         if (!onEmptiedCommand) {
@@ -104,7 +104,7 @@ export class DealCards extends Command {
       (maxDeals !== Infinity && targetIter < maxDeals)
     )
 
-    logs.notice(_, `Done dealing cards.`)
+    logs.log(_, `Done dealing cards.`)
   }
 }
 
@@ -118,7 +118,8 @@ interface DealCardsOptions {
    */
   step?: number
   /**
-   *
+   * Called when deck gets emptied before dealing out every requested card.
+   * `count: Infinity` won't have this called.
    */
   onEmptied?: () => Command
 }
