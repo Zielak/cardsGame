@@ -131,15 +131,15 @@ anchors:
       branches:
         ignore:
           - development
-          - master
+          - main
   - &filters-only-development
     filters:
       branches:
         only: /development/
-  - &filters-only-master
+  - &filters-only-main
     filters:
       branches:
-        only: /master/
+        only: /main/
   - &filters-only-version-tag
     filters:
       tags:
