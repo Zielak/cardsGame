@@ -7,7 +7,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Example - simplest form",
+      "name": "Example - server-js",
       "env": {
         "NODE_ENV": "development",
         "LOGS": "verbose"
