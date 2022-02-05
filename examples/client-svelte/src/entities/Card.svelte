@@ -40,6 +40,7 @@
     user-select: none;
 
     &.faceDown {
+      margin-right: -3.5em;
       background-color: #834224;
       border: 0.5em solid white;
     }

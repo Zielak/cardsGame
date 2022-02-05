@@ -95,15 +95,15 @@ class WarGame extends Room {
 
     state.ante = Math.floor(state.round / 2)
 
-    const someoneLost = state
-      .queryAll({ name: "playersDeck" })
-      .some((deck) => deck.countChildren() === 0)
+    const playersDecks = state
+      .queryAll({ type: "deck" })
+      .filter((deck) => deck.owner !== undefined)
+
+    const someoneLost = playersDecks.some((deck) => deck.countChildren() === 0)
 
     if (someoneLost) {
       state.isGameOver = true
-      const winner = state
-        .queryAll({ name: "playersDeck" })
-        .find((deck) => deck.countChildren() > 0).owner
+      const winner = playersDecks.find((deck) => deck.countChildren() > 0).owner
 
       this.broadcast("gameOver", {
         winner: winner.clientID,

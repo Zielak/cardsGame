@@ -1,6 +1,6 @@
 type WarState = {
   isAtWar: boolean
-  playersPlayed: boolean[]
+  playersPlayed: Map<string, boolean>
   ante: number
 }
 

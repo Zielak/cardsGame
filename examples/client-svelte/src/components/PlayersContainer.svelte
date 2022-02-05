@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { battleOutcome } from "../stores";
   import Deck from "../entities/Deck.svelte";
   import Pile from "../entities/Pile.svelte";
+  import { battleOutcome } from "../stores";
 
-  export let opponent=false
+  export let opponent = false
   export let playerData: PlayerData
   export let clientID: string
 

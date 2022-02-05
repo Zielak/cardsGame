@@ -1,4 +1,4 @@
-import { derived, Writable, writable } from "svelte/store"
+import { derived, writable } from "svelte/store"
 
 export const sessionID = writable("")
 export const clientJoined = writable(false)
@@ -17,7 +17,7 @@ export const readyToStart = derived(
 export const ante = writable(0)
 export const round = writable(0)
 
-export const players = writable<Map<string, Writable<PlayerData>>>(new Map())
+export const players = writable<Map<string, PlayerData>>(new Map())
 
 /**
  * Who won this round

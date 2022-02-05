@@ -12,11 +12,13 @@
 
 <style lang="scss">
   .pile {
+    display: flex;
+    width: 100%;
     height: 6em;
     margin-bottom: 0.5em;
-    
     flex-wrap: wrap;
     align-items: flex-start;
-    padding-right: 3.5em;
+    flex-direction: row;
+    justify-content: center;
   }
 </style>

@@ -13,8 +13,8 @@
   class="GameView"
   class:tie={$battleOutcome === 'tie'}
 >
-  {#if $opponent}
-    <PlayersContainer opponent clientID={opponentID} playerData={$opponent} />
+  {#if opponent}
+    <PlayersContainer opponent clientID={opponentID} playerData={opponent} />
   {/if}
 
   <div>
@@ -23,8 +23,8 @@
   </div>
   <div>battleOutcome: {$battleOutcome}</div>
 
-  {#if $player}
-    <PlayersContainer clientID={$sessionID} playerData={$player} />
+  {#if player}
+    <PlayersContainer clientID={$sessionID} playerData={player} />
   {/if}
   
   {#if $gameOver}
