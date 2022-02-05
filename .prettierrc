@@ -1,4 +1,5 @@
 {
   "semi": false,
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+  "useTabs": false
 }
