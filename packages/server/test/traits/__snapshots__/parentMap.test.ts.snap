@@ -32,13 +32,13 @@ Array [
 ]
 `;
 
-exports[`#moveChildTo filled handles too high 'to' number, treats as max value 1`] = `
+exports[`#moveChildTo filled throws on indexes out of boundaries 1`] = `
 Array [
   1,
   2,
-  5,
-  4,
   3,
+  4,
+  5,
 ]
 `;
 
@@ -92,13 +92,13 @@ Array [
 ]
 `;
 
-exports[`#moveChildTo with empty spaces handles too high 'to' number, treats as max value 1`] = `
+exports[`#moveChildTo with empty spaces throws on indexes out of boundaries 1`] = `
 Array [
   null,
   null,
-  null,
-  null,
   1,
+  null,
+  null,
 ]
 `;
 

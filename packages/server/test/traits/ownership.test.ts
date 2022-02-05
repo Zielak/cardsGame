@@ -1,7 +1,7 @@
 import { Player } from "../../src"
 import { State } from "../../src/state"
 import { hasOwnership } from "../../src/traits/ownership"
-import { DumbArrayParent, DumbEntity } from "../helpers/dumbEntities"
+import { DumbParent, DumbEntity } from "../helpers/dumbEntities"
 import { LabeledEntity, LabeledParent } from "../helpers/labeledEntities"
 import { OwnableEntity, OwnableParent } from "../helpers/ownableEntities"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
@@ -58,7 +58,7 @@ describe(`hasOwnership`, () => {
   })
 
   it(`returns false for entities without ownership trait`, () => {
-    const dumbParent = new DumbArrayParent(state)
+    const dumbParent = new DumbParent(state)
     const dumbEntity = new DumbEntity(state)
     const labeledEntity = new LabeledEntity(state)
     const labeledParent = new LabeledParent(state)

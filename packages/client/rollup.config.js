@@ -3,6 +3,8 @@ import nodeResolve from "@rollup/plugin-node-resolve"
 import typescript from "@rollup/plugin-typescript"
 import { terser } from "rollup-plugin-terser"
 
+const PRODUCTION = process.env.node.NODE_ENV === "production"
+
 /**
  * @type {import('rollup').RollupOptions}
  */
@@ -19,7 +21,7 @@ const config = {
       browser: true,
     }),
     commonjs(),
-    terser(),
+    PRODUCTION && terser(),
     typescript({
       sourceMap: true,
       inlineSources: false,

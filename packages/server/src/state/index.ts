@@ -7,10 +7,10 @@ import { PlayerViewPosition } from "../playerViewPosition"
 import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
-import { ParentArrayTrait } from "../traits/parentArray"
+import { ParentTrait } from "../traits/parent"
 
 @containsChildren()
-@applyTraitsMixins([IdentityTrait, LabelTrait, ParentArrayTrait])
+@applyTraitsMixins([IdentityTrait, LabelTrait, ParentTrait])
 export class State extends Entity<Record<string, unknown>> {
   type = "state"
 
@@ -113,6 +113,6 @@ export class State extends Entity<Record<string, unknown>> {
   }
 }
 
-interface Mixin extends IdentityTrait, LabelTrait, ParentArrayTrait {}
+interface Mixin extends IdentityTrait, LabelTrait, ParentTrait {}
 
 export interface State extends Mixin {}

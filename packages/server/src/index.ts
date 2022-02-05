@@ -40,8 +40,6 @@ export * from "./traits/label"
 export * from "./traits/location"
 export * from "./traits/ownership"
 export * from "./traits/parent"
-export * from "./traits/parentArray"
-export * from "./traits/parentMap"
 export * from "./traits/selectableChildren"
 export * from "./traits/twoSided"
 

@@ -59,6 +59,11 @@ interface IPlayerViewPosition {
   paddingY?: number
 }
 
+type IndexUpdate = {
+  from: number
+  to: number
+}
+
 // === Utility types ===
 
 interface AnyClass extends Function {

@@ -1,18 +1,18 @@
 import { ChangeIdx } from "../../src/commands/changeIdx"
 import { State } from "../../src/state"
-import { DumbArrayParent } from "../helpers/dumbEntities"
+import { DumbParent } from "../helpers/dumbEntities"
 import { LabeledEntity } from "../helpers/labeledEntities"
 
 let state: State
 let entities: LabeledEntity[]
-let parent: DumbArrayParent
+let parent: DumbParent
 let cmd: ChangeIdx
 
 const INITIAL = ["a", "b", "c", "d", "e"]
 
 beforeEach(() => {
   state = new State()
-  parent = new DumbArrayParent(state)
+  parent = new DumbParent(state)
   entities = [
     new LabeledEntity(state, { parent, name: "a" }),
     new LabeledEntity(state, { parent, name: "b" }),

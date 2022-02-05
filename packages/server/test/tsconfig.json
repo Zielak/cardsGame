@@ -1,10 +1,15 @@
 {
   "extends": "../../../tsconfig.test.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "lib": ["es6"],
     "target": "ES2019",
-    "types": ["@cardsgame/types", "jest", "node"]
+    "types": ["@cardsgame/types", "jest", "node"],
+    "paths": {
+      "src/*": ["../src/*"],
+      "helpers/*": ["./helpers/*"]
+    }
   }
 }

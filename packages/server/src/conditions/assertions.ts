@@ -3,7 +3,6 @@ import { QuerableProps, queryRunner } from "../queryRunner"
 import type { State } from "../state"
 import { isChild } from "../traits/child"
 import { isParent } from "../traits/parent"
-import { isParentMap } from "../traits/parentMap"
 import { hasSelectableChildren } from "../traits/selectableChildren"
 
 import { getFlag, postAssertion, ref, resetNegation } from "./utils"
@@ -106,7 +105,6 @@ class ConditionAssertions {
 
   /**
    * @asserts that subject can't hold any more new items.
-   * Only makes sense with entities with ParentMapTrait, for example `Grid`.
    * @example
    * // Check if grid has some space available
    * con.entity.is.not.full()
@@ -114,10 +112,8 @@ class ConditionAssertions {
   full(): this {
     const subject = getFlag(this, "subject")
 
-    if (!isParentMap(subject)) {
-      throw new Error(
-        `full | applies only on parent of "map" structure (ParentMapTrait)`
-      )
+    if (!isParent(subject)) {
+      throw new Error(`full | applies only to ParentTrait`)
     }
 
     assert.call(

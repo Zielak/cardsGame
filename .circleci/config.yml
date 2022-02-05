@@ -80,7 +80,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run: npm run build
+      - run: NODE_ENV=production npm run build
       - persist_to_workspace:
           root: ~/repo
           paths:

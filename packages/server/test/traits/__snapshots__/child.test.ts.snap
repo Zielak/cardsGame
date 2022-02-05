@@ -2,7 +2,6 @@
 
 exports[`addChild adds new child to parent with children 1`] = `
 Object {
-  "childrenDumbArrayParent": Array [],
   "childrenDumbEntity": Array [
     Object {
       "idx": 0,
@@ -17,7 +16,7 @@ Object {
       "idx": 3,
     },
   ],
-  "childrenDumbMapParent": Array [],
+  "childrenDumbParent": Array [],
   "idx": 0,
 }
 `;

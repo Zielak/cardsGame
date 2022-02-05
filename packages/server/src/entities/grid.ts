@@ -10,7 +10,7 @@ import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
 import { OwnershipTrait } from "../traits/ownership"
-import { ParentMapTrait } from "../traits/parentMap"
+import { ParentTrait } from "../traits/parent"
 import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
 export function isGrid(entity: unknown): entity is Grid {
@@ -27,7 +27,7 @@ export function isGrid(entity: unknown): entity is Grid {
   IdentityTrait,
   LocationTrait,
   ChildTrait,
-  ParentMapTrait,
+  ParentTrait,
   LabelTrait,
   OwnershipTrait,
   SelectableChildrenTrait,
@@ -107,7 +107,7 @@ interface Mixin
   extends IdentityTrait,
     LocationTrait,
     ChildTrait,
-    ParentMapTrait,
+    ParentTrait,
     LabelTrait,
     OwnershipTrait,
     SelectableChildrenTrait {}

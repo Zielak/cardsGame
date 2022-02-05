@@ -1,11 +1,8 @@
-import { State } from "../../src/state"
-import type { ChildTrait } from "../../src/traits/child"
-import type { IdentityTrait } from "../../src/traits/identity"
-import {
-  DumbArrayParent,
-  DumbEntity,
-  DumbMapParent,
-} from "../helpers/dumbEntities"
+import { State } from "src/state"
+import type { ChildTrait } from "src/traits/child"
+import type { IdentityTrait } from "src/traits/identity"
+
+import { DumbEntity, DumbParent } from "../helpers/dumbEntities"
 
 let state: State
 
@@ -15,7 +12,7 @@ beforeEach(() => {
 
 describe("ParentConstructor", () => {
   test("sets default properties", () => {
-    const parent = new DumbArrayParent(state)
+    const parent = new DumbParent(state)
 
     expect(parent.countChildren()).toBe(0)
 
@@ -25,9 +22,9 @@ describe("ParentConstructor", () => {
 })
 
 describe("#removeChildAt", () => {
-  let parent: DumbArrayParent
+  let parent: DumbParent
   beforeEach(() => {
-    parent = new DumbArrayParent(state)
+    parent = new DumbParent(state)
   })
   it(`throws on invalid "idx"`, () => {
     expect(parent.removeChildAt(-2)).toBe(false)
@@ -59,9 +56,9 @@ describe("#removeChildAt", () => {
 })
 
 describe("#removeChild", () => {
-  let parent: DumbArrayParent
+  let parent: DumbParent
   it("calls removeChildAt", () => {
-    parent = new DumbArrayParent(state)
+    parent = new DumbParent(state)
     const entity = new DumbEntity(state, { parent })
 
     expect(parent.countChildren()).toBe(1)
@@ -70,7 +67,7 @@ describe("#removeChild", () => {
   })
 
   it("finds proper child", () => {
-    parent = new DumbArrayParent(state)
+    parent = new DumbParent(state)
     new DumbEntity(state, { parent })
     const entity = new DumbEntity(state, { parent })
     new DumbEntity(state, { parent })
@@ -83,10 +80,10 @@ describe("#removeChild", () => {
 })
 
 describe("#addChild", () => {
-  let parent: DumbArrayParent
+  let parent: DumbParent
   let entity: DumbEntity
   beforeEach(() => {
-    parent = new DumbArrayParent(state)
+    parent = new DumbParent(state)
     new DumbEntity(state, { parent })
   })
   it("adds new item", () => {
@@ -138,9 +135,9 @@ describe("#moveChildTo", () => {
   const mapArrayChildren = (p): any =>
     p.getChildren().map((e) => (e ? e.id : null))
 
-  let parent: DumbArrayParent
+  let parent: DumbParent
   beforeEach(() => {
-    parent = new DumbArrayParent(state)
+    parent = new DumbParent(state)
     new DumbEntity(state, { parent })
     new DumbEntity(state, { parent })
     new DumbEntity(state, { parent })
@@ -179,9 +176,9 @@ describe("#moveChildTo", () => {
 
 test.todo("#countChildren")
 describe("#getChildren", () => {
-  let parent: DumbArrayParent
+  let parent: DumbParent
   beforeEach(() => {
-    parent = new DumbArrayParent(state)
+    parent = new DumbParent(state)
   })
   test("empty parent", () => {
     expect(parent.getChildren()).toMatchSnapshot()
@@ -209,7 +206,7 @@ describe("#getChild", () => {
     let entity
 
     beforeEach(() => {
-      parent = new DumbMapParent(state)
+      parent = new DumbParent(state)
     })
     it("gets child", () => {
       new DumbEntity(state, { parent })
@@ -224,7 +221,7 @@ describe("#getChild", () => {
 
 describe("#getTop", () => {
   test("ArrayParent", () => {
-    const parent = new DumbArrayParent(state)
+    const parent = new DumbParent(state)
     new DumbEntity(state, { parent })
     new DumbEntity(state, { parent })
     const entity = new DumbEntity(state, { parent })
@@ -234,10 +231,59 @@ describe("#getTop", () => {
 })
 
 test("#getBottom", () => {
-  const parent = new DumbArrayParent(state)
+  const parent = new DumbParent(state)
   const entity = new DumbEntity(state, { parent })
   new DumbEntity(state, { parent })
   new DumbEntity(state, { parent })
 
   expect(parent.getBottom()).toBe(entity)
+})
+
+describe("#indexFits", () => {
+  let parent: DumbParent
+  describe("limitless", () => {
+    beforeEach(() => {
+      parent = new DumbParent(state)
+    })
+    test("empty container", () => {
+      expect(parent.indexFits(0)).toBe(true)
+      expect(parent.indexFits(1)).toBe(true)
+      expect(parent.indexFits(100)).toBe(true)
+
+      expect(parent.indexFits(-1)).toBe(false)
+    })
+    test("containing some children", () => {
+      new DumbEntity(state, { parent })
+      new DumbEntity(state, { parent })
+
+      expect(parent.indexFits(0)).toBe(true)
+      expect(parent.indexFits(1)).toBe(true)
+      expect(parent.indexFits(100)).toBe(true)
+
+      expect(parent.indexFits(-1)).toBe(false)
+    })
+  })
+
+  describe("maxChildren", () => {
+    beforeEach(() => {
+      parent = new DumbParent(state, { maxChildren: 2 })
+    })
+    test("empty container", () => {
+      expect(parent.indexFits(0)).toBe(true)
+      expect(parent.indexFits(1)).toBe(true)
+
+      expect(parent.indexFits(100)).toBe(false)
+      expect(parent.indexFits(-1)).toBe(false)
+    })
+    it("shouldn't be checking if spots are occupied", () => {
+      new DumbEntity(state, { parent })
+      new DumbEntity(state, { parent })
+
+      expect(parent.indexFits(0)).toBe(true)
+      expect(parent.indexFits(1)).toBe(true)
+
+      expect(parent.indexFits(100)).toBe(false)
+      expect(parent.indexFits(-1)).toBe(false)
+    })
+  })
 })
