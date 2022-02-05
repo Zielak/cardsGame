@@ -15,7 +15,7 @@
     "bootstrap": "lerna bootstrap && lerna exec --concurrency 1 npm install",
     "linkup": "scripts/linkup.sh",
     "linkup:colyseus": "scripts/linkupColyseus.sh",
-    "test": "jest --config config/jest.config.js --silent --maxWorkers=50%",
+    "test": "jest --config config/jest.config.js --silent --maxWorkers=75%",
     "test:ci": "jest --config config/jest.config.js --silent --ci --maxWorkers=1",
     "test:coveralls": "jest --config config/jest.config.js  --silent --ci --maxWorkers=1 --coverage --coverageReporters=lcovonly && coveralls < coverage/lcov.info",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
