@@ -34,8 +34,7 @@ describe("execute", () => {
 
     new Broadcast(messageType, message).execute(state, room)
 
-    expect(room.broadcast.mock.calls[0][0]).toBe(messageType)
-    expect(room.broadcast.mock.calls[0][1]).toMatchObject({ data: message })
+    expect(room.broadcast).toHaveBeenCalledWith(messageType, message)
   })
 
   it("calls room.broadcast with just messageType", () => {
@@ -43,8 +42,7 @@ describe("execute", () => {
 
     new Broadcast(messageType).execute(state, room)
 
-    expect(room.broadcast.mock.calls[0][0]).toBe(messageType)
-    expect(room.broadcast.mock.calls[0][1]).toBeUndefined()
+    expect(room.broadcast).toHaveBeenCalledWith(messageType, undefined)
   })
 })
 
@@ -54,10 +52,7 @@ describe("undo", () => {
 
     new Broadcast(messageType, message).undo(state, room)
 
-    expect(room.broadcast).toHaveBeenCalled()
-    expect(room.broadcast.mock.calls[0][0]).toBe(messageType)
-    expect(room.broadcast.mock.calls[0][1]).toMatchObject({
-      data: message,
+    expect(room.broadcast).toHaveBeenCalledWith(messageType, message, {
       undo: true,
     })
   })
@@ -66,9 +61,7 @@ describe("undo", () => {
 
     new Broadcast(messageType).undo(state, room)
 
-    expect(room.broadcast).toHaveBeenCalled()
-    expect(room.broadcast.mock.calls[0][0]).toBe(messageType)
-    expect(room.broadcast.mock.calls[0][1]).toMatchObject({
+    expect(room.broadcast).toHaveBeenCalledWith(messageType, undefined, {
       undo: true,
     })
   })
