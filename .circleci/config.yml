@@ -9,59 +9,45 @@ executors:
       - image: cimg/node:16.4.0
     working_directory: ~/repo
 
+commands:
+  create_concatenated_package_lock:
+    description: "Concatenate all package-lock.json files recognized by lerna.js into single file. File is used as checksum source for part of caching key."
+    parameters:
+      filename:
+        type: string
+    steps:
+      - run:
+          name: Combine package-lock.json files to single file
+          command: npx lerna ls --parseable --loglevel silent | awk -F cardsGame '{printf "\"%s/package-lock.json\" ", $0}' | xargs cat > << parameters.filename >>
+
 jobs:
   install:
     executor: my-executor
     steps:
       - checkout
 
+      - run: npm i lerna
+
+      - create_concatenated_package_lock:
+          filename: combined-package-lock.txt
+
       # Download and cache dependencies
       - restore_cache:
-          name: Restore cache for root dependencies
+          name: Restore cache for all dependencies
           keys:
-            - v3-dependencies-{{ checksum "package-lock.json" }}
+            - v4-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "combined-package-lock.txt" }}
             # fallback to using the latest cache if no exact match is found
-            - v3-dependencies-
-      - restore_cache:
-          name: Restore cache for server dependencies
-          keys:
-            - v1-serverDeps-{{ checksum "packages/server/package-lock.json" }}
-            - v1-serverDeps-
-      - restore_cache:
-          name: Restore cache for client dependencies
-          keys:
-            - v1-clientDeps-{{ checksum "packages/client/package-lock.json" }}
-            - v1-clientDeps-
-      - restore_cache:
-          name: Restore cache for utils dependencies
-          keys:
-            - v1-utilsDeps-{{ checksum "packages/utils/package-lock.json" }}
-            - v1-utilsDeps-
+            - v4-dependencies-
 
       - run: npm ci
       - run: npx lerna bootstrap
       - run: npx lerna exec npm ci --concurrency 1
 
       - save_cache:
-          name: Save cache for root dependencies
-          key: v3-dependencies-{{ checksum "package-lock.json" }}
+          name: Save cache for all dependencies
+          key: v4-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "combined-package-lock.txt" }}
           paths:
-            - node_modules
-      - save_cache:
-          name: Cache server dependencies
-          key: v1-serverDeps-{{ checksum "packages/server/package-lock.json" }}
-          paths:
-            - packages/server/node_modules
-      - save_cache:
-          name: Cache client dependencies
-          key: v1-clientDeps-{{ checksum "packages/client/package-lock.json" }}
-          paths:
-            - packages/client/node_modules
-      - save_cache:
-          name: Cache utils dependencies
-          key: v1-utilsDeps-{{ checksum "packages/utils/package-lock.json" }}
-          paths:
-            - packages/utils/node_modules
+            - ~/.npm
 
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory.
@@ -71,8 +57,8 @@ jobs:
           # Must be relative path from root
           paths:
             - node_modules
-            - packages/*/lib
             - packages/*/node_modules
+            - examples/*/node_modules
 
   build:
     executor: my-executor
@@ -121,6 +107,29 @@ jobs:
       - run:
           name: Linting
           command: npm run lint
+
+  release-and-publish:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Bump version
+          command: |
+            git config --global user.email 'builder@darekgreenly.com'
+            git config --global user.name 'Greenly Builder'
+            npx lerna version
+      - run:
+          name: Publish
+          command: |
+            npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+            lerna publish from-git --yes
+      - run:
+          name: Align development branch with main
+          command: |
+            git rebase main development
+            git push origin development --no-verify
 
 orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.1
@@ -193,26 +202,46 @@ workflows:
             - build
             - linting
 
-  # Version made locally
+  # Main -> automatic release
+  main-branch:
+    jobs:
+      - install:
+          <<: *filters-only-main
+      - build:
+          <<: *filters-only-main
+          requires:
+            - install
+      - linting:
+          <<: *filters-only-main
+          requires:
+            - install
+      - test-coveralls:
+          <<: *filters-only-main
+          requires:
+            - build
+      - sonarcloud:
+          <<: *filters-only-main
+          context: SonarCloud
+          requires:
+            - build
+
+      - release-and-publish:
+          <<: *filters-only-main
+          requires:
+            - test-coveralls
+
+  # After release and publish, push coverage and code analysis for tag
   post-release:
     jobs:
       - install:
           <<: *filters-only-version-tag
-      - build:
-          <<: *filters-only-version-tag
-          requires:
-            - install
-      - linting:
-          <<: *filters-only-version-tag
-          requires:
-            - install
 
       - test-coveralls:
           <<: *filters-only-version-tag
           requires:
-            - build
+            - install
       - sonarcloud:
           <<: *filters-only-version-tag
           context: SonarCloud
           requires:
-            - build
+            - install
