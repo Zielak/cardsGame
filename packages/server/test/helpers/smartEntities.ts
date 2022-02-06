@@ -8,13 +8,13 @@ import { applyTraitsMixins, Entity } from "../../src/traits/entity"
 import { IdentityTrait } from "../../src/traits/identity"
 import { LabelTrait } from "../../src/traits/label"
 import { OwnershipTrait } from "../../src/traits/ownership"
-import { ParentArrayTrait } from "../../src/traits/parentArray"
+import { ParentTrait } from "../../src/traits/parent"
 
 @canBeChild
 @containsChildren()
 @applyTraitsMixins([
   IdentityTrait,
-  ParentArrayTrait,
+  ParentTrait,
   ChildTrait,
   LabelTrait,
   OwnershipTrait,
@@ -31,7 +31,7 @@ export class SmartParent extends Entity<SmartParentOptions> {
 
 interface ParentMixin
   extends IdentityTrait,
-    ParentArrayTrait,
+    ParentTrait,
     ChildTrait,
     LabelTrait,
     OwnershipTrait {}

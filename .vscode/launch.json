@@ -7,14 +7,14 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Example - simplest form",
+      "name": "Example - server-js",
       "env": {
         "NODE_ENV": "development",
         "LOGS": "verbose"
       },
       "runtimeExecutable": "node",
       "sourceMaps": false,
-      "program": "${workspaceFolder}/example/app.js",
+      "program": "${workspaceFolder}/examples/server-js/app.js",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     }

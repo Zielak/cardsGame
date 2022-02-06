@@ -9,7 +9,7 @@ import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
 import { OwnershipTrait } from "../traits/ownership"
-import { ParentArrayTrait } from "../traits/parentArray"
+import { ParentTrait } from "../traits/parent"
 import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
 import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
@@ -20,7 +20,7 @@ import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
   IdentityTrait,
   LocationTrait,
   ChildTrait,
-  ParentArrayTrait,
+  ParentTrait,
   LabelTrait,
   OwnershipTrait,
   SelectableChildrenTrait,
@@ -44,7 +44,7 @@ interface Mixin
   extends IdentityTrait,
     LocationTrait,
     ChildTrait,
-    ParentArrayTrait,
+    ParentTrait,
     LabelTrait,
     OwnershipTrait,
     SelectableChildrenTrait {}

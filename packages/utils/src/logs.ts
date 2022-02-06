@@ -156,7 +156,7 @@ if (isBrowser) {
     },
     error: function (first, ...args: any[]): void {
       console.error.apply(console, [
-        _getIndent() + chalk.bgRed(` ${first} `),
+        _getIndent() + chalk.bgRed.white(` ${first} `),
         ...args.map(syntaxHighlight),
       ])
     },
@@ -254,7 +254,7 @@ export class Logs {
       this.enabled && logLevel >= LogLevels.error
         ? function (first, ...args: any[]): void {
             console.error.apply(console, [
-              style(getIndent() + chalk.bgRed(` ${first} `)),
+              style(getIndent() + chalk.bgRed.white(` ${first} `)),
               ...args.map(syntaxHighlight),
             ])
           }

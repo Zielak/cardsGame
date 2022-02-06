@@ -1,0 +1,12 @@
+{
+  "name": "@cardsgame/example-certs",
+  "version": "0.12.8",
+  "description": "Self-signed certificate generation",
+  "author": "Darek Greenly (https://darekgreenly.com)",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node postInstall",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

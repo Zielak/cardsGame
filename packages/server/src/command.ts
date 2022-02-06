@@ -3,13 +3,13 @@ import { logs } from "@cardsgame/utils"
 import type { Room } from "./room"
 import type { State } from "./state"
 
-export interface Command {
-  execute(state: State, room: Room<any>): Promise<void>
-  undo(state: State, room: Room<any>): Promise<void>
+export interface Command<S extends State = State> {
+  execute(state: S, room: Room<S>): Promise<void>
+  undo(state: S, room: Room<S>): Promise<void>
 }
 
-export class Command {
-  protected _subCommands: Command[] = []
+export class Command<S extends State> {
+  protected _subCommands: Command<S>[] = []
   private readonly _name: string
   get name(): string {
     return this._name
@@ -29,9 +29,9 @@ export class Command {
    * `Command` may gather new sub commands only while executing.
    * `Sequence` will only gather sub commands upon construction.
    */
-  async undo(state: State, room: Room<any>): Promise<void> {
+  async undo(state: S, room: Room<any>): Promise<void> {
     if (this._subCommands.length === 0) {
-      logs.verbose(`${this.name}, nothing else to undo.`)
+      logs.debug(`${this.name}, nothing else to undo.`)
       return
     }
 
@@ -39,7 +39,7 @@ export class Command {
     for (let i = this._subCommands.length - 1; i >= 0; i--) {
       const command = this._subCommands[i]
       if (command.undo) {
-        logs.notice(`- ${command.name}: undoing`)
+        logs.log(`- ${command.name}: undoing`)
         await command.undo(state, room)
       } else {
         logs.warn(`- ${command.name} doesn't have undo()!`)
@@ -54,7 +54,7 @@ export class Command {
    * Will also remember it internally for undoing.
    */
   protected async subExecute(
-    state: State,
+    state: S,
     room: Room<any>,
     command: Command
   ): Promise<void> {

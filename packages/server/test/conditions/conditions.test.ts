@@ -74,14 +74,19 @@ describe("subject changing", () => {
 
   describe("checking multiple props", () => {
     it("passes", () => {
+      // TODO: move this test to grouping tests
+      const cards = [
+        { rank: "K", suit: "H" },
+        { rank: "K", suit: "S" },
+      ]
       expect(() => {
         con()
-          .set([
-            { rank: "K", suit: "H" },
-            { rank: "K", suit: "S" },
-          ])
-          .every((con) => {
-            con().its("rank").equals("K").its("suit").oneOf(["S", "H"])
+          .set(cards)
+          .every((con, item, index: number, collection) => {
+            expect(con().grab()).toBe(cards[index])
+            expect(item).toBe(cards[index])
+
+            con().its("rank").equals("K").and.its("suit").oneOf(["S", "H"])
           })
       }).not.toThrow()
     })
@@ -94,7 +99,7 @@ describe("subject changing", () => {
             { rank: "K", suit: "S" },
           ])
           .every((con) => {
-            con().its("rank").equals("K").its("suit").oneOf(["S", "H"])
+            con().its("rank").equals("K").and.its("suit").oneOf(["S", "H"])
           })
       }).toThrow()
 
@@ -140,7 +145,7 @@ describe("nthChild", () => {
 
   test("invalid cases", () => {
     // Error
-    expect(() => con().set("string").nthChild(1)).toThrow()
+    expect(() => con().set(1234).nthChild(1)).toThrow()
   })
 })
 

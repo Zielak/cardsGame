@@ -8,18 +8,10 @@ export class Broadcast extends Command {
   }
 
   async execute(state: State, room: Room<any>): Promise<void> {
-    room.broadcast(this.type, this.message ? { data: this.message } : undefined)
+    room.broadcast(this.type, this.message)
   }
 
   async undo(state: State, room: Room<any>): Promise<void> {
-    room.broadcast(
-      this.type,
-      this.message
-        ? {
-            data: this.message,
-            undo: true,
-          }
-        : { undo: true }
-    )
+    room.broadcast(this.type, this.message, { undo: true })
   }
 }

@@ -1,5 +1,6 @@
 import { logs } from "@cardsgame/utils"
 import { Client, Room as colRoom } from "@colyseus/core"
+import type { IBroadcastOptions } from "@colyseus/core/build/Room"
 
 import type { ActionsSet } from "./actionTemplate"
 import type { BotNeuron } from "./bots/botNeuron"
@@ -22,6 +23,10 @@ export interface IRoom<S extends State> {
   onPlayerTurnEnded(player: Player): void | Command[]
   onRoundStart(): void | Command[]
   onRoundEnd(): void | Command[]
+}
+
+type BroadcastOptions = IBroadcastOptions & {
+  undo: boolean
 }
 
 export class Room<S extends State> extends colRoom<S> {
@@ -112,6 +117,29 @@ export class Room<S extends State> extends colRoom<S> {
         "onLeave",
         `client "${client.sessionId}" disconnected, might be back`
       )
+    }
+  }
+
+  broadcast(
+    type: string | number,
+    message?: any,
+    options?: BroadcastOptions
+  ): void {
+    const wrappedMessage: ServerMessage = {
+      data: message,
+    }
+    const cleanOptions: BroadcastOptions = {
+      ...options,
+    }
+    if (options?.undo) {
+      wrappedMessage.undo = true
+      delete cleanOptions.undo
+    }
+
+    if (Object.keys(cleanOptions).length > 0) {
+      super.broadcast(type, wrappedMessage, cleanOptions)
+    } else {
+      super.broadcast(type, wrappedMessage)
     }
   }
 

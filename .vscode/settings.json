@@ -4,9 +4,9 @@
     "**/lib": true
   },
   "files.exclude": {
-    "**/dist": false,
-    "**/lib": false,
-    "**/node_modules": true
+    // "**/dist": true
+    // "**/lib": true
+    // "**/node_modules": true
   },
   "cSpell.words": ["cardsgame", "colyseus"]
 }

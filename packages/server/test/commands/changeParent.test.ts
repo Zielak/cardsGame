@@ -1,6 +1,6 @@
 import { ChangeParent } from "../../src/commands/changeParent"
 import { State } from "../../src/state"
-import { DumbArrayParent, DumbEntity } from "../helpers/dumbEntities"
+import { DumbParent, DumbEntity } from "../helpers/dumbEntities"
 
 let state: State
 let entity1: DumbEntity
@@ -8,7 +8,7 @@ let entity2: DumbEntity
 let entity3: DumbEntity
 let entity4: DumbEntity
 let entity5: DumbEntity
-let parent: DumbArrayParent
+let parent: DumbParent
 
 beforeEach(() => {
   state = new State()
@@ -17,7 +17,7 @@ beforeEach(() => {
   entity3 = new DumbEntity(state)
   entity4 = new DumbEntity(state)
   entity5 = new DumbEntity(state)
-  parent = new DumbArrayParent(state)
+  parent = new DumbParent(state)
 })
 
 it("moves one entity", () => {

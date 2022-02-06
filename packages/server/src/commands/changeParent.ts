@@ -49,10 +49,10 @@ export class ChangeParent extends Command {
       logs.error("ChangeParent", `I don't have an entity to move!`)
       return
     }
-    logs.notice(
+    logs.log(
       _,
       "moving",
-      this.entities.get().map((e) => (hasLabel(e) ? e.name : "")),
+      this.entities.get().map((e) => `${e.idx}:${hasLabel(e) ? e.name : ""}`),
       "entities to",
       chalk.yellow(this.target.get()["name"] || "ROOT")
     )

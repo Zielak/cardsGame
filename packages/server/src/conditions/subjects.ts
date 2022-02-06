@@ -1,3 +1,5 @@
+import { isMapLike } from "@cardsgame/utils"
+
 import type { QuerableProps } from "../queryRunner"
 import { isParent } from "../traits/parent"
 import { hasSelectableChildren } from "../traits/selectableChildren"
@@ -88,16 +90,19 @@ class ConditionSubjects {
    * con.entity
    *   .its('propA').equals('foo')
    *   .and.its('propB').above(5)
+   * @example
+   * con().its('customMap').its('propA').equals(true)
    */
   its(propName: string): this {
-    const propParent = getFlag(this, "propParent")
+    setFlag(this, "propName", propName)
+    setFlag(this, "currentParent", getFlag(this, "subject"))
 
-    if (propParent) {
-      setFlag(this, "subject", propParent[propName])
+    const currentParent = getFlag(this, "currentParent")
+
+    if (isMapLike(currentParent)) {
+      setFlag(this, "subject", currentParent.get(propName))
     } else {
-      setFlag(this, "propParent", getFlag(this, "subject"))
-      setFlag(this, "propName", propName)
-      setFlag(this, "subject", getFlag(this, "propParent")[propName])
+      setFlag(this, "subject", currentParent[propName])
     }
 
     return this
@@ -165,7 +170,7 @@ class ConditionSubjects {
       }
 
       setFlag(this, "subject", subject.getChild(index))
-    } else if (Array.isArray(subject)) {
+    } else if (Array.isArray(subject) || typeof subject.length === "number") {
       if (index > subject.length || index < 0) {
         throw new Error(`nthChild | Out of bounds`)
       }

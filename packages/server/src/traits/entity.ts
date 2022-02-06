@@ -4,6 +4,7 @@ import { Schema } from "@colyseus/schema"
 import { type } from "../annotations/type"
 import type { State } from "../state"
 
+// TODO: add generics, so we get types for hook names...
 export function executeHook(hookName: string, ...args: any[]): void {
   const proto = Object.getPrototypeOf(this)
   const { hooks } = proto

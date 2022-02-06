@@ -3,7 +3,7 @@ import type { Room as colyseusRoom } from "colyseus.js/lib/Room"
 
 import type { ClientGameState } from "./schema"
 
-export class Room {
+export class Room<MoreProps = Record<string, any>> {
   constructor(public room: colyseusRoom) {
     room.onMessage<ServerMessage>("game.info", (message) => {
       logs.info("Server:", message)
@@ -16,19 +16,19 @@ export class Room {
     })
 
     room.onMessage<ServerMessage>("*", (message) => {
-      logs.verbose("? Server:", message)
+      logs.debug("? Server:", message)
     })
 
     room.onStateChange.once((state) => {
-      logs.notice("ROOM, state initiated:", state)
+      logs.log("ROOM, state initiated:", state)
       this.onFirstStateChange(state)
     })
     room.onStateChange((state) => {
-      logs.notice("ROOM, state updated:", state)
+      logs.log("ROOM, state updated:", state)
       this.onStateChange(state)
     })
     room.onLeave((code) => {
-      logs.notice("client left the room", code)
+      logs.log("client left the room", code)
       this.onLeave(code)
     })
     room.onError((code, message) => {
@@ -36,7 +36,7 @@ export class Room {
       this.onError(code, message)
     })
 
-    logs.notice("client joined successfully")
+    logs.log("client joined successfully")
   }
 
   /**
@@ -45,19 +45,19 @@ export class Room {
    */
   onMessage<T = ServerMessage>(
     type: string,
-    callback: (message: T) => void
+    callback: (message: { data: T }) => void
   ): () => void {
-    return this.room.onMessage<T>(type, callback)
+    return this.room.onMessage<{ data: T }>(type, callback)
   }
 
   /**
    * @override
    */
-  onStateChange(state: ClientGameState): void {}
+  onStateChange(state: ClientGameState<MoreProps>): void {}
   /**
    * @override
    */
-  onFirstStateChange(state: ClientGameState): void {}
+  onFirstStateChange(state: ClientGameState<MoreProps>): void {}
   /**
    * @override
    * @param {number} code webSocket shutdown code
@@ -73,7 +73,7 @@ export class Room {
    * @param {ClientPlayerMessage} message
    */
   send(type: string, message = undefined): void {
-    logs.verbose("Sending:", type, JSON.stringify(message))
+    logs.debug("Sending:", type, JSON.stringify(message))
     this.room.send(type, message)
   }
 
@@ -88,7 +88,7 @@ export class Room {
     entityIdxPath: number[],
     data = undefined
   ): void {
-    logs.verbose(
+    logs.debug(
       "Sending Interaction:",
       event.type,
       "entityIdxPath:",
@@ -113,7 +113,7 @@ export class Room {
     this.room.leave()
   }
 
-  get state(): ClientGameState {
+  get state(): ClientGameState<MoreProps> {
     return this.room ? this.room.state : undefined
   }
 

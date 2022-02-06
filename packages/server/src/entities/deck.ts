@@ -12,7 +12,7 @@ import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
 import { OwnershipTrait } from "../traits/ownership"
-import { ParentArrayTrait } from "../traits/parentArray"
+import { ParentTrait } from "../traits/parent"
 
 class TopDeckElement extends Schema {}
 
@@ -32,7 +32,7 @@ interface TopDeckElement {
   IdentityTrait,
   LocationTrait,
   ChildTrait,
-  ParentArrayTrait,
+  ParentTrait,
   LabelTrait,
   OwnershipTrait,
 ])
@@ -82,7 +82,7 @@ interface Mixin
   extends IdentityTrait,
     LocationTrait,
     ChildTrait,
-    ParentArrayTrait,
+    ParentTrait,
     LabelTrait,
     OwnershipTrait {}
 

@@ -8,7 +8,7 @@ import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
-import { ParentArrayTrait } from "../traits/parentArray"
+import { ParentTrait } from "../traits/parent"
 
 @canBeChild
 @containsChildren()
@@ -16,7 +16,7 @@ import { ParentArrayTrait } from "../traits/parentArray"
   IdentityTrait,
   LocationTrait,
   ChildTrait,
-  ParentArrayTrait,
+  ParentTrait,
   LabelTrait,
 ])
 export class Pile extends Entity<PileOptions> {
@@ -30,7 +30,7 @@ interface Mixin
   extends IdentityTrait,
     LocationTrait,
     ChildTrait,
-    ParentArrayTrait,
+    ParentTrait,
     LabelTrait {}
 
 type PileOptions = Partial<NonFunctionProperties<Mixin>>

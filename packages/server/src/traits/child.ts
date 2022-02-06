@@ -80,9 +80,5 @@ ChildTrait["hooks"] = {
     } else {
       targetParent.addChild(this)
     }
-
-    if (typeof options.idx === "number") {
-      this.parent.moveChildTo(this.idx, options.idx)
-    }
   },
 }

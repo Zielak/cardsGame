@@ -6,7 +6,7 @@ import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
 import { OwnershipTrait } from "../traits/ownership"
-import { ParentArrayTrait } from "../traits/parentArray"
+import { ParentTrait } from "../traits/parent"
 
 @canBeChild
 @containsChildren()
@@ -14,7 +14,7 @@ import { ParentArrayTrait } from "../traits/parentArray"
   IdentityTrait,
   LabelTrait,
   ChildTrait,
-  ParentArrayTrait,
+  ParentTrait,
   LocationTrait,
   OwnershipTrait,
 ])
@@ -29,7 +29,7 @@ interface Mixin
   extends IdentityTrait,
     LabelTrait,
     ChildTrait,
-    ParentArrayTrait,
+    ParentTrait,
     LocationTrait,
     OwnershipTrait {}
 

@@ -15,7 +15,7 @@
     "bootstrap": "lerna bootstrap && lerna exec --concurrency 1 npm install",
     "linkup": "scripts/linkup.sh",
     "linkup:colyseus": "scripts/linkupColyseus.sh",
-    "test": "jest --config config/jest.config.js --silent --maxWorkers=50%",
+    "test": "jest --config config/jest.config.js --silent --maxWorkers=75%",
     "test:ci": "jest --config config/jest.config.js --silent --ci --maxWorkers=1",
     "test:coveralls": "jest --config config/jest.config.js  --silent --ci --maxWorkers=1 --coverage --coverageReporters=lcovonly && coveralls < coverage/lcov.info",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
@@ -27,11 +27,7 @@
     "build:utils": "lerna run --stream --concurrency 1 --scope '*/utils' build",
     "build:utils-w": "lerna run --stream --concurrency 1 --scope '*/utils' build:watch",
     "build:entityTraits": "lerna run --stream --concurrency 1 --scope '*/entity-traits' build",
-    "prerelease": "npm run lint && npm run test",
-    "release": "env-cmd lerna version",
-    "postrelease": "git rebase main development && git push origin development --no-verify && git checkout -",
-    "prepare": "husky install",
-    "postversion": "lerna publish from-git --yes"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.0",
