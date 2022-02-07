@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.9](https://github.com/zielak/cardsGame/compare/v0.12.7...v0.12.9) (2022-02-07)
+
+
+### Bug Fixes
+
+* **server:** had some issue with importing populatePlayerEvent for some reason ([ef124a7](https://github.com/zielak/cardsGame/commit/ef124a748e5c93729681e12ed6c601a7e6b6a20e))
+
+
+
+
+
 ## [0.12.8](https://github.com/zielak/cardsGame/compare/v0.12.7...v0.12.8) (2022-01-30)
 
 ### Bug Fixes

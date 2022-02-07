@@ -1,10 +1,16 @@
 {
-  "version": "0.12.8",
-  "packages": ["packages/*", "examples/*"],
+  "version": "0.12.9",
+  "packages": [
+    "packages/*",
+    "examples/*"
+  ],
   "command": {
     "publish": {
       "conventionalCommits": true,
-      "ignoreChanges": ["*.md", "test/**"],
+      "ignoreChanges": [
+        "*.md",
+        "test/**"
+      ],
       "message": "chore(release): publish %s"
     },
     "version": {
