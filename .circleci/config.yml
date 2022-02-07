@@ -160,7 +160,10 @@ jobs:
           at: ~/repo
       - run:
           name: Bump version
-          command: npx lerna version --yes
+          command: |
+            git config --global user.email ${GIT_AUTHOR_EMAIL}
+            git config --global user.name ${GIT_AUTHOR_NAME}
+            npx lerna version --yes
       - run:
           name: Publish
           command: |
