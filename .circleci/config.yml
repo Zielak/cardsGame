@@ -35,7 +35,7 @@ anchors:
     run:
       name: Check if we should run the rest
       command: |
-        if [[ `(git show -s --format=%s)` == *"ci(test)"* ]]; then
+        if [[ `(git show -s --format=%s)` == *"chore(release)"* ]]; then
           echo "cancelling job"
           circleci-agent step halt
         fi
