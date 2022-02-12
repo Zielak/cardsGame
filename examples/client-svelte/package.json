@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/example-client-svelte",
-  "version": "0.12.14",
+  "version": "0.12.15",
   "description": "Svelte client-side implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
