@@ -78,7 +78,7 @@ jobs:
           name: Test with coverage (leave cover results for later)
           command: npm run test:ci
 
-        # Persist only on main, for release or send-externals
+        # Persist only on main, for release
       - when:
           condition:
             equal: ["main", << pipeline.git.branch >>]
@@ -102,6 +102,7 @@ jobs:
     executor: my-executor
     steps:
       - checkout
+      - *cancel-post-release-non-main
 
       - attach_workspace:
           at: ~/project
@@ -114,18 +115,25 @@ jobs:
             npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
             npm run release:ci -- --yes
 
-  send-externals:
+  coverage:
     executor: my-executor
     steps:
       - checkout
       - *cancel-post-release-non-main
-
       - attach_workspace:
           at: ~/project
 
       - run:
           name: Send coverage report to Coveralls
           command: npm run coveralls
+
+  sonarcloud:
+    executor: my-executor
+    steps:
+      - checkout
+      - *cancel-post-release-non-main
+      - attach_workspace:
+          at: ~/project
 
       - sonarcloud/scan
 
@@ -149,12 +157,6 @@ anchors-filters:
         only: main
       tags:
         ignore: /.*/
-  - &filters-only-version-tag
-    filters:
-      tags:
-        only: /^v.*/
-      branches:
-        ignore: /.*/
 
 workflows:
   version: 2
@@ -165,7 +167,7 @@ workflows:
       - prepare:
           <<: *filters-feature-branches
 
-  # CI for development, more reports and stuff
+  # CI for development
   development-branch:
     jobs:
       - prepare:
@@ -180,14 +182,12 @@ workflows:
           <<: *filters-only-main
           requires:
             - prepare
-
-  # After release and publish, push coverage and code analysis for tag
-  post-release:
-    jobs:
-      - prepare:
-          <<: *filters-only-version-tag
-      - send-externals:
-          <<: *filters-only-version-tag
+      - sonarcloud:
+          <<: *filters-only-main
           context: SonarCloud
+          requires:
+            - prepare
+      - coverage:
+          <<: *filters-only-main
           requires:
             - prepare

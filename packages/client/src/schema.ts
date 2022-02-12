@@ -83,7 +83,6 @@ export type Schema =
  */
 export type ClientGameStateProps = {
   clients: string[]
-
   currentPlayerIdx?: number
   isGameStarted: boolean
   isGameOver: boolean

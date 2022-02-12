@@ -31,7 +31,7 @@
     "prepare": "husky install",
     "prerelease:ci": "lerna version --yes",
     "release:ci": "lerna publish from-git --no-verify-access",
-    "postrelease:ci": "git rebase main development && git push origin development --no-verify"
+    "postrelease:ci": "git rebase main development && git push origin development --no-verify && git checkout main"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.0",

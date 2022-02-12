@@ -1,17 +1,11 @@
 {
   "version": "0.12.14",
-  "packages": [
-    "packages/*",
-    "examples/*"
-  ],
+  "packages": ["packages/*", "examples/*"],
   "command": {
     "publish": {
       "conventionalCommits": true,
-      "ignoreChanges": [
-        "*.md",
-        "test/**"
-      ],
-      "message": "chore(release): publish %s"
+      "ignoreChanges": ["*.md", "test/**"],
+      "message": "chore(release): publish %s [skip ci]"
     },
     "version": {
       "allowBranch": "main",
