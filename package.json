@@ -13,11 +13,12 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap && lerna exec --concurrency 1 npm install",
+    "bootstrap:ci": "lerna bootstrap && lerna exec --concurrency 1 npm ci",
     "linkup": "scripts/linkup.sh",
     "linkup:colyseus": "scripts/linkupColyseus.sh",
     "test": "jest --config config/jest.config.js --silent --maxWorkers=75%",
-    "test:ci": "jest --config config/jest.config.js --silent --ci --maxWorkers=1",
-    "test:coveralls": "jest --config config/jest.config.js  --silent --ci --maxWorkers=1 --coverage --coverageReporters=lcovonly && coveralls < coverage/lcov.info",
+    "test:ci": "jest --config config/jest.config.js --silent --ci --maxWorkers=1 --coverage --coverageReporters=lcovonly",
+    "coveralls": "coveralls < coverage/lcov.info",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "build": "lerna run build",
     "build:server": "lerna run --stream --concurrency 1 --scope '*/server' build",
@@ -27,7 +28,10 @@
     "build:utils": "lerna run --stream --concurrency 1 --scope '*/utils' build",
     "build:utils-w": "lerna run --stream --concurrency 1 --scope '*/utils' build:watch",
     "build:entityTraits": "lerna run --stream --concurrency 1 --scope '*/entity-traits' build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prerelease:ci": "lerna version --yes",
+    "release:ci": "lerna publish from-git --no-verify-access",
+    "postrelease:ci": "git rebase main development && git push origin development --no-verify"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.0",

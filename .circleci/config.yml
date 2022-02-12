@@ -6,30 +6,9 @@ version: 2.1
 executors:
   my-executor:
     docker:
-      - image: cimg/node:16.4.0
-    working_directory: ~/repo
+      - image: cimg/node:16.13.0
 
-anchors:
-  - &filters-feature-branches
-    filters:
-      branches:
-        ignore:
-          - development
-          - main
-  - &filters-only-development
-    filters:
-      branches:
-        only: /development/
-  - &filters-only-main
-    filters:
-      branches:
-        only: /main/
-  - &filters-only-version-tag
-    filters:
-      tags:
-        only: /^v.*/
-      branches:
-        ignore: /.*/
+anchors-steps:
   # ignore if it's "chore(release)" commit
   - &cancel-post-release-non-main
     run:
@@ -51,19 +30,9 @@ commands:
           name: Combine package-lock.json files to single file
           command: npx lerna ls --parseable --loglevel silent | awk -F cardsGame '{printf "\"%s/package-lock.json\" ", $0}' | xargs cat > << parameters.filename >>
 
-jobs:
-  install:
-    executor: my-executor
+  install_everything:
+    description: "Install and bootstrap everything"
     steps:
-      - checkout
-
-      - *cancel-post-release-non-main
-
-      - run: npm i lerna
-
-      - create_concatenated_package_lock:
-          filename: combined-package-lock.txt
-
       # Download and cache dependencies
       - restore_cache:
           name: Restore cache for all dependencies
@@ -73,8 +42,7 @@ jobs:
             - v4-dependencies-
 
       - run: npm ci
-      - run: npx lerna bootstrap
-      - run: npx lerna exec npm ci --concurrency 1
+      - run: npm run bootstrap:ci
 
       - save_cache:
           name: Save cache for all dependencies
@@ -82,74 +50,53 @@ jobs:
           paths:
             - ~/.npm
 
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory.
-          # This is a directory on the container which is
-          # taken to be the root directory of the workspace.
-          root: ~/repo
-          # Must be relative path from root
-          paths:
-            - node_modules
-            - packages/*/node_modules
-            - examples/*/node_modules
-
-  build:
+jobs:
+  prepare:
     executor: my-executor
     steps:
       - checkout
       - *cancel-post-release-non-main
 
-      - attach_workspace:
-          at: ~/repo
-      - run: NODE_ENV=production npm run build
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - packages/*/lib
-
-  test:
-    executor: my-executor
-    steps:
-      - checkout
-      - *cancel-post-release-non-main
-
-      - attach_workspace:
-          at: ~/repo
-      - run: npm run test:ci
-
-  test-coveralls:
-    executor: my-executor
-    steps:
-      - checkout
-      - *cancel-post-release-non-main
-
-      - attach_workspace:
-          at: ~/repo
       - run:
-          name: Test & send coverage report to Coveralls
-          command: npm run test:coveralls
+          name: Install lerna for calculating combined package lock...
+          command: npm i lerna
 
-  sonarcloud:
-    executor: my-executor
-    steps:
-      - checkout
-      - *cancel-post-release-non-main
+      - create_concatenated_package_lock:
+          filename: combined-package-lock.txt
 
-      - attach_workspace:
-          at: ~/repo
-      - sonarcloud/scan
+      - install_everything
 
-  linting:
-    executor: my-executor
-    steps:
-      - checkout
-      - *cancel-post-release-non-main
-
-      - attach_workspace:
-          at: ~/repo
       - run:
           name: Linting
           command: npm run lint
+
+      - run:
+          name: Build everything
+          command: NODE_ENV=production npm run build
+
+      - run:
+          name: Test with coverage (leave cover results for later)
+          command: npm run test:ci
+
+        # Persist only on main, for release or send-externals
+      - when:
+          condition:
+            equal: ["main", << pipeline.git.branch >>]
+          steps:
+            - persist_to_workspace:
+                # Must be an absolute path, or relative path from working_directory.
+                # This is a directory on the container which is
+                # taken to be the root directory of the workspace.
+                root: ~/project
+                # Must be relative path from root
+                paths:
+                  - node_modules
+                  - coverage
+                  - packages/*/node_modules
+                  - examples/*/node_modules
+                  - packages/*/lib
+                  - packages/*/dist
+                  - examples/*/dist
 
   release-and-publish:
     executor: my-executor
@@ -157,26 +104,57 @@ jobs:
       - checkout
 
       - attach_workspace:
-          at: ~/repo
+          at: ~/project
+
       - run:
-          name: Bump version
+          name: Release & Publish
           command: |
             git config --global user.email ${GIT_AUTHOR_EMAIL}
             git config --global user.name ${GIT_AUTHOR_NAME}
-            npx lerna version --yes
-      - run:
-          name: Publish
-          command: |
             npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-            lerna publish from-git --yes
+            npm run release:ci -- --yes
+
+  send-externals:
+    executor: my-executor
+    steps:
+      - checkout
+      - *cancel-post-release-non-main
+
+      - attach_workspace:
+          at: ~/project
+
       - run:
-          name: Align development branch with main
-          command: |
-            git rebase main development
-            git push origin development --no-verify
+          name: Send coverage report to Coveralls
+          command: npm run coveralls
+
+      - sonarcloud/scan
 
 orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.1
+
+anchors-filters:
+  - &filters-feature-branches
+    filters:
+      branches:
+        ignore:
+          - development
+          - main
+  - &filters-only-development
+    filters:
+      branches:
+        only: development
+  - &filters-only-main
+    filters:
+      branches:
+        only: main
+      tags:
+        ignore: /.*/
+  - &filters-only-version-tag
+    filters:
+      tags:
+        only: /^v.*/
+      branches:
+        ignore: /.*/
 
 workflows:
   version: 2
@@ -184,87 +162,32 @@ workflows:
   # CI for feature/bugfix branches
   feature-branch:
     jobs:
-      - install:
+      - prepare:
           <<: *filters-feature-branches
-      - build:
-          <<: *filters-feature-branches
-          requires:
-            - install
-      - test:
-          <<: *filters-feature-branches
-          requires:
-            - build
-      - linting:
-          <<: *filters-feature-branches
-          requires:
-            - install
 
   # CI for development, more reports and stuff
   development-branch:
-    # unless: << pipeline.parameters.release_commit >>
     jobs:
-      - install:
+      - prepare:
           <<: *filters-only-development
-      - build:
-          <<: *filters-only-development
-          requires:
-            - install
-      - linting:
-          <<: *filters-only-development
-          requires:
-            - install
-      - test-coveralls:
-          <<: *filters-only-development
-          requires:
-            - build
-            - linting
-      - sonarcloud:
-          <<: *filters-only-development
-          context: SonarCloud
-          requires:
-            - build
-            - linting
 
   # Main -> automatic release
   main-branch:
     jobs:
-      - install:
+      - prepare:
           <<: *filters-only-main
-      - build:
-          <<: *filters-only-main
-          requires:
-            - install
-      - linting:
-          <<: *filters-only-main
-          requires:
-            - install
-      - test-coveralls:
-          <<: *filters-only-main
-          requires:
-            - build
-      - sonarcloud:
-          <<: *filters-only-main
-          context: SonarCloud
-          requires:
-            - build
-
       - release-and-publish:
           <<: *filters-only-main
           requires:
-            - test-coveralls
+            - prepare
 
   # After release and publish, push coverage and code analysis for tag
   post-release:
     jobs:
-      - install:
+      - prepare:
           <<: *filters-only-version-tag
-
-      - test-coveralls:
-          <<: *filters-only-version-tag
-          requires:
-            - install
-      - sonarcloud:
+      - send-externals:
           <<: *filters-only-version-tag
           context: SonarCloud
           requires:
-            - install
+            - prepare

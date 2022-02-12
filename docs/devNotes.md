@@ -3,7 +3,7 @@
 Install external dependencies in all packages (root project and all sub packages), and link the rest together with lerna:
 
 ```
-npm install
+npm i
 npm run bootstrap
 ```
 
@@ -17,12 +17,9 @@ npm run build:server-w
 
 # Release
 
-You'll need to set up a local `.env` file in the repo root to provide the required environment variables.
-The `.env.example` file is available in the root as a template.
+Bumping versions and publishing npm packages happens on CI. To initialize it, developer needs to rebase `main` branch onto `development`. Inspect [`.circleci/config.yml`](../.circleci/config.yml) for more details.
 
-```sh
-npm run release
-```
+Bot user @greenly-builder is authenticated on CircleCI with read-**write** access, so it'll appear in release commits.
 
 # Maintenance
 

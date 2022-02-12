@@ -42,7 +42,6 @@ export type SchemaChangeCallback = (changes: DataChange[]) => void
 
 export interface ObjectSchema<T = Record<string, any>>
   extends WithSchemaDefinition {
-  [key: string]: any
   onChange: SchemaChangeCallback
   listen<K extends keyof T>(
     propName: K,
@@ -100,9 +99,10 @@ export type ClientGameStateProps = {
 
   ui?: Map<string, string>
 }
-export type ClientGameState<MoreProps = Record<string, any>> = ObjectSchema<
-  ClientGameStateProps & MoreProps
->
+export type ClientGameState<MoreProps = Record<string, any>> =
+  ClientGameStateProps &
+    MoreProps &
+    ObjectSchema<ClientGameStateProps & MoreProps>
 
 export function isSchemaObject(o: unknown): o is Schema {
   return (
