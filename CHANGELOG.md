@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.14](https://github.com/zielak/cardsGame/compare/v0.12.9...v0.12.14) (2022-02-12)
+
+
+### Bug Fixes
+
+* **client:** broken clientGameState type ([f831c1c](https://github.com/zielak/cardsGame/commit/f831c1c6a1c82e7eb2468abc1cdfdba6b2fd9646))
+
+
+
+
+
 ## [0.12.9](https://github.com/zielak/cardsGame/compare/v0.12.7...v0.12.9) (2022-02-07)
 
 
