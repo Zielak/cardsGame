@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.17](https://github.com/Zielak/cardsGame/compare/v0.12.16...v0.12.17) (2022-02-13)
+
+
+### Bug Fixes
+
+* all published versions ([9427e75](https://github.com/Zielak/cardsGame/commit/9427e7530dfd0131eca35e2683f19ca720486d25))
+
+
+
+
+
 ## [0.12.16](https://github.com/Zielak/cardsGame/compare/v0.12.15...v0.12.16) (2022-02-12)
 
 **Note:** Version bump only for package @cardsgame/example-client-svelte
