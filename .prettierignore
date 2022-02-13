@@ -1,4 +1,3 @@
 packages/**/lib
 packages/**/.cache
-package-lock.json
 coverage/

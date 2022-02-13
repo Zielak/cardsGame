@@ -72,21 +72,6 @@ export const isSet = (thing: unknown): thing is Set<any> => {
   }
 }
 
-/**
- * Check if a `thing` is just a literal object (using typeof), and not Array or anything else.
- * @deprecated never used and there are probably better ways of doing that
- * @param thing
- */
-export const isObject = (thing: unknown): thing is Record<any, any> => {
-  if (typeof thing !== "object") {
-    return false
-  }
-  if (Array.isArray(thing) || isMap(thing) || isSet(thing)) {
-    return false
-  }
-  return true
-}
-
 export function applyMixins(derivedCtor: AnyClass, baseCtors: any[]): void {
   baseCtors.forEach((baseCtor) => {
     Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {

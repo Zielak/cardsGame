@@ -11,5 +11,6 @@
   "bugs": {
     "url": "https://github.com/zielak/cardsGame/issues"
   },
+  "main": "",
   "types": "index"
 }

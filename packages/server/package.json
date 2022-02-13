@@ -22,9 +22,9 @@
     "test": "jest"
   },
   "dependencies": {
-    "@cardsgame/entity-traits": "file:../entityTraits",
-    "@cardsgame/types": "file:../types",
-    "@cardsgame/utils": "file:../utils",
+    "@cardsgame/entity-traits": "^0.12.9",
+    "@cardsgame/types": "^0.12.9",
+    "@cardsgame/utils": "^0.12.9",
     "@colyseus/core": "^0.14.28",
     "@colyseus/schema": "^1.0.32",
     "@colyseus/ws-transport": "^0.14.21"

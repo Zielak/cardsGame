@@ -1,5 +1,5 @@
 module.exports = {
   rootDir: "../",
-  collectCoverageFrom: ["src/**/*.{ts,tsx}"],
+  collectCoverageFrom: ["src/**/*.ts"],
   projects: ["<rootDir>/packages/*/jest.config.js"],
 }
