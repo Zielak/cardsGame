@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.18](https://github.com/zielak/cardsGame/compare/v0.12.17...v0.12.18) (2022-02-13)
+
+
+### Bug Fixes
+
+* better ObjectSchema types ([37ba3b0](https://github.com/zielak/cardsGame/commit/37ba3b0d0ee3847a2fb00b896bf8b2520a5c855b))
+
+
+
+
+
 ## [0.12.17](https://github.com/zielak/cardsGame/compare/v0.12.16...v0.12.17) (2022-02-13)
 
 
