@@ -40,14 +40,19 @@ type CollectionCallback<T, K> = (instance: T, key: K) => void
 
 export type SchemaChangeCallback = (changes: DataChange[]) => void
 
-export interface ObjectSchema<T = Record<string, any>>
-  extends WithSchemaDefinition {
+type ObjectSchemaColyBase<T> = {
   onChange: SchemaChangeCallback
   listen<K extends keyof T>(
     propName: K,
     callback: (value: T[K], previousValue: T[K]) => void
   ): () => void
 }
+type DirectPrimitiveOrSchemaObject<T> = {
+  [K in keyof T]?: T[K] extends object ? ObjectSchema<T[K]> : T[K]
+}
+export type ObjectSchema<T = Record<string, any>> = ObjectSchemaColyBase<T> &
+  DirectPrimitiveOrSchemaObject<T> &
+  WithSchemaDefinition
 
 /**
  * Client-side, could also be wrapped with array-like or map-like functions.
@@ -99,10 +104,9 @@ export type ClientGameStateProps = {
 
   ui?: Map<string, string>
 }
-export type ClientGameState<MoreProps = Record<string, any>> =
-  ClientGameStateProps &
-    MoreProps &
-    ObjectSchema<ClientGameStateProps & MoreProps>
+export type ClientGameState<MoreProps = Record<string, any>> = ObjectSchema<
+  ClientGameStateProps & MoreProps
+>
 
 export function isSchemaObject(o: unknown): o is Schema {
   return (
