@@ -78,3 +78,17 @@ type NonFunctionPropertyNames<T> = {
   [K in keyof T]: T[K] extends Function ? never : K
 }[keyof T]
 type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>
+
+/**
+ * Grabs type of array's items
+ * @see https://stackoverflow.com/a/51399781
+ */
+type ArrayElement<ArrayType extends readonly unknown[]> =
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never
+
+type MapElement<MapType extends Map<any, unknown>> = MapType extends Map<
+  any,
+  infer ElementType
+>
+  ? ElementType
+  : never

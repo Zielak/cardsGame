@@ -10,10 +10,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@cardsgame/example-certs": "file:../certs",
-    "@cardsgame/server": "file:../../packages/server",
-    "@cardsgame/types": "file:../../packages/types",
-    "@cardsgame/utils": "file:../../packages/utils",
+    "@cardsgame/example-certs": "^0.12.9",
+    "@cardsgame/server": "^0.12.17",
+    "@cardsgame/types": "^0.12.17",
+    "@cardsgame/utils": "^0.12.17",
     "express": "^4.17.1"
   }
 }

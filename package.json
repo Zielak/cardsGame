@@ -27,7 +27,7 @@
     "build:utils": "lerna run --stream --concurrency 1 --scope '*/utils' build",
     "build:utils-w": "lerna run --stream --concurrency 1 --scope '*/utils' build:watch",
     "build:entityTraits": "lerna run --stream --concurrency 1 --scope '*/entity-traits' build",
-    "prepare": "husky install",
+    "prepare": "npm run bootstrap && husky install",
     "prerelease:ci": "lerna version --yes",
     "release:ci": "lerna publish from-git --no-verify-access",
     "postrelease:ci": "git rebase main development && git push origin development --no-verify && git checkout main"
@@ -54,6 +54,7 @@
     "prettier": "^2.3.2",
     "ts-jest": "^27.0.3",
     "ts-node": "^10.0.0",
+    "tslib": "^2.3.1",
     "typescript": "^4.5.5"
   },
   "config": {

@@ -1,7 +1,7 @@
 import { logs } from "@cardsgame/utils"
 import type { Room as colyseusRoom } from "colyseus.js/lib/Room"
 
-import type { ClientGameState } from "./schema"
+import type { ClientGameState } from "./schema/types"
 
 export class Room<MoreProps = Record<string, any>> {
   constructor(public room: colyseusRoom) {

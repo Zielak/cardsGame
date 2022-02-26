@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build": "tsc -b src && rollup -c",
-    "build:watch": "tsc -b src --watch",
+    "build:watch": "tsc -b src --watch --preserveWatchOutput & rollup -c --watch",
     "test": "echo \"¯\\_(ツ)_/¯\""
   },
   "dependencies": {

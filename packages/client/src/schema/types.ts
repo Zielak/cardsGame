@@ -36,7 +36,7 @@ type CollectionOfObjectsDefinition =
   | MapOfSchemaObjectsDefinition
   | ArrayOfSchemaObjectsDefinition
 
-type CollectionCallback<T, K> = (instance: T, key: K) => void
+export type CollectionCallback<T, K = string> = (instance: T, key: K) => void
 
 export type SchemaChangeCallback = (changes: DataChange[]) => void
 
@@ -47,8 +47,24 @@ type ObjectSchemaColyBase<T> = {
     callback: (value: T[K], previousValue: T[K]) => void
   ): () => void
 }
+type _ArrayCollection<T extends Array<any>> =
+  ArrayElement<T> extends PrimitiveValue
+    ? PrimitivesCollectionSchema<ArrayElement<T>>
+    : ObjectsCollectionSchema<ArrayElement<T>>
+
+type _MapCollection<T extends Map<any, any>> =
+  MapElement<T> extends PrimitiveValue
+    ? PrimitivesCollectionSchema<MapElement<T>>
+    : ObjectsCollectionSchema<MapElement<T>>
+
 type DirectPrimitiveOrSchemaObject<T> = {
-  [K in keyof T]?: T[K] extends object ? ObjectSchema<T[K]> : T[K]
+  [K in keyof T]?: T[K] extends object
+    ? T[K] extends Array<any>
+      ? _ArrayCollection<T[K]>
+      : T[K] extends Map<any, any>
+      ? _MapCollection<T[K]>
+      : ObjectSchema<T[K]>
+    : T[K]
 }
 export type ObjectSchema<T = Record<string, any>> = ObjectSchemaColyBase<T> &
   DirectPrimitiveOrSchemaObject<T> &
@@ -78,10 +94,21 @@ export interface PrimitivesCollectionSchema<T = PrimitiveValue, K = string>
 /**
  * Base for all fields in State in each schema.
  */
-export type Schema =
-  | ObjectSchema
-  | ObjectsCollectionSchema
-  | PrimitivesCollectionSchema
+export type Schema<T = any, K = any> =
+  | ObjectSchema<T>
+  | ObjectsCollectionSchema<T, K>
+  | PrimitivesCollectionSchema<T, K>
+
+interface EntityParentNode {
+  childrenClassicCard: ObjectsCollectionSchema
+  childrenContainer: ObjectsCollectionSchema
+  childrenDeck: ObjectsCollectionSchema
+  childrenGrid: ObjectsCollectionSchema
+  childrenHand: ObjectsCollectionSchema
+  childrenLine: ObjectsCollectionSchema
+  childrenPile: ObjectsCollectionSchema
+  childrenSpread: ObjectsCollectionSchema
+}
 
 /**
  * Root game state
@@ -106,7 +133,8 @@ export type ClientGameStateProps = {
 }
 export type ClientGameState<MoreProps = Record<string, any>> = ObjectSchema<
   ClientGameStateProps & MoreProps
->
+> &
+  EntityParentNode
 
 export function isSchemaObject(o: unknown): o is Schema {
   return (

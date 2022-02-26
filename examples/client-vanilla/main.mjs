@@ -1,4 +1,4 @@
-import { Game, Room } from "@cardsgame/client"
+import { Game, makeChildrenCollection, Room } from "@cardsgame/client"
 
 const EL = {
   gameView: document.querySelector(".gameView"),
@@ -180,8 +180,9 @@ class GameHandler {
 
     room.state.childrenContainer.onAdd = (container) => {
       console.log(`Player's container added!`, container)
-      const deck = container.childrenDeck[0]
-      const pile = container.childrenPile[0]
+      const children = makeChildrenCollection(container)
+      const deck = children.find((child) => child.type === "deck")
+      const pile = children.find((child) => child.type === "pile")
 
       const isPlayer = container.ownerID === clientID
       const target = isPlayer ? "player" : "opponent"

@@ -41,8 +41,8 @@ commands:
             # fallback to using the latest cache if no exact match is found
             - v5-dependencies-
 
+      # bootstraps right after installation
       - run: npm ci
-      - run: npm run bootstrap
 
       - save_cache:
           name: Save cache for all dependencies

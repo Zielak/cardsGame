@@ -1,4 +1,4 @@
-import type { ObjectSchema } from "../src/schema"
+import type { ObjectSchema } from "../src/schema/types"
 
 type SubjectTop = {
   name: string
@@ -17,11 +17,11 @@ test("ObjectSchema", () => {
     name: "Testing subject",
     top: {
       name: "Top of testing subject",
-      _definition: { schema: { name: "strig" } },
+      _definition: { schema: { name: "string" } },
       listen: (p, c) => () => {},
       onChange: () => {},
     },
-    _definition: { schema: { name: "strig" } },
+    _definition: { schema: { name: "string" } },
     listen: (p, c) => () => {},
     onChange: () => {},
   }

@@ -31,6 +31,9 @@ const config = {
       exclude: ["**/test", "**/*.test.ts"],
     }),
   ],
+  watch: {
+    clearScreen: false,
+  },
 }
 
 export default config
