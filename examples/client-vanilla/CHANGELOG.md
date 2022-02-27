@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/Zielak/cardsGame/compare/v0.12.18...v0.13.0) (2022-02-27)
+
+
+### Features
+
+* easier children ([e7256de](https://github.com/Zielak/cardsGame/commit/e7256de03bed45434f6f50029652cee9b397696a))
+
+
+
+
+
 ## [0.12.18](https://github.com/Zielak/cardsGame/compare/v0.12.17...v0.12.18) (2022-02-13)
 
 **Note:** Version bump only for package @cardsgame/example-client-vanilla

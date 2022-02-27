@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/example-client-vanilla",
-  "version": "0.12.18",
+  "version": "0.13.0",
   "description": "Simplest client-side implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -11,8 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@cardsgame/client": "^0.12.8",
-    "@cardsgame/example-certs": "^0.12.9"
+    "@cardsgame/client": "^0.13.0",
+    "@cardsgame/example-certs": "^0.13.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.1",
