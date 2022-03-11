@@ -23,6 +23,8 @@ type RawInteractionClientPlayerMessage = {
   data?: unknown
   /**
    * Interaction-related events ("click", "touchstart"...)
+   *
+   * TODO: Not yet used. Could be useful with drag&drop or swipe interaction
    */
   event?: string
   /**
@@ -78,6 +80,11 @@ type NonFunctionPropertyNames<T> = {
   [K in keyof T]: T[K] extends Function ? never : K
 }[keyof T]
 type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>
+
+type PrimitivePropertyNames<T> = {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  [P in keyof T]: Exclude<T[P], undefined> extends object ? never : P
+}[keyof T]
 
 /**
  * Grabs type of array's items

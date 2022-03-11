@@ -26,10 +26,10 @@ export { getFlag, setFlag } from "./conditions/utils"
 export { BotConditions, EntityConditions } from "./bots/conditions"
 export { ClientMessageConditions } from "./interaction"
 
-export { testAction } from "./interaction"
-
 export { Player, ServerPlayerMessage } from "./players/player"
 export { Bot } from "./players/bot"
+
+export { type CommonKeysToIgnore, type EveryEntity } from "./queryRunner"
 
 export * from "./traits/boxModel"
 export * from "./traits/child"

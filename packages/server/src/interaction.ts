@@ -112,17 +112,3 @@ export const filterActionsByConditions =
 
     return result
   }
-
-/**
- * Tests if given action would pass tests when pushed to Commands Manager
- */
-export const testAction = <S extends State>(
-  action: ActionTemplate<S>,
-  state: S,
-  message: ServerPlayerMessage
-): boolean => {
-  return (
-    filterActionsByInteraction(message)(action) &&
-    filterActionsByConditions(state, message)(action)
-  )
-}

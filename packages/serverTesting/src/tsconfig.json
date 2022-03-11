@@ -1,0 +1,11 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "module": "commonjs",
+    "lib": ["ES6"],
+    "outDir": "../lib",
+    "target": "ES2019",
+    "types": ["node"]
+  }
+}

@@ -14,7 +14,7 @@ import { hasOwnership } from "./traits/ownership"
 import { isParent } from "./traits/parent"
 import { hasSelectableChildren } from "./traits/selectableChildren"
 
-type EveryEntity = ClassicCard &
+export type EveryEntity = ClassicCard &
   Container &
   Deck &
   Grid &
@@ -23,7 +23,7 @@ type EveryEntity = ClassicCard &
   Pile &
   Spread
 
-type KeysToIgnore =
+export type CommonKeysToIgnore =
   | "$changed"
   | "childrenPointers"
   | "hijacksInteractionTarget"
@@ -33,9 +33,17 @@ type KeysToIgnore =
   | "selectedChildren"
 
 export type EntityOptions = Partial<
-  AllowArrays<Omit<NonFunctionProperties<EveryEntity>, KeysToIgnore>>
+  AllowArrays<Omit<NonFunctionProperties<EveryEntity>, CommonKeysToIgnore>>
 >
 
+/**
+ * Interface used to search for an entity.
+ * An object of props, which appear in every kind of trait and entity, with an addition of:
+
+ * - `parent` - describe the parent of an entity you're looking for
+ * - `selected` - query only for selected or not-selected items
+ * - `selectionIndex` - query by items selection index, if it was in fact selected
+ */
 export interface QuerableProps extends EntityOptions {
   parent?: QuerableProps
   selected?: boolean

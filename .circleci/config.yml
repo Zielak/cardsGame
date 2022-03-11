@@ -72,7 +72,7 @@ jobs:
 
       - run:
           name: Build everything
-          command: NODE_ENV=production npm run build
+          command: NODE_ENV=production npm run build:ci
 
       - run:
           name: Test with coverage (leave cover results for later)
