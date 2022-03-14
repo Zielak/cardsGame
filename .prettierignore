@@ -1,3 +1,6 @@
 packages/**/lib
 packages/**/.cache
 coverage/
+
+# auto-generated docs
+docs/docs/api

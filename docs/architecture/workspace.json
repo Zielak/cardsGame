@@ -1,0 +1,449 @@
+{
+  "id": 1,
+  "name": "Name",
+  "description": "Description",
+  "revision": 0,
+  "lastModifiedDate": "2022-03-14T15:15:33Z",
+  "lastModifiedAgent": "structurizr-web/2690/diagram",
+  "properties": {
+    "structurizr.dsl": "d29ya3NwYWNlIHsKCiAgIWlkZW50aWZpZXJzIGhpZXJhcmNoaWNhbAoKICBtb2RlbCB7CiAgICBwbGF5ZXIgPSBwZXJzb24gIlBsYXllciIgInBsYXlzIHRoZSBnYW1lIgoKICAgIHBvcnRhbCA9IHNvZnR3YXJlU3lzdGVtICJDYXJkcyBHYW1lIHBvcnRhbCIgIkhvc3RzIGF0IGxlYXN0IG9uZSBtdWx0aXBsYXllciBjYXJkcyBnYW1lIHJvb20iIHsKICAgICAgZnJvbnRlbmQgPSBjb250YWluZXIgIldlYiBhcHAiICJsb2JieSBsaXN0aW5nLCBnYW1lIHRhYmxlIHJlbmRlcmluZywgcGxheWVyIGludGVyYWN0aW9uIiAiSlMtYmFzZWQiIAogICAgICBiYWNrZW5kID0gY29udGFpbmVyICJOb2RlIHNlcnZlciIgIlNlcnZlci1zaWRlIHJvb21zLCBnYW1lcGxheSBsb2dpYyIgIk5vZGUuanMiCiAgICB9CgogICAgY2FyZHNHYW1lID0gc29mdHdhcmVTeXN0ZW0gIkNhcmRzIEdhbWUgTGlicmFyaWVzIiB7CiAgICAgIGNsaW5ldCA9IGNvbnRhaW5lciAiQGNhcmRzZ2FtZS9jbGllbnQiICJsaWJyYXJ5IGZvciBjb25uZWN0aW5nIHdpdGggc2VydmVyLXNpZGUiCiAgICAgIHNlcnZlciA9IGNvbnRhaW5lciAiQGNhcmRzZ2FtZS9zZXJ2ZXIiICJsaWJyYXJ5IHByb3ZpZGluZyB0b29scyB0byBjcmVhdGUgZ2FtZSBsb2dpYyIKICAgICAgdXRpbHMgPSBjb250YWluZXIgIkBjYXJkc2dhbWUvdXRpbHMiICJsaWJyYXJ5IHByb3ZpZGluZyB0b29scyB0byBjcmVhdGUgZ2FtZSBsb2dpYyIKICAgIH0KCiAgICBlbnRlcnByaXNlIGNvbHlzZXVzIHsKICAgICAgY29seXNldXMgPSBzb2Z0d2FyZVN5c3RlbSAiQ29seXNldXMgbGlicmFyaWVzIiAiUHJvdmlkZXMgY29ubmVjdGl2aXR5IHNlcnZlci9jbGllbnQgYW5kIGJhc2UgZ2FtZSBzdGF0ZSBtYW5hZ2VtZW50IiB7CiAgICAgICAgY2xpZW50ID0gY29udGFpbmVyICJjb2x5c2V1cy5qcyIgImNsaWVudC1zaWRlIGNvbm5lY3Rpb24gbGlicmFyeSIgIkpTIgogICAgICAgIHNlcnZlciA9IGNvbnRhaW5lciAiY29seXNldXMiICJTZXJ2ZXItc2lkZSBjb25uZWN0aW9uIGFuZCBzdGF0ZSBzeW5jaHJvbml6YXRpb24gbGlicmFyeSIgIk5vZGUuanMiCiAgICAgICAgc2NoZW1hID0gY29udGFpbmVyICJAY29seXNldXMvc2NoZW1hIiAic3RhdGUgc2VyaWFsaXplciB3aXRoIGRlbHRhIGVuY29kaW5nIiAiSlMiCiAgICAgIH0KICAgIH0KCiAgICBwbGF5ZXIgLT4gcG9ydGFsLmZyb250ZW5kICJJbnRlcmFjdHMgd2l0aCIKCiAgICBwb3J0YWwuZnJvbnRlbmQgLT4gcG9ydGFsLmJhY2tlbmQgIlNlbmRzIGludGVyYWN0aW9ucyIgCiAgICBwb3J0YWwuYmFja2VuZCAtPiBwb3J0YWwuZnJvbnRlbmQgIlN0YXRlIHVwZGF0ZXMiIAoKICAgIHBvcnRhbC5mcm9udGVuZCAtPiBjYXJkc0dhbWUuY2xpbmV0ICJVc2VzIgogICAgcG9ydGFsLmJhY2tlbmQgLT4gY2FyZHNHYW1lLnNlcnZlciAiVXNlcyIKCiAgICBjYXJkc0dhbWUuY2xpbmV0IC0+IGNvbHlzZXVzLmNsaWVudCAiSW1wbGVtZW50cyIKICAgIGNhcmRzR2FtZS5zZXJ2ZXIgLT4gY29seXNldXMuc2VydmVyICJJbXBsZW1lbnRzIgoKICAgIGNhcmRzR2FtZS5jbGluZXQgLT4gY2FyZHNHYW1lLnV0aWxzICJVc2VzIgogICAgY2FyZHNHYW1lLnNlcnZlciAtPiBjYXJkc0dhbWUudXRpbHMgIlVzZXMiCiAgfQoKICB2aWV3cyB7CgogICAgc3lzdGVtTGFuZHNjYXBlICJMYW5kc2NhcGUiIHsKICAgICAgaW5jbHVkZSAqCiAgICAgIGF1dG9MYXlvdXQKICAgIH0KCiAgICBjb250YWluZXIgcG9ydGFsICJEaWFncmFtMSIgewogICAgICBpbmNsdWRlICoKICAgICAgYXV0b0xheW91dAogICAgfQoKICAgIGNvbXBvbmVudCBwb3J0YWwuZnJvbnRlbmQgIkNvbXBvbmVudHNGcm9udGVuZCIgewogICAgICBpbmNsdWRlICoKICAgICAgYXV0b0xheW91dAogICAgfQogICAgY29tcG9uZW50IHBvcnRhbC5iYWNrZW5kICJDb21wb25lbnRzQmFja2VuZCIgewogICAgICBpbmNsdWRlICoKICAgICAgYXV0b0xheW91dAogICAgfQoKICAgIHRoZW1lIGRlZmF1bHQKICB9Cgp9Cg=="
+  },
+  "configuration": {},
+  "model": {
+    "enterprise": {
+      "name": "colyseus"
+    },
+    "people": [
+      {
+        "id": "1",
+        "tags": "Element,Person",
+        "name": "Player",
+        "description": "plays the game",
+        "relationships": [
+          {
+            "id": "13",
+            "tags": "Relationship",
+            "sourceId": "1",
+            "destinationId": "3",
+            "description": "Interacts with"
+          },
+          {
+            "id": "14",
+            "sourceId": "1",
+            "destinationId": "2",
+            "description": "Interacts with",
+            "linkedRelationshipId": "13"
+          }
+        ],
+        "location": "External"
+      }
+    ],
+    "softwareSystems": [
+      {
+        "id": "9",
+        "tags": "Element,Software System",
+        "name": "Colyseus libraries",
+        "description": "Provides connectivity server/client and base game state management",
+        "location": "Internal",
+        "containers": [
+          {
+            "id": "10",
+            "tags": "Element,Container",
+            "name": "colyseus.js",
+            "description": "client-side connection library",
+            "technology": "JS"
+          },
+          {
+            "id": "11",
+            "tags": "Element,Container",
+            "name": "colyseus",
+            "description": "Server-side connection and state synchronization library",
+            "technology": "Node.js"
+          },
+          {
+            "id": "12",
+            "tags": "Element,Container",
+            "name": "@colyseus/schema",
+            "description": "state serializer with delta encoding",
+            "technology": "JS"
+          }
+        ],
+        "documentation": {}
+      },
+      {
+        "id": "2",
+        "tags": "Element,Software System",
+        "name": "Cards Game portal",
+        "description": "Hosts at least one multiplayer cards game room",
+        "relationships": [
+          {
+            "id": "19",
+            "sourceId": "2",
+            "destinationId": "6",
+            "description": "Uses",
+            "linkedRelationshipId": "17"
+          },
+          {
+            "id": "20",
+            "sourceId": "2",
+            "destinationId": "5",
+            "description": "Uses",
+            "linkedRelationshipId": "17"
+          },
+          {
+            "id": "23",
+            "sourceId": "2",
+            "destinationId": "7",
+            "description": "Uses",
+            "linkedRelationshipId": "21"
+          }
+        ],
+        "location": "External",
+        "containers": [
+          {
+            "id": "3",
+            "tags": "Element,Container",
+            "name": "Web app",
+            "description": "lobby listing, game table rendering, player interaction",
+            "relationships": [
+              {
+                "id": "17",
+                "tags": "Relationship",
+                "sourceId": "3",
+                "destinationId": "6",
+                "description": "Uses"
+              },
+              {
+                "id": "18",
+                "sourceId": "3",
+                "destinationId": "5",
+                "description": "Uses",
+                "linkedRelationshipId": "17"
+              },
+              {
+                "id": "15",
+                "tags": "Relationship",
+                "sourceId": "3",
+                "destinationId": "4",
+                "description": "Sends interactions"
+              }
+            ],
+            "technology": "JS-based"
+          },
+          {
+            "id": "4",
+            "tags": "Element,Container",
+            "name": "Node server",
+            "description": "Server-side rooms, gameplay logic",
+            "relationships": [
+              {
+                "id": "16",
+                "tags": "Relationship",
+                "sourceId": "4",
+                "destinationId": "3",
+                "description": "State updates"
+              },
+              {
+                "id": "21",
+                "tags": "Relationship",
+                "sourceId": "4",
+                "destinationId": "7",
+                "description": "Uses"
+              },
+              {
+                "id": "22",
+                "sourceId": "4",
+                "destinationId": "5",
+                "description": "Uses",
+                "linkedRelationshipId": "21"
+              }
+            ],
+            "technology": "Node.js"
+          }
+        ],
+        "documentation": {}
+      },
+      {
+        "id": "5",
+        "tags": "Element,Software System",
+        "name": "Cards Game Libraries",
+        "relationships": [
+          {
+            "id": "30",
+            "sourceId": "5",
+            "destinationId": "11",
+            "description": "Implements",
+            "linkedRelationshipId": "28"
+          },
+          {
+            "id": "26",
+            "sourceId": "5",
+            "destinationId": "10",
+            "description": "Implements",
+            "linkedRelationshipId": "24"
+          },
+          {
+            "id": "27",
+            "sourceId": "5",
+            "destinationId": "9",
+            "description": "Implements",
+            "linkedRelationshipId": "24"
+          }
+        ],
+        "location": "External",
+        "containers": [
+          {
+            "id": "8",
+            "tags": "Element,Container",
+            "name": "@cardsgame/utils",
+            "description": "library providing tools to create game logic"
+          },
+          {
+            "id": "6",
+            "tags": "Element,Container",
+            "name": "@cardsgame/client",
+            "description": "library for connecting with server-side",
+            "relationships": [
+              {
+                "id": "24",
+                "tags": "Relationship",
+                "sourceId": "6",
+                "destinationId": "10",
+                "description": "Implements"
+              },
+              {
+                "id": "25",
+                "sourceId": "6",
+                "destinationId": "9",
+                "description": "Implements",
+                "linkedRelationshipId": "24"
+              },
+              {
+                "id": "31",
+                "tags": "Relationship",
+                "sourceId": "6",
+                "destinationId": "8",
+                "description": "Uses"
+              }
+            ]
+          },
+          {
+            "id": "7",
+            "tags": "Element,Container",
+            "name": "@cardsgame/server",
+            "description": "library providing tools to create game logic",
+            "relationships": [
+              {
+                "id": "29",
+                "sourceId": "7",
+                "destinationId": "9",
+                "description": "Implements",
+                "linkedRelationshipId": "28"
+              },
+              {
+                "id": "32",
+                "tags": "Relationship",
+                "sourceId": "7",
+                "destinationId": "8",
+                "description": "Uses"
+              },
+              {
+                "id": "28",
+                "tags": "Relationship",
+                "sourceId": "7",
+                "destinationId": "11",
+                "description": "Implements"
+              }
+            ]
+          }
+        ],
+        "documentation": {}
+      }
+    ]
+  },
+  "documentation": {},
+  "views": {
+    "systemLandscapeViews": [
+      {
+        "key": "Landscape",
+        "order": 1,
+        "paperSize": "A4_Portrait",
+        "dimensions": {
+          "width": 1108,
+          "height": 2720
+        },
+        "automaticLayout": {
+          "implementation": "Graphviz",
+          "rankDirection": "TopBottom",
+          "rankSeparation": 300,
+          "nodeSeparation": 300,
+          "edgeSeparation": 0,
+          "vertices": false
+        },
+        "enterpriseBoundaryVisible": true,
+        "elements": [
+          {
+            "id": "1",
+            "x": 354,
+            "y": 208
+          },
+          {
+            "id": "2",
+            "x": 329,
+            "y": 908
+          },
+          {
+            "id": "5",
+            "x": 329,
+            "y": 1508
+          },
+          {
+            "id": "9",
+            "x": 329,
+            "y": 2108
+          }
+        ],
+        "relationships": [
+          {
+            "id": "27"
+          },
+          {
+            "id": "14"
+          },
+          {
+            "id": "20"
+          }
+        ]
+      }
+    ],
+    "containerViews": [
+      {
+        "softwareSystemId": "2",
+        "key": "Diagram1",
+        "order": 2,
+        "paperSize": "A4_Portrait",
+        "dimensions": {
+          "width": 1341,
+          "height": 2616
+        },
+        "automaticLayout": {
+          "implementation": "Graphviz",
+          "rankDirection": "TopBottom",
+          "rankSeparation": 300,
+          "nodeSeparation": 300,
+          "edgeSeparation": 0,
+          "vertices": false
+        },
+        "externalSoftwareSystemBoundariesVisible": true,
+        "elements": [
+          {
+            "id": "1",
+            "x": 312,
+            "y": 208
+          },
+          {
+            "id": "3",
+            "x": 287,
+            "y": 908
+          },
+          {
+            "id": "4",
+            "x": 287,
+            "y": 1508
+          },
+          {
+            "id": "5",
+            "x": 624,
+            "y": 2108
+          }
+        ],
+        "relationships": [
+          {
+            "id": "18",
+            "vertices": [
+              {
+                "x": 887,
+                "y": 1508
+              },
+              {
+                "x": 887,
+                "y": 1912
+              }
+            ]
+          },
+          {
+            "id": "16",
+            "vertices": [
+              {
+                "x": 662,
+                "y": 1358
+              }
+            ]
+          },
+          {
+            "id": "15",
+            "vertices": [
+              {
+                "x": 362,
+                "y": 1358
+              }
+            ]
+          },
+          {
+            "id": "13"
+          },
+          {
+            "id": "22"
+          }
+        ]
+      }
+    ],
+    "componentViews": [
+      {
+        "key": "ComponentsBackend",
+        "order": 4,
+        "paperSize": "A6_Portrait",
+        "dimensions": {
+          "width": 400,
+          "height": 400
+        },
+        "automaticLayout": {
+          "implementation": "Graphviz",
+          "rankDirection": "TopBottom",
+          "rankSeparation": 300,
+          "nodeSeparation": 300,
+          "edgeSeparation": 0,
+          "vertices": false
+        },
+        "containerId": "4",
+        "externalContainerBoundariesVisible": true
+      },
+      {
+        "key": "ComponentsFrontend",
+        "order": 3,
+        "paperSize": "A6_Portrait",
+        "dimensions": {
+          "width": 400,
+          "height": 400
+        },
+        "automaticLayout": {
+          "implementation": "Graphviz",
+          "rankDirection": "TopBottom",
+          "rankSeparation": 300,
+          "nodeSeparation": 300,
+          "edgeSeparation": 0,
+          "vertices": false
+        },
+        "containerId": "3",
+        "externalContainerBoundariesVisible": true
+      }
+    ],
+    "configuration": {
+      "branding": {},
+      "styles": {},
+      "themes": ["https://static.structurizr.com/themes/default/theme.json"],
+      "terminology": {},
+      "lastSavedView": "Landscape"
+    }
+  }
+}

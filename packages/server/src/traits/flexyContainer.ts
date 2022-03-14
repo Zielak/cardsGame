@@ -11,17 +11,25 @@ type JustifyContent =
   | "spaceAround"
   | "spaceEvenly"
 
+/**
+ * Defines entity as flexible in size.
+ * Contains props useful to create Flex Box in web browser:
+ *
+ * - `alignItems`
+ * - `justifyContent`
+ * - `directionReverse`
+ */
 export class FlexyTrait {
   /**
-   * @memberof FlexyTrait
+   * @category FlexyTrait
    */
   alignItems: "start" | "end" | "center"
   /**
-   * @memberof FlexyTrait
+   * @category FlexyTrait
    */
   directionReverse: boolean
   /**
-   * @memberof FlexyTrait
+   * @category FlexyTrait
    */
   justifyContent: JustifyContent
 }

@@ -41,6 +41,9 @@ export class Game {
     this.client = new Client(`wss://${this.wss.host}${portString}`)
   }
 
+  /**
+   * If connected to game room, will return its session ID
+   */
   get sessionID(): string {
     return this.room ? this.room.sessionID : undefined
   }

@@ -10,6 +10,7 @@ import { globalEntitiesContext } from "./entitiesContext"
  * Remember as possible parent to any kinds of children entities
  * Also enables syncing any previously remembered children kind on this constructor
  * @param childrenSynced set `false` to keep list of children secret from clients
+ * @category Annotation
  */
 export function containsChildren(childrenSynced = true) {
   return function containsChildrenDec(parentConstructor: typeof Entity): void {

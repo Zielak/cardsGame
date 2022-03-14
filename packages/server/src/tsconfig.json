@@ -4,9 +4,7 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "module": "commonjs",
-    "lib": [
-      "ES6"
-    ],
+    "lib": ["ES6"],
     "outDir": "../lib",
     "target": "ES2019",
     "types": [

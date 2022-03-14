@@ -11,11 +11,11 @@ import { LocationTrait } from "../traits/location"
 import { OwnershipTrait } from "../traits/ownership"
 import { TwoSidedTrait } from "../traits/twoSided"
 
-/**
- * Visibility filter
- * @param my
- * @param client
- */
+// /**
+//  * Visibility filter
+//  * @param my
+//  * @param client
+//  */
 // export function faceDownOnlyOwner(
 //   this: Schema & IClassicCard,
 //   client: any,
@@ -43,13 +43,13 @@ import { TwoSidedTrait } from "../traits/twoSided"
 export class ClassicCard extends Entity<ClassicCardOptions> {
   // @filter(faceDownOnlyOwner)
   /**
-   * @memberof ClassicCard
+   * @category ClassicCard
    */
   @type("string") suit: string
 
   // @filter(faceDownOnlyOwner)
   /**
-   * @memberof ClassicCard
+   * @category ClassicCard
    */
   @type("string") rank: string
 
@@ -83,9 +83,11 @@ export interface ClassicCard extends Mixin {}
  * Will generate an array of card options.
  * Use this array to create actual cards yourself
  * @example
+ * ```ts
  * standardDeckFactory().map(options => {
  *   new ClassicCard({state, ...options})
  * })
+ * ```
  * @param ranks array of desired ranks
  * @param suits array of desired suits
  */

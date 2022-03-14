@@ -1,6 +1,7 @@
 /**
  * Trim long string with nice ell…
  * Works only on string, don't put numbers in it.
+ * @category String
  */
 export const trim = (string = "", maxLength = 7): string => {
   if (typeof string !== "string") {
@@ -14,6 +15,7 @@ export const trim = (string = "", maxLength = 7): string => {
 
 /**
  * For now it's just 3 random letters
+ * @category String
  */
 export const randomName = (): string => {
   const randomLetter = (): string =>
@@ -24,6 +26,7 @@ export const randomName = (): string => {
 
 /**
  * Convert string to "camelCase"
+ * @category String
  */
 export const camelCase = (str = ""): string =>
   str
@@ -33,6 +36,7 @@ export const camelCase = (str = ""): string =>
 
 /**
  * Convert string to "SentenceCase" (first letter capital)
+ * @category String
  */
 export const sentenceCase = (str = ""): string =>
   str

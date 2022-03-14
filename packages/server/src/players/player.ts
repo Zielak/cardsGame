@@ -6,10 +6,22 @@ import { type } from "../annotations/type"
 import { getRandomName } from "./names"
 
 export class Player extends Schema implements IPlayerDefinition {
+  /**
+   * @category Player
+   */
   @type("string") clientID: string
+  /**
+   * @category Player
+   */
   @type("string") name: string
 
+  /**
+   * @category Player
+   */
   @type("number") score = 0
+  /**
+   * @category Player
+   */
   @type("number") timeLeft = -1
 
   constructor(options: PlayerOptions) {
@@ -28,8 +40,17 @@ export interface PlayerOptions {
 
 // Event from client, with stuff auto filled when coming to server
 export type ServerPlayerMessage = ClientPlayerMessage & {
+  /**
+   * Player who initiated interaction on client-side
+   */
   player?: Player
+  /**
+   * An Entity which was interactd with
+   */
   entity?: unknown
+  /**
+   * List of all interactable parents, starting with target entity, finishing with the most distant parent
+   */
   entities?: unknown[]
   /**
    * It's the time when the message has arrived to the server

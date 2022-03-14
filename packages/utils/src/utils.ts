@@ -1,5 +1,13 @@
 /**
  * Returns first, *defined* value
+ * @example
+ * ```ts
+ * const options = {}
+ *
+ * def(options.value, "default")
+ * // -> "default"
+ * ```
+ * @category Util
  */
 export const def = <T>(...values: T[]): T =>
   values.find((value) => typeof value !== "undefined")
@@ -8,6 +16,7 @@ export const def = <T>(...values: T[]): T =>
  * Calls each function with the current argument
  * and its result is used for the next call
  * @param initial value to be passed through the pipeline
+ * @category Util
  */
 export const compose = <T>(
   value: unknown,
@@ -29,10 +38,14 @@ export const compose = <T>(
 /**
  * Simple delay of execution. Use like this: `await timeout(50)`
  * @param ms milliseconds
+ * @category Util
  */
 export const timeout = (ms: number): Promise<unknown> =>
   new Promise((resolve) => setTimeout(resolve, ms))
 
+/**
+ * @category Util
+ */
 export const isMap = (thing: unknown): thing is Map<any, any> => {
   try {
     // throws if o is not an object or has no [[MapData]]
@@ -45,6 +58,7 @@ export const isMap = (thing: unknown): thing is Map<any, any> => {
 
 /**
  * Has somewhat same interface to native Map
+ * @category Util
  */
 export const isMapLike = (thing: unknown): boolean => {
   if (isMap(thing)) {
@@ -62,6 +76,9 @@ export const isMapLike = (thing: unknown): boolean => {
   }
 }
 
+/**
+ * @category Util
+ */
 export const isSet = (thing: unknown): thing is Set<any> => {
   try {
     // throws if o is not an object or has no [[SetData]]
@@ -72,6 +89,9 @@ export const isSet = (thing: unknown): thing is Set<any> => {
   }
 }
 
+/**
+ * @category Util
+ */
 export function applyMixins(derivedCtor: AnyClass, baseCtors: any[]): void {
   baseCtors.forEach((baseCtor) => {
     Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {

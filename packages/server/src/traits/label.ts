@@ -3,15 +3,20 @@ import { def } from "@cardsgame/utils"
 
 import type { State } from "../state"
 
+/**
+ * Adds `name` and `type` properties, useful for querying on server-side and for choosing client-side component.
+ *
+ * > TODO: I might move `type` to base Entity class, seems I'm using `type` everywhere anyway
+ */
 export class LabelTrait {
   /**
-   * @memberof LabelTrait
+   * @category LabelTrait
    */
   name: string
   /**
    * Type should be unique to schema object! If you're extending this schema
    * and adding new fields - set the new type string!
-   * @memberof LabelTrait
+   * @category LabelTrait
    */
   type: string
 }
@@ -25,6 +30,9 @@ LabelTrait["trait"] = function constructLabelTrait(
   this.type = def(options.type, this.type, "entity")
 }
 
+/**
+ * @category Trait
+ */
 export function hasLabel(entity: unknown): entity is LabelTrait {
   return (
     !!entity &&

@@ -19,11 +19,19 @@ const sanitizeIdxPath = (value: unknown): number => {
   return 998
 }
 
+/**
+ * Converts players message from the Client into `ServerPlayerMessage`.
+ * Populates message with known server-side data
+ */
 export function populatePlayerEvent(
   state: State,
   message: ClientPlayerMessage,
   clientID: string
 ): ServerPlayerMessage
+/**
+ * Converts players message from the Client into `ServerPlayerMessage`.
+ * Populates message with known server-side data
+ */
 export function populatePlayerEvent(
   state: State,
   message: ClientPlayerMessage,

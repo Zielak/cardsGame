@@ -13,6 +13,9 @@ type ConditionsFlag =
   | "eitherLevel"
   | "_rootReference"
 
+/**
+ * @category Conditions
+ */
 export function getFlag(
   target: Record<string, any>,
   flagName: ConditionsFlag

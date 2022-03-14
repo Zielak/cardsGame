@@ -19,9 +19,11 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
    * but first argument is new Conditions instance.
    * This `con` will have its own subject set to each item of current subject.
    * @example
+   * ```ts
    * con.get("chosenCards").children.every((con, item, index, array) => {
    *   con.its("rank").oneOf(["2", "3"])
    * })
+   * ```
    * @yields back anything that was before `.every()` command so you can chain it further
    */
   every(
@@ -60,9 +62,11 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
    * but first argument is new Conditions instance.
    * This `con` will have its own subject set to each item of current subject.
    * @example
+   * ```ts
    * con.get("chosenCards").children.some((con, item, index, array) => {
    *   con.its("rank").matchesPropOf("pileTop")
    * })
+   * ```
    * @yields back anything that was before `.some()` command so you can chain it further
    */
   some(

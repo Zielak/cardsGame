@@ -13,6 +13,9 @@ import { OwnershipTrait } from "../traits/ownership"
 import { ParentTrait } from "../traits/parent"
 import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
+/**
+ * @category Grid
+ */
 export function isGrid(entity: unknown): entity is Grid {
   return typeof entity === "object" && "columns" in entity && "rows" in entity
 }
@@ -34,32 +37,32 @@ export function isGrid(entity: unknown): entity is Grid {
 ])
 export class Grid extends Entity<GridOptions> {
   /**
-   * @memberof Grid
+   * @category Grid
    */
   @type("uint8") columns: number
   /**
-   * @memberof Grid
+   * @category Grid
    */
   @type("uint8") rows: number
 
   // @type("number") cellSpacing: number
 
   /**
-   * @memberof Grid
+   * @category Grid
    */
   @type("string") justify: GridJustify
   /**
-   * @memberof Grid
+   * @category Grid
    */
   @type("string") justifyItems: GridJustifyItems
   /**
-   * @memberof Grid
+   * @category Grid
    */
   @type("string") alignItems: GridAlignItems
 
   /**
    * Grid comment at grid file
-   * @memberof Grid
+   * @category Grid
    */
   itemAngle: number
 

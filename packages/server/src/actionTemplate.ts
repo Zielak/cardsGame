@@ -31,6 +31,9 @@ export interface ActionTemplate<S extends State> {
 
 export type ActionsSet<S extends State> = Set<ActionTemplate<S>>
 
+/**
+ * @ignore
+ */
 export interface EntitiesActionTemplate<S extends State>
   extends ActionTemplate<S> {
   /**
@@ -38,6 +41,9 @@ export interface EntitiesActionTemplate<S extends State>
    */
   interaction: (player: Player) => QuerableProps[]
 }
+/**
+ * @ignore
+ */
 export interface EventActionTemplate<S extends State>
   extends ActionTemplate<S> {
   /**

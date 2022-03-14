@@ -3,6 +3,11 @@ import Chalk from "chalk"
 import { noop } from "./functions"
 import { isBrowser, minifyEntity } from "./logger/utils"
 
+/**
+ * `Chalk` instance used internally by server-side lib.
+ *
+ * > TODO: Hide it from public use?
+ */
 export const chalk = new Chalk.Instance({
   level: isBrowser ? 0 : 1,
 })

@@ -1,30 +1,41 @@
-# Documentation
+# Website
 
-Think of the games here like the real-life games: a pack of 52 cards, sometimes with jokers, or a box of chess pieces and checker board. Once you start the game, the number of game elements doesn't change. They're always there on the table and you don't spontaneously create new cards out of thin air.
+This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
-Game elements are called `entities`. All entities and all their information are preserved in the `game state`. The information includes: their location, ownership to player, name, is it face up, etc. Entities are a mixture of `traits`, which enable them to hold such information but also can provide additional functionalities.
+### Installation
 
-## Client-server communication
+```
+$ yarn
+```
 
-Player can interact either with game elements (entities) or UI elements. Such interaction should be converted to a message object by game author.
+### Local Development
 
-Client-side library sends a message to the server, where it is received and translated into player's intention.
+```
+$ yarn start
+```
 
-From now `CommandsManager` takes this message and tries to figure out:
+This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
-- is any other action still pending?
-- does the interaction relate to any defined `actionTemplate`?
-- will any pre-defined action's `conditions` allow to execute such interaction?
+### Build
 
-If commands manager finds at least one possible, legal, game action to take, it executes its `command` and keeps it in the history.
+```
+$ yarn build
+```
 
-Commands job is mainly to change game state in some way. For example: move card to another container, change points on one player, or present player with some UI to make choice.
+This command generates static content into the `build` directory and can be served using any static contents hosting service.
 
-Such change is then sent back to all clients with state change event.
+### Deployment
 
----
+Using SSH:
 
-- ♥ kier - Hearts
-- ♠ pik - Spades
-- ♦ karo - Diamonds
-- ♣ trefl - Clubs
+```
+$ USE_SSH=true yarn deploy
+```
+
+Not using SSH:
+
+```
+$ GIT_USER=<Your GitHub username> yarn deploy
+```
+
+If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.

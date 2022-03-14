@@ -93,7 +93,8 @@ interface Conditions<S, C extends Conditions<S, C>> {
    * Looks for a child entity by their `props`, starting from current subject.
    *
    * @yields an entity, found by alias or `QuerableProps` query
-   * @example ```
+   * @example
+   * ```ts
    * con({name: 'deck'}).as('deck')
    * ```
    */
@@ -104,7 +105,8 @@ interface Conditions<S, C extends Conditions<S, C>> {
    * for another entity by their `props`.
    *
    * @yields an entity, found by alias or `QuerableProps` query
-   * @example ```
+   * @example
+   * ```ts
    * con('deck', {rank: 'K'})
    * ```
    */

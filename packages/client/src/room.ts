@@ -70,9 +70,8 @@ export class Room<MoreProps = Record<string, any>> {
 
   /**
    * Send a custom message from client to server.
-   * @param {ClientPlayerMessage} message
    */
-  send(type: string, message = undefined): void {
+  send(type: string, message?: ClientPlayerMessage): void {
     logs.debug("Sending:", type, JSON.stringify(message))
     this.room.send(type, message)
   }

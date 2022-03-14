@@ -6,6 +6,8 @@ import { globalEntitiesContext } from "./entitiesContext"
 /**
  * Decorator!
  * Register an entity class as possible child for any other parent entities.
+ *
+ * @category Annotation
  */
 export function canBeChild(childConstructor: AnyClass): void {
   // logs.debug("canBeChild", childConstructor.name)

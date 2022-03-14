@@ -10,33 +10,53 @@ import type { State } from "."
 /**
  * Will get you an index of given player in turn queue.
  * Useful if you happen to have just a `Player` reference at hand.
+ *
+ * @category State
  */
 export function getPlayersIndex(state: State, player: Player): number {
   return state.players.findIndex((p) => p === player)
 }
 
+/**
+ * @category State
+ */
 export function getNextPlayerIdx(state: State): number {
   const current = limit(state.currentPlayerIdx, 0, state.players.length - 1)
   return current + 1 === state.players.length ? 0 : current + 1
 }
 
+/**
+ * @category State
+ */
 export function getNextPlayer(state: State): Player {
   return state.players[getNextPlayerIdx(state)]
 }
 
+/**
+ * @category State
+ */
 export function getPreviousPlayerIdx(state: State): number {
   const current = limit(state.currentPlayerIdx, 0, state.players.length - 1)
   return current - 1 === -1 ? state.players.length - 1 : current - 1
 }
 
+/**
+ * @category State
+ */
 export function getPreviousPlayer(state: State): Player {
   return state.players[getPreviousPlayerIdx(state)]
 }
 
+/**
+ * @category State
+ */
 export function getPlayerByName(state: State, name: string): Player {
   return state.players.find((player) => player.name === name)
 }
 
+/**
+ * @category State
+ */
 export function getAllBots(state: State): Bot[] {
   return state.players.filter((player) => isBot(player)) as Bot[]
 }
@@ -44,6 +64,8 @@ export function getAllBots(state: State): Bot[] {
 /**
  * Gets an array of all entities from the top-most parent
  * to the lowest of the child.
+ *
+ * @category State
  */
 export function getEntitiesAlongPath(
   state: State,

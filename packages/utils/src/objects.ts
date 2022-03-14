@@ -1,3 +1,7 @@
+/**
+ *
+ * @category Object
+ */
 export const deepClone = (value: unknown): any => {
   if (typeof value === "function") {
     return value
@@ -21,6 +25,7 @@ export const deepClone = (value: unknown): any => {
 
 /**
  * @returns new object without provided `keys`
+ * @category Object
  */
 export const omit = (
   object: Record<string, any>,
@@ -35,6 +40,7 @@ export const omit = (
 
 /**
  * @returns new object only with provided `keys`
+ * @category Object
  */
 export const pick = (
   object: Record<string, any>,
@@ -49,6 +55,7 @@ export const pick = (
 
 /**
  * Resolves target object/property given source object and path.
+ * @category Object
  */
 export const resolve = (
   sourceObject: Record<string, any>,

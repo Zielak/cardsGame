@@ -7,6 +7,11 @@ import type { State } from "../state"
 import { isChild } from "./child"
 import { isParent } from "./parent"
 
+/**
+ * Entity with this trait can have a reference to `Player`, who "owns" this entity.
+ *
+ * @category Trait
+ */
 export function hasOwnership(entity: unknown): entity is OwnershipTrait {
   return (
     "owner" in (entity as OwnershipTrait) &&
@@ -15,7 +20,7 @@ export function hasOwnership(entity: unknown): entity is OwnershipTrait {
 }
 
 export class OwnershipTrait {
-  protected _owner: Player
+  private _owner: Player
 
   /**
    * Get the real owner of this thing, by traversing `this.parent` chain.
@@ -24,7 +29,7 @@ export class OwnershipTrait {
    *
    * @returns `Player` or `undefined` if this container doesn't belong to anyone
    *
-   * @memberof OwnershipTrait
+   * @category OwnershipTrait
    */
   get owner(): Player | undefined {
     if (this._owner) {
@@ -45,12 +50,12 @@ export class OwnershipTrait {
   }
 
   /**
-   * @memberof OwnershipTrait
+   * @category OwnershipTrait
    */
   ownerID: string
 
   /**
-   * @memberof OwnershipTrait
+   * @category OwnershipTrait
    */
   ownersMainFocus: boolean
 }

@@ -5,6 +5,13 @@ import type { State } from "../state"
 
 import type { ParentTrait } from "./parent"
 
+/**
+ * **Important trait**
+ *
+ * Entity can become a child of any other container/parent.
+ *
+ * @category Trait
+ */
 export function isChild(entity: unknown): entity is ChildTrait {
   return (
     typeof entity === "object" &&
@@ -14,10 +21,13 @@ export function isChild(entity: unknown): entity is ChildTrait {
 }
 
 export class ChildTrait {
+  /**
+   * @category ChildTrait
+   */
   parent: ParentTrait
 
   /**
-   * @memberof ChildTrait
+   * @category ChildTrait
    */
   idx: number
 
@@ -33,6 +43,8 @@ export class ChildTrait {
 
   /**
    * Points out if this element can be target of any interaction
+   *
+   * @category ChildTrait
    */
   isInteractive(): boolean {
     if (this.parent.hijacksInteractionTarget) {
@@ -43,6 +55,8 @@ export class ChildTrait {
 
   /**
    * TODO: Limit the number of automatic getters. Just make these a `getIdxPath` functions. QueryRunner grabs all the "props" and ignores functions.
+   *
+   * @category ChildTrait
    * @returns array of indexes for this entity access
    */
   get idxPath(): number[] {

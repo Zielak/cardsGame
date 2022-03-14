@@ -32,7 +32,8 @@ class ConditionSubjects {
    * Looks for a child entity by their `props`, starting from current subject.
    *
    * @yields an entity, found by alias or `QuerableProps` query
-   * @example ```
+   * @example
+   * ```ts
    * con.state.get({name: 'deck'}).as('deck')
    * ```
    */
@@ -44,7 +45,8 @@ class ConditionSubjects {
    * for another entity by their `props`.
    *
    * @yields an entity, found by alias or `QuerableProps` query
-   * @example ```
+   * @example
+   * ```ts
    * con.get('deck', {rank: 'K'})
    * ```
    */
@@ -87,11 +89,13 @@ class ConditionSubjects {
    * Changes subject to a prop of its current subject.
    * @yields subject prop's value to be asserted. Will remember the reference to the object, so you can chain key checks
    * @example
+   * ```ts
    * con.entity
    *   .its('propA').equals('foo')
    *   .and.its('propB').above(5)
-   * @example
+   *
    * con().its('customMap').its('propA').equals(true)
+   * ```
    */
   its(propName: string): this {
     setFlag(this, "propName", propName)
@@ -111,7 +115,9 @@ class ConditionSubjects {
   /**
    * Remembers the subject with a given alias
    * @example
+   * ```ts
    * con.get({ name: 'deck' }).as('deck')
+   * ```
    */
   as(refName: string): void {
     ref(this, refName, getFlag(this, "subject"))

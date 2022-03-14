@@ -3,17 +3,25 @@ import { def } from "@cardsgame/utils"
 
 import type { State } from "../state"
 
+/**
+ * Adds `x`, `y` and `angle` to entity,
+ * describing its location and rotation,
+ * relative to its parent.
+ */
 export class LocationTrait {
   /**
-   * @memberof LocationTrait
+   * X offset relative to entity's parent
+   * @category LocationTrait
    */
   x: number
   /**
-   * @memberof LocationTrait
+   * Y offset relative to entity's parent
+   * @category LocationTrait
    */
   y: number
   /**
-   * @memberof LocationTrait
+   * Rotation in degrees
+   * @category LocationTrait
    */
   angle: number
 }

@@ -39,12 +39,12 @@ interface TopDeckElement {
 export class Deck extends Entity<DeckOptions> {
   /**
    * Number of child elements synchronized to the client.
-   * @memberof Deck
+   * @category Deck
    */
   @type("uint16") childCount: number
 
   /**
-   * @memberof Deck
+   * @category Deck
    */
   @type(TopDeckElement) topDeck: TopDeckElement
 

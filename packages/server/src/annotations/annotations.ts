@@ -2,6 +2,9 @@ import { logs } from "@cardsgame/utils"
 
 import { type } from "./type"
 
+/**
+ * @ignore
+ */
 export const synchChildrenArray = (
   parentConstructor: AnyClass,
   childrenConstructor: AnyClass

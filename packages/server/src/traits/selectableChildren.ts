@@ -5,8 +5,6 @@ import { type } from "../annotations/type"
 import type { ChildTrait } from "./child"
 import { isParent, ParentTrait } from "./parent"
 
-// TODO: This trait is clearly dependant on ParentTrait. There should be a way of checking/ensuring this dependency is met
-
 class SelectedChildData extends Schema {
   @type("uint16") childIndex: number
   @type("uint8") selectionIndex: number
@@ -31,6 +29,13 @@ export function hasSelectableChildren(
   )
 }
 
+/**
+ * Used on **container** - its children can now be selected by players.
+ *
+ * Holds indexes of selected children and in which order were these chosen.
+ *
+ * > TODO: This trait is clearly dependant on ParentTrait. There should be a way of checking/ensuring this dependency is met
+ */
 export class SelectableChildrenTrait {
   selectedChildren: ArraySchema<SelectedChildData>
 

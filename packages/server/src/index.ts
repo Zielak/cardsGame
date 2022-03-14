@@ -1,4 +1,6 @@
 import * as commands from "./commands"
+import * as entities from "./entities"
+import * as traits from "./traits"
 
 export { LobbyRoom, Server } from "@colyseus/core"
 export { WebSocketTransport } from "@colyseus/ws-transport"
@@ -11,7 +13,7 @@ export { defineTypes, type } from "./annotations/type"
 
 export * from "./bots/botNeuron"
 
-export { commands }
+export { commands, entities, traits }
 
 export * from "./command"
 
@@ -28,21 +30,5 @@ export { ClientMessageConditions } from "./interaction"
 
 export { Player, ServerPlayerMessage } from "./players/player"
 export { Bot } from "./players/bot"
-
-export { type CommonKeysToIgnore, type EveryEntity } from "./queryRunner"
-
-export * from "./traits/boxModel"
-export * from "./traits/child"
-export * from "./traits/entity"
-export * from "./traits/flexyContainer"
-export * from "./traits/identity"
-export * from "./traits/label"
-export * from "./traits/location"
-export * from "./traits/ownership"
-export * from "./traits/parent"
-export * from "./traits/selectableChildren"
-export * from "./traits/twoSided"
-
-export * from "./entities"
 
 export { populatePlayerEvent } from "./utils/populatePlayerEvent"

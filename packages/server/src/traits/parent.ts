@@ -9,6 +9,20 @@ import type { ChildTrait } from "./child"
 import { executeHook } from "./entity"
 import errors from "./parent/errors"
 
+/**
+ * **Important trait**
+ *
+ * Entity will behave as container to hold all other entities with `ChildTrait`.
+ *
+ * Has many methods for adding, fetching, removing and manipulating order of children.
+ *
+ * Can behave as:
+ *
+ * - an array - all children are indexed next to each other
+ * - a map - there can be empty spaces between children
+ *
+ * @category Trait
+ */
 export function isParent(entity: unknown): entity is ParentTrait {
   return (
     typeof entity == "object" &&
@@ -20,9 +34,15 @@ export function isParent(entity: unknown): entity is ParentTrait {
 export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void
 
+/**
+ * @category Trait
+ */
 export const hasChildren = (entity: unknown): boolean =>
   isParent(entity) ? entity.countChildren() > 0 : false
 
+/**
+ * @ignore
+ */
 export const getKnownConstructor = (entity: ChildTrait): AnyClass =>
   globalEntitiesContext.registeredChildren.find((con) => entity instanceof con)
 
@@ -30,17 +50,21 @@ export class ParentTrait {
   /**
    * ChildTrait object -> its constructor's name
    * Also good spot to count all children
-   * @memberof ParentTrait
+   * @category ParentTrait
    */
   childrenPointers: Map<ChildTrait, string>
 
   /**
-   * @memberof ParentTrait
+   * Used by [ChildTrait.`isInteractive`](traits.ChildTrait#isinteractive).
+   *
+   * If set to true, will prevent its direct children from getting interaction events.
+   *
+   * @category ParentTrait
    */
   hijacksInteractionTarget: boolean
   /**
    * @default Infinity
-   * @memberof ParentTrait
+   * @category ParentTrait
    */
   maxChildren: number
   /**
@@ -49,7 +73,7 @@ export class ParentTrait {
    * - map: no automatic movement is performed, adding to first empty spot,
    *   otherwise you need to ensure given spot isn't occupied
    * @default "array"
-   * @memberof ParentTrait
+   * @category ParentTrait
    */
   collectionBehaviour: "array" | "map"
 

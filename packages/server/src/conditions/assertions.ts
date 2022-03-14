@@ -106,8 +106,10 @@ class ConditionAssertions {
   /**
    * @asserts that subject can't hold any more new items.
    * @example
+   * ```ts
    * // Check if grid has some space available
    * con.entity.is.not.full()
+   * ```
    */
   full(): this {
     const subject = getFlag(this, "subject")
@@ -373,7 +375,9 @@ class ConditionAssertions {
   /**
    * @asserts that chosen prop value matches the same prop on other subject
    * @example
+   * ```ts
    * con.entity.its("rank").matchesPropOf("pileTop")
+   * ```
    */
   matchesPropOf(refName: string): this {
     // don't? TODO: accept queryProps?
@@ -522,11 +526,13 @@ class ConditionAssertions {
    * Runs given callback with current `subject` as the only argument.
    * @asserts if given callback returns truthy
    * @example
+   * ```ts
    * const isKing = (card: ClassicCard) => {
    *   return card.rank === "K"
    * }
    * // Will test if target of interaction is in fact a King
    * con.entity.test(isKing)
+   * ```
    */
   test(tester: (subject: any) => boolean): this {
     const subject = getFlag(this, "subject")
@@ -552,6 +558,7 @@ class ConditionAssertions {
    * Ignores current subject and instead is based on `state` and `player`.
    * @asserts
    * @example
+   * ```ts
    * // player has ANY UI revealed
    * con.revealedUI()
    * // player doesn't have ANY UI revealed
@@ -560,6 +567,7 @@ class ConditionAssertions {
    * con.revealedUI("rankChooser")
    * // player doesn't have "rankChooser" revealed
    * con.not.revealedUI("rankChooser")
+   * ```
    */
   revealedUI(uiKey?: string): this {
     const { ui } = getFlag(this, "state") as State
