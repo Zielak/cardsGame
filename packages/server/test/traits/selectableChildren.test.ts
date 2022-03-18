@@ -191,3 +191,18 @@ describe("counting", () => {
     expect(parent.countUnselectedChildren()).toBe(3)
   })
 })
+
+describe("getSelectionIndex", () => {
+  it("gets index of selected child", () => {
+    parent.selectChildAt(1)
+
+    expect(parent.getSelectionIndex(1)).toBe(0)
+  })
+  it("returns undefined on not selected child", () => {
+    expect(parent.getSelectionIndex(0)).toBe(undefined)
+    expect(parent.getSelectionIndex(1)).toBe(undefined)
+    expect(parent.getSelectionIndex(2)).toBe(undefined)
+    expect(parent.getSelectionIndex(3)).toBe(undefined)
+    expect(parent.getSelectionIndex(4)).toBe(undefined)
+  })
+})

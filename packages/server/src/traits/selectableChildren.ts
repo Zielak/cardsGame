@@ -81,14 +81,13 @@ export class SelectableChildrenTrait {
   }
 
   /**
-   * In which order was nth child selected
-   * @param childIndex
+   * In which order was nth child selected. Returns `undefined` on index of UNselected child.
+   * @param childIndex index of child
    */
   getSelectionIndex(childIndex: number): number {
     return this.selectedChildren.find((data) => data?.childIndex === childIndex)
-      .selectionIndex
+      ?.selectionIndex
   }
-
   /**
    * Number of selected child elements
    */
