@@ -1,4 +1,3 @@
-import { logs } from "@cardsgame/utils"
 import {
   Context,
   DefinitionType,
@@ -31,7 +30,7 @@ export function type(
       if (!context.registeredTypeDefinitions.has(constructor.name)) {
         context.registeredTypeDefinitions.set(constructor.name, new Map())
       }
-      // logs.verbose("child type:", `${constructor.name}.${field} ${logType}`)
+      // logs.debug("child type:", `${constructor.name}.${field} ${logType}`)
       context.registeredTypeDefinitions
         .get(constructor.name)
         .set(field, typeDef)

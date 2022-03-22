@@ -26,7 +26,7 @@ export class OwnershipTrait {
    *
    * @memberof OwnershipTrait
    */
-  get owner(): Player {
+  get owner(): Player | undefined {
     if (this._owner) {
       return this._owner
     }

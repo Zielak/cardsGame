@@ -46,7 +46,7 @@ export class PlaceOnGrid extends Command {
       throw new Error(`PlaceOnGrid, Entity is required.`)
     }
 
-    logs.notice(
+    logs.log(
       _,
       "moving",
       hasLabel(entity) ? `${entity.type}:${entity.name}` : "",

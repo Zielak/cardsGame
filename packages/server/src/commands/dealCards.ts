@@ -73,7 +73,8 @@ export class DealCards extends Command {
         )
 
         // Pick next target if we dealt `this.step` cards to current target
-        if (++stepIdx % this.step === 0) {
+        stepIdx++
+        if (stepIdx % this.step === 0) {
           targetIter++
         }
 

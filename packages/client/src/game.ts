@@ -26,7 +26,7 @@ export class Game {
   wss: WSSOptions
 
   constructor(options: IGameOptions = {}) {
-    logs.verbose("GAME", "constructor")
+    logs.debug("GAME", "constructor")
 
     this.wss = {
       host: def(
@@ -94,13 +94,13 @@ export class Game {
     })
   }
 
-  getAvailableRooms(gameName?: string): Promise<RoomAvailable<any>[]> {
+  getAvailableRooms(gameName?: string): Promise<RoomAvailable[]> {
     return this.client.getAvailableRooms(gameName)
   }
 
   // TODO: reconsider it, maybe this method is useless?
   destroy(): void {
-    logs.verbose("GAME", "destroy()")
+    logs.debug("GAME", "destroy()")
     if (this.room) {
       this.room.leave()
       this.room = null

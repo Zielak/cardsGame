@@ -3,6 +3,14 @@ import { def } from "@cardsgame/utils"
 
 import type { State } from "../state"
 
+type JustifyContent =
+  | "start"
+  | "end"
+  | "center"
+  | "spaceBetween"
+  | "spaceAround"
+  | "spaceEvenly"
+
 export class FlexyTrait {
   /**
    * @memberof FlexyTrait
@@ -15,13 +23,7 @@ export class FlexyTrait {
   /**
    * @memberof FlexyTrait
    */
-  justifyContent:
-    | "start"
-    | "end"
-    | "center"
-    | "spaceBetween"
-    | "spaceAround"
-    | "spaceEvenly"
+  justifyContent: JustifyContent
 }
 
 FlexyTrait["trait"] = function constructFlexyTrait(

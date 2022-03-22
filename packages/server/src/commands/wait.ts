@@ -1,7 +1,7 @@
 import { Command } from "../command"
 
 export class Wait extends Command {
-  constructor(private time: number) {
+  constructor(private readonly time: number) {
     super()
   }
 

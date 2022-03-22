@@ -32,7 +32,7 @@ export class ChangeIdx extends Command {
       logs.error("ChangeIdx", `I don't have an entity to move!`)
       return
     }
-    logs.notice(
+    logs.log(
       _,
       "moving",
       entities.map((e) => (hasLabel(e) ? e.name : "")),

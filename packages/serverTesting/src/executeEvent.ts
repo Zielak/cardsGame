@@ -1,9 +1,4 @@
-import type {
-  ActionTemplate,
-  Room,
-  ServerPlayerMessage,
-  State,
-} from "@cardsgame/server"
+import type { Room, ServerPlayerMessage, State } from "@cardsgame/server"
 
 import type { RoomGetter } from "./types"
 

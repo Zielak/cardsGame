@@ -30,10 +30,7 @@ export class NextPlayer extends Command {
     this.lastIdx = state.currentPlayerIdx
     state.currentPlayerIdx = next
 
-    logs.notice(
-      this.name,
-      `now it's ${state.currentPlayer.clientID} player turn`
-    )
+    logs.log(this.name, `now it's ${state.currentPlayer.clientID} player turn`)
 
     const cmdsPost = room.onPlayerTurnStarted(state.currentPlayer)
     if (cmdsPost) {
@@ -73,10 +70,7 @@ export class PreviousPlayer extends Command {
     this.lastIdx = state.currentPlayerIdx
     state.currentPlayerIdx = previous
 
-    logs.notice(
-      this.name,
-      `now it's ${state.currentPlayer.clientID} player turn`
-    )
+    logs.log(this.name, `now it's ${state.currentPlayer.clientID} player turn`)
 
     const cmdsPost = room.onPlayerTurnStarted(state.currentPlayer)
     if (cmdsPost) {

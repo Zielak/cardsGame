@@ -14,8 +14,13 @@ export const compare = (arrayA: any[], arrayB: any[]): boolean =>
 /**
  * Function for `array.sort()`.
  */
-export const sortAlphabetically = (a: string, b: string): number =>
-  a < b ? -1 : a > b ? 1 : 0
+export const sortAlphabetically = (a: string, b: string): number => {
+  if (a < b) {
+    return -1
+  } else if (a > b) {
+    return 1
+  } else return 0
+}
 
 /**
  * Function for `array.sort()`.
@@ -27,7 +32,11 @@ export const sortAlphaNumerically = (a: string, b: string): number => {
   if (numA !== false && numB !== false) {
     return numA - numB
   }
-  return a < b ? -1 : a > b ? 1 : 0
+  if (a < b) {
+    return -1
+  } else if (a > b) {
+    return 1
+  } else return 0
 }
 
 /**
@@ -73,9 +82,9 @@ export function pickMostCommonProp<T = any>(
     })
 
   const mostCommonProp: [string, number] = [undefined, 0]
-  map.forEach((count, propKey) => {
+  map.forEach((count, key) => {
     if (count > mostCommonProp[1]) {
-      mostCommonProp[0] = propKey
+      mostCommonProp[0] = key
       mostCommonProp[1] = count
     }
   })

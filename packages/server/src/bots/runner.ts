@@ -64,7 +64,7 @@ export class BotRunner<S extends State> {
     const goal = pickNeuron(this.neuronTree, this.room.state, bot)
 
     if (goal) {
-      logs.notice("Bots", `${bot.clientID} chose goal: ${goal.neuron.name}`)
+      logs.log("Bots", `${bot.clientID} chose goal: ${goal.neuron.name}`)
 
       bot.currentThought = goal
 
@@ -79,7 +79,7 @@ export class BotRunner<S extends State> {
         }, delay * 1000 * (goal.neuron.thinkScale || 1))
       }
     } else {
-      logs.notice("Bots", `no goals for ${bot.clientID}`)
+      logs.log("Bots", `no goals for ${bot.clientID}`)
     }
   }
 

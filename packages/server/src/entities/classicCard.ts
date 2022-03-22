@@ -21,7 +21,7 @@ import { TwoSidedTrait } from "../traits/twoSided"
 //   client: any,
 //   value: any
 // ): boolean {
-//   logs.notice("faceDownOnlyOwner", this.name, ":", value)
+//   logs.log("faceDownOnlyOwner", this.name, ":", value)
 //   // 1. To everyone only if it's faceUp
 //   // 2. To owner, only if it's in his hands
 //   return (

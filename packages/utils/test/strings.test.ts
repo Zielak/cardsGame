@@ -2,7 +2,7 @@ import { camelCase, sentenceCase, trim } from "../src/strings"
 
 describe("trim", () => {
   test(`default arguments`, () => {
-    expect(trim()).toBe("")
+    expect(trim()).toStrictEqual("")
     expect(trim().length).toBe(0)
     expect(trim("12345678910").length).toBe(7)
   })
@@ -16,6 +16,17 @@ describe("trim", () => {
   test(`last character is ellipsis`, () => {
     expect(trim("lorem ipsum", 6)[5]).toBe("…")
     expect(trim("           ", 3)[2]).toBe("…")
+  })
+
+  test(`returns empty string given non string value`, () => {
+    // @ts-ignore
+    expect(trim([])).toBe("")
+    // @ts-ignore
+    expect(trim({})).toBe("")
+    // @ts-ignore
+    expect(trim(15)).toBe("")
+    // @ts-ignore
+    expect(trim(function () {})).toBe("")
   })
 })
 

@@ -17,7 +17,7 @@ export class Player extends Schema implements IPlayerDefinition {
     this.clientID = options.clientID
     this.name = def(options.name, getRandomName())
 
-    logs.notice("Player", `created new: "${this.clientID}", "${this.name}"`)
+    logs.log("Player", `created new: "${this.clientID}", "${this.name}"`)
   }
 }
 

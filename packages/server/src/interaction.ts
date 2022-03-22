@@ -20,7 +20,7 @@ export const filterActionsByInteraction =
     ) {
       const interactions = action.interaction(message.player)
 
-      logs.verbose(
+      logs.debug(
         action.name,
         `got`,
         interactions.length,
@@ -37,7 +37,7 @@ export const filterActionsByInteraction =
           .some((entity) => {
             const result = queryRunner(definition)(entity)
             if (result) {
-              logs.notice(action.name, "match!")
+              logs.log(action.name, "match!")
             }
             return result
           })
@@ -103,7 +103,7 @@ export const filterActionsByConditions =
     }
 
     if (errorMessage) {
-      logs.verbose("\t", errorMessage)
+      logs.debug("\t", errorMessage)
     }
 
     logs.groupEnd(

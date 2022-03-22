@@ -138,17 +138,19 @@ export class SelectableChildrenTrait {
       throw new Error(`ensureIndex | I'm not a parent!`)
     }
 
-    if (typeof index !== "number")
+    if (typeof index !== "number") {
       throw new Error(`ensureIndex | should be a number!`)
+    }
 
     if (index < 0) {
       throw new Error(`ensureIndex | can't go negative on me: ${index}`)
     }
 
-    if (this.countChildren() - 1 < index)
+    if (this.countChildren() - 1 < index) {
       throw new Error(
         `ensureIndex | this parent doesn't have child at index ${index}`
       )
+    }
   }
 }
 

@@ -70,14 +70,14 @@ const grabAllInteractionEntities = <S extends State>(
   const { action } = neuron
 
   if (!action || !isInteractionOfEntities(action)) {
-    logs.verbose(`not an action of entities`)
+    logs.debug(`not an action of entities`)
     return []
   }
 
   // Grab all entities from INTERACTIONS
   const queries = action.interaction(bot)
 
-  logs.verbose(
+  logs.debug(
     `Action "${chalk.bold(action.name)}" has ${queries.length} QuerableProps`
   )
 
@@ -104,7 +104,7 @@ const getNeuronsAvailableEvents = <S extends State>(
       auxillaryEntitiesFilter(state, bot, neuron)
     )
 
-    logs.verbose(
+    logs.debug(
       `Entities: ${allEntities.length} => post aux: ${interactionTargets.length}`
     )
 
@@ -119,12 +119,12 @@ const getNeuronsAvailableEvents = <S extends State>(
       )
       // and test if such event would pass
       .filter((event) => {
-        logs.verbose("entity.idxPath:", event.entityPath)
+        logs.debug("entity.idxPath:", event.entityPath)
         const serverEvent = populatePlayerEvent(state, event, bot)
         return filterActionsByConditions(state, serverEvent)(neuron.action)
       })
 
-    logs.verbose(`\`-> testedEvents ${testedEvents.length}`)
+    logs.debug(`\`-> testedEvents ${testedEvents.length}`)
 
     return testedEvents
   } else if (isInteractionOfEvent(neuron.action)) {
@@ -174,29 +174,29 @@ export const pickNeuron = <S extends State>(
   )
 
   // 1. Filter all current level neurons by their own conditions
-  logs.verbose(chalk.white("Conditions of Neurons:"))
+  logs.debug(chalk.white("Conditions of Neurons:"))
   const neurons = rootNeuron.children.filter(filterNeuronConditions(state, bot))
   if (neurons.length === 0) {
     logs.groupEnd(`Discarded ALL neurons, abort ${_time(_start)}.`) // End root logs group
     return undefined
   } else {
     neurons.forEach((neuron) => {
-      logs.verbose(`${chalk.bgGreen.white(" ✔︎ ")} ${neuron.name}`)
+      logs.debug(`${chalk.bgGreen.white(" ✔︎ ")} ${neuron.name}`)
     })
   }
   const _countByConditions = neurons.length
-  logs.verbose(
+  logs.debug(
     `${rootNeuron.children.length} neurons => ${_countByConditions} neurons`
   )
 
   // 2. Sort by their values
-  logs.verbose(chalk.white("Values:"))
+  logs.debug(chalk.white("Values:"))
   neurons.sort((a, b) => b.value(state, bot) - a.value(state, bot))
   neurons.forEach((neuron) => {
-    logs.verbose(`$${decimal(neuron.value(state, bot))} -> ${neuron.name}`)
+    logs.debug(`$${decimal(neuron.value(state, bot))} -> ${neuron.name}`)
   })
 
-  logs.verbose(chalk.white("Simulating events:"))
+  logs.debug(chalk.white("Simulating events:"))
   const results = neurons
     .map((neuron) => {
       // 3. For each child neuron, repeat `pickNeuron` now.

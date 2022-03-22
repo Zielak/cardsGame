@@ -19,13 +19,7 @@ export function makeEvent<S extends State>(
   message: RawInteractionClientPlayerMessage,
   messageType = "EntityInteraction"
 ): ServerPlayerMessage {
-  const result = populatePlayerEvent(
-    state,
-    { ...message, messageType },
-    CLIENT_ID
-  )
-
-  return result
+  return populatePlayerEvent(state, { ...message, messageType }, CLIENT_ID)
 }
 
 export function makeEventSetup<S extends State>(

@@ -39,7 +39,7 @@ export function botRemove(
   message: { id: string }
 ): void {
   const bot = message.id
-    ? this.botClients.find((bot) => bot.clientID === message.id)
+    ? this.botClients.find((entry) => entry.clientID === message.id)
     : this.botClients[this.botClients.length - 1]
 
   if (bot) {

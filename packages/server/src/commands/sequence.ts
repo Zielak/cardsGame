@@ -25,7 +25,7 @@ export class Sequence extends Command {
   async execute(state: State, room: Room<any>): Promise<void> {
     logs.group(`Commands group: ${this.name}._executeSubCommands()`)
     for (const command of this._subCommands) {
-      logs.notice(`- ${command.name}: executing`)
+      logs.log(`- ${command.name}: executing`)
       await command.execute(state, room)
     }
     logs.groupEnd()

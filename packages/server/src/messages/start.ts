@@ -25,7 +25,7 @@ export function start(this: Room<State>, client: Client, message: any): void {
     // We can go, convert all connected clients into players
     shuffle(
       this.clients
-        .map((client) => new Player({ clientID: client.sessionId }))
+        .map((entry) => new Player({ clientID: entry.sessionId }))
         .concat(this.botClients)
     ).forEach((player) => {
       state.players.push(player)

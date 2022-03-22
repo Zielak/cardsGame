@@ -13,7 +13,7 @@ import { globalEntitiesContext } from "./entitiesContext"
  */
 export function containsChildren(childrenSynced = true) {
   return function containsChildrenDec(parentConstructor: typeof Entity): void {
-    logs.verbose("containsChildren", parentConstructor.name)
+    logs.debug("containsChildren", parentConstructor.name)
 
     const context = globalEntitiesContext
 

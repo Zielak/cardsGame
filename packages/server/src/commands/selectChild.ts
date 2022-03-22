@@ -9,13 +9,13 @@ import type { SelectableChildrenTrait } from "../traits/selectableChildren"
 type ParentSelecta = SelectableChildrenTrait & ParentTrait
 
 const logSelectedChildren = (parent: ParentSelecta): void => {
-  logs.verbose(
+  logs.debug(
     "selected.$items:",
     Array.from(parent.selectedChildren["$items"].entries()).map(
       ([key, value]) => `[${key}]=${value}`
     )
   )
-  logs.verbose(
+  logs.debug(
     "selected.$indexes:",
     Array.from(parent.selectedChildren["$indexes"].entries()).map(
       ([key, value]) => `[${key}]=${value}`
@@ -55,7 +55,7 @@ export class Select extends Command {
       })
     }
 
-    logs.verbose(
+    logs.debug(
       `Parent currently has ${parent.countSelectedChildren()} selected children`
     )
     logSelectedChildren(parent)
@@ -99,7 +99,7 @@ export class Deselect extends Command {
       })
     }
 
-    logs.verbose(
+    logs.debug(
       `Parent currently has ${parent.countSelectedChildren()} selected children`
     )
     logSelectedChildren(parent)

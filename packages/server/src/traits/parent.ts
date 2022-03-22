@@ -100,8 +100,8 @@ export class ParentTrait {
 
     // ------ notify
     executeHook.call(this, "childRemoved", idx)
-    updatesLog.forEach(({ from, to }) => {
-      executeHook.call(this, "childIndexUpdated", from, to)
+    updatesLog.forEach((entry) => {
+      executeHook.call(this, "childIndexUpdated", entry.from, entry.to)
     })
 
     removedChild.parent = undefined
@@ -217,7 +217,7 @@ export class ParentTrait {
    */
   moveChildTo(from: number, to: number): void {
     // ----- check
-    if (from == to) {
+    if (from === to) {
       logs.info("moveChildTo | moving to the same spot...")
       return
     }
@@ -228,8 +228,7 @@ export class ParentTrait {
       throw new Error(errors.INDEX_DOESNT_FIT_RANGE(to, this.maxChildren))
     }
 
-    const child = this.getChild(from)
-    if (!child) {
+    if (!this.getChild(from)) {
       throw new Error(errors.MOVECHILDTO_NOTHING_TO_MOVE(from))
     }
 
@@ -242,7 +241,7 @@ export class ParentTrait {
       child.idx = undefined
 
       try {
-        if (direction == 1) {
+        if (direction === 1) {
           updatesLog.push(...this.move(-direction, from + 1, to))
         } else {
           updatesLog.push(...this.move(-direction, to, from - 1))
@@ -290,12 +289,6 @@ export class ParentTrait {
     }
 
     return [...(this.childrenPointers as Map<T, string>).keys()].sort(sortByIdx)
-    // return globalEntitiesContext.registeredChildren
-    //   .reduce((prev, con) => {
-    //     prev.push(...this[`children${con.name}`])
-    //     return prev
-    //   }, [])
-    //   .sort(sortByIdx)
   }
 
   /**
@@ -409,7 +402,9 @@ export class ParentTrait {
    * @param index
    */
   indexFits(index: number): boolean {
-    if (index < 0) return false
+    if (index < 0) {
+      return false
+    }
 
     if (this.maxChildren !== Infinity) {
       return index < this.maxChildren
@@ -421,7 +416,7 @@ export class ParentTrait {
    * Find one item matching props.
    * @param props
    */
-  query<T extends ChildTrait>(props: QuerableProps): T {
+  query<T extends ChildTrait>(props: QuerableProps): T | undefined {
     // Grab all current children
     const children = this.getChildren<T>()
 
@@ -435,7 +430,9 @@ export class ParentTrait {
     // Keep querying for the same props in children if they're also parents
 
     for (const entity of children) {
-      if (!isParent(entity)) continue
+      if (!isParent(entity)) {
+        continue
+      }
 
       const result = entity.query<T>(props)
       if (result) {
@@ -458,7 +455,9 @@ export class ParentTrait {
 
     // Keep querying for the same props in children if they're also parents
     for (const entity of children) {
-      if (!isParent(entity)) continue
+      if (!isParent(entity)) {
+        continue
+      }
 
       result.push(...entity.queryAll<T>(props))
     }
@@ -474,7 +473,9 @@ export class ParentTrait {
    * @param end rightmost child, omit to have only one child moved
    */
   protected move(where: number, start: number, end?: number): IndexUpdate[] {
-    if (where === 0) return
+    if (where === 0) {
+      return []
+    }
 
     if (end === undefined) {
       end = start

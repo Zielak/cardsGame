@@ -38,9 +38,7 @@ export function makeInteraction<S extends State>(
     event,
   }
 
-  const result = populatePlayerEvent(state, message, CLIENT_ID)
-
-  return result
+  return populatePlayerEvent(state, message, CLIENT_ID)
 }
 
 export function makeInteractionSetup<S extends State>(

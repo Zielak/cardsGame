@@ -128,6 +128,8 @@ export function populateState<S extends State>(
       }
     }
   })
+
+  return state
 }
 
 export function populateStateSetup<S extends State>(

@@ -8,7 +8,7 @@ import { globalEntitiesContext } from "./entitiesContext"
  * Register an entity class as possible child for any other parent entities.
  */
 export function canBeChild(childConstructor: AnyClass): void {
-  // logs.verbose("canBeChild", childConstructor.name)
+  // logs.debug("canBeChild", childConstructor.name)
 
   const context = globalEntitiesContext
 

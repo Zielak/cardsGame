@@ -1,13 +1,14 @@
 /**
  * Trim long string with nice ell…
+ * Works only on string, don't put numbers in it.
  */
 export const trim = (string = "", maxLength = 7): string => {
   if (typeof string !== "string") {
-    return
+    return ""
   } else {
     return string.length <= maxLength
       ? string
-      : string.substr(0, maxLength - 1) + "…"
+      : string.substring(0, maxLength - 1) + "…"
   }
 }
 
