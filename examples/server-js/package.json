@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/example-server-js",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "Simplest implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@cardsgame/example-certs": "^0.14.0",
-    "@cardsgame/server": "^0.14.0",
+    "@cardsgame/server": "^0.14.1",
     "@cardsgame/types": "^0.14.0",
-    "@cardsgame/utils": "^0.14.0",
+    "@cardsgame/utils": "^0.14.1",
     "express": "^4.17.1"
   }
 }

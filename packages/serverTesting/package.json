@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/server-testing",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@cardsgame/server": "^0.14.0",
+    "@cardsgame/server": "^0.14.1",
     "@cardsgame/types": "^0.14.0"
   }
 }
