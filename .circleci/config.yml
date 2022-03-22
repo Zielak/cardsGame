@@ -78,7 +78,7 @@ jobs:
           name: Test with coverage (leave cover results for later)
           command: npm run test:ci
 
-        # Persist only on main, for release
+      # `main` branch, persist everything for release
       - when:
           condition:
             equal: ["main", << pipeline.git.branch >>]
@@ -97,6 +97,17 @@ jobs:
                   - packages/*/lib
                   - packages/*/dist
                   - examples/*/dist
+
+      # `development` branch, persist mainly for coveralls
+      - when:
+          condition:
+            equal: ["development", << pipeline.git.branch >>]
+          steps:
+            - persist_to_workspace:
+                root: ~/project
+                paths:
+                  - node_modules
+                  - coverage
 
   release-and-publish:
     executor: my-executor
@@ -172,6 +183,16 @@ workflows:
     jobs:
       - prepare:
           <<: *filters-only-development
+
+      - sonarcloud:
+          <<: *filters-only-development
+          context: SonarCloud
+          requires:
+            - prepare
+      - coverage:
+          <<: *filters-only-development
+          requires:
+            - prepare
 
   # Main -> automatic release
   main-branch:
