@@ -1,6 +1,4 @@
 import * as commands from "./commands"
-import * as entities from "./entities"
-import * as traits from "./traits"
 
 export { LobbyRoom, Server } from "@colyseus/core"
 export { WebSocketTransport } from "@colyseus/ws-transport"
@@ -13,9 +11,8 @@ export { defineTypes, type } from "./annotations/type"
 
 export * from "./bots/botNeuron"
 
-export { commands, entities, traits }
-
 export * from "./command"
+export { commands }
 
 export * from "./room"
 export * from "./state"
@@ -30,5 +27,8 @@ export { ClientMessageConditions } from "./interaction"
 
 export { Player, ServerPlayerMessage } from "./players/player"
 export { Bot } from "./players/bot"
+
+export * from "./traits"
+export * from "./entities"
 
 export { populatePlayerEvent } from "./utils/populatePlayerEvent"

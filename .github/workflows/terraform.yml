@@ -1,0 +1,91 @@
+name: Update infrastructure
+
+on:
+  push:
+    paths:
+      - "terraform/**"
+
+env:
+  TF_DIR: terraform
+  TF_PLAN_OUT: plan.tfout
+
+jobs:
+  plan-apply-infra:
+    name: Infra on ${{ matrix.environment }} environment
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - environment: dev
+            backendFile: config/dev/config.tfbackend
+            varsFile: config/dev/vars.tfvars
+          - environment: prod
+            backendFile: config/prod/config.tfbackend
+            varsFile: config/prod/vars.tfvars
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS creds
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-central-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: setup
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ~> 1.1.0
+
+      - name: lint
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform fmt -recursive -check -diff .
+
+      - name: init
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform init -input=false -backend-config=${{ matrix.backendFile }}
+
+      - name: validate
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform validate
+
+      - name: plan
+        working-directory: ${{ env.TF_DIR }}
+        env:
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        run: |
+          terraform plan \
+            -input=false \
+            -var-file=${{ matrix.varsFile }} \
+            -out=${{ env.TF_PLAN_OUT }}
+
+      - name: Should this one apply?
+        env:
+          ENV: ${{ matrix.environment }}
+        run: |
+          if [[ $GITHUB_REF == "refs/heads/main" && $ENV == "prod" ]]; then
+            applyProd='yes'
+          fi
+
+          if [[ $GITHUB_REF != "refs/heads/main" && $GITHUB_REF_TYPE == "branch" && $ENV == "dev" ]]; then
+            applyDev='yes'
+          fi
+
+          should_apply='no'
+          if [[ -n $applyProd || -n $applyDev  ]]; then
+            should_apply='yes'
+          fi
+
+          echo "applyProd: $applyProd"
+          echo "applyDev: $applyDev"
+          echo "should_apply=$should_apply"
+          echo "should_apply=$should_apply" >> $GITHUB_ENV
+
+      - name: Terraform apply
+        if: ${{ env.should_apply == 'yes' }}
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform apply ${{ env.TF_PLAN_OUT }}

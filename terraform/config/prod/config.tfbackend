@@ -1,0 +1,3 @@
+region = "eu-central-1"
+bucket = "cardsgame-tfstate"
+key    = "cardsgame-prod"

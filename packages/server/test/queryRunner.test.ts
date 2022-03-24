@@ -1,4 +1,4 @@
-import { ChildTrait, Player } from "../src"
+import { Player } from "../src"
 import { queryRunner } from "../src/queryRunner"
 import { State } from "../src/state"
 
