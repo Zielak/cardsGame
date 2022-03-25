@@ -9,6 +9,7 @@ import type { State } from "../state"
  * :::
  *
  * > TODO: I might just bake that trait into base Entity class...
+ * @category Trait
  */
 export class IdentityTrait {
   // Value is set in State._registerEntity()

@@ -1,36 +1,37 @@
 ---
-id: "entities.Pile"
-title: "Class: Pile"
-sidebar_label: "entities.Pile"
+id: "Line"
+title: "Class: Line"
+sidebar_label: "Line"
+sidebar_position: 0
 custom_edit_url: null
 ---
 
-[entities](../namespaces/entities.md).Pile
+A container of items to be placed in linear fashion
 
 ## Hierarchy
 
-- `Entity`<`PileOptions`\>
+- [`Entity`](Entity.md)<`LineOptions`\>
 
 - `Mixin`
 
-  ↳ **`Pile`**
+  ↳ **`Line`**
 
 ## Constructors
 
 ### constructor
 
-• **new Pile**(`state`, `options?`)
+• **new Line**(`state`, `options?`)
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `state` | [`State`](State.md) |
-| `options` | `Partial`<`Partial`<`NonFunctionProperties`<`Mixin`\>\>\> |
+| `options` | `Partial`<`Partial`<`NonFunctionProperties`<`Mixin`\> & { `align`: `LineAlign` ; `itemAngle`: `number` ; `itemSpacing`: `number` ; `length`: `number` ; `lineType`: `LineType` ; `overflow`: `boolean`  }\>\> |
 
 #### Inherited from
 
-Entity<PileOptions\>.constructor
+[Entity](Entity.md).[constructor](Entity.md#constructor)
 
 ## ChildTrait Properties
 
@@ -42,7 +43,7 @@ ___
 
 ### parent
 
-• **parent**: [`ParentTrait`](traits.ParentTrait.md)
+• **parent**: [`ParentTrait`](ParentTrait.md)
 
 ___
 
@@ -60,6 +61,55 @@ ___
 
 Type should be unique to schema object! If you're extending this schema
 and adding new fields - set the new type string!
+
+___
+
+## Line Properties
+
+### align
+
+• **align**: `LineAlign`
+
+How should items align within the container.
+In zero-length container only "start" and "end" values make sense.
+
+___
+
+### itemAngle
+
+• **itemAngle**: `number`
+
+An angle at which items are rotated by default.
+Line looks like a row by default. To make a column
+
+___
+
+### itemSpacing
+
+• **itemSpacing**: `number`
+
+Margin or overlapping (negative values) between items
+
+___
+
+### length
+
+• **length**: `number`
+
+0cm by default, sets the point of overflow.
+
+___
+
+### overflow
+
+• **overflow**: `boolean`
+
+Should the items overflow over the edge,
+or squeeze in and keep in the Lines length?
+Remember, items don't "wrap" to "the next line".
+Default value depends on `length`:
+- length=0 -> overflow=true
+- length>0 -> overflow=false
 
 ___
 
@@ -93,13 +143,19 @@ ___
 
 ### childAdded
 
-• **childAdded**: [`ChildAddedHandler`](../namespaces/traits.md#childaddedhandler)
+• **childAdded**: [`ChildAddedHandler`](../modules.md#childaddedhandler)
 
 ___
 
 ### childRemoved
 
-• **childRemoved**: [`ChildRemovedHandler`](../namespaces/traits.md#childremovedhandler)
+• **childRemoved**: [`ChildRemovedHandler`](../modules.md#childremovedhandler)
+
+___
+
+### hijacksInteractionTarget
+
+• **hijacksInteractionTarget**: `boolean` = `false`
 
 ___
 
@@ -109,11 +165,36 @@ ___
 
 ___
 
+### selectedChildren
+
+• **selectedChildren**: `ArraySchema`<`SelectedChildData`\>
+
+___
+
+## OwnershipTrait Properties
+
+### ownerID
+
+• **ownerID**: `string`
+
+ID of the player owning this entity
+
+___
+
+### ownersMainFocus
+
+• **ownersMainFocus**: `boolean`
+
+Is this entity/container to be the main focus for this player?
+To be used by client-side implementation.
+
+___
+
 ## ParentTrait Properties
 
 ### childrenPointers
 
-• **childrenPointers**: `Map`<[`ChildTrait`](traits.ChildTrait.md), `string`\>
+• **childrenPointers**: `Map`<[`ChildTrait`](ChildTrait.md), `string`\>
 
 ChildTrait object -> its constructor's name
 Also good spot to count all children
@@ -130,16 +211,6 @@ How children and their indexes behave when added into or removed from this paren
   otherwise you need to ensure given spot isn't occupied
 
 **`default`** "array"
-
-___
-
-### hijacksInteractionTarget
-
-• **hijacksInteractionTarget**: `boolean`
-
-Used by [ChildTrait.`isInteractive`](traits.ChildTrait#isinteractive).
-
-If set to true, will prevent its direct children from getting interaction events.
 
 ___
 
@@ -165,6 +236,44 @@ TODO: Limit the number of automatic getters. Just make these a `getIdxPath` func
 
 array of indexes for this entity access
 
+___
+
+## OwnershipTrait Accessors
+
+### owner
+
+• `get` **owner**(): [`Player`](Player.md)
+
+Get the real owner of this thing, by traversing `this.parent` chain.
+Owner could be set on an element or container, meaning every element in
+such container belongs to one owner.
+
+**`category`** OwnershipTrait
+
+#### Returns
+
+[`Player`](Player.md)
+
+`Player` or `undefined` if this container doesn't belong to anyone
+
+• `set` **owner**(`value`): `void`
+
+Get the real owner of this thing, by traversing `this.parent` chain.
+Owner could be set on an element or container, meaning every element in
+such container belongs to one owner.
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `value` | [`Player`](Player.md) |
+
+#### Returns
+
+`void`
+
+`Player` or `undefined` if this container doesn't belong to anyone
+
 ## ChildTrait Methods
 
 ### isInteractive
@@ -181,6 +290,23 @@ ___
 
 ## Other Methods
 
+### \_selectableEnsureIndex
+
+▸ **_selectableEnsureIndex**(`this`, `index`): `void`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
+| `index` | `number` |
+
+#### Returns
+
+`void`
+
+___
+
 ### addChild
 
 ▸ **addChild**(`entity`): `void`
@@ -191,7 +317,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 
 #### Returns
 
@@ -205,7 +331,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 | `prepend` | `boolean` |
 
 #### Returns
@@ -220,7 +346,7 @@ Adds new item.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |  |
+| `entity` | [`ChildTrait`](ChildTrait.md) |  |
 | `atIndex` | `number` | squeeze into desired spot, moving other children away. |
 
 #### Returns
@@ -235,7 +361,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 | `arg1` | `number` \| `boolean` |
 
 #### Returns
@@ -252,7 +378,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `entities` | [`ChildTrait`](traits.ChildTrait.md)[] |
+| `entities` | [`ChildTrait`](ChildTrait.md)[] |
 
 #### Returns
 
@@ -272,6 +398,36 @@ Number of child elements
 
 ___
 
+### countSelectedChildren
+
+▸ **countSelectedChildren**(): `number`
+
+Number of selected child elements
+
+#### Returns
+
+`number`
+
+___
+
+### countUnselectedChildren
+
+▸ **countUnselectedChildren**(`this`): `number`
+
+Number of not selected child elements
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
+
+#### Returns
+
+`number`
+
+___
+
 ### create
 
 ▸ **create**(`state`, `options?`): `void`
@@ -281,7 +437,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `state` | [`State`](State.md) |
-| `options` | `Partial`<`NonFunctionProperties`<`Mixin`\>\> |
+| `options` | `Partial`<`NonFunctionProperties`<`Mixin`\> & { `align`: `LineAlign` ; `itemAngle`: `number` ; `itemSpacing`: `number` ; `length`: `number` ; `lineType`: `LineType` ; `overflow`: `boolean`  }\> |
 
 #### Returns
 
@@ -289,7 +445,26 @@ ___
 
 #### Overrides
 
-Entity.create
+[Entity](Entity.md).[create](Entity.md#create)
+
+___
+
+### deselectChildAt
+
+▸ **deselectChildAt**(`this`, `childIndex`): `void`
+
+Deselect child
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
+| `childIndex` | `number` |
+
+#### Returns
+
+`void`
 
 ___
 
@@ -303,7 +478,7 @@ Get the element with the lowest 'idx' value
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -321,7 +496,7 @@ Get one direct child of `parent` by its `idx`
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
@@ -345,7 +520,7 @@ Gets all direct children in array form, "sorted" by idx
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -398,6 +573,46 @@ unused?
 
 ___
 
+### getSelectedChildren
+
+▸ **getSelectedChildren**<`T`\>(`this`): `T`[]
+
+#### Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
+
+#### Returns
+
+`T`[]
+
+___
+
+### getSelectionIndex
+
+▸ **getSelectionIndex**(`childIndex`): `number`
+
+In which order was nth child selected. Returns `undefined` on index of UNselected child.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `childIndex` | `number` | index of child |
+
+#### Returns
+
+`number`
+
+___
+
 ### getTop
 
 ▸ **getTop**<`T`\>(): `T`
@@ -408,11 +623,33 @@ Get the element with highest 'idx' value
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
 `T`
+
+___
+
+### getUnselectedChildren
+
+▸ **getUnselectedChildren**<`T`\>(`this`): `T`[]
+
+#### Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
+
+#### Returns
+
+`T`[]
 
 ___
 
@@ -429,6 +666,22 @@ Considering `maxChildren` and if index is negative or otherwise invalid.
 | Name | Type |
 | :------ | :------ |
 | `index` | `number` |
+
+#### Returns
+
+`boolean`
+
+___
+
+### isChildSelected
+
+▸ **isChildSelected**(`childIndex`): `boolean`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `childIndex` | `number` |
 
 #### Returns
 
@@ -487,13 +740,13 @@ Find one item matching props.
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `QuerableProps` |
+| `props` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 
@@ -511,13 +764,13 @@ Looks for every matching entity here and deeper
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `QuerableProps` |
+| `props` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 
@@ -533,7 +786,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `child` | [`ChildTrait`](traits.ChildTrait.md) |
+| `child` | [`ChildTrait`](ChildTrait.md) |
 
 #### Returns
 
@@ -554,3 +807,22 @@ ___
 #### Returns
 
 `boolean`
+
+___
+
+### selectChildAt
+
+▸ **selectChildAt**(`this`, `childIndex`): `void`
+
+Select child
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
+| `childIndex` | `number` |
+
+#### Returns
+
+`void`

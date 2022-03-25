@@ -25,7 +25,7 @@ Reveal the back side (revers) of an element
 
 | Name | Type |
 | :------ | :------ |
-| `entities` | [`Targets`](../modules.md#targets)<[`TwoSidedTrait`](traits.TwoSidedTrait.md)\> |
+| `entities` | [`Targets`](../modules.md#targets)<[`TwoSidedTrait`](TwoSidedTrait.md)\> |
 
 #### Overrides
 
@@ -35,7 +35,7 @@ Reveal the back side (revers) of an element
 
 ### targets
 
-• **targets**: [`TargetsHolder`](TargetsHolder.md)<[`TwoSidedTrait`](traits.TwoSidedTrait.md)\>
+• **targets**: [`TargetsHolder`](TargetsHolder.md)<[`TwoSidedTrait`](TwoSidedTrait.md)\>
 
 ## Accessors
 

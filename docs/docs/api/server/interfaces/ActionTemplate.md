@@ -22,7 +22,7 @@ ___
 
 ### interaction
 
-• **interaction**: `string` \| (`player`: [`Player`](../classes/Player.md)) => `QuerableProps`[]
+• **interaction**: `string` \| (`player`: [`Player`](../classes/Player.md)) => [`QuerableProps`](QuerableProps.md)[]
 
 Either a function returning queries for associated entities
 OR a string for event type.

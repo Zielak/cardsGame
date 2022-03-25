@@ -1,11 +1,10 @@
 ---
-id: "traits.ChildTrait"
+id: "ChildTrait"
 title: "Class: ChildTrait"
-sidebar_label: "traits.ChildTrait"
+sidebar_label: "ChildTrait"
+sidebar_position: 0
 custom_edit_url: null
 ---
-
-[traits](../namespaces/traits.md).ChildTrait
 
 ## Constructors
 
@@ -23,7 +22,7 @@ ___
 
 ### parent
 
-• **parent**: [`ParentTrait`](traits.ParentTrait.md)
+• **parent**: [`ParentTrait`](ParentTrait.md)
 
 ## ChildTrait Accessors
 

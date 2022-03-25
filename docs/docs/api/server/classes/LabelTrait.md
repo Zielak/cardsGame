@@ -1,11 +1,10 @@
 ---
-id: "traits.LabelTrait"
+id: "LabelTrait"
 title: "Class: LabelTrait"
-sidebar_label: "traits.LabelTrait"
+sidebar_label: "LabelTrait"
+sidebar_position: 0
 custom_edit_url: null
 ---
-
-[traits](../namespaces/traits.md).LabelTrait
 
 Adds `name` and `type` properties, useful for querying on server-side and for choosing client-side component.
 

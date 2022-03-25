@@ -26,6 +26,9 @@ interface TopDeckElement {
   [key: string]: any
 }
 
+/**
+ * @category Entity
+ */
 @canBeChild
 @containsChildren(false)
 @applyTraitsMixins([

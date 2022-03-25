@@ -176,7 +176,7 @@ ___
 Grabs you most common `propKey` in your `collection` of `T`,
 additionally filtering out items which match given optional condition.
 
-Most useful when creating [`BotNeurons`](BotNeuron)
+Most useful when creating [`BotNeurons`](/api/server/interfaces/BotNeuron)
 
 **`example`**
 ```ts
@@ -690,6 +690,7 @@ ___
 ▸ **trim**(`string?`, `maxLength?`): `string`
 
 Trim long string with nice ell…
+Works only on string, don't put numbers in it.
 
 #### Parameters
 

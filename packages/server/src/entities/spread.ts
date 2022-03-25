@@ -16,7 +16,8 @@ import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
 /**
  * Cards placed on the table, each neatly placed at such an angle
  * to make every card's suit and rank to be visible.
- * Like Pile, but you can see every card. Meant for small count of entities.
+ * Like Pile, but you can see every card. Meant for small number of entities.
+ * @category Entity
  */
 @canBeChild
 @containsChildren()

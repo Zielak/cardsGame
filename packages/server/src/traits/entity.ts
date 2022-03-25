@@ -14,6 +14,9 @@ export function executeHook(hookName: string, ...args: any[]): void {
   }
 }
 
+/**
+ * @category Trait
+ */
 export class Entity<T> extends Schema {
   constructor(state: State, options: Partial<T> = {}) {
     super()

@@ -83,9 +83,15 @@ jobs:
           echo "applyProd: $applyProd"
           echo "applyDev: $applyDev"
           echo "should_apply=$should_apply"
-          echo "should_apply=$should_apply" >> $GITHUB_ENV
+
+          echo "SHOULD_APPLY=$should_apply" >> $GITHUB_ENV
+
+      - name: Ensure we got the env var
+        run: |
+          echo ${{ env.SHOULD_APPLY }}
+          echo "SHOULD_APPLY=$SHOULD_APPLY"
 
       - name: Terraform apply
-        if: ${{ env.should_apply == 'yes' }}
+        if: ${{ env.SHOULD_APPLY == 'yes' }}
         working-directory: ${{ env.TF_DIR }}
         run: terraform apply ${{ env.TF_PLAN_OUT }}

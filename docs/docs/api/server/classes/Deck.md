@@ -1,40 +1,35 @@
 ---
-id: "entities.Spread"
-title: "Class: Spread"
-sidebar_label: "entities.Spread"
+id: "Deck"
+title: "Class: Deck"
+sidebar_label: "Deck"
+sidebar_position: 0
 custom_edit_url: null
 ---
 
-[entities](../namespaces/entities.md).Spread
-
-Cards placed on the table, each neatly placed at such an angle
-to make every card's suit and rank to be visible.
-Like Pile, but you can see every card. Meant for small count of entities.
-
 ## Hierarchy
 
-- `Entity`<`SpreadOptions`\>
+- [`Entity`](Entity.md)<`DeckOptions`\>
 
 - `Mixin`
 
-  ↳ **`Spread`**
+  ↳ **`Deck`**
 
 ## Constructors
 
 ### constructor
 
-• **new Spread**(`state`, `options?`)
+• **new Deck**(`state`, `options?`)
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `state` | [`State`](State.md) |
-| `options` | `Partial`<`Partial`<`NonFunctionProperties`<`Mixin`\> & { `autoSort`: `SortingFunction`  }\>\> |
+| `options` | `Partial`<`Partial`<`NonFunctionProperties`<`Mixin`\> & { `childCount`: `number`  }\>\> |
 
 #### Inherited from
 
-Entity<SpreadOptions\>.constructor
+[Entity](Entity.md).[constructor](Entity.md#constructor)
 
 ## ChildTrait Properties
 
@@ -46,7 +41,23 @@ ___
 
 ### parent
 
-• **parent**: [`ParentTrait`](traits.ParentTrait.md)
+• **parent**: [`ParentTrait`](ParentTrait.md)
+
+___
+
+## Deck Properties
+
+### childCount
+
+• **childCount**: `number`
+
+Number of child elements synchronized to the client.
+
+___
+
+### topDeck
+
+• **topDeck**: `TopDeckElement`
 
 ___
 
@@ -95,41 +106,15 @@ ___
 
 ## Other Properties
 
-### autoSort
-
-• **autoSort**: `SortingFunction`
-
-___
-
 ### childAdded
 
-• **childAdded**: (`child`: [`ChildTrait`](traits.ChildTrait.md)) => `void` = `sortOnChildAdded`
-
-#### Type declaration
-
-▸ (`child`): `void`
-
-##### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `child` | [`ChildTrait`](traits.ChildTrait.md) |
-
-##### Returns
-
-`void`
+• **childAdded**: [`ChildAddedHandler`](../modules.md#childaddedhandler)
 
 ___
 
 ### childRemoved
 
-• **childRemoved**: [`ChildRemovedHandler`](../namespaces/traits.md#childremovedhandler)
-
-___
-
-### hijacksInteractionTarget
-
-• **hijacksInteractionTarget**: `boolean` = `false`
+• **childRemoved**: [`ChildRemovedHandler`](../modules.md#childremovedhandler)
 
 ___
 
@@ -145,11 +130,16 @@ ___
 
 • **ownerID**: `string`
 
+ID of the player owning this entity
+
 ___
 
 ### ownersMainFocus
 
 • **ownersMainFocus**: `boolean`
+
+Is this entity/container to be the main focus for this player?
+To be used by client-side implementation.
 
 ___
 
@@ -157,7 +147,7 @@ ___
 
 ### childrenPointers
 
-• **childrenPointers**: `Map`<[`ChildTrait`](traits.ChildTrait.md), `string`\>
+• **childrenPointers**: `Map`<[`ChildTrait`](ChildTrait.md), `string`\>
 
 ChildTrait object -> its constructor's name
 Also good spot to count all children
@@ -174,6 +164,16 @@ How children and their indexes behave when added into or removed from this paren
   otherwise you need to ensure given spot isn't occupied
 
 **`default`** "array"
+
+___
+
+### hijacksInteractionTarget
+
+• **hijacksInteractionTarget**: `boolean`
+
+Used by [ChildTrait.`isInteractive`](ChildTrait#isinteractive).
+
+If set to true, will prevent its direct children from getting interaction events.
 
 ___
 
@@ -263,7 +263,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 
 #### Returns
 
@@ -277,7 +277,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 | `prepend` | `boolean` |
 
 #### Returns
@@ -292,7 +292,7 @@ Adds new item.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |  |
+| `entity` | [`ChildTrait`](ChildTrait.md) |  |
 | `atIndex` | `number` | squeeze into desired spot, moving other children away. |
 
 #### Returns
@@ -307,7 +307,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 | `arg1` | `number` \| `boolean` |
 
 #### Returns
@@ -324,7 +324,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `entities` | [`ChildTrait`](traits.ChildTrait.md)[] |
+| `entities` | [`ChildTrait`](ChildTrait.md)[] |
 
 #### Returns
 
@@ -353,7 +353,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `state` | [`State`](State.md) |
-| `options` | `Partial`<`NonFunctionProperties`<`Mixin`\> & { `autoSort`: `SortingFunction`  }\> |
+| `options` | `Partial`<`NonFunctionProperties`<`Mixin`\> & { `childCount`: `number`  }\> |
 
 #### Returns
 
@@ -361,7 +361,7 @@ ___
 
 #### Overrides
 
-Entity.create
+[Entity](Entity.md).[create](Entity.md#create)
 
 ___
 
@@ -375,7 +375,7 @@ Get the element with the lowest 'idx' value
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -393,7 +393,7 @@ Get one direct child of `parent` by its `idx`
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
@@ -417,7 +417,7 @@ Gets all direct children in array form, "sorted" by idx
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -480,7 +480,7 @@ Get the element with highest 'idx' value
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -559,13 +559,13 @@ Find one item matching props.
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `QuerableProps` |
+| `props` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 
@@ -583,13 +583,13 @@ Looks for every matching entity here and deeper
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `QuerableProps` |
+| `props` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 
@@ -605,7 +605,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `child` | [`ChildTrait`](traits.ChildTrait.md) |
+| `child` | [`ChildTrait`](ChildTrait.md) |
 
 #### Returns
 
@@ -626,3 +626,19 @@ ___
 #### Returns
 
 `boolean`
+
+___
+
+### updateTopElement
+
+▸ **updateTopElement**(`child`): `void`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `child` | `Object` |
+
+#### Returns
+
+`void`

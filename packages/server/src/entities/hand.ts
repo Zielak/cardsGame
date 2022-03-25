@@ -14,6 +14,9 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
 import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
 
+/**
+ * @category Entity
+ */
 @canBeChild
 @containsChildren()
 @applyTraitsMixins([

@@ -1,11 +1,10 @@
 ---
-id: "traits.OwnershipTrait"
+id: "OwnershipTrait"
 title: "Class: OwnershipTrait"
-sidebar_label: "traits.OwnershipTrait"
+sidebar_label: "OwnershipTrait"
+sidebar_position: 0
 custom_edit_url: null
 ---
-
-[traits](../namespaces/traits.md).OwnershipTrait
 
 ## Constructors
 
@@ -19,11 +18,16 @@ custom_edit_url: null
 
 • **ownerID**: `string`
 
+ID of the player owning this entity
+
 ___
 
 ### ownersMainFocus
 
 • **ownersMainFocus**: `boolean`
+
+Is this entity/container to be the main focus for this player?
+To be used by client-side implementation.
 
 ## OwnershipTrait Accessors
 

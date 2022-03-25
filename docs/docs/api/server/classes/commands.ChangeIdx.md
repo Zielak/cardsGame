@@ -23,7 +23,7 @@ custom_edit_url: null
 
 | Name | Type |
 | :------ | :------ |
-| `entities` | [`Targets`](../modules.md#targets)<[`ChildTrait`](traits.ChildTrait.md)\> |
+| `entities` | [`Targets`](../modules.md#targets)<[`ChildTrait`](ChildTrait.md)\> |
 | `index` | `number` |
 
 #### Overrides

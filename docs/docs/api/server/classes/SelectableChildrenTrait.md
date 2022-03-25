@@ -1,11 +1,10 @@
 ---
-id: "traits.SelectableChildrenTrait"
+id: "SelectableChildrenTrait"
 title: "Class: SelectableChildrenTrait"
-sidebar_label: "traits.SelectableChildrenTrait"
+sidebar_label: "SelectableChildrenTrait"
+sidebar_position: 0
 custom_edit_url: null
 ---
-
-[traits](../namespaces/traits.md).SelectableChildrenTrait
 
 Used on **container** - its children can now be selected by players.
 
@@ -35,7 +34,7 @@ Holds indexes of selected children and in which order were these chosen.
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 | `index` | `number` |
 
 #### Returns
@@ -66,7 +65,7 @@ Number of not selected child elements
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 
 #### Returns
 
@@ -84,7 +83,7 @@ Deselect child
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 | `childIndex` | `number` |
 
 #### Returns
@@ -101,13 +100,13 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 
 #### Returns
 
@@ -119,13 +118,13 @@ ___
 
 ▸ **getSelectionIndex**(`childIndex`): `number`
 
-In which order was nth child selected
+In which order was nth child selected. Returns `undefined` on index of UNselected child.
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `childIndex` | `number` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `childIndex` | `number` | index of child |
 
 #### Returns
 
@@ -141,13 +140,13 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 
 #### Returns
 
@@ -181,7 +180,7 @@ Select child
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 | `childIndex` | `number` |
 
 #### Returns

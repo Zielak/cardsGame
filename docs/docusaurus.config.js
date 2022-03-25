@@ -4,28 +4,12 @@
 const darkCodeTheme = require("prism-react-renderer/themes/dracula")
 const lightCodeTheme = require("prism-react-renderer/themes/github")
 
-const typedocOptions = {
-  // TSDoc
-  disableSources: true,
-  // cleanOutputDir: true,
-
-  excludeExternals: true,
-  excludePrivate: true,
-
-  watch: process.env.TYPEDOC_WATCH === "true",
-
-  // Markdown
-  hideInPageTOC: true,
-  hideBreadcrumbs: true,
-  hidePageTitle: true,
-}
-
-const packages = ["server", "client", "utils"]
+const { typedocOptions, packagesToDocs } = require("./typedoc/base.typedoc")
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "@cardsgame",
-  tagline: "Documentation",
+  tagline: "Create your own multiplayer cards game(s)",
   url: "https://cardsgame.darekgreenly.com",
   baseUrl: "/",
   onBrokenLinks: "throw",
@@ -35,7 +19,7 @@ const config = {
   projectName: "cardsGame",
 
   plugins: [
-    ...packages.map((package, idx) => {
+    ...packagesToDocs.map((package, idx) => {
       /**
        * @type {import('@docusaurus/types/src').PluginConfig}
        */
@@ -43,17 +27,18 @@ const config = {
         "docusaurus-plugin-typedoc",
         // Plugin / TypeDoc options
         {
+          ...typedocOptions,
           id: `api-${package}`,
           entryPoints: [`../packages/${package}/src/index.ts`],
           tsconfig: [`../packages/${package}/src/tsconfig.json`],
           out: `api/${package}`,
+          cleanOutputDir: true,
 
           sidebar: {
             categoryLabel: package[0].toUpperCase() + package.substring(1),
             position: idx,
             fullNames: true,
           },
-          ...typedocOptions,
         },
       ]
       return plugin
@@ -100,24 +85,6 @@ const config = {
             sidebarId: "api",
             label: "API",
           },
-          // {
-          //   type: "doc",
-          //   docId: "introduction/index",
-          //   position: "left",
-          //   label: "Guides",
-          // },
-          // {
-          //   type: "doc",
-          //   docId: "api/server/",
-          //   position: "left",
-          //   label: "API",
-          // },
-          // {
-          //   type: "doc",
-          //   docId: "api/server",
-          //   position: "left",
-          //   label: "API",
-          // },
           // Versioning dropdown box
           // {
           //   type: "docsVersionDropdown",
@@ -128,20 +95,16 @@ const config = {
             label: "GitHub",
             position: "right",
           },
+          {
+            href: "https://discord.gg/rKATWAKj",
+            label: "Discord",
+            position: "right",
+          },
         ],
       },
       footer: {
         style: "dark",
         links: [
-          {
-            title: "Docs",
-            items: [
-              {
-                label: "Tutorial",
-                to: "/introduction",
-              },
-            ],
-          },
           {
             title: "Community",
             items: [
@@ -152,15 +115,6 @@ const config = {
               {
                 label: "Twitter",
                 href: "https://twitter.com/zielakpl",
-              },
-            ],
-          },
-          {
-            title: "More",
-            items: [
-              {
-                label: "GitHub",
-                href: "https://github.com/zielak/cardsGame",
               },
             ],
           },

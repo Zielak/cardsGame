@@ -19,6 +19,9 @@ export function hasOwnership(entity: unknown): entity is OwnershipTrait {
   )
 }
 
+/**
+ * @category Trait
+ */
 export class OwnershipTrait {
   private _owner: Player
 
@@ -50,11 +53,14 @@ export class OwnershipTrait {
   }
 
   /**
+   * ID of the player owning this entity
    * @category OwnershipTrait
    */
   ownerID: string
 
   /**
+   * Is this entity/container to be the main focus for this player?
+   * To be used by client-side implementation.
    * @category OwnershipTrait
    */
   ownersMainFocus: boolean

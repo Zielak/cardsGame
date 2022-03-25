@@ -42,7 +42,7 @@ ___
 
 ### entitiesFilter
 
-• `Optional` **entitiesFilter**: (`con`: [`EntityConditions`](../classes/EntityConditions.md)<`S`\>) => `void` \| `QuerableProps`[]
+• `Optional` **entitiesFilter**: (`con`: [`EntityConditions`](../classes/EntityConditions.md)<`S`\>) => `void` \| [`QuerableProps`](QuerableProps.md)[]
 
 If your action targets `entities` too broadly, add additional filter here.
 

@@ -32,3 +32,5 @@ export * from "./traits"
 export * from "./entities"
 
 export { populatePlayerEvent } from "./utils/populatePlayerEvent"
+
+export type { QuerableProps } from "./queryRunner"

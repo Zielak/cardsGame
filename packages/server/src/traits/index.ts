@@ -1,5 +1,6 @@
 export * from "./boxModel"
 export * from "./child"
+export * from "./entity"
 export * from "./flexyContainer"
 export * from "./identity"
 export * from "./label"

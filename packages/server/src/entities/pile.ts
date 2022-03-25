@@ -10,6 +10,9 @@ import { LabelTrait } from "../traits/label"
 import { LocationTrait } from "../traits/location"
 import { ParentTrait } from "../traits/parent"
 
+/**
+ * @category Entity
+ */
 @canBeChild
 @containsChildren()
 @applyTraitsMixins([

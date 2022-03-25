@@ -23,8 +23,8 @@ custom_edit_url: null
 
 | Name | Type |
 | :------ | :------ |
-| `entities` | [`Targets`](../modules.md#targets)<[`ChildTrait`](traits.ChildTrait.md)\> |
-| `target` | [`Target`](../modules.md#target)<[`ParentTrait`](traits.ParentTrait.md)\> |
+| `entities` | [`Targets`](../modules.md#targets)<[`ChildTrait`](ChildTrait.md)\> |
+| `target` | [`Target`](../modules.md#target)<[`ParentTrait`](ParentTrait.md)\> |
 | `options` | `ChangeParentOptions` |
 
 #### Overrides

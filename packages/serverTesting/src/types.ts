@@ -29,7 +29,15 @@ type EntityMockingProps = Partial<
 >
 
 /**
- * @example
+ * An object _describing_ any possible entity. This is not an [Entity](/api/server/classes/Entity) in itself.
+ *
+ * @example "D7" card placed with its face down:
+ * ```ts
+ * { type: "classicCard", suit: "D", rank: "3", faceUp: false }
+ * ```
+ *
+ * @example Some container with 2 cards, with second one being selected:
+ * ```ts
  * {
  *   children: [
  *     { type: "classicCard", name: "D7" },
@@ -37,16 +45,20 @@ type EntityMockingProps = Partial<
  *   ],
  *   selected: [1]
  * }
- * @example
- * { type: "classicCard", suit: "D", rank: "3", faceUp: false }
- * @memberof serverTesting
+ * ```
+ * :::note
+ *
+ * `name: "D7"` is a shorthand. Given this object is of type `"classicCard"`,
+ * this object will get populated with 2 new props: `rank: "7"` and `suit: "D"`
+ *
+ * :::
+ *
  */
 export type EntityMockingDefinition = EntityMockingProps &
   ChildrenMockingArray & {
     /**
      * used to figure out what kind of entity to create
      * @default "classicCard"
-     * @memberof serverTesting
      */
     type?: string
     /**
@@ -65,6 +77,7 @@ type ChildrenMockingArray = {
    * - `name` could be used to generate rest of the props. Example of "classicCard" - name:"D7" -> rank:"7",suit:"D"
    *
    * @example
+   * ```ts
    * {
    *   type: "hand",
    *   children: [
@@ -72,7 +85,7 @@ type ChildrenMockingArray = {
    *     {type: "classicCard", name: "D8"}
    *   ]
    * }
-   * @memberof serverTesting
+   * ```
    */
   children?: EntityMockingDefinition[]
 }
@@ -84,15 +97,18 @@ type StateMockingProps<S> = Partial<
 >
 
 /**
- * Definition of root game state.
- * @example
+ * An object _describing_ a root state.
+ * This definition may contain state's props like `"isGameStarted"`,
+ * and all the other [entities](#entitymockingdefinition) in `"children"` array.
+ * @example Game state at round 10, only one card on the table.
+ * ```ts
  * {
- *   round: 1,
+ *   round: 10,
  *   children: [
  *     {type: "classicCard", name: "D7"}
  *   ]
  * }
- * @memberof serverTesting
+ * ```
  */
 export type StateMockingRecord<S extends State> = ChildrenMockingArray &
   StateMockingProps<S> &

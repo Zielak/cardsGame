@@ -23,8 +23,8 @@ custom_edit_url: null
 
 | Name | Type |
 | :------ | :------ |
-| `source` | [`Target`](../modules.md#target)<[`ParentTrait`](traits.ParentTrait.md)\> |
-| `target` | [`Target`](../modules.md#target)<[`ParentTrait`](traits.ParentTrait.md)\> |
+| `source` | [`Target`](../modules.md#target)<[`ParentTrait`](ParentTrait.md)\> |
+| `target` | [`Target`](../modules.md#target)<[`ParentTrait`](ParentTrait.md)\> |
 | `condition` | `DrawOutCondition` |
 | `options?` | `DrawOutOptions` |
 

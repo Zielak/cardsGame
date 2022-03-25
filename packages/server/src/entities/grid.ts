@@ -23,6 +23,8 @@ export function isGrid(entity: unknown): entity is Grid {
 /**
  * Two dimensional container of items of set spots.
  * May also be used as one-dimensional "line" of limited child items.
+ *
+ * @category Entity
  */
 @canBeChild
 @containsChildren()

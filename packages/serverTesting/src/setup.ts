@@ -13,7 +13,11 @@ interface Resetter<S extends State, R extends Room<S>> {
 }
 
 // Sadly TS doesn't "extract" JSDoc from function types, so I gotta copy them here. At least first paragraphs, without examples
-type SetupAPI<S extends State, R extends Room<S>> = {
+/**
+ *
+ * @category Setup
+ */
+export type SetupAPI<S extends State, R extends Room<S>> = {
   /**
    * Will remember new reference to the State and Room object for use in other
    * functions of `setupServerTesting()`.
@@ -49,7 +53,11 @@ type SetupAPI<S extends State, R extends Room<S>> = {
   executeEvent: ExecuteEvent
 }
 
-type SetupOptions<S extends State, R extends Room<S>> = {
+/**
+ *
+ * @category Setup
+ */
+export type SetupOptions<S extends State, R extends Room<S>> = {
   /**
    * Used only in `testEvent()`,
    * don't have to provide if you won't use that function.
@@ -75,10 +83,17 @@ type SetupOptions<S extends State, R extends Room<S>> = {
 
 /**
  * Client ID with which most of the events will be automatically created.
- * Assign it to the first player in your testing environment
+ * Assign it to the first player in your testing environment.
  */
 export const CLIENT_ID = "CLIENT"
 
+/**
+ *
+ * @param options
+ * @returns
+ *
+ * @category Setup
+ */
 export function setupServerTesting<
   S extends State,
   R extends Room<S> = Room<S>

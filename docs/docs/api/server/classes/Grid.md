@@ -1,36 +1,38 @@
 ---
-id: "entities.Hand"
-title: "Class: Hand"
-sidebar_label: "entities.Hand"
+id: "Grid"
+title: "Class: Grid"
+sidebar_label: "Grid"
+sidebar_position: 0
 custom_edit_url: null
 ---
 
-[entities](../namespaces/entities.md).Hand
+Two dimensional container of items of set spots.
+May also be used as one-dimensional "line" of limited child items.
 
 ## Hierarchy
 
-- `Entity`<`HandOptions`\>
+- [`Entity`](Entity.md)<`GridOptions`\>
 
 - `Mixin`
 
-  ↳ **`Hand`**
+  ↳ **`Grid`**
 
 ## Constructors
 
 ### constructor
 
-• **new Hand**(`state`, `options?`)
+• **new Grid**(`state`, `options?`)
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `state` | [`State`](State.md) |
-| `options` | `Partial`<`Partial`<`NonFunctionProperties`<`Mixin`\> & { `autoSort`: `SortingFunction`  }\>\> |
+| `options` | `Partial`<`Partial`<`NonFunctionProperties`<`Mixin`\> & { `alignItems`: `GridAlignItems` ; `cellSpacing`: `number` ; `columns`: `number` ; `itemAngle`: `number` ; `justify`: `GridJustify` ; `justifyItems`: `GridJustifyItems` ; `rows`: `number`  }\>\> |
 
 #### Inherited from
 
-Entity<HandOptions\>.constructor
+[Entity](Entity.md).[constructor](Entity.md#constructor)
 
 ## ChildTrait Properties
 
@@ -42,7 +44,47 @@ ___
 
 ### parent
 
-• **parent**: [`ParentTrait`](traits.ParentTrait.md)
+• **parent**: [`ParentTrait`](ParentTrait.md)
+
+___
+
+## Grid Properties
+
+### alignItems
+
+• **alignItems**: `GridAlignItems`
+
+___
+
+### columns
+
+• **columns**: `number`
+
+___
+
+### itemAngle
+
+• **itemAngle**: `number`
+
+Grid comment at grid file
+
+___
+
+### justify
+
+• **justify**: `GridJustify`
+
+___
+
+### justifyItems
+
+• **justifyItems**: `GridJustifyItems`
+
+___
+
+### rows
+
+• **rows**: `number`
 
 ___
 
@@ -91,35 +133,15 @@ ___
 
 ## Other Properties
 
-### autoSort
-
-• **autoSort**: `SortingFunction`
-
-___
-
 ### childAdded
 
-• **childAdded**: (`child`: [`ChildTrait`](traits.ChildTrait.md)) => `void` = `sortOnChildAdded`
-
-#### Type declaration
-
-▸ (`child`): `void`
-
-##### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `child` | [`ChildTrait`](traits.ChildTrait.md) |
-
-##### Returns
-
-`void`
+• **childAdded**: [`ChildAddedHandler`](../modules.md#childaddedhandler)
 
 ___
 
 ### childRemoved
 
-• **childRemoved**: [`ChildRemovedHandler`](../namespaces/traits.md#childremovedhandler)
+• **childRemoved**: [`ChildRemovedHandler`](../modules.md#childremovedhandler)
 
 ___
 
@@ -147,11 +169,16 @@ ___
 
 • **ownerID**: `string`
 
+ID of the player owning this entity
+
 ___
 
 ### ownersMainFocus
 
 • **ownersMainFocus**: `boolean`
+
+Is this entity/container to be the main focus for this player?
+To be used by client-side implementation.
 
 ___
 
@@ -159,7 +186,7 @@ ___
 
 ### childrenPointers
 
-• **childrenPointers**: `Map`<[`ChildTrait`](traits.ChildTrait.md), `string`\>
+• **childrenPointers**: `Map`<[`ChildTrait`](ChildTrait.md), `string`\>
 
 ChildTrait object -> its constructor's name
 Also good spot to count all children
@@ -263,7 +290,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 | `index` | `number` |
 
 #### Returns
@@ -282,7 +309,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 
 #### Returns
 
@@ -296,7 +323,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 | `prepend` | `boolean` |
 
 #### Returns
@@ -311,7 +338,7 @@ Adds new item.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |  |
+| `entity` | [`ChildTrait`](ChildTrait.md) |  |
 | `atIndex` | `number` | squeeze into desired spot, moving other children away. |
 
 #### Returns
@@ -326,8 +353,26 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 | `arg1` | `number` \| `boolean` |
+
+#### Returns
+
+`void`
+
+___
+
+### addChildAt
+
+▸ **addChildAt**(`entity`, `column`, `row`): `void`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
+| `column` | `number` |
+| `row` | `number` |
 
 #### Returns
 
@@ -343,7 +388,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `entities` | [`ChildTrait`](traits.ChildTrait.md)[] |
+| `entities` | [`ChildTrait`](ChildTrait.md)[] |
 
 #### Returns
 
@@ -385,7 +430,7 @@ Number of not selected child elements
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 
 #### Returns
 
@@ -402,7 +447,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `state` | [`State`](State.md) |
-| `options` | `Partial`<`NonFunctionProperties`<`Mixin`\> & { `autoSort`: `SortingFunction`  }\> |
+| `options` | `Partial`<`NonFunctionProperties`<`Mixin`\> & { `alignItems`: `GridAlignItems` ; `cellSpacing`: `number` ; `columns`: `number` ; `itemAngle`: `number` ; `justify`: `GridJustify` ; `justifyItems`: `GridJustifyItems` ; `rows`: `number`  }\> |
 
 #### Returns
 
@@ -410,7 +455,7 @@ ___
 
 #### Overrides
 
-Entity.create
+[Entity](Entity.md).[create](Entity.md#create)
 
 ___
 
@@ -424,7 +469,7 @@ Deselect child
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 | `childIndex` | `number` |
 
 #### Returns
@@ -443,7 +488,7 @@ Get the element with the lowest 'idx' value
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -461,13 +506,36 @@ Get one direct child of `parent` by its `idx`
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `idx` | `number` |
+
+#### Returns
+
+`T`
+
+___
+
+### getChildAt
+
+▸ **getChildAt**<`T`\>(`column`, `row`): `T`
+
+#### Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `column` | `number` |
+| `row` | `number` |
 
 #### Returns
 
@@ -485,7 +553,7 @@ Gets all direct children in array form, "sorted" by idx
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -546,13 +614,13 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 
 #### Returns
 
@@ -564,13 +632,13 @@ ___
 
 ▸ **getSelectionIndex**(`childIndex`): `number`
 
-In which order was nth child selected
+In which order was nth child selected. Returns `undefined` on index of UNselected child.
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `childIndex` | `number` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `childIndex` | `number` | index of child |
 
 #### Returns
 
@@ -588,7 +656,7 @@ Get the element with highest 'idx' value
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -604,13 +672,13 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 
 #### Returns
 
@@ -705,13 +773,13 @@ Find one item matching props.
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `QuerableProps` |
+| `props` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 
@@ -729,13 +797,13 @@ Looks for every matching entity here and deeper
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `QuerableProps` |
+| `props` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 
@@ -751,7 +819,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `child` | [`ChildTrait`](traits.ChildTrait.md) |
+| `child` | [`ChildTrait`](ChildTrait.md) |
 
 #### Returns
 
@@ -785,7 +853,7 @@ Select child
 
 | Name | Type |
 | :------ | :------ |
-| `this` | [`ParentTrait`](traits.ParentTrait.md) & [`SelectableChildrenTrait`](traits.SelectableChildrenTrait.md) |
+| `this` | [`ParentTrait`](ParentTrait.md) & [`SelectableChildrenTrait`](SelectableChildrenTrait.md) |
 | `childIndex` | `number` |
 
 #### Returns

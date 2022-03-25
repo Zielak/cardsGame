@@ -1,11 +1,10 @@
 ---
-id: "traits.IdentityTrait"
+id: "IdentityTrait"
 title: "Class: IdentityTrait"
-sidebar_label: "traits.IdentityTrait"
+sidebar_label: "IdentityTrait"
+sidebar_position: 0
 custom_edit_url: null
 ---
-
-[traits](../namespaces/traits.md).IdentityTrait
 
 :::caution Required trait
 

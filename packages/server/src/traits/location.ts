@@ -7,6 +7,7 @@ import type { State } from "../state"
  * Adds `x`, `y` and `angle` to entity,
  * describing its location and rotation,
  * relative to its parent.
+ * @category Trait
  */
 export class LocationTrait {
   /**

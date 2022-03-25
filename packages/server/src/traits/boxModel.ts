@@ -5,6 +5,7 @@ import type { State } from "../state"
 
 /**
  * Currently unused
+ * @category Trait
  */
 export class BoxModelTrait {
   /**

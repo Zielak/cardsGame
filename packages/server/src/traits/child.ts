@@ -20,6 +20,9 @@ export function isChild(entity: unknown): entity is ChildTrait {
   )
 }
 
+/**
+ * @category Trait
+ */
 export class ChildTrait {
   /**
    * @category ChildTrait

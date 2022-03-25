@@ -13,46 +13,58 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: "Easy to Use",
-    Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
-    description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
-    ),
-  },
-  {
-    title: "Focus on What Matters",
+    title: "Commands and conditions",
     Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
     description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
+      <p>
+        Define your games rules using intuitive and flexible tools, don't hard
+        code it.
+      </p>
     ),
   },
   {
-    title: "Powered by React",
+    title: "Play against bots",
+    Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
+    description: (
+      <p>
+        Provide a bit of guidance for the bots to try and make interesting
+        decisions.
+      </p>
+    ),
+  },
+  {
+    title: "TODO: Game variants",
     Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
     description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
-      </>
+      <p>
+        Most classic card games play different in different regions. Let players
+        choose the exact flavour of your game.
+      </p>
+    ),
+  },
+  {
+    title: "Powered by Colyseus",
+    Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
+    description: (
+      <p>
+        Open-source, authoritative, multiplayer framework:&nbsp;
+        <a href="https://www.colyseus.io/" rel="noopener" target="_blank">
+          Colyseus.io
+        </a>
+      </p>
     ),
   },
 ]
 
 function Feature({ title, Svg, description }: FeatureItem) {
   return (
-    <div className={clsx("col col--4")}>
+    <div className={clsx("col col--6")}>
       <div className="text--center">
         <Svg className={styles.featureSvg} role="img" />
       </div>
       <div className="text--center padding-horiz--md">
         <h3>{title}</h3>
-        <p>{description}</p>
+        {description}
       </div>
     </div>
   )

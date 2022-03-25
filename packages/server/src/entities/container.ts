@@ -8,6 +8,9 @@ import { LocationTrait } from "../traits/location"
 import { OwnershipTrait } from "../traits/ownership"
 import { ParentTrait } from "../traits/parent"
 
+/**
+ * @category Entity
+ */
 @canBeChild
 @containsChildren()
 @applyTraitsMixins([

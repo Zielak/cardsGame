@@ -29,8 +29,8 @@ Eg. hands
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `source` | [`Target`](../modules.md#target)<[`ParentTrait`](traits.ParentTrait.md)\> | will take cards from here |
-| `targets` | [`Targets`](../modules.md#targets)<[`ParentTrait`](traits.ParentTrait.md)\> | and put them in these containers |
+| `source` | [`Target`](../modules.md#target)<[`ParentTrait`](ParentTrait.md)\> | will take cards from here |
+| `targets` | [`Targets`](../modules.md#targets)<[`ParentTrait`](ParentTrait.md)\> | and put them in these containers |
 | `options` | `DealCardsOptions` | - |
 
 #### Overrides
@@ -61,7 +61,7 @@ ___
 
 ### source
 
-• **source**: [`TargetHolder`](TargetHolder.md)<[`ParentTrait`](traits.ParentTrait.md)\>
+• **source**: [`TargetHolder`](TargetHolder.md)<[`ParentTrait`](ParentTrait.md)\>
 
 ___
 
@@ -73,7 +73,7 @@ ___
 
 ### targets
 
-• **targets**: [`TargetsHolder`](TargetsHolder.md)<[`ParentTrait`](traits.ParentTrait.md)\>
+• **targets**: [`TargetsHolder`](TargetsHolder.md)<[`ParentTrait`](ParentTrait.md)\>
 
 ## Accessors
 

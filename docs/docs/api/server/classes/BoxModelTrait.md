@@ -1,11 +1,10 @@
 ---
-id: "traits.BoxModelTrait"
+id: "BoxModelTrait"
 title: "Class: BoxModelTrait"
-sidebar_label: "traits.BoxModelTrait"
+sidebar_label: "BoxModelTrait"
+sidebar_position: 0
 custom_edit_url: null
 ---
-
-[traits](../namespaces/traits.md).BoxModelTrait
 
 Currently unused
 

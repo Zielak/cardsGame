@@ -46,6 +46,9 @@ export const hasChildren = (entity: unknown): boolean =>
 export const getKnownConstructor = (entity: ChildTrait): AnyClass =>
   globalEntitiesContext.registeredChildren.find((con) => entity instanceof con)
 
+/**
+ * @category Trait
+ */
 export class ParentTrait {
   /**
    * ChildTrait object -> its constructor's name
@@ -55,7 +58,7 @@ export class ParentTrait {
   childrenPointers: Map<ChildTrait, string>
 
   /**
-   * Used by [ChildTrait.`isInteractive`](traits.ChildTrait#isinteractive).
+   * Used by [ChildTrait.`isInteractive`](ChildTrait#isinteractive).
    *
    * If set to true, will prevent its direct children from getting interaction events.
    *

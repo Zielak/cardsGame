@@ -42,7 +42,7 @@ Sets new subject to whatever you provide, can be anything.
 
 ### `get(props: QuerableProps)`
 
-Changes subject to an entity described by object of props ([`QuerableProps`](./types.md#QuerableProps)).
+Changes subject to an entity described by object of props [`QuerableProps`](/api/server/interfaces/QuerableProps).
 
 ### `as(reference: string)`
 
@@ -61,11 +61,11 @@ Bring back the subject by its previously remembered reference.
 
 ### `get(alias: string, props: QuerableProps)`
 
-Similar to `get(props)`, but it's starting point is an entity remembered by a reference string, instead of the whole state.
+Similar to [`get(props)`](#getprops-querableprops), but it's starting point is an entity remembered by a reference string, instead of the whole state.
 
 ### `its(key: string)`
 
-Changes subject to current subjects key.
+Changes subject to current subject's key/prop value.
 
 ```typescript
 // On state

@@ -7,6 +7,7 @@ import type { State } from "../state"
  * Adds `name` and `type` properties, useful for querying on server-side and for choosing client-side component.
  *
  * > TODO: I might move `type` to base Entity class, seems I'm using `type` everywhere anyway
+ * @category Trait
  */
 export class LabelTrait {
   /**

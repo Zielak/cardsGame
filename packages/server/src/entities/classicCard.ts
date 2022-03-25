@@ -31,6 +31,9 @@ import { TwoSidedTrait } from "../traits/twoSided"
 //   )
 // }
 
+/**
+ * @category Entity
+ */
 @canBeChild
 @applyTraitsMixins([
   IdentityTrait,

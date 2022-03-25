@@ -15,6 +15,7 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
 
 /**
  * A container of items to be placed in linear fashion
+ * @category Entity
  */
 @canBeChild
 @containsChildren()

@@ -35,6 +35,7 @@ export function hasSelectableChildren(
  * Holds indexes of selected children and in which order were these chosen.
  *
  * > TODO: This trait is clearly dependant on ParentTrait. There should be a way of checking/ensuring this dependency is met
+ * @category Trait
  */
 export class SelectableChildrenTrait {
   selectedChildren: ArraySchema<SelectedChildData>

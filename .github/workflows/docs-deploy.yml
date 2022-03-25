@@ -1,0 +1,55 @@
+name: Deploy documentation
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "docs/**"
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BUCKET_NAME: ${{ github.ref_name != 'main' && 'dev-' }}cardsgame.darekgreenly.com
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v2
+        with:
+          cache: "npm"
+          node-version-file: ".nvmrc"
+
+      - name: Prepare root and packages
+        run: |
+          npm ci
+          npm run build:ci
+
+      - name: Install
+        working-directory: docs
+        run: npm ci
+
+      - name: Build
+        working-directory: docs
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Upload all files
+        working-directory: docs
+        run: |
+          aws s3 sync build s3://${{ env.BUCKET_NAME }} --delete \
+            --cache-control "public, max-age=31536000, immutable"
+            
+          aws s3 cp build/index.html s3://${{ env.BUCKET_NAME }}/index.html \
+            --cache-control "max-age=604800, no-cache"
+          aws s3 cp build/sitemap.xml s3://${{ env.BUCKET_NAME }}/sitemap.xml \
+            --cache-control "max-age=604800, no-cache"

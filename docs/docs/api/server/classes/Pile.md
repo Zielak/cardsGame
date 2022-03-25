@@ -1,34 +1,90 @@
 ---
-id: "State"
-title: "Class: State"
-sidebar_label: "State"
+id: "Pile"
+title: "Class: Pile"
+sidebar_label: "Pile"
 sidebar_position: 0
 custom_edit_url: null
 ---
 
 ## Hierarchy
 
-- [`Entity`](Entity.md)<`Record`<`string`, `unknown`\>\>
+- [`Entity`](Entity.md)<`PileOptions`\>
 
 - `Mixin`
 
-  ↳ **`State`**
+  ↳ **`Pile`**
 
 ## Constructors
 
 ### constructor
 
-• **new State**()
+• **new Pile**(`state`, `options?`)
 
-#### Overrides
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `state` | [`State`](State.md) |
+| `options` | `Partial`<`Partial`<`NonFunctionProperties`<`Mixin`\>\>\> |
+
+#### Inherited from
 
 [Entity](Entity.md).[constructor](Entity.md#constructor)
+
+## ChildTrait Properties
+
+### idx
+
+• **idx**: `number`
+
+___
+
+### parent
+
+• **parent**: [`ParentTrait`](ParentTrait.md)
+
+___
 
 ## LabelTrait Properties
 
 ### name
 
 • **name**: `string`
+
+___
+
+### type
+
+• **type**: `string`
+
+Type should be unique to schema object! If you're extending this schema
+and adding new fields - set the new type string!
+
+___
+
+## LocationTrait Properties
+
+### angle
+
+• **angle**: `number`
+
+Rotation in degrees
+
+___
+
+### x
+
+• **x**: `number`
+
+X offset relative to entity's parent
+
+___
+
+### y
+
+• **y**: `number`
+
+Y offset relative to entity's parent
 
 ___
 
@@ -46,107 +102,9 @@ ___
 
 ___
 
-### clients
-
-• **clients**: `ArraySchema`<`string`\>
-
-IDs of clients who are connecting to the room.
-A "client" is someone who just stopped by in this room
-and not necessarily someone who is playing the game.
-
-___
-
-### currentPlayerIdx
-
-• **currentPlayerIdx**: `number` = `0`
-
-___
-
 ### id
 
 • `Readonly` **id**: `number`
-
-___
-
-### isGameOver
-
-• **isGameOver**: `boolean` = `false`
-
-___
-
-### isGameStarted
-
-• **isGameStarted**: `boolean` = `false`
-
-___
-
-### playerViewPosition
-
-• **playerViewPosition**: `PlayerViewPosition`
-
-A construct describing how should player's "focused" items
-be positioned in their view. Containers of other players
-will not follow these rules.
-Default is: center/bottom.
-
-___
-
-### players
-
-• **players**: `ArraySchema`<[`Player`](Player.md)\>
-
-List of players - game participants, after the game starts.
-
-TODO: Make players have `idx` if you ever need them to change order mid-game
-
-___
-
-### round
-
-• **round**: `number` = `0`
-
-Current round number. Increased using `NextRound` command.
-
-___
-
-### tableHeight
-
-• **tableHeight**: `number` = `60`
-
-___
-
-### tableWidth
-
-• **tableWidth**: `number` = `60`
-
-___
-
-### turnBased
-
-• **turnBased**: `boolean` = `true`
-
-Games are turn-based by default. Each player takes their turns one by one.
-Set this to `false` to allow simultaneous play.
-Don't rely on `currentPlayer` value for non turn-based games.
-
-___
-
-### type
-
-• **type**: `string` = `"state"`
-
-___
-
-### ui
-
-• **ui**: `MapSchema`<`string`\>
-
-Describes which client-side UI component to reveal to which player.
-KEY = uiElement, VALUE = clientID
-
-NOTE: It's a very simple example, for more advanced use (eg. UI element
-visible for multiple certain players) feel free to
-create your own ui handler in your State
 
 ___
 
@@ -190,17 +148,37 @@ ___
 
 **`default`** Infinity
 
-## Accessors
+## ChildTrait Accessors
 
-### currentPlayer
+### idxPath
 
-• `get` **currentPlayer**(): [`Player`](Player.md)
+• `get` **idxPath**(): `number`[]
+
+TODO: Limit the number of automatic getters. Just make these a `getIdxPath` functions. QueryRunner grabs all the "props" and ignores functions.
+
+**`category`** ChildTrait
 
 #### Returns
 
-[`Player`](Player.md)
+`number`[]
 
-## Methods
+array of indexes for this entity access
+
+## ChildTrait Methods
+
+### isInteractive
+
+▸ **isInteractive**(): `boolean`
+
+Points out if this element can be target of any interaction
+
+#### Returns
+
+`boolean`
+
+___
+
+## Other Methods
 
 ### addChild
 
@@ -302,13 +280,13 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `state` | [`State`](State.md) |
-| `options` | `Partial`<`Record`<`string`, `unknown`\>\> |
+| `options` | `Partial`<`NonFunctionProperties`<`Mixin`\>\> |
 
 #### Returns
 
 `void`
 
-#### Inherited from
+#### Overrides
 
 [Entity](Entity.md).[create](Entity.md#create)
 

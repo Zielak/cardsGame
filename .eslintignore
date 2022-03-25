@@ -4,3 +4,4 @@ examples/**/dist
 lib
 packages/**/node_modules
 packages/**/lib
+docs/build

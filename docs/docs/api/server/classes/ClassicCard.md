@@ -1,15 +1,14 @@
 ---
-id: "entities.ClassicCard"
+id: "ClassicCard"
 title: "Class: ClassicCard"
-sidebar_label: "entities.ClassicCard"
+sidebar_label: "ClassicCard"
+sidebar_position: 0
 custom_edit_url: null
 ---
 
-[entities](../namespaces/entities.md).ClassicCard
-
 ## Hierarchy
 
-- `Entity`<`ClassicCardOptions`\>
+- [`Entity`](Entity.md)<`ClassicCardOptions`\>
 
 - `Mixin`
 
@@ -30,7 +29,7 @@ custom_edit_url: null
 
 #### Inherited from
 
-Entity<ClassicCardOptions\>.constructor
+[Entity](Entity.md).[constructor](Entity.md#constructor)
 
 ## ChildTrait Properties
 
@@ -42,7 +41,7 @@ ___
 
 ### parent
 
-• **parent**: [`ParentTrait`](traits.ParentTrait.md)
+• **parent**: [`ParentTrait`](ParentTrait.md)
 
 ___
 
@@ -117,11 +116,16 @@ ___
 
 • **ownerID**: `string`
 
+ID of the player owning this entity
+
 ___
 
 ### ownersMainFocus
 
 • **ownersMainFocus**: `boolean`
+
+Is this entity/container to be the main focus for this player?
+To be used by client-side implementation.
 
 ___
 
@@ -218,7 +222,7 @@ ___
 
 #### Overrides
 
-Entity.create
+[Entity](Entity.md).[create](Entity.md#create)
 
 ___
 

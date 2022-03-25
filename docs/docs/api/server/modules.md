@@ -9,10 +9,19 @@ custom_edit_url: null
 ## Namespaces
 
 - [commands](namespaces/commands.md)
-- [entities](namespaces/entities.md)
-- [traits](namespaces/traits.md)
 
-## Classes
+## Entity Classes
+
+- [ClassicCard](classes/ClassicCard.md)
+- [Container](classes/Container.md)
+- [Deck](classes/Deck.md)
+- [Grid](classes/Grid.md)
+- [Hand](classes/Hand.md)
+- [Line](classes/Line.md)
+- [Pile](classes/Pile.md)
+- [Spread](classes/Spread.md)
+
+## Other Classes
 
 - [Bot](classes/Bot.md)
 - [BotConditions](classes/BotConditions.md)
@@ -26,11 +35,26 @@ custom_edit_url: null
 - [TargetHolder](classes/TargetHolder.md)
 - [TargetsHolder](classes/TargetsHolder.md)
 
+## Trait Classes
+
+- [BoxModelTrait](classes/BoxModelTrait.md)
+- [ChildTrait](classes/ChildTrait.md)
+- [Entity](classes/Entity.md)
+- [FlexyTrait](classes/FlexyTrait.md)
+- [IdentityTrait](classes/IdentityTrait.md)
+- [LabelTrait](classes/LabelTrait.md)
+- [LocationTrait](classes/LocationTrait.md)
+- [OwnershipTrait](classes/OwnershipTrait.md)
+- [ParentTrait](classes/ParentTrait.md)
+- [SelectableChildrenTrait](classes/SelectableChildrenTrait.md)
+- [TwoSidedTrait](classes/TwoSidedTrait.md)
+
 ## Interfaces
 
 - [ActionTemplate](interfaces/ActionTemplate.md)
 - [BotNeuron](interfaces/BotNeuron.md)
 - [IRoom](interfaces/IRoom.md)
+- [QuerableProps](interfaces/QuerableProps.md)
 
 ## Annotation Functions
 
@@ -41,14 +65,21 @@ custom_edit_url: null
 
 - [getFlag](modules.md#getflag)
 
+## Grid Functions
+
+- [isGrid](modules.md#isgrid)
+
 ## Other Functions
 
+- [applyTraitsMixins](modules.md#applytraitsmixins)
 - [defineTypes](modules.md#definetypes)
+- [executeHook](modules.md#executehook)
+- [hasSelectableChildren](modules.md#hasselectablechildren)
 - [isInteractionOfEntities](modules.md#isinteractionofentities)
 - [isInteractionOfEvent](modules.md#isinteractionofevent)
 - [populatePlayerEvent](modules.md#populateplayerevent)
 - [setFlag](modules.md#setflag)
-- [testAction](modules.md#testaction)
+- [standardDeckFactory](modules.md#standarddeckfactory)
 - [type](modules.md#type)
 
 ## State Functions
@@ -62,6 +93,15 @@ custom_edit_url: null
 - [getPreviousPlayer](modules.md#getpreviousplayer)
 - [getPreviousPlayerIdx](modules.md#getpreviousplayeridx)
 
+## Trait Functions
+
+- [hasChildren](modules.md#haschildren)
+- [hasIdentity](modules.md#hasidentity)
+- [hasLabel](modules.md#haslabel)
+- [hasOwnership](modules.md#hasownership)
+- [isChild](modules.md#ischild)
+- [isParent](modules.md#isparent)
+
 ## Type aliases
 
 ### ActionsSet
@@ -73,6 +113,46 @@ custom_edit_url: null
 | Name | Type |
 | :------ | :------ |
 | `S` | extends [`State`](classes/State.md) |
+
+___
+
+### ChildAddedHandler
+
+Ƭ **ChildAddedHandler**: (`child`: [`ChildTrait`](classes/ChildTrait.md)) => `void`
+
+#### Type declaration
+
+▸ (`child`): `void`
+
+##### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `child` | [`ChildTrait`](classes/ChildTrait.md) |
+
+##### Returns
+
+`void`
+
+___
+
+### ChildRemovedHandler
+
+Ƭ **ChildRemovedHandler**: (`idx`: `number`) => `void`
+
+#### Type declaration
+
+▸ (`idx`): `void`
+
+##### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `idx` | `number` |
+
+##### Returns
+
+`void`
 
 ___
 
@@ -127,7 +207,7 @@ ___
 
 ### containsChildren
 
-▸ **containsChildren**(`childrenSynced?`): (`parentConstructor`: typeof `Entity`) => `void`
+▸ **containsChildren**(`childrenSynced?`): (`parentConstructor`: typeof [`Entity`](classes/Entity.md)) => `void`
 
 Class Decorator!
 Remember as possible parent to any kinds of children entities
@@ -149,7 +229,7 @@ Also enables syncing any previously remembered children kind on this constructor
 
 | Name | Type |
 | :------ | :------ |
-| `parentConstructor` | typeof `Entity` |
+| `parentConstructor` | typeof [`Entity`](classes/Entity.md) |
 
 ##### Returns
 
@@ -176,7 +256,57 @@ ___
 
 ___
 
+## Grid Functions
+
+### isGrid
+
+▸ **isGrid**(`entity`): entity is Grid
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `entity` | `unknown` |
+
+#### Returns
+
+entity is Grid
+
+___
+
 ## Other Functions
+
+### applyTraitsMixins
+
+▸ **applyTraitsMixins**(`baseCtors`): (`derivedCtor`: `AnyClass`) => `void`
+
+Mixes all the base constructors prototypes into one.
+Also provides a way for Entity to automatically execute
+all of the base constructor's "Trait Constructors".
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `baseCtors` | `any`[] |
+
+#### Returns
+
+`fn`
+
+▸ (`derivedCtor`): `void`
+
+##### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `derivedCtor` | `AnyClass` |
+
+##### Returns
+
+`void`
+
+___
 
 ### defineTypes
 
@@ -193,6 +323,39 @@ ___
 #### Returns
 
 typeof `Schema`
+
+___
+
+### executeHook
+
+▸ **executeHook**(`hookName`, ...`args`): `void`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `hookName` | `string` |
+| `...args` | `any`[] |
+
+#### Returns
+
+`void`
+
+___
+
+### hasSelectableChildren
+
+▸ **hasSelectableChildren**(`entity`): entity is SelectableChildrenTrait
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `entity` | `unknown` |
+
+#### Returns
+
+entity is SelectableChildrenTrait
 
 ___
 
@@ -296,29 +459,30 @@ ___
 
 ___
 
-### testAction
+### standardDeckFactory
 
-▸ **testAction**<`S`\>(`action`, `state`, `message`): `boolean`
+▸ **standardDeckFactory**(`ranks?`, `suits?`): [`ClassicCard`](classes/ClassicCard.md)[]
 
-Tests if given action would pass tests when pushed to Commands Manager
+Will generate an array of card options.
+Use this array to create actual cards yourself
 
-#### Type parameters
-
-| Name | Type |
-| :------ | :------ |
-| `S` | extends [`State`](classes/State.md)<`S`\> |
+**`example`**
+```ts
+standardDeckFactory().map(options => {
+  new ClassicCard({state, ...options})
+})
+```
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `action` | [`ActionTemplate`](interfaces/ActionTemplate.md)<`S`\> |
-| `state` | `S` |
-| `message` | [`ServerPlayerMessage`](modules.md#serverplayermessage) |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `ranks` | `string`[] | array of desired ranks |
+| `suits` | `string`[] | array of desired suits |
 
 #### Returns
 
-`boolean`
+[`ClassicCard`](classes/ClassicCard.md)[]
 
 ___
 
@@ -359,7 +523,7 @@ ___
 
 ### getEntitiesAlongPath
 
-▸ **getEntitiesAlongPath**(`state`, `path`): [`IdentityTrait`](classes/traits.IdentityTrait.md)[]
+▸ **getEntitiesAlongPath**(`state`, `path`): [`IdentityTrait`](classes/IdentityTrait.md)[]
 
 Gets an array of all entities from the top-most parent
 to the lowest of the child.
@@ -373,7 +537,7 @@ to the lowest of the child.
 
 #### Returns
 
-[`IdentityTrait`](classes/traits.IdentityTrait.md)[]
+[`IdentityTrait`](classes/IdentityTrait.md)[]
 
 ___
 
@@ -475,3 +639,118 @@ ___
 #### Returns
 
 `number`
+
+___
+
+## Trait Functions
+
+### hasChildren
+
+▸ **hasChildren**(`entity`): `boolean`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `entity` | `unknown` |
+
+#### Returns
+
+`boolean`
+
+___
+
+### hasIdentity
+
+▸ **hasIdentity**(`entity`): entity is IdentityTrait
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `entity` | `any` |
+
+#### Returns
+
+entity is IdentityTrait
+
+___
+
+### hasLabel
+
+▸ **hasLabel**(`entity`): entity is LabelTrait
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `entity` | `unknown` |
+
+#### Returns
+
+entity is LabelTrait
+
+___
+
+### hasOwnership
+
+▸ **hasOwnership**(`entity`): entity is OwnershipTrait
+
+Entity with this trait can have a reference to `Player`, who "owns" this entity.
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `entity` | `unknown` |
+
+#### Returns
+
+entity is OwnershipTrait
+
+___
+
+### isChild
+
+▸ **isChild**(`entity`): entity is ChildTrait
+
+**Important trait**
+
+Entity can become a child of any other container/parent.
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `entity` | `unknown` |
+
+#### Returns
+
+entity is ChildTrait
+
+___
+
+### isParent
+
+▸ **isParent**(`entity`): entity is ParentTrait
+
+**Important trait**
+
+Entity will behave as container to hold all other entities with `ChildTrait`.
+
+Has many methods for adding, fetching, removing and manipulating order of children.
+
+Can behave as:
+
+- an array - all children are indexed next to each other
+- a map - there can be empty spaces between children
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `entity` | `unknown` |
+
+#### Returns
+
+entity is ParentTrait

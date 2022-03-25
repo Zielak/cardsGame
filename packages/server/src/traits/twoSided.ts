@@ -6,6 +6,7 @@ import type { State } from "../state"
 /**
  * Adds `faceUp` property and `flip*()` methods.
  * The entity now has two sides. Like a card or coin.
+ * @category Trait
  */
 export class TwoSidedTrait {
   /**

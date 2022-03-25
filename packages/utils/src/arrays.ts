@@ -76,7 +76,7 @@ export const arrayWith = (count: number): number[] => [...Array(count).keys()]
  * Grabs you most common `propKey` in your `collection` of `T`,
  * additionally filtering out items which match given optional condition.
  *
- * Most useful when creating [`BotNeurons`](BotNeuron)
+ * Most useful when creating [`BotNeurons`](/api/server/interfaces/BotNeuron)
  *
  * @returns a tuple of [`propValue`, `count`]
  * @example

@@ -1,11 +1,10 @@
 ---
-id: "traits.TwoSidedTrait"
+id: "TwoSidedTrait"
 title: "Class: TwoSidedTrait"
-sidebar_label: "traits.TwoSidedTrait"
+sidebar_label: "TwoSidedTrait"
+sidebar_position: 0
 custom_edit_url: null
 ---
-
-[traits](../namespaces/traits.md).TwoSidedTrait
 
 Adds `faceUp` property and `flip*()` methods.
 The entity now has two sides. Like a card or coin.

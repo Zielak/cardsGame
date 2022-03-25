@@ -45,7 +45,7 @@ con({name: 'deck'}).as('deck')
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `QuerableProps` |
+| `props` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 
@@ -71,7 +71,7 @@ con('deck', {rank: 'K'})
 | Name | Type |
 | :------ | :------ |
 | `alias` | `string` |
-| `props?` | `QuerableProps` |
+| `props?` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 
@@ -85,8 +85,8 @@ con('deck', {rank: 'K'})
 
 | Name | Type |
 | :------ | :------ |
-| `arg0?` | `string` \| `QuerableProps` |
-| `arg1?` | `QuerableProps` |
+| `arg0?` | `string` \| [`QuerableProps`](../interfaces/QuerableProps.md) |
+| `arg1?` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 

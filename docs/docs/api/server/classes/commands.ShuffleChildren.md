@@ -23,7 +23,7 @@ custom_edit_url: null
 
 | Name | Type |
 | :------ | :------ |
-| `container` | [`Target`](../modules.md#target)<[`ParentTrait`](traits.ParentTrait.md)\> |
+| `container` | [`Target`](../modules.md#target)<[`ParentTrait`](ParentTrait.md)\> |
 
 #### Overrides
 
@@ -33,7 +33,7 @@ custom_edit_url: null
 
 ### target
 
-• **target**: [`TargetHolder`](TargetHolder.md)<[`ParentTrait`](traits.ParentTrait.md)\>
+• **target**: [`TargetHolder`](TargetHolder.md)<[`ParentTrait`](ParentTrait.md)\>
 
 ## Accessors
 

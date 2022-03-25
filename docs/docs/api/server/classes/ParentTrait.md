@@ -1,11 +1,10 @@
 ---
-id: "traits.ParentTrait"
+id: "ParentTrait"
 title: "Class: ParentTrait"
-sidebar_label: "traits.ParentTrait"
+sidebar_label: "ParentTrait"
+sidebar_position: 0
 custom_edit_url: null
 ---
-
-[traits](../namespaces/traits.md).ParentTrait
 
 ## Constructors
 
@@ -17,13 +16,13 @@ custom_edit_url: null
 
 ### childAdded
 
-• **childAdded**: [`ChildAddedHandler`](../namespaces/traits.md#childaddedhandler)
+• **childAdded**: [`ChildAddedHandler`](../modules.md#childaddedhandler)
 
 ___
 
 ### childRemoved
 
-• **childRemoved**: [`ChildRemovedHandler`](../namespaces/traits.md#childremovedhandler)
+• **childRemoved**: [`ChildRemovedHandler`](../modules.md#childremovedhandler)
 
 ___
 
@@ -31,7 +30,7 @@ ___
 
 ### childrenPointers
 
-• **childrenPointers**: `Map`<[`ChildTrait`](traits.ChildTrait.md), `string`\>
+• **childrenPointers**: `Map`<[`ChildTrait`](ChildTrait.md), `string`\>
 
 ChildTrait object -> its constructor's name
 Also good spot to count all children
@@ -55,7 +54,7 @@ ___
 
 • **hijacksInteractionTarget**: `boolean`
 
-Used by [ChildTrait.`isInteractive`](traits.ChildTrait#isinteractive).
+Used by [ChildTrait.`isInteractive`](ChildTrait#isinteractive).
 
 If set to true, will prevent its direct children from getting interaction events.
 
@@ -79,7 +78,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 
 #### Returns
 
@@ -93,7 +92,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 | `prepend` | `boolean` |
 
 #### Returns
@@ -108,7 +107,7 @@ Adds new item.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |  |
+| `entity` | [`ChildTrait`](ChildTrait.md) |  |
 | `atIndex` | `number` | squeeze into desired spot, moving other children away. |
 
 #### Returns
@@ -123,7 +122,7 @@ Adds new item.
 
 | Name | Type |
 | :------ | :------ |
-| `entity` | [`ChildTrait`](traits.ChildTrait.md) |
+| `entity` | [`ChildTrait`](ChildTrait.md) |
 | `arg1` | `number` \| `boolean` |
 
 #### Returns
@@ -140,7 +139,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `entities` | [`ChildTrait`](traits.ChildTrait.md)[] |
+| `entities` | [`ChildTrait`](ChildTrait.md)[] |
 
 #### Returns
 
@@ -170,7 +169,7 @@ Get the element with the lowest 'idx' value
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -188,7 +187,7 @@ Get one direct child of `parent` by its `idx`
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
@@ -212,7 +211,7 @@ Gets all direct children in array form, "sorted" by idx
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -275,7 +274,7 @@ Get the element with highest 'idx' value
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Returns
 
@@ -354,13 +353,13 @@ Find one item matching props.
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `QuerableProps` |
+| `props` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 
@@ -378,13 +377,13 @@ Looks for every matching entity here and deeper
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends [`ChildTrait`](traits.ChildTrait.md)<`T`\> |
+| `T` | extends [`ChildTrait`](ChildTrait.md)<`T`\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `QuerableProps` |
+| `props` | [`QuerableProps`](../interfaces/QuerableProps.md) |
 
 #### Returns
 
@@ -400,7 +399,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `child` | [`ChildTrait`](traits.ChildTrait.md) |
+| `child` | [`ChildTrait`](ChildTrait.md) |
 
 #### Returns
 

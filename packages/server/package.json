@@ -11,15 +11,21 @@
   "bugs": {
     "url": "https://github.com/zielak/cardsGame/issues"
   },
+  "scripts": {
+    "build": "tsc -b src",
+    "build:watch": "tsc -b src --watch",
+    "test": "jest"
+  },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],
-  "scripts": {
-    "build": "tsc -b src",
-    "build:watch": "tsc -b src --watch",
-    "test": "jest"
+  "exports": {
+    "./commands": "./lib/commands/index.js",
+    "./entities": "./lib/entities/index.js",
+    "./traits": "./lib/traits/index.js",
+    ".": "./lib/index.js"
   },
   "dependencies": {
     "@cardsgame/entity-traits": "^0.14.0",

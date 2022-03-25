@@ -1,11 +1,10 @@
 ---
-id: "traits.FlexyTrait"
+id: "FlexyTrait"
 title: "Class: FlexyTrait"
-sidebar_label: "traits.FlexyTrait"
+sidebar_label: "FlexyTrait"
+sidebar_position: 0
 custom_edit_url: null
 ---
-
-[traits](../namespaces/traits.md).FlexyTrait
 
 Defines entity as flexible in size.
 Contains props useful to create Flex Box in web browser:
@@ -36,4 +35,4 @@ ___
 
 ### justifyContent
 
-• **justifyContent**: ``"start"`` \| ``"end"`` \| ``"center"`` \| ``"spaceBetween"`` \| ``"spaceAround"`` \| ``"spaceEvenly"``
+• **justifyContent**: `JustifyContent`

@@ -18,6 +18,7 @@ type JustifyContent =
  * - `alignItems`
  * - `justifyContent`
  * - `directionReverse`
+ * @category Trait
  */
 export class FlexyTrait {
   /**

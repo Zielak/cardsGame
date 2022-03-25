@@ -1,3 +1,3 @@
-domain          = "cardsgame.darekgreenly.com"
+domain          = "dev-cardsgame.darekgreenly.com"
 dns_record_name = "dev-cardsgame"
 environment     = "dev"

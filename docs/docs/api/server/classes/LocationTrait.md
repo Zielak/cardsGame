@@ -1,11 +1,10 @@
 ---
-id: "traits.LocationTrait"
+id: "LocationTrait"
 title: "Class: LocationTrait"
-sidebar_label: "traits.LocationTrait"
+sidebar_label: "LocationTrait"
+sidebar_position: 0
 custom_edit_url: null
 ---
-
-[traits](../namespaces/traits.md).LocationTrait
 
 Adds `x`, `y` and `angle` to entity,
 describing its location and rotation,
