@@ -9,9 +9,7 @@ on:
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      BUCKET_NAME: ${{ github.ref_name != 'main' && 'dev-' }}cardsgame.darekgreenly.com
+    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -42,6 +40,15 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
+
+      - name: Set bucket name
+        run: |
+          BUCKET_NAME=cardsgame.darekgreenly.com
+          if [[ $GITHUB_REF != "refs/heads/main" ]]; then
+            BUCKET_NAME=dev-cardsgame.darekgreenly.com
+          fi
+
+          echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
 
       - name: Upload all files
         working-directory: docs
