@@ -1,11 +1,13 @@
-const { createServer } = require("https")
+import { createServer } from "https"
 
-const { key, cert } = require("@cardsgame/example-certs")() // Generate certificates if needed
-const { Server, WebSocketTransport } = require("@cardsgame/server")
-const express = require("express")
+import certs from "@cardsgame/example-certs"
+import { Server, WebSocketTransport } from "@cardsgame/server"
+import express from "express"
 
-const exitHandler = require("./exitHandler")
-const { WarGame } = require("./game/room")
+import { exitHandler } from "./exitHandler"
+import { WarGame } from "./game/room"
+
+const { key, cert } = certs()
 
 // Prepare Express app
 const app = express()

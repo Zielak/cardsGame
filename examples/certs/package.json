@@ -5,6 +5,7 @@
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "postinstall": "node postInstall",
     "test": "echo \"Error: no test specified\" && exit 1"

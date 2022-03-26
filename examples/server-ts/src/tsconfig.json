@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "outDir": "../dist",
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "lib": ["ES2021"],
+    "module": "CommonJS",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "target": "ES2021",
+    "types": ["@cardsgame/types"]
+  }
+}

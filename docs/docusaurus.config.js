@@ -32,7 +32,6 @@ const config = {
           entryPoints: [`../packages/${package}/src/index.ts`],
           tsconfig: [`../packages/${package}/src/tsconfig.json`],
           out: `api/${package}`,
-          cleanOutputDir: true,
 
           sidebar: {
             categoryLabel: package[0].toUpperCase() + package.substring(1),

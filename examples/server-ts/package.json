@@ -1,0 +1,23 @@
+{
+  "name": "@cardsgame/example-server-ts",
+  "version": "0.14.1",
+  "description": "Simplest implementation example of @cardsgame",
+  "author": "Darek Greenly (https://darekgreenly.com)",
+  "license": "MIT",
+  "main": "app.js",
+  "scripts": {
+    "start": "NODE_ENV=development LOGS=verbose node dist/app",
+    "build": "tsc -b src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@cardsgame/example-certs": "^0.14.0",
+    "@cardsgame/server": "^0.14.1",
+    "@cardsgame/types": "^0.14.0",
+    "@cardsgame/utils": "^0.14.1",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.3"
+  }
+}

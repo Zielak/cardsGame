@@ -1,16 +1,10 @@
 {
   "version": "0.14.1",
-  "packages": [
-    "packages/*",
-    "examples/*"
-  ],
+  "packages": ["packages/*", "examples/*"],
   "command": {
     "publish": {
       "conventionalCommits": true,
-      "ignoreChanges": [
-        "*.md",
-        "test/**"
-      ],
+      "ignoreChanges": ["*.md", "test/**"],
       "message": "chore(release): publish %s [skip ci]"
     },
     "version": {
