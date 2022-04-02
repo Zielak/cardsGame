@@ -1,9 +1,22 @@
+interface ClientMessageTypes {
+  start: void
+  bot_add: { intelligence: number }
+  bot_remove: { id: string }
+  EntityInteraction: RawInteractionClientPlayerMessage
+}
+
+interface ServerMessageTypes {
+  gameInfo: ServerMessage<string>
+  gameWarn: ServerMessage<string>
+  gameError: ServerMessage<string>
+}
+
 /**
  * Message sent by server, either directly to one client
  * or broadcast to all.
  */
-type ServerMessage = {
-  data?: unknown
+type ServerMessage<D = unknown> = {
+  data?: D
 
   /**
    * Broadcasts sent by undoing a command will be marked with `undo: true`.
@@ -80,11 +93,6 @@ type NonFunctionPropertyNames<T> = {
   [K in keyof T]: T[K] extends Function ? never : K
 }[keyof T]
 type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>
-
-type PrimitivePropertyNames<T> = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  [P in keyof T]: Exclude<T[P], undefined> extends object ? never : P
-}[keyof T]
 
 /**
  * Grabs type of array's items
