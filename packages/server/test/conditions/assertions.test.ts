@@ -1,6 +1,7 @@
-import { Grid } from "../../src/entities/grid"
-import { Player, ServerPlayerMessage } from "../../src/players/player"
-import { State } from "../../src/state"
+import { Grid } from "src/entities/grid"
+import { Player, ServerPlayerMessage } from "src/player"
+import { State } from "src/state"
+
 import { ConditionsMock } from "../helpers/conditionsMock"
 import { SelectableParent } from "../helpers/selectableParent"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
@@ -173,15 +174,15 @@ describe("oneOf", () => {
 
   it("fails as expected", () => {
     expect(() => {
-      con({ name: "foo" }).its("name").oneOf(["bar", "baz"])
+      con().set({ name: "foo" }).its("name").oneOf(["bar", "baz"])
     }).toThrow()
 
     expect(() => {
-      con({ name: "foo" }).its("name").not.oneOf(["foo", "bar"])
+      con().set({ name: "foo" }).its("name").not.oneOf(["foo", "bar"])
     }).toThrow()
 
     expect(() => {
-      con({ name: "foo" }).its("name").not.oneOf(["baz", "foo", "bar"])
+      con().set({ name: "foo" }).its("name").not.oneOf(["baz", "foo", "bar"])
     }).toThrow()
   })
 })
@@ -318,14 +319,12 @@ describe("selected", () => {
 })
 
 test("matchesPropOf", () => {
-  con().set(bottom).as("bottom")
-  con().set(top).as("top")
+  expect(() => con().set(bottom).its("type").matchesPropOf(top)).not.toThrow()
+  expect(() => con().set(top).its("type").matchesPropOf(bottom)).not.toThrow()
 
-  expect(() => con("bottom").its("type").matchesPropOf("top")).not.toThrow()
-  expect(() => con("top").its("type").matchesPropOf("bottom")).not.toThrow()
-
-  expect(() => con().set(top).matchesPropOf("bottom")).toThrow()
-  expect(() => con().set([]).matchesPropOf("bottom")).toThrow()
+  expect(() => con().set(top).matchesPropOf(bottom)).toThrow()
+  expect(() => con().set([]).matchesPropOf(bottom)).toThrow()
+  expect(() => con().set("test").matchesPropOf(bottom)).toThrow()
 })
 
 describe("revealedUI", () => {

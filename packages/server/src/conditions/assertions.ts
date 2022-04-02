@@ -5,7 +5,8 @@ import { isChild } from "../traits/child"
 import { isParent } from "../traits/parent"
 import { hasSelectableChildren } from "../traits/selectableChildren"
 
-import { getFlag, postAssertion, ref, resetNegation } from "./utils"
+import { throwError } from "./errors"
+import { getFlag, getRef, postAssertion, resetNegation } from "./utils"
 
 const getMessage = (
   target,
@@ -59,7 +60,7 @@ export function assert(
 
     resetNegation(this)
     postAssertion(this)
-    throw new Error(msg)
+    throwError(this, msg)
   }
 
   resetNegation(this)
@@ -97,7 +98,7 @@ class ConditionAssertions {
         `subject ${printPropName}(object) is empty, but shouldn't.`
       )
     } else {
-      throw new Error(`.empty | Given an invalid subject: ${subject}`)
+      throwError(this, `.empty | Given an invalid subject: ${subject}`)
     }
 
     return this
@@ -115,7 +116,7 @@ class ConditionAssertions {
     const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
-      throw new Error(`full | applies only to ParentTrait`)
+      throwError(this, `full | applies only to ParentTrait`)
     }
 
     assert.call(
@@ -139,7 +140,7 @@ class ConditionAssertions {
     const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
-      throw new Error(`availableSpot | applies only on parents`)
+      throwError(this, `availableSpot | applies only on parents`)
     }
 
     if (typeof arg0 === "number" && arg1 === undefined) {
@@ -151,7 +152,7 @@ class ConditionAssertions {
       )
     } else if (typeof arg0 === "number" && typeof arg1 === "number") {
       if (!isGrid(subject)) {
-        throw new Error(`availableSpot | column/row, expected Grid container`)
+        throwError(this, `availableSpot | column/row, expected Grid container`)
       }
 
       assert.call(
@@ -161,7 +162,7 @@ class ConditionAssertions {
         `spot [${arg0},${arg1}] is available but shouldn't`
       )
     } else {
-      throw new Error(`availableSpot | incorrect arguments, expected numbers`)
+      throwError(this, `availableSpot | incorrect arguments, expected numbers`)
     }
 
     return this
@@ -197,7 +198,7 @@ class ConditionAssertions {
     const printPropName = propName ? `'${propName}' = ` : ""
 
     if (getFlag(this, "not")) {
-      throw new Error(`Don't be silly, just use "false()" instead.`)
+      throwError(this, `Don't be silly, just use "false()" instead.`)
     }
 
     assert.call(
@@ -218,7 +219,7 @@ class ConditionAssertions {
     const printPropName = propName ? `'${propName}' = ` : ""
 
     if (getFlag(this, "not")) {
-      throw new Error(`Don't be silly, just use "true()" instead.`)
+      throwError(this, `Don't be silly, just use "true()" instead.`)
     }
 
     assert.call(
@@ -237,7 +238,7 @@ class ConditionAssertions {
     const subject = getFlag(this, "subject")
 
     if (getFlag(this, "not")) {
-      throw new Error(`Don't be silly, just use "undefined()" instead.`)
+      throwError(this, `Don't be silly, just use "undefined()" instead.`)
     }
 
     assert.call(this, subject !== undefined, `subject is undefined.`)
@@ -252,7 +253,7 @@ class ConditionAssertions {
     const subject = getFlag(this, "subject")
 
     if (getFlag(this, "not")) {
-      throw new Error(`Don't be silly, just use "defined()" instead.`)
+      throwError(this, `Don't be silly, just use "defined()" instead.`)
     }
 
     assert.call(this, subject === undefined, `subject is defined.`)
@@ -373,45 +374,63 @@ class ConditionAssertions {
   }
 
   /**
+   * @asserts that chosen prop value matches the same prop on subject by alias
+   * @example
+   * ```ts
+   * con().$.entity.its("rank").matchesPropOf("pileTop")
+   * ```
+   */
+  matchesPropOf(refName: string): this
+  /**
    * @asserts that chosen prop value matches the same prop on other subject
    * @example
    * ```ts
-   * con.entity.its("rank").matchesPropOf("pileTop")
+   * const PILE_TOP = con().query({ type: "pile" }).top.grab()
+   * con().$.entity.its("rank").matchesPropOf(PILE_TOP)
    * ```
    */
-  matchesPropOf(refName: string): this {
-    // don't? TODO: accept queryProps?
+  matchesPropOf(other: unknown): this
+  matchesPropOf(other: unknown): this {
     const propName = getFlag(this, "propName")
 
     if (!getFlag(this, "currentParent")) {
-      throw new Error(
+      throwError(
+        this,
         `matchesPropOf | Needs to be preceded with ".its" to pick a prop name`
       )
     }
 
     const subject = getFlag(this, "subject")
-    const testSubject = ref(this, refName)
+    let expected
+    if (typeof other === "string") {
+      const testSubject = getRef(this, other)
+      expected = testSubject[propName]
 
-    if (!testSubject) {
-      throw new Error(
-        `matchesPropOf | couldn't find anything by ref "${refName}"`
+      assert.call(
+        this,
+        subject === expected,
+        `subject's '${propName}' (#{act}) doesn't match with the same prop at '${other}' (#{exp})`,
+        `subject's '${propName}' (#{act}) is equal with prop of '${other}', but shouldn't (#{exp})`,
+        expected,
+        subject
+      )
+    } else if (typeof other === "object") {
+      expected = other[propName]
+
+      assert.call(
+        this,
+        subject === expected,
+        `subject's '${propName}' (#{act}) doesn't match with the same prop at other object (#{exp})`,
+        `subject's '${propName}' (#{act}) is equal with other's prop, but shouldn't (#{exp})`,
+        expected,
+        subject
+      )
+    } else {
+      throwError(
+        this,
+        `matchesPropOf | other needs to be an object/entity or a reference name`
       )
     }
-
-    const expected = testSubject[propName]
-
-    assert.call(
-      this,
-      subject === expected,
-      `subject's '${propName}' (#{act}) doesn't match with the same prop at '${String(
-        refName
-      )}' (#{exp})`,
-      `subject's '${propName}' (#{act}) is equal with prop of '${String(
-        refName
-      )}', but shouldn't (#{exp})`,
-      expected,
-      subject
-    )
 
     return this
   }
@@ -423,7 +442,7 @@ class ConditionAssertions {
     const subject = getFlag(this, "subject")
 
     if (!isChild(subject)) {
-      throw new Error(`selectable | applies only on child entities`)
+      throwError(this, `selectable | applies only on child entities`)
     }
 
     assert.call(
@@ -439,7 +458,7 @@ class ConditionAssertions {
     const subject = getFlag(this, "subject")
 
     if (!isChild(subject)) {
-      throw new Error(`isSelected | is not a child`)
+      throwError(this, `isSelected | is not a child`)
     }
 
     const result = hasSelectableChildren(subject.parent)
@@ -481,7 +500,8 @@ class ConditionAssertions {
         `someEntityMatchesProps | some child matched, but shouldn't`
       )
     } else {
-      throw new Error(
+      throwError(
+        this,
         `someEntitiesMatchProps | subject is neither parent nor array`
       )
     }
@@ -514,7 +534,8 @@ class ConditionAssertions {
         `everyEntityMatchesProps | every child matched, but shouldn't`
       )
     } else {
-      throw new Error(
+      throwError(
+        this,
         `everyEntityMatchesProps | subject is neither parent nor array`
       )
     }
@@ -576,7 +597,8 @@ class ConditionAssertions {
     if (uiKey) {
       // 1. uiKey needs to exist
       if (!ui.has(uiKey)) {
-        throw new Error(
+        throwError(
+          this,
           `revealedUI | this UI doesn't have "${uiKey}" key defined`
         )
       }

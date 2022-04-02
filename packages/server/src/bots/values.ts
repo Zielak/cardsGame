@@ -1,7 +1,7 @@
 import { decimal } from "@cardsgame/utils"
 
-import type { Bot } from "../players/bot"
-import type { ChildTrait } from "../traits/child"
+import type { Bot } from "../player"
+import type { ChildTrait } from "../traits"
 
 const STUPIDITY_RANGE = 50
 

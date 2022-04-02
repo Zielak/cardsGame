@@ -2,7 +2,7 @@ import { ArraySchema, MapSchema } from "@colyseus/schema"
 
 import { containsChildren } from "../annotations/containsChildren"
 import { type } from "../annotations/type"
-import { Player } from "../players/player"
+import { Player } from "../player"
 import { PlayerViewPosition } from "../playerViewPosition"
 import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"

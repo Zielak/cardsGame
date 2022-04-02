@@ -1,6 +1,6 @@
 import { def } from "@cardsgame/utils"
 
-import { Bot } from "../players/bot"
+import { Bot } from "../player"
 import type { Room } from "../room"
 import type { State } from "../state"
 
@@ -11,7 +11,7 @@ import type { State } from "../state"
 export function botAdd(
   this: Room<State>,
   client,
-  message: { intelligence: number }
+  message: ClientMessageTypes["bot_add"]
 ): void {
   const { state } = this
 
@@ -36,7 +36,7 @@ export function botAdd(
 export function botRemove(
   this: Room<State>,
   client,
-  message: { id: string }
+  message: ClientMessageTypes["bot_remove"]
 ): void {
   const bot = message.id
     ? this.botClients.find((entry) => entry.clientID === message.id)

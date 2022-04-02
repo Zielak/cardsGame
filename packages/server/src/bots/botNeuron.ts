@@ -1,5 +1,5 @@
 import type { ActionTemplate } from "../actionTemplate"
-import type { Bot } from "../players/bot"
+import type { Bot } from "../player"
 import type { QuerableProps } from "../queryRunner"
 import type { State } from "../state"
 
@@ -10,14 +10,13 @@ export interface BotNeuron<S extends State> {
   description?: string
 
   /**
-   * Additional conditions to guide bot in the right direction.
-   * `Conditions` here is limited, you can only assess current player and game state.
+   * Additional conditions to notify bot if it can perform this action.
    *
-   * Optional, use as _"energy saver"_.
-   * For example, if an action requires player to have certain kind of card
-   * in their hand, you can quickly assert that here.
-   * Otherwise, bot will brute force its way through all game elements
-   * to understand if this action can be played.
+   * API of `Conditions` here is limited on purpose,
+   * you can only assess current player (eg. for ownership) and game state.
+   *
+   * Optional, but without this, bot will  brute force its way through all
+   * game elements to understand if this action can be played.
    */
   conditions?: (con: BotConditions<S>) => void
 

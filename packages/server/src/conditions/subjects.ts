@@ -1,23 +1,25 @@
 import { isMapLike } from "@cardsgame/utils"
 
 import type { QuerableProps } from "../queryRunner"
+import type { State } from "../state"
 import { isParent } from "../traits/parent"
 import { hasSelectableChildren } from "../traits/selectableChildren"
 
+import { throwError } from "./errors"
 import {
   getFlag,
   getInitialSubject,
-  ref,
+  getRef,
   resetPropDig,
   resetSubject,
   setFlag,
+  setRef,
 } from "./utils"
 
 /**
  * Getters and methods which change subject
  */
-
-class ConditionSubjects {
+class ConditionSubjects<InitialSubjects> {
   /**
    * Sets new subject. This can be anything.
    * @yields completely new subject, provided in the argument
@@ -31,52 +33,27 @@ class ConditionSubjects {
   /**
    * Looks for a child entity by their `props`, starting from current subject.
    *
-   * @yields an entity, found by alias or `QuerableProps` query
+   * @yields an entity, found by `QuerableProps` query
    * @example
    * ```ts
-   * con.state.get({name: 'deck'}).as('deck')
+   * con.query({ name: "deck" }).not.empty()
    * ```
    */
-  get(props: QuerableProps): this
-  /**
-   * Changes subject to previously remembered entity by an `alias`,
-   * or sone of the already remembered "initial subjects".
-   * If `props` are also provided, it'll instead search the aliased entity
-   * for another entity by their `props`.
-   *
-   * @yields an entity, found by alias or `QuerableProps` query
-   * @example
-   * ```ts
-   * con.get('deck', {rank: 'K'})
-   * ```
-   */
-  get(alias: string, props?: QuerableProps): this
-  get(arg0: string | QuerableProps, arg1?: QuerableProps): this {
-    let newSubject
-    if (typeof arg0 === "string") {
-      const alias = arg0
-      if (arg1) {
-        // find child of aliased subject
-        newSubject = ref(this, alias).query(arg1)
-      } else {
-        // get just subject by alias
-        newSubject = ref(this, alias)
-      }
-    } else {
-      // find new subject in current subject
-      const parent =
-        getFlag(this, "subject") === undefined
-          ? getFlag(this, "state")
-          : getFlag(this, "subject")
+  query(props: QuerableProps): this {
+    // find new subject in current subject
+    const parent =
+      getFlag(this, "subject") === undefined
+        ? getFlag(this, "state")
+        : getFlag(this, "subject")
 
-      if (!isParent(parent)) {
-        throw new Error(
-          `get(props) | current subject is not a parent: "${typeof parent}" = ${parent}`
-        )
-      }
-
-      newSubject = parent.query(arg0)
+    if (!isParent(parent)) {
+      throwError(
+        this,
+        `query(props) | current subject is not a parent: "${typeof parent}" = ${parent}`
+      )
     }
+
+    const newSubject = parent.query(props)
 
     setFlag(this, "subject", newSubject)
 
@@ -86,15 +63,50 @@ class ConditionSubjects {
   }
 
   /**
+   * Allows you to change subject to one of the initial subjects.
+   *
+   * @example
+   * ```ts
+   * con().subject.entity.its("name").equals("mainDeck")
+   * ```
+   */
+  get subject(): Record<keyof InitialSubjects, this> {
+    const subjects = getFlag(this, "initialSubjects")
+    const subjectNames = Object.keys(subjects)
+    const properties = subjectNames.reduce((descriptor, subjectName) => {
+      descriptor[subjectName] = {
+        get: () => {
+          setFlag(this, "subject", subjects[subjectName])
+          return this
+        },
+      }
+
+      return descriptor
+    }, {} as PropertyDescriptorMap)
+
+    return Object.defineProperties(
+      {} as Record<keyof InitialSubjects, this>,
+      properties
+    )
+  }
+
+  /**
+   * Alias to `con().subject`
+   */
+  get $(): Record<keyof InitialSubjects, this> {
+    return this.subject
+  }
+
+  /**
    * Changes subject to a prop of its current subject.
    * @yields subject prop's value to be asserted. Will remember the reference to the object, so you can chain key checks
    * @example
    * ```ts
    * con.entity
-   *   .its('propA').equals('foo')
-   *   .and.its('propB').above(5)
+   *   .its("propA").equals("foo")
+   *   .and.its("propB").above(5)
    *
-   * con().its('customMap').its('propA').equals(true)
+   * con().its("customMap").its("propA").equals(true)
    * ```
    */
   its(propName: string): this {
@@ -113,33 +125,13 @@ class ConditionSubjects {
   }
 
   /**
-   * Remembers the subject with a given alias
-   * @example
-   * ```ts
-   * con.get({ name: 'deck' }).as('deck')
-   * ```
-   */
-  as(refName: string): void {
-    ref(this, refName, getFlag(this, "subject"))
-
-    resetSubject(this)
-  }
-
-  /**
-   * @returns if there exists a reference to `subject` by the name of `refName`
-   */
-  hasReferenceTo(refName: string): boolean {
-    return Boolean(ref(this, refName))
-  }
-
-  /**
    * @yields parent of current subject
    */
   get parent(): this {
     const parent = getFlag(this, "subject").parent
 
     if (!parent) {
-      throw new Error(`parent | Subject is the root state.`)
+      throwError(this, `parent | Subject is the root state.`)
     }
     setFlag(this, "subject", parent)
 
@@ -153,7 +145,7 @@ class ConditionSubjects {
     const parent = getFlag(this, "subject")
 
     if (!isParent(parent)) {
-      throw new Error(`children | Current subject can't have children`)
+      throwError(this, `children | Current subject can't have children`)
     }
 
     const children = parent.getChildren()
@@ -172,18 +164,18 @@ class ConditionSubjects {
 
     if (isParent(subject)) {
       if (index > subject.countChildren() || index < 0) {
-        throw new Error(`nthChild | Out of bounds`)
+        throwError(this, `nthChild | Out of bounds`)
       }
 
       setFlag(this, "subject", subject.getChild(index))
     } else if (Array.isArray(subject) || typeof subject.length === "number") {
       if (index > subject.length || index < 0) {
-        throw new Error(`nthChild | Out of bounds`)
+        throwError(this, `nthChild | Out of bounds`)
       }
 
       setFlag(this, "subject", subject[index])
     } else {
-      throw new Error(`nthChild | Subject must be an array or Parent`)
+      throwError(this, `nthChild | Subject must be an array or Parent`)
     }
 
     return this
@@ -196,7 +188,8 @@ class ConditionSubjects {
     const subject = getFlag(this, "subject")
 
     if (typeof subject !== "object") {
-      throw new Error(
+      throwError(
+        this,
         `bottom | Can't get the "bottom" of something other than an object`
       )
     }
@@ -206,7 +199,7 @@ class ConditionSubjects {
     } else if (isParent(subject)) {
       setFlag(this, "subject", subject.getBottom())
     } else {
-      throw new Error(`bottom | Couldn't decide how to get the "bottom" value`)
+      throwError(this, `bottom | Couldn't decide how to get the "bottom" value`)
     }
 
     return this
@@ -219,7 +212,8 @@ class ConditionSubjects {
     const subject = getFlag(this, "subject")
 
     if (typeof subject !== "object") {
-      throw new Error(
+      throwError(
+        this,
         `top | Can't get the "top" of something other than an object`
       )
     }
@@ -229,7 +223,7 @@ class ConditionSubjects {
     } else if (isParent(subject)) {
       setFlag(this, "subject", subject.getTop())
     } else {
-      throw new Error(`top | Couldn't decide how to get the "top" value`)
+      throwError(this, `top | Couldn't decide how to get the "top" value`)
     }
 
     return this
@@ -242,7 +236,7 @@ class ConditionSubjects {
     const subject = getFlag(this, "subject")
 
     if (subject.length === undefined) {
-      throw new Error(`length | Subject doesn't have "length" property`)
+      throwError(this, `length | Subject doesn't have "length" property`)
     }
 
     setFlag(this, "subject", subject.length)
@@ -256,10 +250,13 @@ class ConditionSubjects {
     const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
-      throw new Error(`selectedChildren | Expected subject to be parent`)
+      throwError(this, `selectedChildren | Expected subject to be parent`)
     }
     if (!hasSelectableChildren(subject)) {
-      throw new Error(`selectedChildren | Subjects children are not selectable`)
+      throwError(
+        this,
+        `selectedChildren | Subjects children are not selectable`
+      )
     }
 
     setFlag(this, "subject", subject.getSelectedChildren())
@@ -274,10 +271,11 @@ class ConditionSubjects {
     const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
-      throw new Error(`unselectedChildren | Expected subject to be parent`)
+      throwError(this, `unselectedChildren | Expected subject to be parent`)
     }
     if (!hasSelectableChildren(subject)) {
-      throw new Error(
+      throwError(
+        this,
         `unselectedChildren | Subjects children are not selectable`
       )
     }
@@ -294,7 +292,7 @@ class ConditionSubjects {
     const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
-      throw new Error(`childrenCount | Expected subject to be a parent`)
+      throwError(this, `childrenCount | Expected subject to be a parent`)
     }
 
     const count = subject.countChildren()
@@ -310,10 +308,10 @@ class ConditionSubjects {
     const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
-      throw new Error(`childrenCount | Expected subject to be parent`)
+      throwError(this, `childrenCount | Expected subject to be parent`)
     }
     if (!hasSelectableChildren(subject)) {
-      throw new Error(`childrenCount | Subjects children are not selectable`)
+      throwError(this, `childrenCount | Subjects children are not selectable`)
     }
 
     const count = subject.countSelectedChildren()
@@ -329,10 +327,14 @@ class ConditionSubjects {
     const subject = getFlag(this, "subject")
 
     if (!isParent(subject)) {
-      throw new Error(`unselectedChildrenCount | Expected subject to be parent`)
+      throwError(
+        this,
+        `unselectedChildrenCount | Expected subject to be parent`
+      )
     }
     if (!hasSelectableChildren(subject)) {
-      throw new Error(
+      throwError(
+        this,
         `unselectedChildrenCount | Subjects children are not selectable`
       )
     }
@@ -354,6 +356,69 @@ class ConditionSubjects {
     resetPropDig(this)
 
     return this
+  }
+
+  /**
+   * Bring back previously remembered subject by its alias
+   * @param alias
+   *
+   * @example
+   * ```ts
+   * con().query({ name: "deck" }).as("deck")
+   * con().get("deck").children.not.empty()
+   * ```
+   */
+  get(alias: string): this {
+    const newSubject = getRef(this, alias)
+
+    if (!newSubject) {
+      throwError(this, `get | There's nothing under "${alias}" alias`)
+    }
+
+    setFlag(this, "subject", newSubject)
+
+    return this
+  }
+
+  /**
+   * Remembers subject found by queryProps with a given alias.
+   * Won't start looking for (querying) new subject if given
+   * alias is already populated with something (for performance!).
+   *
+   * @example
+   * ```ts
+   * con().remember("deck", { name: "deck" })
+   * ```
+   */
+  remember(alias: string, props: QuerableProps): void {
+    const currentAliasValue = getRef(this, alias)
+
+    if (currentAliasValue) {
+      // TODO: have _refs remember some query props in addition, so at least we have another way of comparing
+      return
+    }
+
+    // find new subject in current subject
+    const currentSubject = getFlag(this, "subject")
+    const parent =
+      currentSubject === undefined || !isParent(currentSubject)
+        ? (getFlag(this, "state") as State)
+        : currentSubject
+
+    setRef(this, alias, parent.query(props))
+  }
+
+  /**
+   * Remembers current subject with a given alias
+   * @example
+   * ```ts
+   * con().as({ name: "deck" }).as("deck")
+   * ```
+   */
+  as(alias: string): void {
+    setRef(this, alias, getFlag(this, "subject"))
+
+    resetSubject(this)
   }
 }
 

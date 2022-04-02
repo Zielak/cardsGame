@@ -1,8 +1,9 @@
-import { setFlag } from "../../src/conditions/utils"
-import { ClassicCard } from "../../src/entities/classicCard"
-import { Hand } from "../../src/entities/hand"
-import { State } from "../../src/state"
-import type { ChildTrait } from "../../src/traits"
+import { setFlag, getFlag } from "src/conditions/utils"
+import { ClassicCard } from "src/entities/classicCard"
+import { Hand } from "src/entities/hand"
+import { State } from "src/state"
+import type { ChildTrait } from "src/traits"
+
 import { ConditionsMock } from "../helpers/conditionsMock"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 
@@ -23,7 +24,7 @@ beforeEach(() => {
   new SmartEntity(state, { parent, name: "child" })
   top = new SmartEntity(state, { parent, name: "childBottom" })
 
-  con = new ConditionsMock<State>(state, { example: "foo" })
+  con = new ConditionsMock(state, { example: "foo" })
 })
 
 test("all chainers", () => {
@@ -35,38 +36,61 @@ test("all chainers", () => {
   expect(con().can).toBe(con())
 })
 
+describe("custom error", () => {
+  it("remembers message in a flag", () => {
+    const error = "Hello"
+    const coreRef = con(error)
+
+    expect(getFlag(coreRef, "customError")).toBe(error)
+  })
+  it("resets the message after each call", () => {
+    const error = "Hello"
+    const coreRef1 = con(error)
+    const coreRef2 = con()
+
+    expect(getFlag(coreRef1, "customError")).toBeUndefined()
+    expect(getFlag(coreRef2, "customError")).toBeUndefined()
+  })
+})
+
+test("it's a reference to the same core on each call", () => {
+  const coreRef1 = con()
+  const coreRef2 = con()
+
+  expect(coreRef1 === coreRef2).toBe(true)
+})
+
 describe("constructor", () => {
-  it("defines all props", () => {
-    expect(con().grabState()).toBe(state)
-    expect(con.example.grab()).toBe("foo")
+  it("defines initial subjects", () => {
+    expect(con().subject.example.grab()).toBe("foo")
   })
 
   it("resets back to default subject", () => {
-    expect(con.example.grab()).toBe("foo")
+    expect(con().subject.example.grab()).toBe("foo")
     expect(con().grab()).toBe(state)
   })
 })
 
 describe("references/aliases", () => {
   test("parent", () => {
-    con({ name: "parent" }).as("parent")
+    con().query({ name: "parent" }).as("parent")
 
     expect(con().grab()).toBe(state)
-    expect(con("parent").grab()).toBe(parent)
+    expect(con().get("parent").grab()).toBe(parent)
   })
 })
 
 describe("subject changing", () => {
   test("entity", () => {
     expect(con().grab()).toBe(state)
-    expect(con.example.grab()).toBe("foo")
+    expect(con().subject.example.grab()).toBe("foo")
   })
 
   test("children", () => {
     expect(con().grab()).toBe(state)
-    con({ name: "parent" }).as("parent")
+    con().query({ name: "parent" }).as("parent")
 
-    const subject = con("parent").children.grab<ChildTrait[]>()
+    const subject = con().get("parent").children.grab<ChildTrait[]>()
     expect(Array.isArray(subject)).toBeTruthy()
     expect(subject.length).toBe(5)
     expect(subject).toContain(child)
@@ -131,12 +155,12 @@ describe("subject changing", () => {
 
 describe("nthChild", () => {
   test("valid cases", () => {
-    con({ name: "parent" }).as("parent")
+    con().query({ name: "parent" }).as("parent")
 
     // Entities
-    expect(() => con("parent").nthChild(0).equals(bottom)).not.toThrow()
-    expect(() => con("parent").nthChild(2).equals(child)).not.toThrow()
-    expect(() => con("parent").nthChild(4).equals(top)).not.toThrow()
+    expect(() => con().get("parent").nthChild(0).equals(bottom)).not.toThrow()
+    expect(() => con().get("parent").nthChild(2).equals(child)).not.toThrow()
+    expect(() => con().get("parent").nthChild(4).equals(top)).not.toThrow()
 
     // Simple array
     expect(() => con().set([0, 1, 2, 3]).nthChild(0).equals(0)).not.toThrow()
@@ -150,9 +174,10 @@ describe("nthChild", () => {
 })
 
 test("bottom", () => {
-  con({ name: "parent" }).as("parent")
-  expect(() => con("parent").bottom.equals(bottom)).not.toThrow()
-  expect(() => con("parent").bottom.equals(top)).toThrow()
+  con().query({ name: "parent" }).as("parent")
+
+  expect(() => con().get("parent").bottom.equals(bottom)).not.toThrow()
+  expect(() => con().get("parent").bottom.equals(top)).toThrow()
 
   expect(() => con().set([0, 1, 2, 3]).bottom.equals(0)).not.toThrow()
   expect(() => con().set([0, 1, 2, 3]).bottom.equals(3)).toThrow()
@@ -163,9 +188,10 @@ test("bottom", () => {
 })
 
 test("top", () => {
-  con({ name: "parent" }).as("parent")
-  expect(() => con("parent").top.equals(top)).not.toThrow()
-  expect(() => con("parent").top.equals(bottom)).toThrow()
+  con().query({ name: "parent" }).as("parent")
+
+  expect(() => con().get("parent").top.equals(top)).not.toThrow()
+  expect(() => con().get("parent").top.equals(bottom)).toThrow()
 
   expect(() => con().set([0, 1, 2, 3]).top.equals(3)).not.toThrow()
   expect(() => con().set([0, 1, 2, 3]).top.equals(0)).toThrow()
@@ -199,10 +225,10 @@ describe("selection", () => {
   describe("selectedChildren", () => {
     it("works with proper setup", () => {
       expect(() =>
-        con({ type: "hand" }).selectedChildren.itsLength.equals(2)
+        con().query({ type: "hand" }).selectedChildren.itsLength.equals(2)
       ).not.toThrow()
       expect(() =>
-        con({ type: "hand" }).selectedChildren.itsLength.equals(0)
+        con().query({ type: "hand" }).selectedChildren.itsLength.equals(0)
       ).toThrow()
     })
 
@@ -219,10 +245,10 @@ describe("selection", () => {
   describe("unselectedChildren", () => {
     it("works with proper setup", () => {
       expect(() =>
-        con({ type: "hand" }).unselectedChildren.itsLength.equals(1)
+        con().query({ type: "hand" }).unselectedChildren.itsLength.equals(1)
       ).not.toThrow()
       expect(() =>
-        con({ type: "hand" }).unselectedChildren.itsLength.equals(0)
+        con().query({ type: "hand" }).unselectedChildren.itsLength.equals(0)
       ).toThrow()
     })
 
@@ -239,10 +265,10 @@ describe("selection", () => {
   describe("selectedChildrenCount", () => {
     it("works with proper setup", () => {
       expect(() =>
-        con({ type: "hand" }).selectedChildrenCount.equals(2)
+        con().query({ type: "hand" }).selectedChildrenCount.equals(2)
       ).not.toThrow()
       expect(() =>
-        con({ type: "hand" }).selectedChildrenCount.equals(0)
+        con().query({ type: "hand" }).selectedChildrenCount.equals(0)
       ).toThrow()
     })
 
@@ -259,10 +285,10 @@ describe("selection", () => {
   describe("unselectedChildrenCount", () => {
     it("works with proper setup", () => {
       expect(() =>
-        con({ type: "hand" }).unselectedChildrenCount.equals(1)
+        con().query({ type: "hand" }).unselectedChildrenCount.equals(1)
       ).not.toThrow()
       expect(() =>
-        con({ type: "hand" }).unselectedChildrenCount.equals(0)
+        con().query({ type: "hand" }).unselectedChildrenCount.equals(0)
       ).toThrow()
     })
 
@@ -278,8 +304,8 @@ describe("selection", () => {
 })
 
 test("childrenCount", () => {
-  con({ name: "parent" }).as("parent")
-  expect(() => con("parent").childrenCount.equals(5)).not.toThrow()
+  con().query({ name: "parent" }).as("parent")
+  expect(() => con().get("parent").childrenCount.equals(5)).not.toThrow()
 })
 
 describe("setFlag", () => {

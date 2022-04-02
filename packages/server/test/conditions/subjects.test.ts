@@ -1,4 +1,5 @@
-import { State } from "../../src/state"
+import { State } from "src/state"
+
 import { ConditionsMock } from "../helpers/conditionsMock"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 
@@ -13,7 +14,7 @@ beforeEach(() => {
   state = new State()
   parent = new SmartParent(state, { name: "parent" })
 
-  con = new ConditionsMock<State>(state, { $example: "foo" })
+  con = new ConditionsMock<State>(state, { example: "foo" })
 
   childA = new SmartEntity(state, { parent, name: "childA" })
   childB = new SmartEntity(state, { parent, name: "childB" })
@@ -75,7 +76,7 @@ describe("parent", () => {
   describe("pass", () => {
     it("changes subject to parent", () => {
       // Grab a parent entity
-      expect(con().get({ name: "childA" }).parent.grab()).toBe(parent)
+      expect(con().query({ name: "childA" }).parent.grab()).toBe(parent)
       // Grab the state as parent
       expect(con().bottom.parent.grab()).toBe(state)
     })
@@ -147,6 +148,26 @@ describe("nthChild", () => {
 
       expect(() => con().set(array).nthChild(-2)).toThrow("Out of bounds")
       expect(() => con().set(array).nthChild(10)).toThrow("Out of bounds")
+    })
+  })
+})
+
+describe("subject references", () => {
+  describe("get/as", () => {
+    it("works", () => {
+      con().set(childB).as("CHILDB")
+
+      expect(con().get("CHILDB").grab()).toBe(childB)
+    })
+    it("throws", () => {
+      expect(() => con().get("whoops").grab()).toThrow("nothing")
+    })
+  })
+  describe("remember", () => {
+    it("works", () => {
+      con().remember("CHILDB", { name: "childB" })
+
+      expect(con().get("CHILDB").grab()).toBe(childB)
     })
   })
 })

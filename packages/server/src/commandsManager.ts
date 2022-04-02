@@ -1,12 +1,12 @@
 import { chalk, logs } from "@cardsgame/utils"
 
-import type { ActionsSet } from "./actionTemplate"
+import type { ActionsSet, ActionTemplate } from "./actionTemplate"
 import type { Command } from "./command"
 import {
-  filterActionsByConditions,
+  runConditionsOnAction,
   filterActionsByInteraction,
 } from "./interaction"
-import type { Player, ServerPlayerMessage } from "./players/player"
+import type { Player, ServerPlayerMessage } from "./player"
 import type { Room } from "./room"
 import type { State } from "./state"
 
@@ -49,10 +49,52 @@ export class CommandsManager<S extends State> {
     subCountActions = actions.length
 
     logs.group(chalk.blue("Conditions"))
-    actions = actions.filter(filterActionsByConditions(state, message))
+
+    const conditionsErrors = new Map<
+      ActionTemplate<S>,
+      ReturnType<typeof runConditionsOnAction>
+    >()
+
+    actions = actions.filter((action) => {
+      const error = runConditionsOnAction(state, message, action)
+      if (error) {
+        conditionsErrors.set(action, error)
+      }
+
+      return typeof error === "undefined"
+    })
+
     logs.groupEnd(`actions count: ${subCountActions} => ${actions.length}`)
 
     if (actions.length === 0) {
+      logs.error(`${conditionsErrors.size} actions didn't pass. Reasons:`)
+      logs.error(
+        [...conditionsErrors.entries()].map(
+          ([action, error]) =>
+            `- ${action.name}: ${error.message}${
+              error.internal ? "(internal)" : ""
+            }`
+        )
+      )
+
+      const client = this.room.clients.find(
+        (client) => client.sessionId === message.player.clientID
+      )
+
+      conditionsErrors.forEach((error, action) => {
+        logs.debug(
+          "sending an error message to",
+          message.player.clientID,
+          client.sessionId,
+          error
+        )
+        if (!error.internal) {
+          client.send("gameWarn", {
+            data: `${action.name}: ${error.message}`,
+          } as ServerMessageTypes["gameWarn"])
+        }
+      })
+
       throw new Error(
         `No actions found for "${
           message.player ? message.player.clientID : message.event

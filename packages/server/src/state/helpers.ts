@@ -1,7 +1,6 @@
 import { limit, logs } from "@cardsgame/utils"
 
-import { Bot, isBot } from "../players/bot"
-import type { Player } from "../players/player"
+import { Bot, isBot, type Player } from "../player"
 import type { IdentityTrait } from "../traits/identity"
 import { hasChildren, isParent, ParentTrait } from "../traits/parent"
 

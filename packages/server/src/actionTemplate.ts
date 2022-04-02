@@ -1,6 +1,6 @@
 import type { Command } from "./command"
 import type { ClientMessageConditions } from "./interaction"
-import type { Player, ServerPlayerMessage } from "./players/player"
+import type { Player, ServerPlayerMessage } from "./player"
 import type { QuerableProps } from "./queryRunner"
 import type { State } from "./state"
 

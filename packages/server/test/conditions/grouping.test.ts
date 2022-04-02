@@ -1,5 +1,6 @@
-import { Conditions } from "../../src/conditions"
-import { State } from "../../src/state"
+import { getCustomError } from "src/conditions/errors"
+import { State } from "src/state"
+
 import { ConditionsMock } from "../helpers/conditionsMock"
 import { SmartEntity, SmartParent } from "../helpers/smartEntities"
 
@@ -11,7 +12,7 @@ beforeEach(() => {
   state = new State()
   parent = new SmartParent(state, { name: "parent" })
 
-  con = new ConditionsMock<State>(state, { $example: "foo" })
+  con = new ConditionsMock<State>(state, { example: "foo" })
 })
 
 describe("every", () => {
@@ -138,6 +139,28 @@ describe("either", () => {
           () => con().set(1).equals(1)
         )
       }).not.toThrow()
+    })
+
+    it("ignores inner errors", () => {
+      try {
+        con().either(
+          () => con("fail 1").set(true).is.false(),
+          () => con("fail 2").set(false).is.true()
+        )
+      } catch (e) {}
+
+      expect(getCustomError(con.getCore())).not.toBeDefined()
+    })
+
+    it("returns top custom error", () => {
+      try {
+        con("none passed").either(
+          () => con("zero is one").set(0).equals(1),
+          () => con("one is two").set(1).equals(2)
+        )
+      } catch (e) {}
+
+      expect(getCustomError(con.getCore())).toBe("none passed")
     })
   })
 })

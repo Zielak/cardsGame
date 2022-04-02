@@ -1,5 +1,4 @@
-import { Player } from "../../src"
-import { Bot, isBot } from "../../src/players/bot"
+import { Bot, isBot, Player } from "src/player"
 
 test("isBot", () => {
   expect(isBot({})).toBeFalsy()

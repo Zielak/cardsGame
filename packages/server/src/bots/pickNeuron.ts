@@ -6,8 +6,8 @@ import {
   isInteractionOfEntities,
   isInteractionOfEvent,
 } from "../actionTemplate"
-import { filterActionsByConditions } from "../interaction"
-import type { Bot } from "../players/bot"
+import { runConditionsOnAction } from "../interaction"
+import type { Bot } from "../player"
 import { queryRunner } from "../queryRunner"
 import type { State } from "../state"
 import type { ChildTrait } from "../traits/child"
@@ -121,7 +121,9 @@ const getNeuronsAvailableEvents = <S extends State>(
       .filter((event) => {
         logs.debug("entity.idxPath:", event.entityPath)
         const serverEvent = populatePlayerEvent(state, event, bot)
-        return filterActionsByConditions(state, serverEvent)(neuron.action)
+        const error = runConditionsOnAction(state, serverEvent, neuron.action)
+
+        return typeof error === "undefined"
       })
 
     logs.debug(`\`-> testedEvents ${testedEvents.length}`)

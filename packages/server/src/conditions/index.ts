@@ -1,6 +1,6 @@
-import { applyMixins } from "@cardsgame/utils"
+import { applyMixins, logs } from "@cardsgame/utils"
 
-import type { QuerableProps } from "../queryRunner"
+import type { State } from "../state"
 
 import { ConditionAssertions } from "./assertions"
 import { ConditionBase } from "./base"
@@ -9,19 +9,22 @@ import { ConditionGrouping } from "./grouping"
 import { ConditionSubjects } from "./subjects"
 import { getFlag, resetPropDig, resetSubject, setFlag } from "./utils"
 
-export interface ConditionsMethods<S, C extends Conditions<S, C>>
+export interface ConditionsMethods<S extends State, I = Record<string, any>>
   extends ConditionBase<S>,
-    ConditionGrouping<S, C>,
+    ConditionGrouping<S, I>,
     ConditionChainers,
     ConditionAssertions,
-    ConditionSubjects {}
+    ConditionSubjects<I> {}
 
-export class ConditionsMethods<S, C extends Conditions<S, C>> {
+export class ConditionsMethods<S, I = Record<string, any>> {
   protected _flags = new Map<string, any>()
   protected _refs = new Map<string, any>()
 }
 
-abstract class Conditions<S, C extends Conditions<S, C>> extends Function {
+abstract class Conditions<
+  S extends State,
+  InitialSubjects = Record<string, any>
+> extends Function {
   /**
    * @param state game's state reference
    * @param subjects additional data to be available while running conditions
@@ -29,36 +32,32 @@ abstract class Conditions<S, C extends Conditions<S, C>> extends Function {
    */
   constructor(
     state: S,
-    subjects: Record<string, any>,
-    defaultSubjectKey?: string
+    subjects: InitialSubjects,
+    defaultSubjectKey?: keyof InitialSubjects
   ) {
     super()
-    const core = new ConditionsMethods<S, C>()
+    const core = new ConditionsMethods<S, InitialSubjects>()
+
+    function API(customError): ConditionsMethods<S, InitialSubjects> {
+      resetSubject(core)
+      resetPropDig(core)
+
+      if (getFlag(core, "eitherLevel") === 0) {
+        // It might be empty, good, reset it to undefined
+        if (customError) {
+          logs.debug("#Conditions, setting customError:", customError)
+        }
+        if (getFlag(core, "customError")) {
+          logs.debug("#Conditions, overwriting previous error")
+        }
+        setFlag(core, "customError", customError)
+      }
+
+      return core
+    }
+    API.getCore = () => core
 
     setFlag(core, "state", state)
-
-    const proxy = new Proxy<Conditions<S, C>>(this, {
-      apply: function (target, thisArg, args): ConditionsMethods<S, C> {
-        resetSubject(core)
-        resetPropDig(core)
-        if (args && args.length > 0) {
-          return core["get"].apply(core, args)
-        } else {
-          return core
-        }
-      },
-      get: function (target, prop: string, receiver): ConditionsMethods<S, C> {
-        // Confirm it's at "initialSubjects"
-        const newSub = getFlag(core, "initialSubjects")[prop]
-        if (!newSub) {
-          throw new Error(
-            `There's no initial subject called "${prop.toString()}".`
-          )
-        }
-        setFlag(core, "subject", newSub)
-        return core
-      },
-    })
 
     if (defaultSubjectKey) {
       if (!(defaultSubjectKey in subjects)) {
@@ -78,40 +77,34 @@ abstract class Conditions<S, C extends Conditions<S, C>> extends Function {
     setFlag(core, "not", false)
     setFlag(core, "eitherLevel", 0)
 
-    setFlag(core, "_rootReference", proxy)
+    setFlag(core, "_rootReference", API)
 
-    return proxy
+    return API
   }
 }
 
-interface Conditions<S, C extends Conditions<S, C>> {
+interface Conditions<S, InitialSubjects = Record<string, any>> {
   /**
+   * Provide custom error message. It will be sent to the client when one
+   * of the assertions fail in given chain.
    *
-   */
-  (): ConditionsMethods<S, C>
-  /**
-   * Looks for a child entity by their `props`, starting from current subject.
+   * > TODO: it would be nice to have an object or error code sent to client additionally.
+   * > Front-end could then have it pick the message in player's language
    *
-   * @yields an entity, found by alias or `QuerableProps` query
    * @example
    * ```ts
-   * con({name: 'deck'}).as('deck')
+   * con("Wait for your turn!").itsPlayersTurn()
+   * con("Can't perform this action until round 5").its("round").is.aboveEq(5)
    * ```
    */
-  (props: QuerableProps): ConditionsMethods<S, C>
+  (errorMessage?: string): ConditionsMethods<S, InitialSubjects>
+
   /**
-   * Changes subject to previously remembered entity by an `alias`.
-   * If `props` are also provided, it'll also search the aliased entity
-   * for another entity by their `props`.
-   *
-   * @yields an entity, found by alias or `QuerableProps` query
-   * @example
-   * ```ts
-   * con('deck', {rank: 'K'})
-   * ```
+   * For internal use only. Get direct reference to the core, without having to
+   * call the Conditions function
+   * @ignore
    */
-  (alias: string, props?: QuerableProps): ConditionsMethods<S, C>
-  (arg0?: string | QuerableProps, arg1?: QuerableProps): ConditionsMethods<S, C>
+  getCore(): ConditionsMethods<S, InitialSubjects>
 }
 
 applyMixins(ConditionsMethods, [

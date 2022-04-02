@@ -25,8 +25,7 @@ export { getFlag, setFlag } from "./conditions/utils"
 export { BotConditions, EntityConditions } from "./bots/conditions"
 export { ClientMessageConditions } from "./interaction"
 
-export { Player, ServerPlayerMessage } from "./players/player"
-export { Bot } from "./players/bot"
+export { Bot, Player, ServerPlayerMessage } from "./player"
 
 export * from "./traits"
 export * from "./entities"

@@ -1,7 +1,6 @@
 import { logs } from "@cardsgame/utils"
 
-import type { Bot } from "../players/bot"
-import type { Player } from "../players/player"
+import type { Bot, Player } from "../player"
 import type { Room } from "../room"
 import type { State } from "../state"
 import { populatePlayerEvent } from "../utils/populatePlayerEvent"

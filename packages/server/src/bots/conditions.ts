@@ -1,26 +1,14 @@
-import { Conditions, ConditionsMethods } from "../conditions"
+import { Conditions } from "../conditions"
+import type { Bot } from "../player"
 import type { State } from "../state"
+import type { ChildTrait } from "../traits"
 
 export class BotConditions<S extends State> extends Conditions<
   S,
-  BotConditions<S>
+  { player: Bot }
 > {}
-
-export interface BotConditions<S extends State> {
-  /**
-   * Changes current `subject` to interacting `Player`
-   */
-  player: ConditionsMethods<S, BotConditions<S>> //Player;
-}
 
 export class EntityConditions<S extends State> extends Conditions<
   S,
-  EntityConditions<S>
+  { entity: ChildTrait }
 > {}
-
-export interface EntityConditions<S extends State> {
-  /**
-   * Changes current `subject` to interacting `Player`
-   */
-  entity: ConditionsMethods<S, EntityConditions<S>> //Player;
-}

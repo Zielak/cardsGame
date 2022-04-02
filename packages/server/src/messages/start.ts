@@ -2,11 +2,15 @@ import { logs, shuffle } from "@cardsgame/utils"
 import type { Client } from "@colyseus/core"
 
 import { Sequence } from "../commands"
-import { Player } from "../players/player"
+import { Player } from "../player"
 import type { Room } from "../room"
 import type { State } from "../state"
 
-export function start(this: Room<State>, client: Client, message: any): void {
+export function start(
+  this: Room<State>,
+  client: Client,
+  message: ClientMessageTypes["start"]
+): void {
   const { state } = this
 
   if (!this.state.isGameOver) {

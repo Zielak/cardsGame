@@ -1,5 +1,8 @@
 import { chalk, logs } from "@cardsgame/utils"
 
+import type { State } from "../state"
+
+import { throwError } from "./errors"
 import { getFlag, resetNegation, setFlag } from "./utils"
 
 import type { Conditions } from "."
@@ -7,7 +10,11 @@ import type { Conditions } from "."
 type EitherCallback<C> = (con: C) => any
 type EitherTuple<C> = [string, EitherCallback<C>]
 
-class ConditionGrouping<S, C extends Conditions<S, C>> {
+class ConditionGrouping<
+  S extends State,
+  InitialSubjects = Record<string, any>,
+  C = Conditions<S, InitialSubjects>
+> {
   /**
    * Loops through every item in subject's collection, executing provided function.
    * If one of the items fail any assertions, whole `every` block fails.
@@ -20,8 +27,8 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
    * This `con` will have its own subject set to each item of current subject.
    * @example
    * ```ts
-   * con.get("chosenCards").children.every((con, item, index, array) => {
-   *   con.its("rank").oneOf(["2", "3"])
+   * con().get("chosenCards").children.every((con, item, index, array) => {
+   *   con().its("rank").oneOf(["2", "3"])
    * })
    * ```
    * @yields back anything that was before `.every()` command so you can chain it further
@@ -37,7 +44,7 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
     const subject = getFlag(this, "subject")
 
     if (!Array.isArray(subject)) {
-      throw new Error(`each | Expected subject to be an array`)
+      throwError(this, `each | Expected subject to be an array`)
     }
 
     subject.forEach((item, index) => {
@@ -63,11 +70,11 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
    * This `con` will have its own subject set to each item of current subject.
    * @example
    * ```ts
-   * con.get("chosenCards").children.some((con, item, index, array) => {
-   *   con.its("rank").matchesPropOf("pileTop")
+   * con().set(chosenCards).some((con, item, index, array) => {
+   *   con().its("rank").matchesPropOf(pileTop)
    * })
    * ```
-   * @yields back anything that was before `.some()` command so you can chain it further
+   * @yields back the subject which was present before executing `.some()` command so you can chain it further.
    */
   some(
     predicate: (
@@ -80,7 +87,7 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
     const subject = getFlag(this, "subject")
 
     if (!Array.isArray(subject)) {
-      throw new Error(`some | Expected subject to be an array`)
+      throwError(this, `some | Expected subject to be an array`)
     }
 
     const result = subject.some((item, index) => {
@@ -98,7 +105,7 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
     })
 
     if (!result) {
-      throw new Error(`some | all of the functions failed.`)
+      throwError(this, `some | all of the functions failed.`)
     }
 
     return this
@@ -185,7 +192,8 @@ class ConditionGrouping<S, C extends Conditions<S, C>> {
 
     if (results.every(({ result }) => result === false)) {
       const quotedGroupName = groupName ? ` "${groupName}"` : ""
-      throw new Error(
+      throwError(
+        this,
         [
           `either${quotedGroupName} | none of the tests passed:`,
           ...results.map(({ error }) => error),

@@ -1,11 +1,10 @@
-import { Conditions, State } from "../../src"
-import type { ConditionsMethods } from "../../src/conditions"
+import { Conditions } from "src/conditions"
+import type { Player } from "src/player"
+import type { State } from "src/state"
+
+type InitialSubjectsMock = { example: "foo"; player?: Player }
 
 export class ConditionsMock<S extends State> extends Conditions<
   S,
-  ConditionsMock<S>
+  InitialSubjectsMock
 > {}
-
-export interface ConditionsMock<S extends State> {
-  example: ConditionsMethods<S, ConditionsMock<S>>
-}

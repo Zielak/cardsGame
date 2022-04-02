@@ -1,24 +1,42 @@
-type ConditionsFlag =
-  // reference to state object
-  | "state"
-  // reference to or value of current subject
-  | "subject"
-  | "initialSubjects"
-  | "defaultSubject"
-  | "propName"
-  // "parent of current prop subject". Cache for current entity subject
-  // so we can go back after assertions
-  | "currentParent"
-  | "not"
-  | "eitherLevel"
-  | "_rootReference"
+import type { State } from "../state"
+
+import type { CustomConditionError } from "./errors"
+
+interface ConditionsFlags {
+  /**
+   * reference to state object
+   */
+  state: State
+  /**
+   * reference to or value of current subject
+   */
+  subject: unknown
+  initialSubjects: Record<string, any>
+  defaultSubject: unknown
+  propName: string
+  /**
+   * "parent of current prop subject". Cache for current entity subject
+   * so we can go back after assertions
+   */
+  currentParent: unknown
+  /**
+   * Error message passed when invoking con()
+   */
+  customError: CustomConditionError
+  /**
+   * Was the "not" used along the chain
+   */
+  not: boolean
+  eitherLevel: number
+  _rootReference: unknown
+}
 
 /**
  * @category Conditions
  */
 export function getFlag(
   target: Record<string, any>,
-  flagName: ConditionsFlag
+  flagName: keyof ConditionsFlags
 ): any {
   if (!target._flags) {
     throw new Error(`getFlag | Incompatible target.`)
@@ -26,9 +44,13 @@ export function getFlag(
   return target._flags.get(flagName)
 }
 
+/**
+ * Remember some value internally for this Conditions run
+ * @category Conditions
+ */
 export function setFlag(
   target: Record<string, any>,
-  flagName: ConditionsFlag,
+  flagName: keyof ConditionsFlags,
   value: unknown
 ): void {
   if (!target._flags) {
@@ -39,41 +61,41 @@ export function setFlag(
 
 /**
  * Get a reference to previously remembered `subject` by the name of `refName`.
- * May be one of the `initialSubjects` or run-time, user-defined references.
+ * Only run-time, user-defined references.
+ * @category Conditions
  */
-export function ref(target: Record<string, any>, refName: string): any
-/**
- * Remember a reference to current `subject` by the name `refName`
- */
-export function ref(
-  target: Record<string, any>,
-  refName: string,
-  value: unknown
-): void
-export function ref(
-  target: Record<string, any>,
-  refName: string,
-  value?: unknown
-): any {
+export function getRef(target: Record<string, any>, refName: string): unknown {
   if (!target._refs) {
     throw new Error(`ref | Incompatible target.`)
   }
-  if (arguments.length === 3) {
-    // SET
-    if (refName in getFlag(target, "initialSubjects")) {
-      throw new Error(
-        `Subject named "${refName}" already exists in "initialSubjects". Choose different name.`
-      )
-    }
-    target._refs.set(refName, value)
-  }
-  // GET
-  if (refName in getFlag(target, "initialSubjects")) {
-    return getFlag(target, "initialSubjects")[refName]
-  }
+
   return target._refs.get(refName)
 }
 
+/**
+ * Remember a reference to current `subject` by the name `refName`
+ * @category Conditions
+ */
+export function setRef(
+  target: Record<string, any>,
+  refName: string,
+  value: unknown
+): void {
+  if (!target._refs) {
+    throw new Error(`ref | Incompatible target.`)
+  }
+
+  if (refName in getFlag(target, "initialSubjects")) {
+    throw new Error(
+      `Subject named "${refName}" already exists in "initialSubjects". Choose different name.`
+    )
+  }
+  target._refs.set(refName, value)
+}
+
+/**
+ * @category Conditions
+ */
 export function getInitialSubject(
   target: Record<string, any>,
   refName: string
@@ -81,22 +103,32 @@ export function getInitialSubject(
   return getFlag(target, "initialSubjects")[refName]
 }
 
+/**
+ * @category Conditions
+ */
 export const resetPropDig = (target: Record<string, any>): void => {
   setFlag(target, "currentParent", undefined)
   setFlag(target, "propName", undefined)
 }
 
+/**
+ * @category Conditions
+ */
 export const resetNegation = (target: Record<string, any>): void => {
   setFlag(target, "not", false)
 }
 
 /**
  * Reset subject back to its default value
+ * @category Conditions
  */
 export const resetSubject = (target: Record<string, any>): void => {
   setFlag(target, "subject", getFlag(target, "defaultSubject"))
 }
 
+/**
+ * @category Conditions
+ */
 export const postAssertion = (target: Record<string, any>): void => {
   if (getFlag(target, "currentParent")) {
     // Reset subject to the parent, if we were
@@ -106,16 +138,3 @@ export const postAssertion = (target: Record<string, any>): void => {
     setFlag(target, "propName", undefined)
   }
 }
-
-export const iconStyle = (
-  bg = "transparent",
-  color = "white"
-): string => `background: ${bg};
-color: ${color};
-padding: 0.1em 0.3em;
-border-radius: 50%;
-width: 1.3em;
-height: 1.3em;
-text-align: center;
-width: 1.2em;
-height: 1.2em;`
