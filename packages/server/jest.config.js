@@ -3,7 +3,7 @@ const { pathsToModuleNameMapper } = require("ts-jest")
 const { compilerOptions } = require("./test/tsconfig.json")
 
 module.exports = {
-  displayName: "Server",
+  displayName: "server",
   preset: "ts-jest",
   globals: {
     "ts-jest": {

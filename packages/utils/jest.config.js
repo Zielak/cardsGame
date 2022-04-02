@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: "Utils",
+  displayName: "utils",
   preset: "ts-jest",
   globals: {
     "ts-jest": {
