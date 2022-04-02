@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/example-client-svelte",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "Svelte client-side implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@cardsgame/client": "^0.16.0",
+    "@cardsgame/client": "^0.16.1",
     "@cardsgame/example-certs": "^0.16.0"
   },
   "devDependencies": {
