@@ -132,17 +132,17 @@ jobs:
           aws-region: AWS_REGION
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          from: build
+          from: docs/build
           to: "s3://cardsgame.darekgreenly.com"
 
       # index and sitemap with clear cache thing
       - aws-s3/copy:
           arguments: --cache-control "max-age=604800, no-cache"
-          from: build/index.html
+          from: docs/build/index.html
           to: "s3://cardsgame.darekgreenly.com/index.html"
       - aws-s3/copy:
           arguments: --cache-control "max-age=604800, no-cache"
-          from: build/sitemap.xml
+          from: docs/build/sitemap.xml
           to: "s3://cardsgame.darekgreenly.com/sitemap.xml"
 
   coverage:
