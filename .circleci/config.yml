@@ -109,6 +109,42 @@ jobs:
             npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
             npm run release:ci -- --yes
 
+  documentation-deploy:
+    executor: my-executor
+    environment:
+      AWS_REGION: "eu-central-1"
+    steps:
+      - checkout
+      - *cancel-post-release-non-main
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: Install & build
+          working_directory: docs
+          command: |
+            npm ci
+            npm run build
+
+      # whole docs/build directory
+      - aws-s3/sync:
+          arguments: --delete --cache-control "public, max-age=31536000, immutable"
+          aws-region: AWS_REGION
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          from: build
+          to: "s3://cardsgame.darekgreenly.com"
+
+      # index and sitemap with clear cache thing
+      - aws-s3/copy:
+          arguments: --cache-control "max-age=604800, no-cache"
+          from: build/index.html
+          to: "s3://cardsgame.darekgreenly.com/index.html"
+      - aws-s3/copy:
+          arguments: --cache-control "max-age=604800, no-cache"
+          from: build/sitemap.xml
+          to: "s3://cardsgame.darekgreenly.com/sitemap.xml"
+
   coverage:
     executor: my-executor
     steps:
@@ -132,6 +168,7 @@ jobs:
       - sonarcloud/scan
 
 orbs:
+  aws-s3: circleci/aws-s3@3.0.0
   sonarcloud: sonarsource/sonarcloud@1.0.1
 
 anchors-filters:
@@ -183,6 +220,11 @@ workflows:
       - prepare:
           <<: *filters-only-main
       - release-and-publish:
+          <<: *filters-only-main
+          requires:
+            - prepare
+
+      - documentation-deploy:
           <<: *filters-only-main
           requires:
             - prepare

@@ -58,14 +58,15 @@ type _MapCollection<T extends Map<any, any>> =
     : ObjectsCollectionSchema<MapElement<T>>
 
 type DirectPrimitiveOrSchemaObject<T> = {
-  [K in keyof T]?: T[K] extends object
-    ? T[K] extends Array<any>
-      ? _ArrayCollection<T[K]>
-      : T[K] extends Map<any, any>
-      ? _MapCollection<T[K]>
-      : ObjectSchema<T[K]>
-    : T[K]
+  [K in keyof T]?: T[K] extends Array<any>
+    ? _ArrayCollection<T[K]>
+    : T[K] extends Map<any, any>
+    ? _MapCollection<T[K]>
+    : T[K] extends PrimitiveValue
+    ? T[K]
+    : ObjectSchema<T[K]>
 }
+
 export type ObjectSchema<T = Record<string, any>> = ObjectSchemaColyBase<T> &
   DirectPrimitiveOrSchemaObject<T> &
   WithSchemaDefinition
