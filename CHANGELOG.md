@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/zielak/cardsGame/compare/v0.15.0...v0.16.0) (2022-04-02)
+
+
+### Features
+
+* adjust for recent conditions changes ([f9ce374](https://github.com/zielak/cardsGame/commit/f9ce37421f9f26ef18d377a00ca5c8c009208b9a))
+* **client:** better typed incoming messages ([cff2400](https://github.com/zielak/cardsGame/commit/cff24005d681dadc014f5950df0c45348e31fc74))
+* **server:** pass messages from failed conditions to client ([cb7a389](https://github.com/zielak/cardsGame/commit/cb7a3893c7e3fc2649be9ae02e0d66304f5d035f))
+* **types:** expose nicer message-related types ([4af5759](https://github.com/zielak/cardsGame/commit/4af5759125c45db3f8ebb8e72ae32e6d061ccdcd))
+
+
+
+
+
 # [0.15.0](https://github.com/zielak/cardsGame/compare/v0.14.1...v0.15.0) (2022-03-26)
 
 

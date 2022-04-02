@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/zielak/cardsGame/compare/v0.15.0...v0.16.0) (2022-04-02)
+
+
+### Features
+
+* **types:** expose nicer message-related types ([4af5759](https://github.com/zielak/cardsGame/commit/4af5759125c45db3f8ebb8e72ae32e6d061ccdcd))
+
+
+
+
+
 # [0.15.0](https://github.com/zielak/cardsGame/compare/v0.14.1...v0.15.0) (2022-03-26)
 
 **Note:** Version bump only for package @cardsgame/types
