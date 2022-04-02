@@ -1,9 +1,7 @@
 import {
   commands,
-  Conditions,
   type Pile,
   type Deck,
-  getPlayersIndex,
   type Player,
   ActionTemplate,
   type Container,
@@ -22,7 +20,7 @@ export const PickCard: ActionTemplate<WarState> = {
     },
   ],
   conditions: (con) => {
-    const playerSessionID = con.player.grab<Player>().clientID
+    const playerSessionID = con().subject.player.grab<Player>().clientID
     console.log("playerSessionID:", playerSessionID)
     console.log("state.playersPlayed:", [
       ...con().grabState().playersPlayed.entries(),

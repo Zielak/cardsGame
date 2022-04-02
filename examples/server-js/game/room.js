@@ -7,7 +7,6 @@ const {
   Deck,
   Pile,
   Room,
-  Bot,
 } = cardsGameServer
 
 const actions = require("./actions")

@@ -1,11 +1,4 @@
-const {
-  commands,
-  Conditions,
-  Pile,
-  Deck,
-  getPlayersIndex,
-  Player,
-} = require("@cardsgame/server")
+const { commands, Pile, Deck } = require("@cardsgame/server")
 
 const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
 const { WarState } = require("./state")
@@ -24,7 +17,7 @@ const PickCard = {
     },
   ],
   conditions: (con) => {
-    const playerSessionID = con.player.grab().clientID
+    const playerSessionID = con().ref.player.grab().clientID
     console.log("playerSessionID:", playerSessionID)
     console.log("state.playersPlayed:", [
       ...con().grabState().playersPlayed.entries(),

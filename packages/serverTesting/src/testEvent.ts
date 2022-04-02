@@ -4,7 +4,7 @@ import type {
   State,
 } from "@cardsgame/server"
 import {
-  filterActionsByConditions,
+  runConditionsOnAction,
   filterActionsByInteraction,
 } from "@cardsgame/server/lib/interaction"
 
@@ -25,10 +25,9 @@ export function testEvent<S extends State>(
   action: ActionTemplate<S>,
   message: ServerPlayerMessage
 ): boolean {
-  return (
-    filterActionsByInteraction(message)(action) &&
-    filterActionsByConditions(state, message)(action)
-  )
+  const conditionError = runConditionsOnAction(state, message, action)
+
+  return filterActionsByInteraction(message)(action) && !conditionError
 }
 
 export function testEventSetup<S extends State>(

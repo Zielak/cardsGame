@@ -1,7 +1,7 @@
 import { ServerPlayerMessage, State } from "@cardsgame/server"
 import {
   filterActionsByInteraction,
-  filterActionsByConditions,
+  runConditionsOnAction,
 } from "@cardsgame/server/lib/interaction"
 import { MakeEvent, makeEventSetup } from "src/makeEvent"
 import { TestEvent, testEvent, testEventSetup } from "src/testEvent"
@@ -16,13 +16,12 @@ let makeEvent: MakeEvent
 let event: ServerPlayerMessage
 
 const mockedFilterActionsByInteraction = jest.mocked(filterActionsByInteraction)
-const mockedFilterActionsByConditions = jest.mocked(filterActionsByConditions)
+const mockedRunConditionsOnAction = jest.mocked(runConditionsOnAction)
 
 const innerInteraction = jest.fn((action): boolean => true)
-const innerCondition = jest.fn((action): boolean => true)
 
 mockedFilterActionsByInteraction.mockImplementation(() => innerInteraction)
-mockedFilterActionsByConditions.mockImplementation(() => innerCondition)
+mockedRunConditionsOnAction.mockImplementation(() => undefined)
 
 beforeAll(() => {
   state = new State()
@@ -36,19 +35,25 @@ describe("calls filter functions", () => {
     testEventInner(event)
 
     expect(mockedFilterActionsByInteraction).toHaveBeenCalledWith(event)
-    expect(mockedFilterActionsByConditions).toHaveBeenCalledWith(state, event)
+    expect(mockedRunConditionsOnAction).toHaveBeenCalledWith(
+      state,
+      event,
+      ActionMessage
+    )
 
     expect(innerInteraction).toHaveBeenCalledWith(ActionMessage)
-    expect(innerCondition).toHaveBeenCalledWith(ActionMessage)
   })
   test("testEvent", () => {
     event = makeEvent({ data: "customMessage" })
     testEvent(state, ActionMessage, event)
 
     expect(mockedFilterActionsByInteraction).toHaveBeenCalledWith(event)
-    expect(mockedFilterActionsByConditions).toHaveBeenCalledWith(state, event)
+    expect(mockedRunConditionsOnAction).toHaveBeenCalledWith(
+      state,
+      event,
+      ActionMessage
+    )
 
     expect(innerInteraction).toHaveBeenCalledWith(ActionMessage)
-    expect(innerCondition).toHaveBeenCalledWith(ActionMessage)
   })
 })
