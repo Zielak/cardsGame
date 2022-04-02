@@ -70,6 +70,7 @@ module.exports = {
       files: ["*.test.ts", "*.test.tsx"],
       extends: ["plugin:jest/recommended"],
       rules: {
+        "no-empty": "warn",
         "@typescript-eslint/ban-ts-comment": "warn",
       },
     },
