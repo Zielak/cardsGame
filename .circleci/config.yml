@@ -8,17 +8,6 @@ executors:
     docker:
       - image: cimg/node:16.13.0
 
-anchors-steps:
-  # ignore if it's "chore(release)" commit
-  - &cancel-post-release-non-main
-    run:
-      name: Check if we should run the rest
-      command: |
-        if [[ `(git show -s --format=%s)` == *"chore(release)"* ]]; then
-          echo "cancelling job"
-          circleci-agent step halt
-        fi
-
 commands:
   install_everything:
     description: "Install and bootstrap everything"
@@ -45,7 +34,6 @@ jobs:
     executor: my-executor
     steps:
       - checkout
-      - *cancel-post-release-non-main
 
       - install_everything
 
@@ -96,7 +84,6 @@ jobs:
     executor: my-executor
     steps:
       - checkout
-      - *cancel-post-release-non-main
 
       - attach_workspace:
           at: ~/project
@@ -111,13 +98,23 @@ jobs:
 
   documentation-deploy:
     executor: my-executor
-    environment:
-      AWS_REGION: "eu-central-1"
+    parameters:
+      env:
+        type: enum
+        enum: ["dev", "prod"]
     steps:
       - checkout
-      - *cancel-post-release-non-main
       - attach_workspace:
           at: ~/project
+
+      - run:
+          name: Prepare env vars
+          command: |
+            if [[ << parameters.env >> == "dev" ]]; then
+              SubDomain="dev."
+            fi
+            echo 'export S3_BUCKET=s3://${SubDomain}cardsgame.darekgreenly.com' >> $BASH_ENV
+            echo 'export AWS_REGION=eu-central-1' >> $BASH_ENV
 
       - run:
           name: Install & build
@@ -133,23 +130,31 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           from: docs/build
-          to: "s3://cardsgame.darekgreenly.com"
+          to: $S3_BUCKET
 
       # index and sitemap with clear cache thing
       - aws-s3/copy:
           arguments: --cache-control "max-age=604800, no-cache"
           from: docs/build/index.html
-          to: "s3://cardsgame.darekgreenly.com/index.html"
+          to: $S3_BUCKET/index.html
       - aws-s3/copy:
           arguments: --cache-control "max-age=604800, no-cache"
           from: docs/build/sitemap.xml
-          to: "s3://cardsgame.darekgreenly.com/sitemap.xml"
+          to: $S3_BUCKET/sitemap.xml
+
+      - when:
+          condition:
+            equal: [<< parameters.env >>, "dev"]
+          steps:
+            - aws-s3/copy:
+                arguments: --cache-control "public, max-age=31536000, immutable"
+                from: docs/dev.robots.txt
+                to: $S3_BUCKET/robots.txt
 
   coverage:
     executor: my-executor
     steps:
       - checkout
-      - *cancel-post-release-non-main
       - attach_workspace:
           at: ~/project
 
@@ -161,7 +166,6 @@ jobs:
     executor: my-executor
     steps:
       - checkout
-      - *cancel-post-release-non-main
       - attach_workspace:
           at: ~/project
 
@@ -204,6 +208,11 @@ workflows:
       - prepare:
           <<: *filters-only-development
 
+      - documentation-deploy:
+          <<: *filters-only-development
+          env: dev
+          requires:
+            - prepare
       - sonarcloud:
           <<: *filters-only-development
           context: SonarCloud
@@ -226,6 +235,7 @@ workflows:
 
       - documentation-deploy:
           <<: *filters-only-main
+          env: prod
           requires:
             - prepare
       - sonarcloud:
