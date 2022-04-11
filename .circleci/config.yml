@@ -38,14 +38,14 @@ jobs:
             - packages/*/node_modules
             - examples/*/node_modules
 
-  build:
+  build-core:
     executor: my-executor
     steps:
       - checkout
       - attach_workspace:
           at: ~/project
       - run:
-          name: Build everything
+          name: Build whole core
           command: NODE_ENV=production npm run build:ci
 
       - persist_to_workspace:
@@ -54,6 +54,16 @@ jobs:
             - packages/*/lib
             - packages/*/dist
             - examples/*/dist
+
+  build-examples:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Build examples
+          command: NODE_ENV=production npm run build -- "example*"
 
   test:
     executor: my-executor
@@ -104,13 +114,15 @@ jobs:
       - run:
           name: Prepare env vars
           command: |
-            if [[ $CIRCLE_BRANCH == "development" ]]; then
-              SubDomain="dev."
-            elif [[ $CIRCLE_BRANCH != "main"]]; then
+            if [[ "$CIRCLE_BRANCH" == "development" ]]; then
+              SubDomain="dev-"
+            elif [[ "$CIRCLE_BRANCH" != "main" ]]; then
               echo "can't deploy docs from $CIRCLE_BRANCH branch. This step shouldn't execute anyway!"
               exit 1
             fi
-            echo "export S3_BUCKET=s3://${SubDomain}cardsgame.darekgreenly.com" >> $BASH_ENV
+            S3_BUCKET="s3://${SubDomain}cardsgame.darekgreenly.com"
+            echo "S3_BUCKET = $S3_BUCKET"
+            echo "export S3_BUCKET=$S3_BUCKET" >> $BASH_ENV
             echo "export AWS_REGION=eu-central-1" >> $BASH_ENV
 
       - run:
@@ -126,27 +138,27 @@ jobs:
           aws-region: AWS_REGION
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          from: docs/build
-          to: $S3_BUCKET
+          from: "docs/build"
+          to: "${S3_BUCKET}"
 
       # index and sitemap with clear cache thing
       - aws-s3/copy:
           arguments: --cache-control "max-age=604800, no-cache"
-          from: docs/build/index.html
-          to: $S3_BUCKET/index.html
+          from: "docs/build/index.html"
+          to: "${S3_BUCKET}/index.html"
       - aws-s3/copy:
           arguments: --cache-control "max-age=604800, no-cache"
-          from: docs/build/sitemap.xml
-          to: $S3_BUCKET/sitemap.xml
+          from: "docs/build/sitemap.xml"
+          to: "${S3_BUCKET}/sitemap.xml"
 
       - when:
           condition:
-            equal: [$CIRCLE_BRANCH, "development"]
+            equal: [<< pipeline.git.branch >>, "development"]
           steps:
             - aws-s3/copy:
                 arguments: --cache-control "public, max-age=31536000, immutable"
-                from: docs/dev.robots.txt
-                to: $S3_BUCKET/robots.txt
+                from: "docs/dev.robots.txt"
+                to: "${S3_BUCKET}/robots.txt"
 
   coverage:
     executor: my-executor
@@ -194,13 +206,16 @@ workflows:
       - lint:
           requires:
             - install
-      - build:
+      - build-core:
           requires:
             - install
+      - build-examples:
+          requires:
+            - build-core
 
       - test:
           requires:
-            - build
+            - build-core
 
       - release-and-publish:
           <<: *filters-only-main
@@ -217,7 +232,7 @@ workflows:
           <<: *filters-main-and-development
           context: SonarCloud
           requires:
-            - test
+            - install
       - coverage:
           <<: *filters-main-and-development
           requires:

@@ -19,7 +19,7 @@
     "test:ci": "jest --config config/jest.config.js --silent --ci --maxWorkers=1 --coverage --coverageReporters=lcovonly",
     "coveralls": "coveralls < coverage/lcov.info",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "build:ci": "lerna run --stream --concurrency 2 build",
+    "build:ci": "lerna run --stream --concurrency 2 --scope \"@cardsgame/!(example)*\" build",
     "build": "./scripts/build.sh",
     "prepare": "npm run bootstrap && husky install",
     "prerelease:ci": "lerna version --yes",
