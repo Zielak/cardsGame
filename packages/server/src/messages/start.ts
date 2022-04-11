@@ -8,8 +8,8 @@ import type { State } from "../state"
 
 export function start(
   this: Room<State>,
-  client: Client,
-  message: ClientMessageTypes["start"]
+  client?: Client,
+  message?: ClientMessageTypes["start"]
 ): void {
   const { state } = this
 
@@ -54,9 +54,12 @@ function startTheGame(this: Room<State>): void {
   state.isGameStarted = true
   state.isGameOver = false
 
+  this._executeIntegrationHook("startPre")
+
   const postStartCommands = this.onStartGame(state)
 
   const postStartup = (): void => {
+    this._executeIntegrationHook("startPost")
     if (state.turnBased) {
       this.onPlayerTurnStarted(state.currentPlayer)
       this.botRunner.onPlayerTurnStarted(state.currentPlayer)

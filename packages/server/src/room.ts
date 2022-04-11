@@ -17,7 +17,7 @@ import { debugRoomMessage } from "./utils/debugRoomMessage"
 export interface IRoom<S extends State> {
   botActivities?: BotNeuron<S>[]
   canGameStart(): boolean
-  onInitGame(options: any): void
+  onInitGame(options: Record<string, any>): void
   onStartGame(state: S): void | Command[]
   onPlayerTurnStarted(player: Player): void | Command[]
   onPlayerTurnEnded(player: Player): void | Command[]
@@ -28,6 +28,19 @@ export interface IRoom<S extends State> {
 type BroadcastOptions = IBroadcastOptions & {
   undo: boolean
 }
+
+type IntegrationHookCallback<S extends State> = (state: S) => void
+/**
+ * Depending on integration tests I might allow more hooks.
+ */
+type IntegrationHookNames = "init" | "startPre" | "startPost"
+/**
+ * Pass { test: "integrationTestName" } while creating the room.
+ * Your integration test callbacks will be executed on init or start hooks.
+ */
+export type IntegrationHooks<S extends State> = Partial<
+  Record<IntegrationHookNames, IntegrationHookCallback<S>>
+>
 
 export class Room<S extends State> extends colRoom<S> {
   patchRate = 100 // ms = 10FPS
@@ -41,6 +54,15 @@ export class Room<S extends State> extends colRoom<S> {
   botClients: Bot[] = []
 
   /**
+   * All room's available integration tests
+   */
+  integrationHooks: Record<string, IntegrationHooks<S>>
+  /**
+   * Currently running integration test
+   */
+  currentIntegration: string
+
+  /**
    * Count all connected clients, with planned bot players
    */
   get allClientsCount(): number {
@@ -49,6 +71,16 @@ export class Room<S extends State> extends colRoom<S> {
 
   get name(): string {
     return this.constructor.name
+  }
+
+  /**
+   * Run a callback on integration hook, if available
+   * @ignore
+   */
+  _executeIntegrationHook(hookName: IntegrationHookNames): void {
+    if (this.currentIntegration) {
+      this.integrationHooks[this.currentIntegration]?.[hookName]?.(this.state)
+    }
   }
 
   onCreate(options?: Record<string, any>): void {
@@ -69,6 +101,16 @@ export class Room<S extends State> extends colRoom<S> {
     this.onMessage("*", fallback.bind(this))
 
     this.onInitGame(options)
+
+    if (this.integrationHooks && options?.test in this.integrationHooks) {
+      logs.info(
+        `Room:${this.name}`,
+        "preparing for integration test:",
+        options.test
+      )
+      this.currentIntegration = options.test
+    }
+    this._executeIntegrationHook("init")
   }
 
   /**
@@ -190,7 +232,7 @@ export class Room<S extends State> extends colRoom<S> {
    * Prepare your play area now.
    * @param state
    */
-  onInitGame(options: any = {}): void {
+  onInitGame(options?: Record<string, any>): void {
     logs.info("Room", `onInitGame is not implemented!`)
   }
 
