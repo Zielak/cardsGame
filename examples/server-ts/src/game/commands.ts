@@ -50,7 +50,7 @@ export class Battle extends Command<WarState> {
     const topA = containerA.query({ type: "pile" }).getTop()
     const topB = containerB.query({ type: "pile" }).getTop()
 
-    const data = {
+    const data: BattleResult = {
       outcome: "",
       winner: undefined,
       loser: undefined,

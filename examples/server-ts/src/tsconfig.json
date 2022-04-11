@@ -11,6 +11,6 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "target": "ES2021",
-    "types": ["@cardsgame/types"]
+    "types": ["@cardsgame/types", "@cardsgame/example-types"]
   }
 }

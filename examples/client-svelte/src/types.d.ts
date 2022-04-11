@@ -4,12 +4,6 @@ type WarState = {
   ante: number
 }
 
-type WarMessage = {
-  outcome: string
-  winner: string
-  loser: string
-}
-
 type CardData = {
   rank: string
   suit: string

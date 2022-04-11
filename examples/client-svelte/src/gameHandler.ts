@@ -1,5 +1,5 @@
 import { Game, Room } from "@cardsgame/client"
-import { get, writable } from "svelte/store"
+import { get } from "svelte/store"
 
 import {
   ante,
@@ -20,7 +20,7 @@ export class GameHandler {
       port: 443,
     },
   })
-  room: Room<WarState>
+  room: Room<WarState, WarMessage>
 
   quickJoin() {
     this.game.joinOrCreate("war").then((room: Room<WarState>) => {
@@ -38,7 +38,7 @@ export class GameHandler {
     const { room } = this
     let outcomeTimer
 
-    room.onMessage<WarMessage>("battleResult", ({ data }) => {
+    room.onMessage("battleResult", ({ data }) => {
       console.log("BATTLE RESULT", { ...data })
       if (data.outcome === "tie") {
         battleOutcome.set("tie")
@@ -50,7 +50,7 @@ export class GameHandler {
       outcomeTimer = setTimeout(() => battleOutcome.set(""), 1000)
     })
 
-    room.onMessage<WarMessage>("gameOver", ({ data }) => {
+    room.onMessage("gameOver", ({ data }) => {
       winner.set(data.winner)
     })
 

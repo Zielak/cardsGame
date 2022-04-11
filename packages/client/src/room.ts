@@ -3,7 +3,10 @@ import type { Room as colyseusRoom } from "colyseus.js/lib/Room"
 
 import type { ClientGameState } from "./schema/types"
 
-export class Room<MoreProps = Record<string, any>> {
+export class Room<
+  StateProps = Record<string, any>,
+  MoreMessageTypes = Record<string, never>
+> {
   constructor(public room: colyseusRoom) {
     room.onMessage<ServerMessageTypes["gameInfo"]>("gameInfo", (message) => {
       logs.info("Server:", message)
@@ -43,21 +46,21 @@ export class Room<MoreProps = Record<string, any>> {
    * Subscribe to messages from the server
    * @return method to unsubscribe
    */
-  onMessage<T extends keyof ServerMessageTypes>(
-    type: T,
-    callback: (message: ServerMessageTypes[T]) => void
+  onMessage<M extends MoreMessageTypes & ServerMessageTypes, T extends keyof M>(
+    type: T | "*",
+    callback: (message: M[T]) => void
   ): () => void {
-    return this.room.onMessage<ServerMessageTypes[T]>(type, callback)
+    return this.room.onMessage<M[T]>(type as string, callback)
   }
 
   /**
    * @override
    */
-  onStateChange(state: ClientGameState<MoreProps>): void {}
+  onStateChange(state: ClientGameState<StateProps>): void {}
   /**
    * @override
    */
-  onFirstStateChange(state: ClientGameState<MoreProps>): void {}
+  onFirstStateChange(state: ClientGameState<StateProps>): void {}
   /**
    * @override
    * @param {number} code webSocket shutdown code
@@ -112,7 +115,7 @@ export class Room<MoreProps = Record<string, any>> {
     this.room.leave()
   }
 
-  get state(): ClientGameState<MoreProps> {
+  get state(): ClientGameState<StateProps> {
     return this.room ? this.room.state : undefined
   }
 

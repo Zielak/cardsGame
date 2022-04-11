@@ -1,0 +1,19 @@
+{
+  "name": "@cardsgame/example-types",
+  "version": "0.16.0",
+  "description": "Shared types for examples of @cardsgame",
+  "author": "Darek Greenly (https://darekgreenly.com)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zielak/cardsGame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zielak/cardsGame/issues"
+  },
+  "main": "",
+  "types": "index",
+  "dependencies": {
+    "@cardsgame/types": "^0.16.0"
+  }
+}
