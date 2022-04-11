@@ -8,10 +8,12 @@ executors:
     docker:
       - image: cimg/node:16.13.0
 
-commands:
-  install_everything:
-    description: "Install and bootstrap everything"
+jobs:
+  install:
+    executor: my-executor
     steps:
+      - checkout
+
       # Download and cache dependencies
       - restore_cache:
           name: Restore cache for all dependencies
@@ -29,65 +31,61 @@ commands:
           paths:
             - ~/.npm
 
-jobs:
-  prepare:
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - node_modules
+            - packages/*/node_modules
+            - examples/*/node_modules
+
+  build:
     executor: my-executor
     steps:
       - checkout
-
-      - install_everything
-
-      - run:
-          name: Linting
-          command: npm run lint
-
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Build everything
           command: NODE_ENV=production npm run build:ci
 
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - packages/*/lib
+            - packages/*/dist
+            - examples/*/dist
+
+  test:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Test with coverage (leave cover results for later)
           command: npm run test:ci
 
-      # `main` branch, persist everything for release
-      - when:
-          condition:
-            equal: ["main", << pipeline.git.branch >>]
-          steps:
-            - persist_to_workspace:
-                # Must be an absolute path, or relative path from working_directory.
-                # This is a directory on the container which is
-                # taken to be the root directory of the workspace.
-                root: ~/project
-                # Must be relative path from root
-                paths:
-                  - node_modules
-                  - coverage
-                  - packages/*/node_modules
-                  - examples/*/node_modules
-                  - packages/*/lib
-                  - packages/*/dist
-                  - examples/*/dist
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - coverage
 
-      # `development` branch, persist mainly for coveralls
-      - when:
-          condition:
-            equal: ["development", << pipeline.git.branch >>]
-          steps:
-            - persist_to_workspace:
-                root: ~/project
-                paths:
-                  - node_modules
-                  - coverage
+  lint:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Linting
+          command: npm run lint
 
   release-and-publish:
     executor: my-executor
     steps:
       - checkout
-
       - attach_workspace:
           at: ~/project
-
       - run:
           name: Release & Publish
           command: |
@@ -98,10 +96,6 @@ jobs:
 
   documentation-deploy:
     executor: my-executor
-    parameters:
-      env:
-        type: enum
-        enum: ["dev", "prod"]
     steps:
       - checkout
       - attach_workspace:
@@ -110,11 +104,14 @@ jobs:
       - run:
           name: Prepare env vars
           command: |
-            if [[ << parameters.env >> == "dev" ]]; then
+            if [[ $CIRCLE_BRANCH == "development" ]]; then
               SubDomain="dev."
+            elif [[ $CIRCLE_BRANCH != "main"]]; then
+              echo "can't deploy docs from $CIRCLE_BRANCH branch. This step shouldn't execute anyway!"
+              exit 1
             fi
-            echo 'export S3_BUCKET=s3://${SubDomain}cardsgame.darekgreenly.com' >> $BASH_ENV
-            echo 'export AWS_REGION=eu-central-1' >> $BASH_ENV
+            echo "export S3_BUCKET=s3://${SubDomain}cardsgame.darekgreenly.com" >> $BASH_ENV
+            echo "export AWS_REGION=eu-central-1" >> $BASH_ENV
 
       - run:
           name: Install & build
@@ -144,7 +141,7 @@ jobs:
 
       - when:
           condition:
-            equal: [<< parameters.env >>, "dev"]
+            equal: [$CIRCLE_BRANCH, "development"]
           steps:
             - aws-s3/copy:
                 arguments: --cache-control "public, max-age=31536000, immutable"
@@ -176,74 +173,52 @@ orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.1
 
 anchors-filters:
-  - &filters-feature-branches
+  - &filters-main-and-development
     filters:
       branches:
-        ignore:
+        only:
           - development
           - main
-  - &filters-only-development
-    filters:
-      branches:
-        only: development
   - &filters-only-main
     filters:
       branches:
         only: main
-      tags:
-        ignore: /.*/
 
 workflows:
   version: 2
 
-  # CI for feature/bugfix branches
-  feature-branch:
+  ci:
     jobs:
-      - prepare:
-          <<: *filters-feature-branches
+      - install
 
-  # CI for development
-  development-branch:
-    jobs:
-      - prepare:
-          <<: *filters-only-development
+      - lint:
+          requires:
+            - install
+      - build:
+          requires:
+            - install
 
-      - documentation-deploy:
-          <<: *filters-only-development
-          env: dev
+      - test:
           requires:
-            - prepare
-      - sonarcloud:
-          <<: *filters-only-development
-          context: SonarCloud
-          requires:
-            - prepare
-      - coverage:
-          <<: *filters-only-development
-          requires:
-            - prepare
+            - build
 
-  # Main -> automatic release
-  main-branch:
-    jobs:
-      - prepare:
-          <<: *filters-only-main
       - release-and-publish:
           <<: *filters-only-main
           requires:
-            - prepare
-
+            - lint
+            - test
       - documentation-deploy:
-          <<: *filters-only-main
-          env: prod
+          <<: *filters-main-and-development
           requires:
-            - prepare
+            - lint
+            - test
+
       - sonarcloud:
-          <<: *filters-only-main
+          <<: *filters-main-and-development
           context: SonarCloud
           requires:
-            - prepare
+            - test
       - coverage:
-          <<: *filters-only-main
+          <<: *filters-main-and-development
           requires:
-            - prepare
+            - test
