@@ -38,7 +38,7 @@ type IntegrationHookNames = "init" | "startPre" | "startPost"
  * Pass { test: "integrationTestName" } while creating the room.
  * Your integration test callbacks will be executed on init or start hooks.
  */
-export type IntegrationHooks<S extends State> = Partial<
+export type IntegrationHooks<S extends State = State> = Partial<
   Record<IntegrationHookNames, IntegrationHookCallback<S>>
 >
 
