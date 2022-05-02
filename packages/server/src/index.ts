@@ -29,6 +29,7 @@ export { Bot, Player, ServerPlayerMessage } from "./player"
 
 export * from "./traits"
 export * from "./entities"
+export * from "./integration"
 
 export { populatePlayerEvent } from "./utils/populatePlayerEvent"
 
