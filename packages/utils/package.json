@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/utils",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@cardsgame/types": "^0.17.0",
+    "@cardsgame/types": "^0.18.0",
     "chalk": "^4.1.2"
   },
   "devDependencies": {
