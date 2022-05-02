@@ -19,9 +19,11 @@ export class State extends Entity<Record<string, unknown>> {
   @type("number") tableHeight = 60 // 60 cm
 
   /**
-   * IDs of clients who are connecting to the room.
+   * IDs of clients who are connected to the room.
    * A "client" is someone who just stopped by in this room
    * and not necessarily someone who is playing the game.
+   *
+   * Read-only. Writing to it doesn't do anything meaningful.
    */
   @type(["string"]) clients = new ArraySchema<string>()
 

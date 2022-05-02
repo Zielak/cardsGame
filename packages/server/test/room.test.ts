@@ -67,6 +67,7 @@ describe("broadcast", () => {
 })
 
 describe("integration tests", () => {
+  let integrationContext
   beforeEach(() => {
     room.integrationHooks = {
       test1: {
@@ -80,12 +81,18 @@ describe("integration tests", () => {
         startPost: jest.fn(),
       },
     }
+    integrationContext = {
+      addClient: room["addClient"],
+    }
   })
 
   it("calls hooks of one test", () => {
     room.onCreate({ test: "test1" })
 
-    expect(room.integrationHooks.test1.init).toHaveBeenCalledWith(room.state)
+    expect(room.integrationHooks.test1.init).toHaveBeenCalledWith(
+      room.state,
+      integrationContext
+    )
     expect(room.integrationHooks.test1.startPre).not.toHaveBeenCalled()
     expect(room.integrationHooks.test1.startPost).not.toHaveBeenCalled()
 
@@ -95,12 +102,17 @@ describe("integration tests", () => {
 
     start.call(room)
 
-    expect(room.integrationHooks.test1.init).toHaveBeenCalledWith(room.state)
+    expect(room.integrationHooks.test1.init).toHaveBeenCalledWith(
+      room.state,
+      integrationContext
+    )
     expect(room.integrationHooks.test1.startPre).toHaveBeenCalledWith(
-      room.state
+      room.state,
+      integrationContext
     )
     expect(room.integrationHooks.test1.startPost).toHaveBeenCalledWith(
-      room.state
+      room.state,
+      integrationContext
     )
 
     expect(room.integrationHooks.test2.init).not.toHaveBeenCalled()
