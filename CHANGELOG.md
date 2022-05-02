@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.1](https://github.com/zielak/cardsGame/compare/v0.18.0...v0.18.1) (2022-05-02)
+
+
+### Bug Fixes
+
+* **integration:** forgot to export ([21a7314](https://github.com/zielak/cardsGame/commit/21a731493c114547431aac4f0d38f8c714fe7fcf))
+
+
+
+
+
 # [0.18.0](https://github.com/zielak/cardsGame/compare/v0.17.1...v0.18.0) (2022-05-02)
 
 
