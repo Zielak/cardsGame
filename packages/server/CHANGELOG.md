@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.2](https://github.com/zielak/cardsGame/compare/v0.18.1...v0.18.2) (2022-05-20)
+
+
+### Bug Fixes
+
+* integration context functions not bound to room ([95cf7f2](https://github.com/zielak/cardsGame/commit/95cf7f2650f403898485cfd86e4315e111080b44))
+
+
+
+
+
 ## [0.18.1](https://github.com/zielak/cardsGame/compare/v0.18.0...v0.18.1) (2022-05-02)
 
 
