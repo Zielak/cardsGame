@@ -1,7 +1,7 @@
 import type { Room } from "./room"
 import type { State } from "./state"
 
-type IntegrationHookCallbackContext<S extends State> = {
+export type IntegrationHookCallbackContext<S extends State> = {
   addClient: Room<S>["addClient"]
 }
 

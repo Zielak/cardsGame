@@ -7,7 +7,11 @@ import type { BotNeuron } from "./bots/botNeuron"
 import { BotRunner } from "./bots/runner"
 import type { Command } from "./command"
 import { CommandsManager } from "./commandsManager"
-import type { IntegrationHookNames, IntegrationHooks } from "./integration"
+import type {
+  IntegrationHookNames,
+  IntegrationHooks,
+  IntegrationHookCallbackContext,
+} from "./integration"
 import { fallback } from "./messages/fallback"
 import { messages } from "./messages/messageHandler"
 import type { Player, ServerPlayerMessage } from "./player"
@@ -50,6 +54,10 @@ export class Room<S extends State> extends colRoom<S> {
    */
   currentIntegration: string
 
+  integrationContext: IntegrationHookCallbackContext<S> = {
+    addClient: this.addClient.bind(this),
+  }
+
   /**
    * Count all connected clients, with planned bot players
    */
@@ -67,9 +75,10 @@ export class Room<S extends State> extends colRoom<S> {
    */
   _executeIntegrationHook(hookName: IntegrationHookNames): void {
     if (this.currentIntegration) {
-      this.integrationHooks[this.currentIntegration]?.[hookName]?.(this.state, {
-        addClient: this.addClient,
-      })
+      this.integrationHooks[this.currentIntegration]?.[hookName]?.(
+        this.state,
+        this.integrationContext
+      )
     }
   }
 

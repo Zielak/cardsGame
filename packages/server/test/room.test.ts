@@ -1,4 +1,5 @@
 import { Client, Room as ColyRoom } from "@colyseus/core"
+import { ArraySchema } from "@colyseus/schema"
 import { start } from "src/messages/start"
 import { Room } from "src/room"
 
@@ -12,6 +13,7 @@ beforeEach(() => {
   room.clients = []
   room.state = {
     isGameOver: false,
+    clients: new ArraySchema(),
   }
 })
 
@@ -81,9 +83,6 @@ describe("integration tests", () => {
         startPost: jest.fn(),
       },
     }
-    integrationContext = {
-      addClient: room["addClient"],
-    }
   })
 
   it("calls hooks of one test", () => {
@@ -91,7 +90,7 @@ describe("integration tests", () => {
 
     expect(room.integrationHooks.test1.init).toHaveBeenCalledWith(
       room.state,
-      integrationContext
+      room.integrationContext
     )
     expect(room.integrationHooks.test1.startPre).not.toHaveBeenCalled()
     expect(room.integrationHooks.test1.startPost).not.toHaveBeenCalled()
@@ -104,15 +103,15 @@ describe("integration tests", () => {
 
     expect(room.integrationHooks.test1.init).toHaveBeenCalledWith(
       room.state,
-      integrationContext
+      room.integrationContext
     )
     expect(room.integrationHooks.test1.startPre).toHaveBeenCalledWith(
       room.state,
-      integrationContext
+      room.integrationContext
     )
     expect(room.integrationHooks.test1.startPost).toHaveBeenCalledWith(
       room.state,
-      integrationContext
+      room.integrationContext
     )
 
     expect(room.integrationHooks.test2.init).not.toHaveBeenCalled()
@@ -140,5 +139,9 @@ describe("integration tests", () => {
     expect(room.integrationHooks.test2.init).not.toHaveBeenCalled()
     expect(room.integrationHooks.test2.startPre).not.toHaveBeenCalled()
     expect(room.integrationHooks.test2.startPost).not.toHaveBeenCalled()
+  })
+
+  test("context", () => {
+    expect(() => room.integrationContext.addClient("FOO")).not.toThrow()
   })
 })
