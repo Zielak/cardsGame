@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/server",
-  "version": "0.18.2",
+  "version": "0.19.0",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -28,9 +28,9 @@
     ".": "./lib/index.js"
   },
   "dependencies": {
-    "@cardsgame/entity-traits": "^0.18.0",
-    "@cardsgame/types": "^0.18.0",
-    "@cardsgame/utils": "^0.18.0",
+    "@cardsgame/entity-traits": "^0.19.0",
+    "@cardsgame/types": "^0.19.0",
+    "@cardsgame/utils": "^0.19.0",
     "@colyseus/core": "^0.14.28",
     "@colyseus/schema": "^1.0.32",
     "@colyseus/ws-transport": "^0.14.21"

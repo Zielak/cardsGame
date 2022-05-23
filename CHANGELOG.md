@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.19.0](https://github.com/zielak/cardsGame/compare/v0.18.2...v0.19.0) (2022-05-23)
+
+
+### Features
+
+* integration hooks now hold data ([9749a18](https://github.com/zielak/cardsGame/commit/9749a18b4a83311ce136174c726af986b1f07903))
+
+
+
+
+
 ## [0.18.2](https://github.com/zielak/cardsGame/compare/v0.18.1...v0.18.2) (2022-05-20)
 
 
