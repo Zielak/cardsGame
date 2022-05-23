@@ -11,6 +11,7 @@ import type {
   IntegrationHookNames,
   IntegrationHooks,
   IntegrationHookCallbackContext,
+  IntegrationHookData,
 } from "./integration"
 import { fallback } from "./messages/fallback"
 import { messages } from "./messages/messageHandler"
@@ -52,11 +53,13 @@ export class Room<S extends State> extends colRoom<S> {
   /**
    * Currently running integration test
    */
-  currentIntegration: string
-
-  integrationContext: IntegrationHookCallbackContext<S> = {
-    addClient: this.addClient.bind(this),
-  }
+  currentIntegration: { name: string; data: IntegrationHookData }
+  /**
+   * An object passed down to integration hooks.
+   * Contains limited set of methods on room and
+   * additional (readonly) data defined in integration itself
+   */
+  integrationContext: IntegrationHookCallbackContext<S>
 
   /**
    * Count all connected clients, with planned bot players
@@ -75,7 +78,7 @@ export class Room<S extends State> extends colRoom<S> {
    */
   _executeIntegrationHook(hookName: IntegrationHookNames): void {
     if (this.currentIntegration) {
-      this.integrationHooks[this.currentIntegration]?.[hookName]?.(
+      this.integrationHooks[this.currentIntegration.name]?.[hookName]?.(
         this.state,
         this.integrationContext
       )
@@ -107,7 +110,14 @@ export class Room<S extends State> extends colRoom<S> {
         "preparing for integration test:",
         options.test
       )
-      this.currentIntegration = options.test
+      this.currentIntegration = {
+        name: options.test,
+        data: this.integrationHooks[options.test].data ?? {},
+      }
+      this.integrationContext = {
+        addClient: this.addClient.bind(this),
+        data: Object.freeze(this.currentIntegration.data),
+      }
     }
     this._executeIntegrationHook("init")
   }

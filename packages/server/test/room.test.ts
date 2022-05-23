@@ -69,10 +69,10 @@ describe("broadcast", () => {
 })
 
 describe("integration tests", () => {
-  let integrationContext
   beforeEach(() => {
     room.integrationHooks = {
       test1: {
+        data: { foo: "bar" },
         init: jest.fn(),
         startPre: jest.fn(),
         startPost: jest.fn(),
@@ -141,7 +141,26 @@ describe("integration tests", () => {
     expect(room.integrationHooks.test2.startPost).not.toHaveBeenCalled()
   })
 
-  test("context", () => {
-    expect(() => room.integrationContext.addClient("FOO")).not.toThrow()
+  it("updates currentIntegration", () => {
+    expect(room.currentIntegration).toBeUndefined()
+
+    room.onCreate({ test: "test1" })
+
+    expect(room.currentIntegration.name).toBe("test1")
+    expect(room.currentIntegration.data).toBe(room.integrationHooks.test1.data)
+  })
+
+  describe("context", () => {
+    it("is available with integration", () => {
+      room.onCreate({ test: "test1" })
+      expect(() => room.integrationContext.addClient("FOO")).not.toThrow()
+      expect(room.integrationContext.data).toBe(
+        room.integrationHooks.test1.data
+      )
+    })
+    it("is unavailable without integration", () => {
+      room.onCreate()
+      expect(room.integrationContext).toBeUndefined()
+    })
   })
 })
