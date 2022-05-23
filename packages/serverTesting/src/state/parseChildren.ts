@@ -26,7 +26,7 @@ export function parseChildren(
   gameEntities?: Record<string, EntityConstructor>
 ): void {
   // Prepare children
-  preparation.children?.forEach((childDef) => {
+  const newChildren = preparation.children?.map((childDef) => {
     const type = childDef.type ?? "classicCard"
     const entityConstructor = gameEntities?.[type] || defaultEntities[type]
 
@@ -44,6 +44,8 @@ export function parseChildren(
     if (isParent(child)) {
       parseChildren(state, child, childDef, gameEntities)
     }
+
+    return child
   })
   // Selection, if used
   if (
@@ -51,8 +53,10 @@ export function parseChildren(
     isParent(entity) &&
     hasSelectableChildren(entity)
   ) {
-    preparation.selected?.forEach((childIndex) => {
-      entity.selectChildAt(childIndex)
+    preparation.selected.forEach((childDefIdx) => {
+      if (preparation.selected?.includes(childDefIdx)) {
+        entity.selectChildAt(newChildren[childDefIdx].idx)
+      }
     })
   }
 }

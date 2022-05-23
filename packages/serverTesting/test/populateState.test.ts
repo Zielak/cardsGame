@@ -1,5 +1,11 @@
 /* eslint-disable jest/expect-expect */
-import { ClassicCard, Hand, State } from "@cardsgame/server"
+import {
+  ClassicCard,
+  defaultHandOfCardsSorting,
+  Hand,
+  State,
+} from "@cardsgame/server"
+import { objectsNamed } from "src/entityDefinitionHelpers"
 import { initState } from "src/initState"
 import {
   PopulateState,
@@ -59,6 +65,43 @@ describe("adds children to existing hand", () => {
     expect(hand.getBottom<ClassicCard>().name).toBe("S10")
     expect(hand.getBottom<ClassicCard>().rank).toBe("10")
     expect(hand.getBottom<ClassicCard>().suit).toBe("S")
+  }
+
+  test("populateStateInner", () => {
+    populateStateInner(...args)
+    outcome()
+  })
+  test("populateState", () => {
+    populateState(state, args)
+    outcome()
+  })
+})
+
+describe("to existing hand with autoSorting, add and select the FIRST DEFINED card - HK", () => {
+  // AutoSorting will sort cards switching up their IDXes anyway
+  // But at the time of definition, we don't know what IDX will our first card
+  // of the array be assigned with
+  let hand: Hand
+  beforeEach(() => {
+    state = initState({ children: [{ type: "hand" }] })
+    hand = state.query<Hand>({ type: "hand" })
+    hand.autoSort = defaultHandOfCardsSorting
+
+    args = [
+      [
+        { type: "hand" },
+        { children: objectsNamed(["HK", "DK", "CK"]), selected: [0] },
+      ],
+    ]
+  })
+
+  function outcome(): void {
+    expect(state.countChildren()).toBe(1)
+    expect(state.getBottom<Hand>().type).toBe("hand")
+
+    expect(hand.countChildren()).toBe(3)
+    expect(hand.getSelectedChildren<ClassicCard>().length).toBe(1)
+    expect(hand.getSelectedChildren<ClassicCard>()[0].name).toBe("HK")
   }
 
   test("populateStateInner", () => {
