@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.19.1](https://github.com/zielak/cardsGame/compare/v0.19.0...v0.19.1) (2022-05-23)
+
+
+### Bug Fixes
+
+* creating and selecting children in one go ([04ccae8](https://github.com/zielak/cardsGame/commit/04ccae83d76335add145f86a63080621bf2123ae))
+
+
+
+
+
 # [0.19.0](https://github.com/zielak/cardsGame/compare/v0.18.2...v0.19.0) (2022-05-23)
 
 **Note:** Version bump only for package @cardsgame/server-testing
