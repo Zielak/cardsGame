@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.19.2](https://github.com/zielak/cardsGame/compare/v0.19.1...v0.19.2) (2022-05-25)
+
+
+### Bug Fixes
+
+* wasn't possible to override "hijacks" prop ([6b68b80](https://github.com/zielak/cardsGame/commit/6b68b804374c6079eaa05b973b074fa2fe08cbaf))
+
+
+
+
+
 ## [0.19.1](https://github.com/zielak/cardsGame/compare/v0.19.0...v0.19.1) (2022-05-23)
 
 
