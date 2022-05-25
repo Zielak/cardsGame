@@ -32,11 +32,11 @@ import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
 export class Spread extends Entity<SpreadOptions> {
   autoSort: SortingFunction
 
-  hijacksInteractionTarget = false
-
   create(state: State, options: SpreadOptions = {}): void {
     this.name = def(options.name, "Spread")
     this.type = def(options.type, "spread")
+
+    this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, false)
 
     this.autoSort = options.autoSort
   }

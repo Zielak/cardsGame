@@ -556,6 +556,11 @@ export class ParentTrait {
   }
 }
 
+/**
+ * These functions define "Traits defaults",
+ * wil be overridden by any "Entity defaults"
+ * and in the end by construction-time options
+ */
 ParentTrait["trait"] = function constructParentTrait(
   state: State,
   options: Partial<ParentTrait> = {}

@@ -29,8 +29,6 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
   SelectableChildrenTrait,
 ])
 export class Line extends Entity<LineOptions> {
-  hijacksInteractionTarget = false
-
   /**
    * 0cm by default, sets the point of overflow.
    * @category Line
@@ -71,6 +69,8 @@ export class Line extends Entity<LineOptions> {
   create(state: State, options: LineOptions = {}): void {
     this.name = def(options.name, "Line")
     this.type = def(options.type, "line")
+
+    this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, false)
 
     this.length = def(options.length, 0)
 

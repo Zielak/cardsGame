@@ -34,3 +34,16 @@ describe("#addChildAt", () => {
     expect(entity.idx).toBe(15)
   })
 })
+
+describe("hijacksInteractionTarget", () => {
+  it("is set from construction options", () => {
+    let grid = new Grid(state)
+    expect(grid.hijacksInteractionTarget).toBe(false)
+
+    grid = new Grid(state, {})
+    expect(grid.hijacksInteractionTarget).toBe(false)
+
+    grid = new Grid(state, { hijacksInteractionTarget: true })
+    expect(grid.hijacksInteractionTarget).toBe(true)
+  })
+})

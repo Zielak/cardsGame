@@ -68,11 +68,11 @@ export class Grid extends Entity<GridOptions> {
    */
   itemAngle: number
 
-  hijacksInteractionTarget = false
-
   create(state: State, options: GridOptions = {}): void {
     this.name = def(options.name, "Grid")
     this.type = def(options.type, "grid")
+
+    this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, false)
 
     this.columns = Math.max(1, def(options.columns, 1))
     this.rows = Math.max(1, def(options.rows, 1))

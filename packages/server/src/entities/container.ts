@@ -1,5 +1,8 @@
+import { def } from "@cardsgame/utils"
+
 import { canBeChild } from "../annotations/canBeChild"
 import { containsChildren } from "../annotations/containsChildren"
+import type { State } from "../state"
 import { ChildTrait } from "../traits/child"
 import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
@@ -22,9 +25,10 @@ import { ParentTrait } from "../traits/parent"
   OwnershipTrait,
 ])
 export class Container extends Entity<ContainerOptions> {
-  hijacksInteractionTarget = false
-  create(): void {
+  create(state: State, options: ContainerOptions = {}): void {
     this.type = "container"
+
+    this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, false)
   }
 }
 

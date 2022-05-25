@@ -31,11 +31,11 @@ import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
 export class Hand extends Entity<HandOptions> {
   autoSort: SortingFunction
 
-  hijacksInteractionTarget = false
-
   create(state: State, options: HandOptions = {}): void {
     this.name = def(options.name, "Hand")
     this.type = def(options.type, "hand")
+
+    this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, false)
 
     this.autoSort = options.autoSort
   }
