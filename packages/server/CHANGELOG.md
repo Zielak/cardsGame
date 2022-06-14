@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.19.3](https://github.com/zielak/cardsGame/compare/v0.19.2...v0.19.3) (2022-06-14)
+
+
+### Bug Fixes
+
+* leave child filtering for now ([33c091c](https://github.com/zielak/cardsGame/commit/33c091c084dd3639b713d3419748a7ecf889f76e))
+
+
+
+
+
 ## [0.19.2](https://github.com/zielak/cardsGame/compare/v0.19.1...v0.19.2) (2022-05-25)
 
 
