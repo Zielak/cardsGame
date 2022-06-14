@@ -11,7 +11,7 @@ import { OwnershipTrait } from "../../src/traits/ownership"
 import { ParentTrait } from "../../src/traits/parent"
 
 @canBeChild
-@containsChildren()
+@containsChildren
 @applyTraitsMixins([
   IdentityTrait,
   ParentTrait,

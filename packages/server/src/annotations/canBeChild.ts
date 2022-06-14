@@ -19,12 +19,9 @@ export function canBeChild(childConstructor: AnyClass): void {
 
   // Add this child type to ALL other parents,
   // which wish their children to be synced to client
-  context.registeredParents
-    .filter(({ childrenSynced }) => childrenSynced)
-    .map(({ con }) => con)
-    .forEach((parentConstructor) =>
-      synchChildrenArray(parentConstructor, childConstructor)
-    )
+  context.registeredParents.forEach((parentConstructor) =>
+    synchChildrenArray(parentConstructor, childConstructor)
+  )
 
   // Throw all prop types of this child to types registry
   // For now used by Deck in its "topDeck" schema

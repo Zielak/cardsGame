@@ -18,7 +18,7 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
  * @category Entity
  */
 @canBeChild
-@containsChildren()
+@containsChildren
 @applyTraitsMixins([
   IdentityTrait,
   LocationTrait,

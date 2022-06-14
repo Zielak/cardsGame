@@ -17,18 +17,14 @@ import { TwoSidedTrait } from "../traits/twoSided"
 //  * @param client
 //  */
 // export function faceDownOnlyOwner(
-//   this: Schema & IClassicCard,
-//   client: any,
+//   this: ClassicCard,
+//   { sessionId },
 //   value: any
 // ): boolean {
 //   logs.log("faceDownOnlyOwner", this.name, ":", value)
 //   // 1. To everyone only if it's faceUp
 //   // 2. To owner, only if it's in his hands
-//   return (
-//     this.faceUp ||
-//     (owner.clientID === (client as Client).id &&
-//       getParentEntity(this).type === "hand")
-//   )
+//   return this.faceUp || this.owner?.clientID === sessionId
 // }
 
 /**

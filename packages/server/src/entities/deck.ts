@@ -30,7 +30,7 @@ interface TopDeckElement {
  * @category Entity
  */
 @canBeChild
-@containsChildren(false)
+@containsChildren
 @applyTraitsMixins([
   IdentityTrait,
   LocationTrait,

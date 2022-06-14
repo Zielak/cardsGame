@@ -7,7 +7,7 @@ import { ParentTrait } from "src/traits/parent"
 import { SelectableChildrenTrait } from "src/traits/selectableChildren"
 
 @canBeChild
-@containsChildren()
+@containsChildren
 @applyTraitsMixins([
   IdentityTrait,
   ParentTrait,

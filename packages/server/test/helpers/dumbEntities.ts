@@ -6,7 +6,7 @@ import { IdentityTrait } from "src/traits/identity"
 import { ParentTrait } from "src/traits/parent"
 
 @canBeChild
-@containsChildren()
+@containsChildren
 @applyTraitsMixins([IdentityTrait, ParentTrait, ChildTrait])
 export class DumbParent extends Entity<DumbParent> {}
 export interface DumbParent extends IdentityTrait, ParentTrait, ChildTrait {}

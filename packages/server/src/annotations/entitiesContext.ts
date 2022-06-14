@@ -2,10 +2,7 @@ import type { DefinitionType } from "@colyseus/schema"
 
 import type { Entity } from "../traits/entity"
 
-type RegisteredParent = {
-  con: typeof Entity
-  childrenSynced: boolean
-}
+type RegisteredParent = typeof Entity
 
 export class EntitiesContext {
   allChildrensTypes: Map<string, DefinitionType>

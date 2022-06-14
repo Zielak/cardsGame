@@ -20,7 +20,7 @@ import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
  * @category Entity
  */
 @canBeChild
-@containsChildren()
+@containsChildren
 @applyTraitsMixins([
   IdentityTrait,
   LocationTrait,

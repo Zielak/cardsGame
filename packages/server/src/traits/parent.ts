@@ -584,11 +584,7 @@ ParentTrait["trait"] = function constructParentTrait(
   )
 
   globalEntitiesContext.registeredChildren.forEach((con) => {
-    if (this.__syncChildren === false) {
-      this[`children${con.name}`] = []
-    } else {
-      this[`children${con.name}`] = new ArraySchema()
-    }
+    this[`children${con.name}`] = new ArraySchema()
   })
 }
 ParentTrait["hooks"] = {

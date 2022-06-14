@@ -7,7 +7,7 @@ import { LabelTrait } from "../../src/traits/label"
 import { ParentTrait } from "../../src/traits/parent"
 
 @canBeChild
-@containsChildren()
+@containsChildren
 @applyTraitsMixins([IdentityTrait, ParentTrait, ChildTrait, LabelTrait])
 export class LabeledParent extends Entity<LabeledParent> {}
 

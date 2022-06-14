@@ -27,7 +27,7 @@ export function isGrid(entity: unknown): entity is Grid {
  * @category Entity
  */
 @canBeChild
-@containsChildren()
+@containsChildren
 @applyTraitsMixins([
   IdentityTrait,
   LocationTrait,

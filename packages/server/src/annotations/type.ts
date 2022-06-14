@@ -16,15 +16,6 @@ export function type(
     const constructor = target.constructor as typeof Schema
     const context = globalEntitiesContext
 
-    // let logType: any = `"${typeDef}"`
-    // if (Array.isArray(typeDef)) {
-    //   logType = `(array) [${typeDef[0]}]`
-    // } else if (typeof typeDef === "function") {
-    //   logType = `(${typeof typeDef}) "${typeDef.name}"`
-    // } else if (typeof typeDef === "object") {
-    //   logType = `(${typeof typeDef}) ${typeDef}`
-    // }
-
     // Intercept type definition
     if (field.indexOf("children") !== 0) {
       if (!context.registeredTypeDefinitions.has(constructor.name)) {

@@ -9,7 +9,7 @@ import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
 import { ParentTrait } from "../traits/parent"
 
-@containsChildren()
+@containsChildren
 @applyTraitsMixins([IdentityTrait, LabelTrait, ParentTrait])
 export class State extends Entity<Record<string, unknown>> {
   type = "state"

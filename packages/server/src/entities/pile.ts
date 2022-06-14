@@ -14,7 +14,7 @@ import { ParentTrait } from "../traits/parent"
  * @category Entity
  */
 @canBeChild
-@containsChildren()
+@containsChildren
 @applyTraitsMixins([
   IdentityTrait,
   LocationTrait,
