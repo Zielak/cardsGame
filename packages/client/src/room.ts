@@ -5,7 +5,7 @@ import type { ClientGameState } from "./schema/types"
 
 export class Room<
   StateProps = Record<string, any>,
-  MoreMessageTypes = Record<string, any>
+  MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>
 > {
   constructor(public room: colyseusRoom) {
     room.onMessage<ServerMessageTypes["gameInfo"]>("gameInfo", (message) => {
@@ -46,10 +46,11 @@ export class Room<
    * Subscribe to messages from the server
    * @return method to unsubscribe
    */
-  onMessage<M extends MoreMessageTypes & ServerMessageTypes, T extends keyof M>(
-    type: T | "*",
-    callback: (message: M[T]) => void
-  ): () => void {
+  onMessage<
+    M extends RecordOfServerMessages<MoreMessageTypes & { "*": unknown }> &
+      ServerMessageTypes,
+    T extends keyof M
+  >(type: T, callback: (message: M[T]) => void): () => void {
     return this.room.onMessage<M[T]>(type as string, callback)
   }
 

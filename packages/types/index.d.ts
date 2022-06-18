@@ -11,6 +11,10 @@ interface ServerMessageTypes {
   gameError: ServerMessage<string>
 }
 
+type RecordOfServerMessages<R extends Record<string, unknown>> = {
+  [key in keyof R]: ServerMessage<R[key]>
+}
+
 /**
  * Message sent by server, either directly to one client
  * or broadcast to all.
