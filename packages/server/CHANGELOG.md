@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.20.0](https://github.com/zielak/cardsGame/compare/v0.19.3...v0.20.0) (2022-06-18)
+
+
+### Features
+
+* more generics around messages ([c135fab](https://github.com/zielak/cardsGame/commit/c135fab2cdb97a26f71c806680c511667e6e5b6e))
+
+
+
+
+
 ## [0.19.3](https://github.com/zielak/cardsGame/compare/v0.19.2...v0.19.3) (2022-06-14)
 
 
