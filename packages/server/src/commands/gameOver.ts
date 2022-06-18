@@ -2,10 +2,10 @@ import { Command } from "../command"
 import type { Room } from "../room"
 import type { State } from "../state"
 
-export class GameOver extends Command {
-  data: any
+export class GameOver<Data = any> extends Command {
+  data: Data
 
-  constructor(data: any) {
+  constructor(data: Data) {
     super()
     this.data = data
   }
