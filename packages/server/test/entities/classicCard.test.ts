@@ -1,7 +1,4 @@
-import {
-  ClassicCard,
-  standardDeckFactory,
-} from "../../src/entities/classicCard"
+import { ClassicCard } from "../../src/entities/classicCard"
 import { State } from "../../src/state"
 
 let card: ClassicCard
@@ -49,16 +46,5 @@ describe("state changers", () => {
     expect(card.faceUp).toBe(false)
     card.flipDown()
     expect(card.faceUp).toBe(false)
-  })
-})
-
-describe("standardDeckFactory", () => {
-  it("gives 52 proper cards", () => {
-    const cards = standardDeckFactory()
-
-    expect(cards.length).toBe(52)
-    expect(cards.some((el) => el === undefined)).toBeFalsy()
-    expect(cards.every((el) => typeof el.suit === "string")).toBeTruthy()
-    expect(cards.every((el) => typeof el.rank === "string")).toBeTruthy()
   })
 })

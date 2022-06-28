@@ -1,4 +1,4 @@
-import { def, logs } from "@cardsgame/utils"
+import { def } from "@cardsgame/utils"
 
 import { canBeChild } from "../annotations/canBeChild"
 import { type } from "../annotations/type"
@@ -77,35 +77,3 @@ type ClassicCardOptions = Partial<
 >
 
 export interface ClassicCard extends Mixin {}
-
-/**
- * Will generate an array of card options.
- * Use this array to create actual cards yourself
- * @example
- * ```ts
- * standardDeckFactory().map(options => {
- *   new ClassicCard({state, ...options})
- * })
- * ```
- * @param ranks array of desired ranks
- * @param suits array of desired suits
- */
-export const standardDeckFactory = (
-  // prettier-ignore
-  ranks: string[] = [
-    "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"
-  ],
-  suits: string[] = ["H", "S", "C", "D"]
-): ClassicCard[] => {
-  const cards: ClassicCard[] = suits.reduce(
-    (prevS, suit) => [
-      ...prevS,
-      ...ranks.reduce((prevR, rank) => [...prevR, { suit, rank }], []),
-    ],
-    []
-  )
-
-  logs.log(`created a deck of ${cards.length} cards`)
-
-  return cards
-}
