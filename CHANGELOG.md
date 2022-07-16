@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.2](https://github.com/zielak/cardsGame/compare/v0.20.1...v0.20.2) (2022-07-16)
+
+
+### Bug Fixes
+
+* standardDeckFactory accepting sets ([1b16690](https://github.com/zielak/cardsGame/commit/1b166907daae9189fba1a1c0e60f2987108bcb67))
+
+
+
+
+
 ## [0.20.1](https://github.com/zielak/cardsGame/compare/v0.20.0...v0.20.1) (2022-06-18)
 
 
