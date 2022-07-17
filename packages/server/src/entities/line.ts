@@ -30,21 +30,15 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
 ])
 export class Line extends Entity<LineOptions> {
   /**
-   * 0cm by default, sets the point of overflow.
+   * Sets maximum size of this container.
+   * - 0cm (default): items just sit next to each other
+   * - Any positive value: when approaching the size limit,
+   *   items will squeeze in to stay within limits
+   *
+   * Remember, items never "*wrap*" to "*the next line*".
    * @category Line
    */
   @type("float32") length: number
-
-  /**
-   * Should the items overflow over the edge,
-   * or squeeze in and keep in the Lines length?
-   * Remember, items don't "wrap" to "the next line".
-   * Default value depends on `length`:
-   * - length=0 -> overflow=true
-   * - length>0 -> overflow=false
-   * @category Line
-   */
-  @type("boolean") overflow: boolean
 
   /**
    * How should items align within the container.
@@ -54,11 +48,11 @@ export class Line extends Entity<LineOptions> {
   @type("string") align: LineAlign
 
   /**
-   * An angle at which items are rotated by default.
-   * Line looks like a row by default. To make a column
+   * How should items align within the container.
+   * In zero-length container only "start" and "end" values make sense.
    * @category Line
    */
-  @type("float32") itemAngle: number
+  @type("string") lineDirection: LineDirection
 
   /**
    * Margin or overlapping (negative values) between items
@@ -73,26 +67,15 @@ export class Line extends Entity<LineOptions> {
     this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, false)
 
     this.length = def(options.length, 0)
-
-    this.overflow = def(options.overflow, this.length === 0)
-
     this.align = def(options.align, "start")
-
-    if (options.lineType === "column") {
-      this.itemAngle = def(options.itemAngle, 270)
-      this.angle = def(options.angle, 90)
-    } else {
-      this.itemAngle = def(options.itemAngle, 0)
-      this.angle = def(options.angle, 0)
-    }
-
+    this.lineDirection = def(options.lineDirection, "row")
     this.itemSpacing = def(options.itemSpacing, 0)
   }
 }
 
 // TODO: maybe enum that (thinner messages)
 type LineAlign = "start" | "end" | "justify"
-type LineType = "row" | "column"
+type LineDirection = "row" | "column"
 
 interface Mixin
   extends IdentityTrait,
@@ -106,12 +89,12 @@ interface Mixin
 type LineOptions = Partial<
   NonFunctionProperties<Mixin> & {
     /**
-     * Either "column" or "row".
-     * Shorthand for "itemAngle" and "angle"
-     */
-    lineType: LineType
-    /**
-     * 0cm by default, sets the point of overflow.
+     * Sets maximum size of this container.
+     * - 0cm (default): items just sit next to each other
+     * - Any positive value: when approaching the size limit,
+     *   items will squeeze in to stay within limits
+     *
+     * Remember, items never "*wrap*" to "*the next line*".
      */
     length: number
     /**
@@ -120,19 +103,10 @@ type LineOptions = Partial<
      */
     align: LineAlign
     /**
-     * Should the items overflow over the edge,
-     * or squeeze in and keep in the Lines length?
-     * Remember, items don't "wrap" to "the next line".
-     * Default value depends on `length`:
-     * - length=0 -> overflow=true
-     * - length>0 -> overflow=false
+     * How should items align within the container.
+     * In zero-length container only "start" and "end" values make sense.
      */
-    overflow: boolean
-    /**
-     * An angle at which items are rotated by default.
-     * Line looks like a row by default. To make a column
-     */
-    itemAngle: number
+    lineDirection: LineDirection
     /**
      * Margin or overlapping (negative values) between items
      */
