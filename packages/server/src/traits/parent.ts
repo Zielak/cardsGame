@@ -10,17 +10,6 @@ import { executeHook } from "./entity"
 import errors from "./parent/errors"
 
 /**
- * **Important trait**
- *
- * Entity will behave as container to hold all other entities with `ChildTrait`.
- *
- * Has many methods for adding, fetching, removing and manipulating order of children.
- *
- * Can behave as:
- *
- * - an array - all children are indexed next to each other
- * - a map - there can be empty spaces between children
- *
  * @category Trait
  */
 export function isParent(entity: unknown): entity is ParentTrait {
@@ -47,6 +36,17 @@ export const getKnownConstructor = (entity: ChildTrait): AnyClass =>
   globalEntitiesContext.registeredChildren.find((con) => entity instanceof con)
 
 /**
+ * **Important trait**
+ *
+ * Entity will behave as container to hold all other entities with `ChildTrait`.
+ *
+ * Has many methods for adding, fetching, removing and manipulating order of children.
+ *
+ * Can behave as:
+ *
+ * - an array - all children are indexed next to each other
+ * - a map - there can be empty spaces between children
+ *
  * @category Trait
  */
 export class ParentTrait {

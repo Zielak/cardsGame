@@ -8,8 +8,6 @@ import { isChild } from "./child"
 import { isParent } from "./parent"
 
 /**
- * Entity with this trait can have a reference to `Player`, who "owns" this entity.
- *
  * @category Trait
  */
 export function hasOwnership(entity: unknown): entity is OwnershipTrait {
@@ -20,6 +18,8 @@ export function hasOwnership(entity: unknown): entity is OwnershipTrait {
 }
 
 /**
+ * Entity with this trait can have a reference to `Player`, who "owns" this entity.
+ *
  * @category Trait
  */
 export class OwnershipTrait {

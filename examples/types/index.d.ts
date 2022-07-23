@@ -6,7 +6,7 @@ type BattleResult = {
   loser: string
 }
 
-interface WarMessage {
-  battleResult: ServerMessage<BattleResult>
-  gameOver: ServerMessage<{ winner: string }>
+type WarMessage = {
+  battleResult: BattleResult
+  gameOver: { winner: string }
 }

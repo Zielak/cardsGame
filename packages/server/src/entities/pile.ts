@@ -11,6 +11,7 @@ import { LocationTrait } from "../traits/location"
 import { ParentTrait } from "../traits/parent"
 
 /**
+ * Loose pile of discarded items.
  * @category Entity
  */
 @canBeChild

@@ -12,6 +12,8 @@ import { OwnershipTrait } from "../traits/ownership"
 import { ParentTrait } from "../traits/parent"
 
 /**
+ * Generic container with no special "looks" assigned to it.
+ *
  * @category Entity
  */
 @canBeChild

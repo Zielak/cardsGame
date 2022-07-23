@@ -28,6 +28,8 @@ import { TwoSidedTrait } from "../traits/twoSided"
 // }
 
 /**
+ * Just a classic card.
+ *
  * @category Entity
  */
 @canBeChild

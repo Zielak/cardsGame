@@ -62,7 +62,9 @@ abstract class Conditions<
     if (defaultSubjectKey) {
       if (!(defaultSubjectKey in subjects)) {
         throw new Error(
-          `Can't set default subject. "${defaultSubjectKey}" does not exist in initial subjects.`
+          `Can't set default subject. "${String(
+            defaultSubjectKey
+          )}" does not exist in initial subjects.`
         )
       }
       setFlag(core, "subject", subjects[defaultSubjectKey])

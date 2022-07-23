@@ -6,10 +6,6 @@ import type { State } from "../state"
 import type { ParentTrait } from "./parent"
 
 /**
- * **Important trait**
- *
- * Entity can become a child of any other container/parent.
- *
  * @category Trait
  */
 export function isChild(entity: unknown): entity is ChildTrait {
@@ -21,6 +17,10 @@ export function isChild(entity: unknown): entity is ChildTrait {
 }
 
 /**
+ * **Important trait**
+ *
+ * Entity can become a child of any other container/parent.
+ *
  * @category Trait
  */
 export class ChildTrait {
@@ -33,16 +33,6 @@ export class ChildTrait {
    * @category ChildTrait
    */
   idx: number
-
-  /**
-   * Gets a reference to this entity's parent.
-   * Root elements won't return state, but `undefined` instead.
-   */
-  // getParentEntity(state: State): ParentTrait {
-  //   if (isParent(this.parent)) {
-  //     return this.parent
-  //   }
-  // }
 
   /**
    * Points out if this element can be target of any interaction

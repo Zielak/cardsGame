@@ -27,6 +27,10 @@ interface TopDeckElement {
 }
 
 /**
+ * Deck of cards, or stack of any entities.
+ *
+ * Only the topmost entity can be visible in this container, via `topDeck` property.
+ *
  * @category Entity
  */
 @canBeChild

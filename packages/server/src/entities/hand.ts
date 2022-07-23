@@ -15,6 +15,10 @@ import { SelectableChildrenTrait } from "../traits/selectableChildren"
 import { SortingFunction, sortOnChildAdded } from "./utils/sorting"
 
 /**
+ * Hand of cards.
+ *
+ * Give it a special rendering on client side.
+ *
  * @category Entity
  */
 @canBeChild
