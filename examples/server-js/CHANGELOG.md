@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.21.0](https://github.com/Zielak/cardsGame/compare/v0.20.3...v0.21.0) (2022-07-24)
+
+**Note:** Version bump only for package @cardsgame/example-server-js
+
+
+
+
+
 ## [0.20.3](https://github.com/Zielak/cardsGame/compare/v0.20.2...v0.20.3) (2022-07-17)
 
 **Note:** Version bump only for package @cardsgame/example-server-js

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.21.0](https://github.com/zielak/cardsGame/compare/v0.20.3...v0.21.0) (2022-07-24)
+
+**Note:** Version bump only for package @cardsgame/entity-traits
+
+
+
+
+
 # [0.20.0](https://github.com/zielak/cardsGame/compare/v0.19.3...v0.20.0) (2022-06-18)
 
 **Note:** Version bump only for package @cardsgame/entity-traits

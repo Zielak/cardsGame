@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/client",
-  "version": "0.20.1",
+  "version": "0.21.0",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -23,8 +23,8 @@
     "test": "echo \"¯\\_(ツ)_/¯\""
   },
   "dependencies": {
-    "@cardsgame/types": "^0.20.1",
-    "@cardsgame/utils": "^0.20.1",
+    "@cardsgame/types": "^0.21.0",
+    "@cardsgame/utils": "^0.21.0",
     "@colyseus/schema": "^1.0.32",
     "colyseus.js": "^0.14.0"
   },
