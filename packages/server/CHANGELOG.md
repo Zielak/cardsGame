@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.1](https://github.com/zielak/cardsGame/compare/v0.21.0...v0.21.1) (2022-07-24)
+
+
+### Bug Fixes
+
+* expose selection container ([ae30d3a](https://github.com/zielak/cardsGame/commit/ae30d3a59531fa51b4630fec640c99531459a9fa))
+
+
+
+
+
 # [0.21.0](https://github.com/zielak/cardsGame/compare/v0.20.3...v0.21.0) (2022-07-24)
 
 
