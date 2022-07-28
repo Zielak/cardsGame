@@ -10,7 +10,8 @@ import { OwnershipTrait } from "../traits/ownership"
 import { ParentTrait } from "../traits/parent"
 
 /**
- * "Virtual" container representing selected entities.
+ * **"Virtual"** container representing selected entities.
+ * Can't be put inside any container, can't be found by queries.
  *
  * Example: grabbed cards to be moved into another container.
  *
