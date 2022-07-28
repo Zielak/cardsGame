@@ -23,6 +23,7 @@ const UI_KEY2 = "uiKey2"
 
 beforeEach(() => {
   state = new State()
+  // Container with bunch of children
   parent = new SmartParent(state, { name: "parent" })
   selectableParent = new SelectableParent(state, {})
 
@@ -188,15 +189,21 @@ describe("oneOf", () => {
 })
 
 describe("empty", () => {
-  it("passes", () => {
+  it("passes on JS things", () => {
     expect(() => con().set([]).empty()).not.toThrow()
     expect(() => con().set({}).empty()).not.toThrow()
     expect(() => con().set("").empty()).not.toThrow()
     expect(() => con().set(new Map()).empty()).not.toThrow()
     expect(() => con().set(new Set()).empty()).not.toThrow()
   })
+  it("passes on Entities", () => {
+    grid = new Grid(state, { columns: 2, rows: 2 })
 
-  it("fails as expected", () => {
+    expect(() => con().set(grid).empty()).not.toThrow()
+    expect(() => con().set(parent).not.empty()).not.toThrow()
+  })
+
+  it("fails on JS things as expected", () => {
     expect(() => con().set(["foo"]).empty()).toThrow()
     expect(() => con().set({ key1: 1 }).empty()).toThrow()
     expect(() => con().set("foo").empty()).toThrow()
@@ -216,6 +223,12 @@ describe("empty", () => {
         .empty()
     ).toThrow()
     expect(() => con().set(null).empty()).toThrow()
+  })
+  it("fails on Entities as expected", () => {
+    grid = new Grid(state, { columns: 2, rows: 2 })
+
+    expect(() => con().set(grid).not.empty()).toThrow()
+    expect(() => con().set(parent).empty()).toThrow()
   })
 })
 

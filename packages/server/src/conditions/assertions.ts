@@ -69,14 +69,21 @@ export function assert(
 
 class ConditionAssertions {
   /**
-   * @asserts subject should be empty.
+   * @asserts subject should be empty. Usable against JS primitives AND Entities.
    */
   empty(): this {
     const subject = getFlag(this, "subject")
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
-    if (subject.length !== undefined && typeof subject !== "function") {
+    if (isParent(subject)) {
+      assert.call(
+        this,
+        subject.countChildren() === 0,
+        `subject ${printPropName}(container entity) has some items.`,
+        `subject ${printPropName}(container entity) is empty, but shouldn't.`
+      )
+    } else if (subject.length !== undefined && typeof subject !== "function") {
       assert.call(
         this,
         subject.length === 0,
@@ -105,7 +112,7 @@ class ConditionAssertions {
   }
 
   /**
-   * @asserts that subject can't hold any more new items.
+   * @asserts that subject can't hold any more new items. Only makes sense with entities.
    * @example
    * ```ts
    * // Check if grid has some space available
