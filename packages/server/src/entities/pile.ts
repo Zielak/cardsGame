@@ -3,6 +3,7 @@ import { def } from "@cardsgame/utils"
 import { canBeChild } from "../annotations/canBeChild"
 import { containsChildren } from "../annotations/containsChildren"
 import type { State } from "../state"
+import { OwnershipTrait } from "../traits"
 import { ChildTrait } from "../traits/child"
 import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
@@ -22,6 +23,7 @@ import { ParentTrait } from "../traits/parent"
   ChildTrait,
   ParentTrait,
   LabelTrait,
+  OwnershipTrait,
 ])
 export class Pile extends Entity<PileOptions> {
   create(state: State, options: PileOptions = {}): void {
@@ -35,7 +37,8 @@ interface Mixin
     LocationTrait,
     ChildTrait,
     ParentTrait,
-    LabelTrait {}
+    LabelTrait,
+    OwnershipTrait {}
 
 type PileOptions = Partial<NonFunctionProperties<Mixin>>
 

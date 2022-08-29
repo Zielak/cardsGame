@@ -20,3 +20,10 @@ describe("hijacksInteractionTarget", () => {
     expect(selection.hijacksInteractionTarget).toBe(false)
   })
 })
+
+it("doesn't accept `parent` option", () => {
+  const options = { parent: state }
+  selection = new Selection(state, options)
+
+  expect("parent" in options).toBe(false)
+})

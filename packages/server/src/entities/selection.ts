@@ -1,8 +1,9 @@
-import { def } from "@cardsgame/utils"
+import { def, logs } from "@cardsgame/utils"
 
 import { canBeChild } from "../annotations/canBeChild"
 import { containsChildren } from "../annotations/containsChildren"
 import type { State } from "../state"
+import { ChildTrait } from "../traits"
 import { applyTraitsMixins, Entity } from "../traits/entity"
 import { IdentityTrait } from "../traits/identity"
 import { LabelTrait } from "../traits/label"
@@ -19,10 +20,23 @@ import { ParentTrait } from "../traits/parent"
  */
 @canBeChild
 @containsChildren
-@applyTraitsMixins([IdentityTrait, LabelTrait, ParentTrait, OwnershipTrait])
+@applyTraitsMixins([
+  IdentityTrait,
+  LabelTrait,
+  ChildTrait,
+  ParentTrait,
+  OwnershipTrait,
+])
 export class Selection extends Entity<SelectionOptions> {
   create(state: State, options: SelectionOptions = {}): void {
     this.type = "selection"
+
+    if (options.parent) {
+      delete options.parent
+      logs.warn(
+        "Selection container must stay at top level. Removing `options.parent`."
+      )
+    }
 
     this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, true)
   }
@@ -31,6 +45,7 @@ export class Selection extends Entity<SelectionOptions> {
 interface Mixin
   extends IdentityTrait,
     LabelTrait,
+    ChildTrait,
     ParentTrait,
     OwnershipTrait {}
 
