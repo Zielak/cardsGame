@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.3](https://github.com/zielak/cardsGame/compare/v0.21.2...v0.21.3) (2022-08-31)
+
+
+### Bug Fixes
+
+* **server:** selection not acting up on client ([92aab4d](https://github.com/zielak/cardsGame/commit/92aab4ddb7550e742fe6703fed62bec2dc03aecc))
+
+
+
+
+
 ## [0.21.2](https://github.com/zielak/cardsGame/compare/v0.21.1...v0.21.2) (2022-07-28)
 
 
