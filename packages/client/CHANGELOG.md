@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.4](https://github.com/zielak/cardsGame/compare/v0.21.3...v0.21.4) (2022-09-02)
+
+
+### Bug Fixes
+
+* **client:** sendInteraction, use only whats needed ([bf61af7](https://github.com/zielak/cardsGame/commit/bf61af75a3e81bb82d76ff79ba5f3f53d1f3e477))
+
+
+
+
+
 # [0.21.0](https://github.com/zielak/cardsGame/compare/v0.20.3...v0.21.0) (2022-07-24)
 
 **Note:** Version bump only for package @cardsgame/client
