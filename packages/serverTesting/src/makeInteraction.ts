@@ -12,10 +12,7 @@ export interface MakeInteraction {
   /**
    * Construct interaction event object for use in `testEvent()`
    */
-  (
-    entity: QuerableProps,
-    event?: RawInteractionClientPlayerMessage["event"]
-  ): ServerPlayerMessage
+  (entity: QuerableProps, interaction?: InteractionType): ServerPlayerMessage
 }
 
 /**
@@ -24,7 +21,7 @@ export interface MakeInteraction {
 export function makeInteraction<S extends State>(
   state: S,
   entityQuery: QuerableProps,
-  event?: RawInteractionClientPlayerMessage["event"]
+  interaction?: InteractionType
 ): ServerPlayerMessage {
   if (!state) {
     throw new Error(`state is undefined, can't prepare an event without it`)
@@ -35,7 +32,7 @@ export function makeInteraction<S extends State>(
   const message: ClientPlayerMessage = {
     messageType: "EntityInteraction",
     entityPath: targetEntity?.idxPath,
-    event,
+    interaction,
   }
 
   return populatePlayerEvent(state, message, CLIENT_ID)

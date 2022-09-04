@@ -30,6 +30,14 @@ type ServerMessage<D = unknown> = {
 }
 
 /**
+ * The only valuable interaction event types.
+ * - `tap` - touch down&up, or click by mouse
+ * - `dragstart` - touch/mouse down + started moving pointer away
+ * - `dragend` - released touch/mouse, after dragging
+ */
+type InteractionType = "tap" | "dragstart" | "dragend"
+
+/**
  * First point of entry has this type.
  * With Colyseus lib `messageType` comes separately.
  */
@@ -39,13 +47,17 @@ type RawInteractionClientPlayerMessage = {
    */
   data?: unknown
   /**
-   * Interaction-related events ("click", "touchstart"...)
-   *
-   * TODO: Not yet used. Could be useful with drag&drop or swipe interaction
+   * The only valuable interaction event types.
+   * - `tap` - touch down&up, or click by mouse
+   * - `dragstart` - touch/mouse down + started moving pointer away
+   * - `dragend` - released touch/mouse, after dragging
    */
-  event?: string
+  interaction?: InteractionType
   /**
-   * Path to target Entity as an array: `[0,2,0]`
+   * Path to target Entity as an array
+   *
+   * @example
+   * [0,2,0]
    */
   entityPath?: number[]
 }

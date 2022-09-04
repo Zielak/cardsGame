@@ -48,6 +48,7 @@ export function populatePlayerEvent(
 ): ServerPlayerMessage {
   const newEvent: ServerPlayerMessage = {
     messageType: message.messageType,
+    interaction: message.interaction,
     data: message.data,
     timestamp: +Date.now(),
   }

@@ -20,7 +20,7 @@ export function debugRoomMessage(message: ServerPlayerMessage): void {
   const entityPath =
     message.entityPath && chalk.green(message.entityPath.join(", "))
 
-  const { data, event } = message
+  const { data, interaction } = message
 
   const playerString = message.player
     ? `Player: ${minifyPlayer(message.player)} | `
@@ -31,7 +31,7 @@ export function debugRoomMessage(message: ServerPlayerMessage): void {
     [
       playerString,
       chalk.white.bold(message.messageType),
-      event ? ` "${chalk.yellow(event)}"` : "",
+      interaction ? ` "${chalk.yellow(interaction)}"` : "",
       "\n\t",
       entityPath ? `path: [${entityPath}], ` : "",
       entity ? `entity:"${entity}", ` : "",

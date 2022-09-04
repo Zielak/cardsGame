@@ -218,9 +218,9 @@ class GameHandler {
           UI.gameStarted()
 
           EL.player.deck.addEventListener("click", (event) => {
-            const idxPath = event.currentTarget.dataset["idxPath"]
-            console.log("room.sendInteraction(", event.type, idxPath, ")")
-            room.sendInteraction(event.type, idxPath.split(","))
+            const idxPath = event.currentTarget.dataset["idxPath"].split(",")
+            console.log(`room.sendInteraction(tap, ${idxPath})`)
+            room.sendInteraction("tap", idxPath)
           })
         }
       })

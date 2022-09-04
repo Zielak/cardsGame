@@ -97,7 +97,7 @@ export class CommandsManager<S extends State> {
 
       throw new Error(
         `No actions found for "${
-          message.player ? message.player.clientID : message.event
+          message.player ? message.player.clientID : message.interaction
         }" event, ignoring...`
       )
     }

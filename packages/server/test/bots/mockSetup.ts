@@ -2,7 +2,7 @@ import { ActionTemplate, BotNeuron, commands, State } from "../../src"
 
 const ScreamAction: ActionTemplate<State> = {
   name: "ScreamNO",
-  interaction: "scream",
+  messageType: "scream",
   conditions: (con) => {
     con("data").is.defined()
   },

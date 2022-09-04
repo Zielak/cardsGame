@@ -8,9 +8,9 @@ export type ClientMessageInitialSubjects = {
    */
   messageType: string
   /**
-   * Changes current `subject` to Interaction-related events ("click", "touchstart"...)
+   * Changes current `subject` to Interaction-related events
    */
-  event: string
+  event: InteractionType
   /**
    * Changes current `subject` to event's additional data
    */

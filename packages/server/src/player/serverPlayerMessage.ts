@@ -7,7 +7,7 @@ export type ServerPlayerMessage = ClientPlayerMessage & {
    */
   player?: Player
   /**
-   * An Entity which was interactd with
+   * An Entity which was interacted with
    */
   entity?: unknown
   /**

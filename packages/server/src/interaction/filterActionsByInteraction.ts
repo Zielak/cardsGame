@@ -13,10 +13,11 @@ import { isChild } from "../traits"
 export const filterActionsByInteraction =
   <S extends State>(message: ServerPlayerMessage) =>
   (action: ActionTemplate<S>): boolean => {
-    if (
-      message.messageType === "EntityInteraction" &&
-      isInteractionOfEntities(action)
-    ) {
+    if (isInteractionOfEntities(action)) {
+      if (action.interactionType !== message.interaction) {
+        return false
+      }
+
       const interactions = action.interaction(message.player)
 
       logs.debug(
@@ -41,8 +42,8 @@ export const filterActionsByInteraction =
             return result
           })
       })
-    } else if (message.messageType && isInteractionOfEvent(action)) {
-      return action.interaction === message.messageType
+    } else if (isInteractionOfEvent(action)) {
+      return action.messageType === message.messageType
     }
     return false
   }

@@ -13,9 +13,9 @@
   })
   
   const handleDeckClick = (event) => {
-    const idxPath = event.currentTarget.dataset["idxPath"]
-    console.log("room.sendInteraction(", event.type, idxPath, ")")
-    game.room.sendInteraction(event.type, idxPath.split(","))
+    const idxPath = event.currentTarget.dataset["idxPath"].split(",")
+    console.log(`room.sendInteraction(tap, ${idxPath})`)
+    game.room.sendInteraction("tap", idxPath)
   }
 </script>
 

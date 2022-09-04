@@ -4,15 +4,9 @@ import type { Player, ServerPlayerMessage } from "./player"
 import type { QuerableProps } from "./queryRunner"
 import type { State } from "./state"
 
-export interface ActionTemplate<S extends State> {
+interface BaseActionTemplate<S extends State> {
   name: string
   description?: string
-
-  /**
-   * Either a function returning queries for associated entities
-   * OR a string for event type.
-   */
-  interaction: string | ((player: Player) => QuerableProps[])
 
   /**
    * This action will be ignored when one of the assertions fail.
@@ -29,27 +23,35 @@ export interface ActionTemplate<S extends State> {
   command: (state: S, event: ServerPlayerMessage) => Command
 }
 
+export interface ActionTemplate<S extends State> extends BaseActionTemplate<S> {
+  /**
+   * Function returning queries for interacted entities.
+   */
+  interaction?: (player: Player) => QuerableProps[]
+
+  /**
+   * How do you expect entities to be interacted with.
+   */
+  interactionType?: InteractionType
+
+  /**
+   * Custom game message type,
+   * or "EntityInteraction" in case of entity interaction
+   */
+  messageType?: string
+}
+
 export type ActionsSet<S extends State> = Set<ActionTemplate<S>>
 
-/**
- * @ignore
- */
-export interface EntitiesActionTemplate<S extends State>
-  extends ActionTemplate<S> {
-  /**
-   * Function returning queries for associated entities.
-   */
-  interaction: (player: Player) => QuerableProps[]
+interface EntitiesActionTemplate<S extends State>
+  extends BaseActionTemplate<S> {
+  interaction: Required<ActionTemplate<S>["interaction"]>
+  interactionType: ActionTemplate<S>["interactionType"]
+  messageType: "EntityInteraction"
 }
-/**
- * @ignore
- */
-export interface EventActionTemplate<S extends State>
-  extends ActionTemplate<S> {
-  /**
-   * A string for event type.
-   */
-  interaction: string
+
+interface EventActionTemplate<S extends State> extends BaseActionTemplate<S> {
+  messageType: ActionTemplate<S>["messageType"]
 }
 
 export function isInteractionOfEntities<S extends State = any>(
@@ -65,9 +67,12 @@ export function isInteractionOfEntities<S extends State = any>(
 export function isInteractionOfEvent<S extends State = any>(
   o: unknown
 ): o is EventActionTemplate<S> {
-  return (
+  const doesNotHaveInteraction = typeof o === "object" && !("interaction" in o)
+  const hasNonInteractionMessage =
     typeof o === "object" &&
-    "interaction" in o &&
-    typeof o["interaction"] === "string"
-  )
+    "messageType" in o &&
+    typeof o["messageType"] === "string" &&
+    o["messageType"] !== "EntityInteraction"
+
+  return doesNotHaveInteraction && hasNonInteractionMessage
 }

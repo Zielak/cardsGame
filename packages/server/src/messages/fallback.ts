@@ -8,11 +8,11 @@ export function fallback(
   this: Room<State>,
   client,
   messageType: string,
-  message: any
+  messageData: any
 ): void {
   const newMessage = populatePlayerEvent(
     this.state,
-    { data: message, messageType },
+    { data: messageData, messageType },
     client.sessionId
   )
   this.handleMessage(newMessage).catch((e) =>

@@ -83,22 +83,21 @@ export class Room<
   /**
    * Sends an event related to entity interaction.
    *
-   * @param {MouseEvent | TouchEvent} eventType exact type of mouse or touch event.
-   * @param {number[]} entityIdxPath
+   * @param entityIdxPath idx path to entity of interaction
    */
   sendInteraction(
-    eventType: (MouseEvent | TouchEvent)["type"],
+    interaction: InteractionType,
     entityIdxPath: number[],
     data = undefined
   ): void {
     logs.debug(
       "Sending Interaction:",
-      eventType,
+      interaction,
       "entityIdxPath:",
       entityIdxPath
     )
     const playerEvent: RawInteractionClientPlayerMessage = {
-      event: eventType,
+      interaction,
       entityPath: entityIdxPath,
     }
     if (data) {

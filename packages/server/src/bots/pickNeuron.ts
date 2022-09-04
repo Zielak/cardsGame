@@ -114,6 +114,7 @@ const getNeuronsAvailableEvents = <S extends State>(
         (entity) =>
           ({
             messageType: "EntityInteraction",
+            interaction: "tap",
             entityPath: entity.idxPath,
           } as ClientPlayerMessage)
       )
@@ -131,7 +132,7 @@ const getNeuronsAvailableEvents = <S extends State>(
     return testedEvents
   } else if (isInteractionOfEvent(neuron.action)) {
     const message: ClientPlayerMessage = {
-      messageType: neuron.action.interaction,
+      messageType: neuron.action.messageType,
       data: neuron.playerEventData
         ? neuron.playerEventData(state, bot)
         : undefined,

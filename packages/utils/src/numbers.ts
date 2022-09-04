@@ -92,3 +92,24 @@ export const decimal = (value: number, maxZeroes = 2): number => {
 
   return Math.round(value * pow) / pow
 }
+
+/**
+ *
+ */
+export const lerp = (a: number, b: number, t: number): number => {
+  return a * (1 - t) + b * t
+}
+
+/**
+ *
+ */
+export const distance = (
+  ax: number,
+  ay: number,
+  bx: number,
+  by: number
+): number => {
+  const dx = ax - bx
+  const dy = ay - by
+  return Math.sqrt(dx * dx + dy * dy)
+}

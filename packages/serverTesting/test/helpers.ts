@@ -9,7 +9,7 @@ export const ActionPickCard: ActionTemplate<State> = {
 
 export const ActionMessage: ActionTemplate<State> = {
   name: "ActionMessage",
-  interaction: "customMessage",
+  messageType: "customMessage",
   conditions: (con) => {},
   command: () => new commands.Noop(),
 }
