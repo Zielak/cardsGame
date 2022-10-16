@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.22.1](https://github.com/zielak/cardsGame/compare/v0.22.0...v0.22.1) (2022-10-16)
+
+
+### Bug Fixes
+
+* **server:** handle optional interactionType ([87d6393](https://github.com/zielak/cardsGame/commit/87d6393ed576beae0920be4745f8e904512e3b3d))
+
+
+
+
+
 # [0.22.0](https://github.com/zielak/cardsGame/compare/v0.21.4...v0.22.0) (2022-09-04)
 
 
