@@ -14,7 +14,10 @@ export const filterActionsByInteraction =
   <S extends State>(message: ServerPlayerMessage) =>
   (action: ActionTemplate<S>): boolean => {
     if (isInteractionOfEntities(action)) {
-      if (action.interactionType !== message.interaction) {
+      if (
+        "interactionType" in action &&
+        action.interactionType !== message.interaction
+      ) {
         return false
       }
 
