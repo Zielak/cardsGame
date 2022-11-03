@@ -1,6 +1,7 @@
 {
   "name": "@cardsgame/utils",
   "version": "0.22.0",
+  "type": "module",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -11,14 +12,16 @@
   "bugs": {
     "url": "https://github.com/zielak/cardsGame/issues"
   },
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "types": "lib/types/index.d.ts",
+  "module": "lib/esm/index.js",
   "files": [
-    "lib"
+    "lib",
+    "readme.md"
   ],
   "scripts": {
-    "build": "tsc -b src",
-    "build:watch": "tsc -b src --watch",
+    "build": "tsc -p tsconfig.build.json & tsc -p tsconfig.build.cjs.json & wait",
+    "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -27,6 +30,60 @@
     "chalk": "^4.1.2"
   },
   "devDependencies": {
-    "@types/node": "^14.14.6"
+    "@types/node": "^18.11.0",
+    "@cardsgame/base-configs": "^1.0.0"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./array": {
+      "import": "./lib/esm/array.js",
+      "require": "./lib/cjs/array.js",
+      "types": "./lib/types/array.d.ts"
+    },
+    "./entities": {
+      "import": "./lib/esm/entities.js",
+      "require": "./lib/cjs/entities.js",
+      "types": "./lib/types/entities.d.ts"
+    },
+    "./functions": {
+      "import": "./lib/esm/functions.js",
+      "require": "./lib/cjs/functions.js",
+      "types": "./lib/types/functions.d.ts"
+    },
+    "./logs": {
+      "import": "./lib/esm/logs.js",
+      "require": "./lib/cjs/logs.js",
+      "types": "./lib/types/logs.d.ts"
+    },
+    "./numbers": {
+      "import": "./lib/esm/numbers.js",
+      "require": "./lib/cjs/numbers.js",
+      "types": "./lib/types/numbers.d.ts"
+    },
+    "./objects": {
+      "import": "./lib/esm/objects.js",
+      "require": "./lib/cjs/objects.js",
+      "types": "./lib/types/objects.d.ts"
+    },
+    "./random": {
+      "import": "./lib/esm/random.js",
+      "require": "./lib/cjs/random.js",
+      "types": "./lib/types/random.d.ts"
+    },
+    "./strings": {
+      "import": "./lib/esm/strings.js",
+      "require": "./lib/cjs/strings.js",
+      "types": "./lib/types/strings.d.ts"
+    },
+    "./utils": {
+      "import": "./lib/esm/utils.js",
+      "require": "./lib/cjs/utils.js",
+      "types": "./lib/types/utils.d.ts"
+    },
+    ".": {
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.js",
+      "types": "./lib/types/index.d.ts"
+    }
   }
 }

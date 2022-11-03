@@ -1,8 +1,8 @@
 import { logs } from "@cardsgame/utils"
 
-import { Command } from "../command"
-import type { Room } from "../room"
-import type { State } from "../state"
+import { Command } from "../command.js"
+import type { Room } from "../room.js"
+import type { State } from "../state/state.js"
 
 export class NextRound extends Command {
   async execute(state: State, room: Room<any>): Promise<void> {

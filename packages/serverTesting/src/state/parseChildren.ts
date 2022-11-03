@@ -1,15 +1,15 @@
+import type { State } from "@cardsgame/server"
 import {
   hasSelectableChildren,
   isParent,
   ParentTrait,
-  State,
-} from "@cardsgame/server"
+} from "@cardsgame/server/traits"
 
-import { decipherName } from "../decipherName"
-import { defaultEntities } from "../entities"
-import type { EntityConstructor, EntityMockingDefinition } from "../types"
+import { decipherName } from "../decipherName.js"
+import { defaultEntities } from "../entities.js"
+import type { EntityConstructor, EntityMockingDefinition } from "../types.js"
 
-import { copyPrimitives } from "./copyPrimitives"
+import { copyPrimitives } from "./copyPrimitives.js"
 
 /**
  * Following `preparation` recursively, creates every child entity everywhere.

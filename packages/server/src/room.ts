@@ -1,35 +1,34 @@
 import { logs } from "@cardsgame/utils"
 import { Client, Room as colRoom } from "@colyseus/core"
-import type { IBroadcastOptions } from "@colyseus/core/build/Room"
+import type { IBroadcastOptions } from "@colyseus/core/build/Room.js"
 
-import type { ActionsSet } from "./actionTemplate"
-import type { BotNeuron } from "./bots/botNeuron"
-import { BotRunner } from "./bots/runner"
-import type { Command } from "./command"
-import { CommandsManager } from "./commandsManager"
+import type { ActionsSet } from "./actions/actionTemplate.js"
+import type { BotNeuron } from "./bots/botNeuron.js"
+import { BotRunner } from "./bots/runner.js"
+import type { Command } from "./command.js"
+import { CommandsManager } from "./commandsManager.js"
 import type {
   IntegrationHookNames,
   IntegrationHooks,
   IntegrationHookCallbackContext,
   IntegrationHookData,
-} from "./integration"
-import { fallback } from "./messages/fallback"
-import { messages } from "./messages/messageHandler"
-import type { Player, ServerPlayerMessage } from "./player"
-import type { Bot } from "./player/bot"
-import type { State } from "./state"
-import { debugRoomMessage } from "./utils/debugRoomMessage"
+} from "./integration.js"
+import { fallback } from "./messages/fallback.js"
+import { messages } from "./messages/messageHandler.js"
+import type { Player, ServerPlayerMessage, Bot } from "./player/index.js"
+import type { State } from "./state/state.js"
+import { debugRoomMessage } from "./utils/debugRoomMessage.js"
 
-export interface IRoom<S extends State> {
-  botActivities?: BotNeuron<S>[]
-  canGameStart(): boolean
-  onInitGame(options: Record<string, any>): void
-  onStartGame(state: S): void | Command[]
-  onPlayerTurnStarted(player: Player): void | Command[]
-  onPlayerTurnEnded(player: Player): void | Command[]
-  onRoundStart(): void | Command[]
-  onRoundEnd(): void | Command[]
-}
+// export interface IRoom<S extends State> {
+//   botActivities?: BotNeuron<S>[]
+//   canGameStart(): boolean
+//   onInitGame(options: Record<string, any>): void
+//   onStartGame(state: S): void | Command[]
+//   onPlayerTurnStarted(player: Player): void | Command[]
+//   onPlayerTurnEnded(player: Player): void | Command[]
+//   onRoundStart(): void | Command[]
+//   onRoundEnd(): void | Command[]
+// }
 
 type BroadcastOptions = IBroadcastOptions & {
   undo: boolean

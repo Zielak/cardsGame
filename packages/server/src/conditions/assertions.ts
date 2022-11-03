@@ -1,12 +1,13 @@
-import { isGrid } from "../entities"
-import { QuerableProps, queryRunner } from "../queryRunner"
-import type { State } from "../state"
-import { isChild } from "../traits/child"
-import { isParent } from "../traits/parent"
-import { hasSelectableChildren } from "../traits/selectableChildren"
+import { isGrid } from "../entities/index.js"
+import { queryRunner } from "../queries/runner.js"
+import type { QuerableProps } from "../queries/types.js"
+import type { State } from "../state/state.js"
+import { isChild } from "../traits/child.js"
+import { isParent } from "../traits/parent.js"
+import { hasSelectableChildren } from "../traits/selectableChildren.js"
 
-import { throwError } from "./errors"
-import { getFlag, getRef, postAssertion, resetNegation } from "./utils"
+import { throwError } from "./errors.js"
+import { getFlag, getRef, postAssertion, resetNegation } from "./utils.js"
 
 const getMessage = (
   target,
@@ -37,7 +38,7 @@ const getMessage = (
  * @param [expected]
  * @param [actual]
  */
-export function assert(
+function assert(
   this: any,
   result: boolean,
   errMessage: string,

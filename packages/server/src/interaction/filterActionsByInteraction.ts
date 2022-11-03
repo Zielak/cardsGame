@@ -1,15 +1,20 @@
 import { logs } from "@cardsgame/utils"
 
+import type { ActionTemplate } from "../actions/actionTemplate.js"
 import {
-  ActionTemplate,
   isInteractionOfEntities,
   isInteractionOfEvent,
-} from "../actionTemplate"
-import type { ServerPlayerMessage } from "../player"
-import { queryRunner } from "../queryRunner"
-import type { State } from "../state"
-import { isChild } from "../traits"
+} from "../actions/typecheck.js"
+import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
+import { queryRunner } from "../queries/runner.js"
+import type { State } from "../state/state.js"
+import { isChild } from "../traits/child.js"
 
+/**
+ * Used internally and in `@cardsgame/server-testing` package.
+ * Not for public usage
+ * @ignore
+ */
 export const filterActionsByInteraction =
   <S extends State>(message: ServerPlayerMessage) =>
   (action: ActionTemplate<S>): boolean => {

@@ -1,11 +1,11 @@
 import { chalk, def, logs } from "@cardsgame/utils"
 
-import { Command, Target, TargetHolder } from "../command"
-import { isGrid } from "../entities"
-import type { State } from "../state"
-import type { ChildTrait } from "../traits/child"
-import { hasLabel } from "../traits/label"
-import type { ParentTrait } from "../traits/parent"
+import { Command, Target, TargetHolder } from "../command.js"
+import { isGrid } from "../entities/index.js"
+import type { State } from "../state/state.js"
+import type { ChildTrait } from "../traits/child.js"
+import { hasLabel } from "../traits/label.js"
+import type { ParentTrait } from "../traits/parent.js"
 
 export class PlaceOnGrid extends Command {
   private entity: TargetHolder<ChildTrait>

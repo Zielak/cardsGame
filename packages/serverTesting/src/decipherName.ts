@@ -1,4 +1,4 @@
-import type { EntityMockingDefinition } from "./types"
+import type { EntityMockingDefinition } from "./types.js"
 
 const deciphers: Record<
   string,

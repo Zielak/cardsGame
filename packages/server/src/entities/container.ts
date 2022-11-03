@@ -1,15 +1,15 @@
 import { def } from "@cardsgame/utils"
 
-import { canBeChild } from "../annotations/canBeChild"
-import { containsChildren } from "../annotations/containsChildren"
-import type { State } from "../state"
-import { ChildTrait } from "../traits/child"
-import { applyTraitsMixins, Entity } from "../traits/entity"
-import { IdentityTrait } from "../traits/identity"
-import { LabelTrait } from "../traits/label"
-import { LocationTrait } from "../traits/location"
-import { OwnershipTrait } from "../traits/ownership"
-import { ParentTrait } from "../traits/parent"
+import { canBeChild } from "../annotations/canBeChild.js"
+import { containsChildren } from "../annotations/containsChildren.js"
+import type { State } from "../state/state.js"
+import { ChildTrait } from "../traits/child.js"
+import { applyTraitsMixins, Entity } from "../traits/entity.js"
+import { IdentityTrait } from "../traits/identity.js"
+import { LabelTrait } from "../traits/label.js"
+import { LocationTrait } from "../traits/location.js"
+import { OwnershipTrait } from "../traits/ownership.js"
+import { ParentTrait } from "../traits/parent.js"
 
 /**
  * Generic container with no special "looks" assigned to it.

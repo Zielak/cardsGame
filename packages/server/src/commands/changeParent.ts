@@ -6,11 +6,11 @@ import {
   TargetHolder,
   Targets,
   TargetsHolder,
-} from "../command"
-import type { State } from "../state"
-import type { ChildTrait } from "../traits/child"
-import { hasLabel } from "../traits/label"
-import type { ParentTrait } from "../traits/parent"
+} from "../command.js"
+import type { State } from "../state/state.js"
+import type { ChildTrait } from "../traits/child.js"
+import { hasLabel } from "../traits/label.js"
+import type { ParentTrait } from "../traits/parent.js"
 
 export class ChangeParent extends Command {
   private entities: TargetsHolder<ChildTrait>

@@ -1,17 +1,20 @@
 import { chalk, logs } from "@cardsgame/utils"
 
-import type { ActionTemplate } from "../actionTemplate"
-import { getCustomError } from "../conditions/errors"
-import type { ServerPlayerMessage } from "../player"
-import type { State } from "../state"
+import type { ActionTemplate } from "../actions/actionTemplate.js"
+import { getCustomError } from "../conditions/errors.js"
+import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
+import type { State } from "../state/state.js"
 
 import {
   ClientMessageConditions,
   ClientMessageInitialSubjects,
-} from "./conditions"
-import type { ConditionErrorMessage } from "./types"
+} from "./conditions.js"
+import type { ConditionErrorMessage } from "./types.js"
 
 /**
+ * Used internally and in `@cardsgame/server-testing` package.
+ * Not for public usage
+ * @ignore
  * @returns error message if it doesn't pass. Stays silent if its okay.
  */
 export const runConditionsOnAction = <S extends State>(

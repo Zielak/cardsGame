@@ -7,9 +7,9 @@ import {
   Line,
   Pile,
   Spread,
-} from "@cardsgame/server"
+} from "@cardsgame/server/entities"
 
-import type { EntityConstructor } from "./types"
+import type { EntityConstructor } from "./types.js"
 
 export const defaultEntities: Record<string, EntityConstructor> = {
   classicCard: ClassicCard,

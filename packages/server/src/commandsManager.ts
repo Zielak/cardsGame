@@ -1,15 +1,16 @@
 import { chalk, logs } from "@cardsgame/utils"
 
-import type { ActionsSet, ActionTemplate } from "./actionTemplate"
-import type { Command } from "./command"
-import {
-  runConditionsOnAction,
-  filterActionsByInteraction,
-} from "./interaction"
-import type { Player, ServerPlayerMessage } from "./player"
-import type { Room } from "./room"
-import type { State } from "./state"
+import type { ActionsSet, ActionTemplate } from "./actions/actionTemplate.js"
+import type { Command } from "./command.js"
+import { filterActionsByInteraction } from "./interaction/filterActionsByInteraction.js"
+import { runConditionsOnAction } from "./interaction/runConditionsOnAction.js"
+import type { Player, ServerPlayerMessage } from "./player/index.js"
+import type { Room } from "./room.js"
+import type { State } from "./state/state.js"
 
+/**
+ * @ignore
+ */
 export class CommandsManager<S extends State> {
   history: Command[] = []
   incoming: Map<Player, ServerPlayerMessage> = new Map()

@@ -1,8 +1,8 @@
 import { def, limit } from "@cardsgame/utils"
 
-import type { ChosenBotNeuronResult } from "../bots/pickNeuron"
+import type { ChosenBotNeuronResult } from "../bots/pickNeuron.js"
 
-import { Player, PlayerOptions } from "./player"
+import { Player, PlayerOptions } from "./player.js"
 
 export interface BotOptions extends PlayerOptions {
   /**

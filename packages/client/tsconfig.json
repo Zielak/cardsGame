@@ -1,0 +1,9 @@
+// config for both working with IDE and test runs
+{
+  "extends": "@cardsgame/base-configs/tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2020", "DOM"],
+    "types": ["@cardsgame/types", "jest"],
+    "noEmit": true
+  }
+}

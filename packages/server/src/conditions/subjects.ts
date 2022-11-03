@@ -1,11 +1,11 @@
 import { isMapLike } from "@cardsgame/utils"
 
-import type { QuerableProps } from "../queryRunner"
-import type { State } from "../state"
-import { isParent } from "../traits/parent"
-import { hasSelectableChildren } from "../traits/selectableChildren"
+import type { QuerableProps } from "../queries/types.js"
+import type { State } from "../state/state.js"
+import { isParent } from "../traits/parent.js"
+import { hasSelectableChildren } from "../traits/selectableChildren.js"
 
-import { throwError } from "./errors"
+import { throwError } from "./errors.js"
 import {
   getFlag,
   getInitialSubject,
@@ -14,7 +14,7 @@ import {
   resetSubject,
   setFlag,
   setRef,
-} from "./utils"
+} from "./utils.js"
 
 /**
  * Getters and methods which change subject

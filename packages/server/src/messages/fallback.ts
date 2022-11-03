@@ -1,9 +1,17 @@
 import { logs } from "@cardsgame/utils"
 
-import type { Room } from "../room"
-import type { State } from "../state"
-import { populatePlayerEvent } from "../utils/populatePlayerEvent"
+import type { Room } from "../room.js"
+import type { State } from "../state/state.js"
+import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
+/**
+ *
+ * @param this
+ * @param client
+ * @param messageType
+ * @param messageData
+ * @ignore
+ */
 export function fallback(
   this: Room<State>,
   client,

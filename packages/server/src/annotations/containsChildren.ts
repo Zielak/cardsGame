@@ -1,9 +1,9 @@
 import { logs } from "@cardsgame/utils"
 
-import type { Entity } from "../traits/entity"
+import type { Entity } from "../traits/entity.js"
 
-import { synchChildrenArray } from "./annotations"
-import { globalEntitiesContext } from "./entitiesContext"
+import { synchChildrenArray } from "./annotations.js"
+import { globalEntitiesContext } from "./entitiesContext.js"
 
 /**
  * Class Decorator!

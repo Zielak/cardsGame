@@ -1,6 +1,6 @@
-import type { State } from "../state"
+import type { State } from "../state/state.js"
 
-import type { CustomConditionError } from "./errors"
+import type { CustomConditionError } from "./errors.js"
 
 interface ConditionsFlags {
   /**
@@ -32,7 +32,7 @@ interface ConditionsFlags {
 }
 
 /**
- * @category Conditions
+ * @ignore
  */
 export function getFlag(
   target: Record<string, any>,
@@ -46,7 +46,7 @@ export function getFlag(
 
 /**
  * Remember some value internally for this Conditions run
- * @category Conditions
+ * @ignore
  */
 export function setFlag(
   target: Record<string, any>,
@@ -62,7 +62,7 @@ export function setFlag(
 /**
  * Get a reference to previously remembered `subject` by the name of `refName`.
  * Only run-time, user-defined references.
- * @category Conditions
+ * @ignore
  */
 export function getRef(target: Record<string, any>, refName: string): unknown {
   if (!target._refs) {
@@ -74,7 +74,7 @@ export function getRef(target: Record<string, any>, refName: string): unknown {
 
 /**
  * Remember a reference to current `subject` by the name `refName`
- * @category Conditions
+ * @ignore
  */
 export function setRef(
   target: Record<string, any>,
@@ -94,7 +94,7 @@ export function setRef(
 }
 
 /**
- * @category Conditions
+ * @ignore
  */
 export function getInitialSubject(
   target: Record<string, any>,
@@ -104,7 +104,7 @@ export function getInitialSubject(
 }
 
 /**
- * @category Conditions
+ * @ignore
  */
 export const resetPropDig = (target: Record<string, any>): void => {
   setFlag(target, "currentParent", undefined)
@@ -112,7 +112,7 @@ export const resetPropDig = (target: Record<string, any>): void => {
 }
 
 /**
- * @category Conditions
+ * @ignore
  */
 export const resetNegation = (target: Record<string, any>): void => {
   setFlag(target, "not", false)
@@ -120,14 +120,14 @@ export const resetNegation = (target: Record<string, any>): void => {
 
 /**
  * Reset subject back to its default value
- * @category Conditions
+ * @ignore
  */
 export const resetSubject = (target: Record<string, any>): void => {
   setFlag(target, "subject", getFlag(target, "defaultSubject"))
 }
 
 /**
- * @category Conditions
+ * @ignore
  */
 export const postAssertion = (target: Record<string, any>): void => {
   if (getFlag(target, "currentParent")) {

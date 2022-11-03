@@ -1,4 +1,4 @@
-import type { Player } from "./player"
+import type { Player } from "./player.js"
 
 // Event from client, with stuff auto filled when coming to server
 export type ServerPlayerMessage = ClientPlayerMessage & {

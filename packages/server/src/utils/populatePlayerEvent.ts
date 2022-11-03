@@ -1,7 +1,7 @@
-import type { Player, ServerPlayerMessage } from "../player"
-import type { State } from "../state"
-import { getEntitiesAlongPath } from "../state/helpers"
-import { isChild } from "../traits/child"
+import type { Player, ServerPlayerMessage } from "../player/index.js"
+import { getEntitiesAlongPath } from "../state/helpers.js"
+import type { State } from "../state/state.js"
+import { isChild } from "../traits/child.js"
 
 const sanitizeIdxPath = (value: unknown): number => {
   if (typeof value === "number") {
@@ -22,6 +22,7 @@ const sanitizeIdxPath = (value: unknown): number => {
 /**
  * Converts players message from the Client into `ServerPlayerMessage`.
  * Populates message with known server-side data
+ * @ignore
  */
 export function populatePlayerEvent(
   state: State,
@@ -31,6 +32,7 @@ export function populatePlayerEvent(
 /**
  * Converts players message from the Client into `ServerPlayerMessage`.
  * Populates message with known server-side data
+ * @ignore
  */
 export function populatePlayerEvent(
   state: State,
@@ -40,6 +42,7 @@ export function populatePlayerEvent(
 /**
  * Converts players message from the Client into `ServerPlayerMessage`.
  * Populates message with known server-side data
+ * @ignore
  */
 export function populatePlayerEvent(
   state: State,

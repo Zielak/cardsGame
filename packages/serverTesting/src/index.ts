@@ -1,14 +1,14 @@
-export * from "./setup"
+export * from "./setup.js"
 export {
   EntityMockingDefinition,
   StateMockingRecord,
   StateMockingTuple,
-} from "./types"
+} from "./types.js"
 
-export { initState } from "./initState"
-export { populateState } from "./populateState"
-export { testEvent } from "./testEvent"
-export { makeInteraction } from "./makeInteraction"
-export { makeEvent } from "./makeEvent"
+export { initState } from "./initState.js"
+export { populateState } from "./populateState.js"
+export { testEvent } from "./testEvent.js"
+export { makeInteraction } from "./makeInteraction.js"
+export { makeEvent } from "./makeEvent.js"
 
-export { objectsNamed, childrenNamed } from "./entityDefinitionHelpers"
+export { objectsNamed, childrenNamed } from "./entityDefinitionHelpers.js"

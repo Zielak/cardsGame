@@ -1,7 +1,7 @@
 import { LocationTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import type { State } from "../state"
+import type { State } from "../state/state.js"
 
 /**
  * Adds `x`, `y` and `angle` to entity,

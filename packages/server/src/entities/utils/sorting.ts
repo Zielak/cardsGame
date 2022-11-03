@@ -1,8 +1,13 @@
-import type { ChildTrait } from "../../traits/child"
-import type { ClassicCard } from "../classicCard"
+import type { ChildTrait } from "../../traits/child.js"
+import type { ClassicCard } from "../classicCard.js"
 
 export type SortingFunction = (childA: ChildTrait, childB: ChildTrait) => number
 
+/**
+ * TODO: document
+ * @param child
+ * @returns
+ */
 export function sortOnChildAdded(child: ChildTrait): void {
   if (!this.autoSort) return
   const count = this.countChildren()
@@ -29,6 +34,12 @@ const rankScores = {
   Q: 12,
   J: 11,
 }
+/**
+ * TODO: document
+ * @param childA
+ * @param childB
+ * @returns
+ */
 export const defaultHandOfCardsSorting = (
   childA: ClassicCard,
   childB: ClassicCard

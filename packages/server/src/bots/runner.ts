@@ -1,12 +1,13 @@
 import { logs } from "@cardsgame/utils"
 
-import type { Bot, Player } from "../player"
-import type { Room } from "../room"
-import type { State } from "../state"
-import { populatePlayerEvent } from "../utils/populatePlayerEvent"
+import type { Bot } from "../player/bot.js"
+import type { Player } from "../player/player.js"
+import type { Room } from "../room.js"
+import type { State } from "../state/state.js"
+import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
-import type { BotNeuron } from "./botNeuron"
-import { pickNeuron } from "./pickNeuron"
+import type { BotNeuron } from "./botNeuron.js"
+import { pickNeuron } from "./pickNeuron.js"
 
 export class BotRunner<S extends State> {
   neuronTree: BotNeuron<S>

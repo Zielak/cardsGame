@@ -1,4 +1,4 @@
-import { getFlag } from "./utils"
+import { getFlag } from "./utils.js"
 
 export type CustomConditionError = string
 

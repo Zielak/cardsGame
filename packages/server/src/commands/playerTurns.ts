@@ -1,11 +1,11 @@
 import { logs } from "@cardsgame/utils"
 
-import { Command } from "../command"
-import type { Room } from "../room"
-import type { State } from "../state"
-import { getNextPlayerIdx, getPreviousPlayerIdx } from "../state/helpers"
+import { Command } from "../command.js"
+import type { Room } from "../room.js"
+import { getNextPlayerIdx, getPreviousPlayerIdx } from "../state/helpers.js"
+import type { State } from "../state/state.js"
 
-import { Sequence } from "./sequence"
+import { Sequence } from "./sequence.js"
 
 export class NextPlayer extends Command {
   private lastIdx: number
