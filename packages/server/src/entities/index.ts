@@ -13,12 +13,12 @@
  * :::
  */
 
-export * from "./classicCard"
-export * from "./container"
-export * from "./deck"
-export * from "./grid"
-export * from "./hand"
-export * from "./line"
-export * from "./pile"
-export * from "./spread"
-export * from "./selection"
+export * from "./classicCard.js"
+export * from "./container.js"
+export * from "./deck.js"
+export * from "./grid.js"
+export * from "./hand.js"
+export * from "./line.js"
+export * from "./pile.js"
+export * from "./spread.js"
+export * from "./selection.js"

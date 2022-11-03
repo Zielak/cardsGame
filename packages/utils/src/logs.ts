@@ -1,7 +1,7 @@
 import Chalk from "chalk"
 
-import { noop } from "./functions"
-import { isBrowser, minifyEntity } from "./logger/utils"
+import { noop } from "./functions.js"
+import { isBrowser, minifyEntity } from "./logger/utils.js"
 
 /**
  * `Chalk` instance used internally by server-side lib.

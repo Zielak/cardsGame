@@ -3,12 +3,10 @@ import type {
   ServerPlayerMessage,
   State,
 } from "@cardsgame/server"
-import {
-  runConditionsOnAction,
-  filterActionsByInteraction,
-} from "@cardsgame/server/lib/interaction"
+import { filterActionsByInteraction } from "@cardsgame/server/internal/interaction/filterActionsByInteraction"
+import { runConditionsOnAction } from "@cardsgame/server/internal/interaction/runConditionsOnAction"
 
-import type { StateGetter } from "./types"
+import type { StateGetter } from "./types.js"
 
 export interface TestEvent {
   /**

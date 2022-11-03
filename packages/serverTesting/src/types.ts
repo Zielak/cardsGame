@@ -1,9 +1,9 @@
-import type { ChildTrait, Entity, Room, State } from "@cardsgame/server"
+import type { QuerableProps, Room, State } from "@cardsgame/server"
 import type {
-  QuerableProps,
   CommonKeysToIgnore,
   EveryEntity,
-} from "@cardsgame/server/lib/queryRunner"
+} from "@cardsgame/server/internal/queries/internalTypes"
+import type { ChildTrait, Entity } from "@cardsgame/server/traits"
 
 export type StateGetter<S extends State> = () => S
 export type RoomGetter<S extends State, R extends Room<S>> = () => R

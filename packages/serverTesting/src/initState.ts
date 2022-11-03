@@ -1,8 +1,8 @@
 import { Player, State } from "@cardsgame/server"
 
-import { copyPrimitives } from "./state/copyPrimitives"
-import { parseChildren } from "./state/parseChildren"
-import type { EntityConstructor, StateMockingRecord } from "./types"
+import { copyPrimitives } from "./state/copyPrimitives.js"
+import { parseChildren } from "./state/parseChildren.js"
+import type { EntityConstructor, StateMockingRecord } from "./types.js"
 
 export interface InitState<S extends State> {
   /**

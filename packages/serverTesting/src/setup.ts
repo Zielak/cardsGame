@@ -1,12 +1,15 @@
-import { ActionTemplate, Room, State } from "@cardsgame/server"
+import { type ActionTemplate, Room, State } from "@cardsgame/server"
 
-import { ExecuteEvent, executeEventSetup } from "./executeEvent"
-import { InitState, initStateSetup } from "./initState"
-import { type MakeEvent, makeEventSetup } from "./makeEvent"
-import { type MakeInteraction, makeInteractionSetup } from "./makeInteraction"
-import { PopulateState, populateStateSetup } from "./populateState"
-import { type TestEvent, testEventSetup } from "./testEvent"
-import type { EntityConstructor, RoomGetter, StateGetter } from "./types"
+import { ExecuteEvent, executeEventSetup } from "./executeEvent.js"
+import { InitState, initStateSetup } from "./initState.js"
+import { type MakeEvent, makeEventSetup } from "./makeEvent.js"
+import {
+  type MakeInteraction,
+  makeInteractionSetup,
+} from "./makeInteraction.js"
+import { PopulateState, populateStateSetup } from "./populateState.js"
+import { type TestEvent, testEventSetup } from "./testEvent.js"
+import type { EntityConstructor, RoomGetter, StateGetter } from "./types.js"
 
 interface Resetter<S extends State, R extends Room<S>> {
   (newState: S, newRoom?: R): void

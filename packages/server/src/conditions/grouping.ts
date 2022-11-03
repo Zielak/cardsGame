@@ -1,11 +1,10 @@
 import { chalk, logs } from "@cardsgame/utils"
 
-import type { State } from "../state"
+import type { State } from "../state/state.js"
 
-import { throwError } from "./errors"
-import { getFlag, resetNegation, setFlag } from "./utils"
-
-import type { Conditions } from "."
+import type { Conditions } from "./conditions.js"
+import { throwError } from "./errors.js"
+import { getFlag, resetNegation, setFlag } from "./utils.js"
 
 type EitherCallback<C> = (con: C) => any
 type EitherTuple<C> = [string, EitherCallback<C>]

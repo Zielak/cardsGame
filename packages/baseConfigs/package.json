@@ -1,0 +1,22 @@
+{
+  "name": "@cardsgame/base-configs",
+  "private": "true",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "author": "Darek Greenly (https://darekgreenly.com)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zielak/cardsGame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zielak/cardsGame/issues"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./jest.config.cjs": "./jest.config.cjs",
+    "./tsconfig.json": "./tsconfig.json",
+    "./tsconfig.test.json": "./tsconfig.test.json"
+  }
+}

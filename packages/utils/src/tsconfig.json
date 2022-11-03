@@ -1,9 +1,0 @@
-{
-  "extends": "../../../tsconfig.json",
-  "compilerOptions": {
-    "downlevelIteration": true,
-    "lib": ["es6", "es2016", "DOM"],
-    "outDir": "../lib",
-    "types": ["@cardsgame/types", "node"]
-  }
-}

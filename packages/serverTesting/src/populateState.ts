@@ -1,8 +1,13 @@
-import { isParent, State } from "@cardsgame/server"
+import type { State } from "@cardsgame/server"
+import { isParent } from "@cardsgame/server/traits"
 
-import { copyPrimitives } from "./state/copyPrimitives"
-import { parseChildren } from "./state/parseChildren"
-import type { EntityConstructor, StateGetter, StateMockingTuple } from "./types"
+import { copyPrimitives } from "./state/copyPrimitives.js"
+import { parseChildren } from "./state/parseChildren.js"
+import type {
+  EntityConstructor,
+  StateGetter,
+  StateMockingTuple,
+} from "./types.js"
 
 export interface PopulateState<S extends State> {
   /**

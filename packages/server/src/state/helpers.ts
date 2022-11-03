@@ -1,10 +1,10 @@
 import { limit, logs } from "@cardsgame/utils"
 
-import { Bot, isBot, type Player } from "../player"
-import type { IdentityTrait } from "../traits/identity"
-import { hasChildren, isParent, ParentTrait } from "../traits/parent"
+import { Bot, isBot, type Player } from "../player/index.js"
+import type { IdentityTrait } from "../traits/identity.js"
+import { hasChildren, isParent, ParentTrait } from "../traits/parent.js"
 
-import type { State } from "."
+import type { State } from "./state.js"
 
 /**
  * Will get you an index of given player in turn queue.

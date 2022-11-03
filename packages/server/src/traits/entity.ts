@@ -1,8 +1,8 @@
 import { logs } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
-import { type } from "../annotations/type"
-import type { State } from "../state"
+import { type } from "../annotations/type.js"
+import type { State } from "../state/state.js"
 
 // TODO: add generics, so we get types for hook names...
 export function executeHook(hookName: string, ...args: any[]): void {

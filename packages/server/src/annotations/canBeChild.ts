@@ -1,7 +1,7 @@
 import { logs } from "@cardsgame/utils"
 
-import { synchChildrenArray } from "./annotations"
-import { globalEntitiesContext } from "./entitiesContext"
+import { synchChildrenArray } from "./annotations.js"
+import { globalEntitiesContext } from "./entitiesContext.js"
 
 /**
  * Decorator!

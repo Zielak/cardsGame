@@ -5,16 +5,16 @@ import { chalk, decimal, Logs } from "@cardsgame/utils"
 import {
   isInteractionOfEntities,
   isInteractionOfEvent,
-} from "../actionTemplate"
-import { runConditionsOnAction } from "../interaction"
-import type { Bot } from "../player"
-import { queryRunner } from "../queryRunner"
-import type { State } from "../state"
-import type { ChildTrait } from "../traits/child"
-import { populatePlayerEvent } from "../utils/populatePlayerEvent"
+} from "../actions/typecheck.js"
+import { runConditionsOnAction } from "../interaction/runConditionsOnAction.js"
+import type { Bot } from "../player/bot.js"
+import { queryRunner } from "../queries/runner.js"
+import type { State } from "../state/state.js"
+import type { ChildTrait } from "../traits/child.js"
+import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
-import type { BotNeuron } from "./botNeuron"
-import { BotConditions, EntityConditions } from "./conditions"
+import type { BotNeuron } from "./botNeuron.js"
+import { BotConditions, EntityConditions } from "./conditions.js"
 
 const logs = new Logs("pickNeuron", true, { serverStyle: chalk.bgGreen.white })
 

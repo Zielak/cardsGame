@@ -1,6 +1,6 @@
-import type { ChildTrait, ParentTrait } from "@cardsgame/server"
+import type { ChildTrait, ParentTrait } from "@cardsgame/server/traits"
 
-import type { EntityMockingDefinition } from "../types"
+import type { EntityMockingDefinition } from "../types.js"
 
 /**
  * Copies every primitive value from `preparation` onto the Entity

@@ -1,6 +1,7 @@
 {
   "name": "@cardsgame/types",
   "version": "0.22.0",
+  "type": "module",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",

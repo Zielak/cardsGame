@@ -1,6 +1,6 @@
 import { logs } from "@cardsgame/utils"
 
-import { type } from "./type"
+import { type } from "./type.js"
 
 /**
  * @ignore

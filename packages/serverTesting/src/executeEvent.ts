@@ -1,6 +1,6 @@
 import type { Room, ServerPlayerMessage, State } from "@cardsgame/server"
 
-import type { RoomGetter } from "./types"
+import type { RoomGetter } from "./types.js"
 
 export interface ExecuteEvent {
   /**

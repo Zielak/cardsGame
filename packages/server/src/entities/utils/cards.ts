@@ -1,6 +1,6 @@
 import { logs } from "@cardsgame/utils"
 
-import type { ClassicCard } from "../classicCard"
+import type { ClassicCard } from "../classicCard.js"
 
 // prettier-ignore
 export const ALL_CARD_RANKS = new Set([

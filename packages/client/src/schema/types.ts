@@ -1,4 +1,4 @@
-import type { DataChange } from "@colyseus/schema/lib/Schema"
+import type { DataChange } from "@colyseus/schema"
 
 export type PrimitiveValue = string | boolean | number
 

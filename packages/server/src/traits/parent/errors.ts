@@ -1,4 +1,4 @@
-import type { ChildTrait } from "../child"
+import type { ChildTrait } from "../child.js"
 
 const INDEX_DOESNT_FIT_RANGE = (desired: number, max: number): string =>
   `idex is not in available range, desired:${desired}, max:${max}`
@@ -29,8 +29,7 @@ const VERY_UNEXPECTED_ERROR = (
   child: ${child.idx}:${child["name"]}
   removedChild: ${removedChild.idx}:${removedChild["name"]}`
 
-/* eslint-disable import/no-default-export */
-export default {
+export const errors = {
   ADDCHILD_MISSING_ARG0,
   ADDCHILD_NO_EMPTY_SPOTS,
   ADDCHILD_INDEX_OCCUPIED,

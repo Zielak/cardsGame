@@ -1,0 +1,10 @@
+{
+  "extends": "@cardsgame/base-configs/tsconfig.json",
+  "exclude": ["lib", "**/*.test.*", "**/__*__/**/*"],
+  "compilerOptions": {
+    "declarationDir": "./lib/types/",
+    "lib": ["ES2020", "DOM"],
+    "types": ["@cardsgame/types", "node"],
+    "outDir": "./lib/esm/"
+  }
+}

@@ -1,9 +1,9 @@
 import { ArraySchema, Schema } from "@colyseus/schema"
 
-import { type } from "../annotations/type"
+import { type } from "../annotations/type.js"
 
-import type { ChildTrait } from "./child"
-import { isParent, ParentTrait } from "./parent"
+import type { ChildTrait } from "./child.js"
+import { isParent, ParentTrait } from "./parent.js"
 
 class SelectedChildData extends Schema {
   @type("uint16") childIndex: number

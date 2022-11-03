@@ -1,0 +1,15 @@
+// config for both working with IDE and test runs
+{
+  "extends": "@cardsgame/base-configs/tsconfig.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "noEmit": true,
+    "types": [
+      "@cardsgame/types",
+      "@colyseus/core",
+      "@colyseus/ws-transport",
+      "jest",
+      "node"
+    ]
+  }
+}

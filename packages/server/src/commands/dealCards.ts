@@ -6,12 +6,12 @@ import {
   TargetHolder,
   Targets,
   TargetsHolder,
-} from "../command"
-import type { Room } from "../room"
-import type { State } from "../state"
-import type { ParentTrait } from "../traits/parent"
+} from "../command.js"
+import type { Room } from "../room.js"
+import type { State } from "../state/state.js"
+import type { ParentTrait } from "../traits/parent.js"
 
-import { ChangeParent } from "./changeParent"
+import { ChangeParent } from "./changeParent.js"
 
 /**
  * A command which by itself changes nothing,

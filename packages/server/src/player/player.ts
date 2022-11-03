@@ -1,9 +1,9 @@
-import { def, logs } from "@cardsgame/utils"
+import { logs, def } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
-import { type } from "../annotations/type"
+import { type } from "../annotations/type.js"
 
-import { getRandomName } from "./names"
+import { getRandomName } from "./names.js"
 
 export class Player extends Schema implements IPlayerDefinition {
   /**

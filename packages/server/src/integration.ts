@@ -1,5 +1,5 @@
-import type { Room } from "./room"
-import type { State } from "./state"
+import type { Room } from "./room.js"
+import type { State } from "./state/state.js"
 
 export type IntegrationHookCallbackContext<S extends State> = {
   data: Readonly<Record<string, any>>

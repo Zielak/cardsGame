@@ -1,6 +1,6 @@
-import { Conditions } from "../conditions"
-import type { Player } from "../player"
-import type { State } from "../state"
+import { Conditions } from "../conditions/conditions.js"
+import type { Player } from "../player/player.js"
+import type { State } from "../state/state.js"
 
 export type ClientMessageInitialSubjects = {
   /**

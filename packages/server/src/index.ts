@@ -1,38 +1,17 @@
-import * as commands from "./commands"
+export * from "./actions/index.js"
+export * from "./annotations/index.js"
+export * from "./bots/index.js"
+export * from "./conditions/index.js"
+export * from "./entities/utils/index.js"
+export * from "./interaction/index.js"
+export * from "./player/index.js"
+export * from "./queries/index.js"
+export * from "./state/index.js"
+export * from "./utils/index.js"
 
-export { LobbyRoom, Server } from "@colyseus/core"
-export { WebSocketTransport } from "@colyseus/ws-transport"
-export type { RoomConstructor } from "@colyseus/core/build/Room"
-export { Schema, ArraySchema, MapSchema } from "@colyseus/schema"
+export * from "./command.js"
+export * from "./integration.js"
+export * from "./playerViewPosition.js"
+export * from "./room.js"
 
-export { canBeChild } from "./annotations/canBeChild"
-export { containsChildren } from "./annotations/containsChildren"
-export { defineTypes, type } from "./annotations/type"
-
-export * from "./bots/botNeuron"
-
-export * from "./command"
-export { commands }
-
-export * from "./room"
-export * from "./state"
-export * from "./state/helpers"
-
-export * from "./actionTemplate"
-
-export { Conditions } from "./conditions"
-export { getFlag, setFlag } from "./conditions/utils"
-export { BotConditions, EntityConditions } from "./bots/conditions"
-export { ClientMessageConditions } from "./interaction"
-
-export { Bot, Player, ServerPlayerMessage } from "./player"
-
-export * from "./traits"
-export * from "./entities"
-export * from "./entities/utils/cards"
-export * from "./entities/utils/sorting"
-export * from "./integration"
-
-export { populatePlayerEvent } from "./utils/populatePlayerEvent"
-
-export type { QuerableProps } from "./queryRunner"
+export { commands } from "./commands/index.js"

@@ -1,9 +1,9 @@
 import { def, logs } from "@cardsgame/utils"
 import { Client } from "colyseus.js"
-import type { RoomAvailable } from "colyseus.js/lib/Room"
+import type { RoomAvailable } from "colyseus.js"
 
-import { LobbyRoom } from "./lobbyRoom"
-import { Room } from "./room"
+import { LobbyRoom } from "./lobbyRoom.js"
+import { Room } from "./room.js"
 
 interface IGameOptions {
   wss?: WSSOptions

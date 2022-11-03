@@ -1,6 +1,7 @@
 {
   "name": "@cardsgame/entity-traits",
   "version": "0.22.0",
+  "type": "module",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -11,12 +12,28 @@
   "bugs": {
     "url": "https://github.com/zielak/cardsGame/issues"
   },
-  "main": "lib/index.js",
+  "main": "lib/cjs/index.js",
+  "types": "lib/types/index.d.ts",
+  "module": "lib/esm/index.js",
   "files": [
-    "lib"
+    "lib",
+    "readme.md"
   ],
   "scripts": {
-    "build": "tsc -b src",
-    "test": "echo \"¯\\_(ツ)_/¯\""
+    "build": "tsc -p tsconfig.build.json & tsc -p tsconfig.build.cjs.json & wait",
+    "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
+    "test": "echo \"¯\\_(ツ)_/¯\"",
+    "test:watch": "echo \"¯\\_(ツ)_/¯\""
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.js",
+      "types": "./lib/types/index.d.ts"
+    }
+  },
+  "devDependencies": {
+    "@cardsgame/base-configs": "^1.0.0"
   }
 }

@@ -1,4 +1,4 @@
-import { getFlag, getRef, setFlag } from "./utils"
+import { getFlag, getRef, setFlag } from "./utils.js"
 
 class ConditionBase<S> {
   /**

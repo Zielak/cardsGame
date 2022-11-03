@@ -1,4 +1,4 @@
-import type { ObjectSchema } from "./types"
+import type { ObjectSchema } from "./types.js"
 
 /**
  * Is given object a schema of entities container

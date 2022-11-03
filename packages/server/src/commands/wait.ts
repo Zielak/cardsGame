@@ -1,4 +1,4 @@
-import { Command } from "../command"
+import { Command } from "../command.js"
 
 export class Wait extends Command {
   constructor(private readonly time: number) {

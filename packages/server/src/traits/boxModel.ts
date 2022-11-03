@@ -1,7 +1,7 @@
 import { BoxModelTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import type { State } from "../state"
+import type { State } from "../state/state.js"
 
 /**
  * Currently unused

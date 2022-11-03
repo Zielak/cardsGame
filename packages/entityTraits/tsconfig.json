@@ -1,0 +1,7 @@
+// config for both working with IDE and test runs
+{
+  "extends": "@cardsgame/base-configs/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  }
+}

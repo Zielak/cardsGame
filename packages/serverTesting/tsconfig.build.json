@@ -1,0 +1,9 @@
+{
+  "extends": "@cardsgame/base-configs/tsconfig.json",
+  "exclude": ["lib", "testSetup.ts", "**/*.test.*", "**/__*__/**/*"],
+  "compilerOptions": {
+    "declarationDir": "./lib/types/",
+    "types": ["node"],
+    "outDir": "./lib/esm/"
+  }
+}

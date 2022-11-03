@@ -1,7 +1,7 @@
-import { Command, Targets, TargetsHolder } from "../command"
-import type { Room } from "../room"
-import type { State } from "../state"
-import type { TwoSidedTrait } from "../traits/twoSided"
+import { Command, Targets, TargetsHolder } from "../command.js"
+import type { Room } from "../room.js"
+import type { State } from "../state/state.js"
+import type { TwoSidedTrait } from "../traits/twoSided.js"
 
 // Make it possible to provide functions as target...
 

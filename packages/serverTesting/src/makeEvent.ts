@@ -1,11 +1,11 @@
 import {
   populatePlayerEvent,
-  ServerPlayerMessage,
+  type ServerPlayerMessage,
   State,
 } from "@cardsgame/server"
 
-import { CLIENT_ID } from "./setup"
-import type { StateGetter } from "./types"
+import { CLIENT_ID } from "./setup.js"
+import type { StateGetter } from "./types.js"
 
 export interface MakeEvent {
   (

@@ -1,7 +1,7 @@
 import { chalk, logs } from "@cardsgame/utils"
 
-import type { Player, ServerPlayerMessage } from "../player"
-import { hasLabel, LabelTrait } from "../traits/label"
+import type { Player, ServerPlayerMessage } from "../player/index.js"
+import { hasLabel, LabelTrait } from "../traits/label.js"
 
 export function debugRoomMessage(message: ServerPlayerMessage): void {
   const minifyTarget = (e: LabelTrait): string => {

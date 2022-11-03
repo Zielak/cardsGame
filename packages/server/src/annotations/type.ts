@@ -6,7 +6,7 @@ import {
 } from "@colyseus/schema"
 // import { globalContext } from "@colyseus/schema/lib/annotations"
 
-import { globalEntitiesContext } from "./entitiesContext"
+import { globalEntitiesContext } from "./entitiesContext.js"
 
 export function type(
   typeDef: DefinitionType,

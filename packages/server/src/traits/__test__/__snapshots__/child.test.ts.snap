@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`addChild adds new child to parent with children 1`] = `
+{
+  "childrenDumbEntity": [
+    {
+      "idx": 0,
+    },
+    {
+      "idx": 1,
+    },
+    {
+      "idx": 2,
+    },
+    {
+      "idx": 3,
+    },
+  ],
+  "childrenDumbParent": [],
+  "idx": 0,
+}
+`;

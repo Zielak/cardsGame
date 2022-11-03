@@ -1,0 +1,150 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#getChildren couple of children 1`] = `
+[
+  {
+    "idx": 0,
+  },
+  {
+    "idx": 1,
+  },
+  {
+    "idx": 2,
+  },
+  {
+    "idx": 3,
+  },
+  {
+    "idx": 4,
+  },
+]
+`;
+
+exports[`#getChildren empty parent 1`] = `[]`;
+
+exports[`#moveChildTo filled doesn't move anything (item3 to same position) 1`] = `
+[
+  1,
+  2,
+  3,
+  4,
+  5,
+]
+`;
+
+exports[`#moveChildTo filled moves item3 down 1 position 1`] = `
+[
+  1,
+  3,
+  2,
+  4,
+  5,
+]
+`;
+
+exports[`#moveChildTo filled moves item3 to bottom 1`] = `
+[
+  3,
+  2,
+  1,
+  4,
+  5,
+]
+`;
+
+exports[`#moveChildTo filled moves item3 to top 1`] = `
+[
+  1,
+  2,
+  5,
+  4,
+  3,
+]
+`;
+
+exports[`#moveChildTo filled moves item3 up 1 position 1`] = `
+[
+  1,
+  2,
+  4,
+  3,
+  5,
+]
+`;
+
+exports[`#moveChildTo filled throws on indexes out of boundaries 1`] = `
+[
+  1,
+  2,
+  3,
+  4,
+  5,
+]
+`;
+
+exports[`#moveChildTo with empty spaces doesn't move anything (item to same position) 1`] = `
+[
+  null,
+  null,
+  1,
+  null,
+  null,
+]
+`;
+
+exports[`#moveChildTo with empty spaces moves item down 1 position 1`] = `
+[
+  null,
+  1,
+  null,
+  null,
+  null,
+]
+`;
+
+exports[`#moveChildTo with empty spaces moves item to bottom 1`] = `
+[
+  1,
+  null,
+  null,
+  null,
+  null,
+]
+`;
+
+exports[`#moveChildTo with empty spaces moves item to top 1`] = `
+[
+  null,
+  null,
+  null,
+  null,
+  1,
+]
+`;
+
+exports[`#moveChildTo with empty spaces moves item up 1 position 1`] = `
+[
+  null,
+  null,
+  null,
+  1,
+  null,
+]
+`;
+
+exports[`#moveChildTo with empty spaces throws on indexes out of boundaries 1`] = `
+[
+  null,
+  null,
+  1,
+  null,
+  null,
+]
+`;
+
+exports[`#removeChild finds proper child 1`] = `
+[
+  1,
+  3,
+]
+`;

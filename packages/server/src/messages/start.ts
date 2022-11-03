@@ -1,11 +1,18 @@
 import { logs, shuffle } from "@cardsgame/utils"
 import type { Client } from "@colyseus/core"
 
-import { Sequence } from "../commands"
-import { Player } from "../player"
-import type { Room } from "../room"
-import type { State } from "../state"
+import { Sequence } from "../commands/index.js"
+import { Player } from "../player/player.js"
+import type { Room } from "../room.js"
+import type { State } from "../state/state.js"
 
+/**
+ * @param this
+ * @param client
+ * @param message
+ * @returns
+ * @ignore
+ */
 export function start(
   this: Room<State>,
   client?: Client,

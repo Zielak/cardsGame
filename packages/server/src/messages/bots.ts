@@ -1,12 +1,13 @@
 import { def } from "@cardsgame/utils"
 
-import { Bot } from "../player"
-import type { Room } from "../room"
-import type { State } from "../state"
+import { Bot } from "../player/bot.js"
+import type { Room } from "../room.js"
+import type { State } from "../state/state.js"
 
 /**
  * Create and add new Bot player to clients list.
  * @returns clientID of newly created bot, if added successfully.
+ * @ignore
  */
 export function botAdd(
   this: Room<State>,
@@ -32,6 +33,7 @@ export function botAdd(
 
 /**
  * Remove bot client from `state.clients`
+ * @ignore
  */
 export function botRemove(
   this: Room<State>,

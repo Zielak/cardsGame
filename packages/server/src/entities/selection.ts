@@ -1,14 +1,14 @@
 import { def, logs } from "@cardsgame/utils"
 
-import { canBeChild } from "../annotations/canBeChild"
-import { containsChildren } from "../annotations/containsChildren"
-import type { State } from "../state"
-import { ChildTrait } from "../traits"
-import { applyTraitsMixins, Entity } from "../traits/entity"
-import { IdentityTrait } from "../traits/identity"
-import { LabelTrait } from "../traits/label"
-import { OwnershipTrait } from "../traits/ownership"
-import { ParentTrait } from "../traits/parent"
+import { canBeChild } from "../annotations/canBeChild.js"
+import { containsChildren } from "../annotations/containsChildren.js"
+import type { State } from "../state/state.js"
+import { ChildTrait } from "../traits/child.js"
+import { applyTraitsMixins, Entity } from "../traits/entity.js"
+import { IdentityTrait } from "../traits/identity.js"
+import { LabelTrait } from "../traits/label.js"
+import { OwnershipTrait } from "../traits/ownership.js"
+import { ParentTrait } from "../traits/parent.js"
 
 /**
  * **"Virtual"** container representing selected entities.

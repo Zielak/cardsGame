@@ -2,7 +2,7 @@ import type {
   Schema,
   CollectionCallback,
   ObjectsCollectionSchema,
-} from "./types"
+} from "./types.js"
 
 export class ChildrenDecorator<V extends Schema = any> {
   private childrenCollectionsNames: string[] = []
