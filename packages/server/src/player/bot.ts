@@ -25,7 +25,7 @@ export class Bot extends Player {
   isBot = true
 
   currentThought: ChosenBotNeuronResult<any>
-  currentThoughtTimer: NodeJS.Timeout
+  currentThoughtTimer: ReturnType<typeof setTimeout>
 
   constructor(options: BotOptions) {
     super(options)

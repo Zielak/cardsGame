@@ -1,4 +1,5 @@
-import { State, MapSchema, type } from "@cardsgame/server"
+import { State, type } from "@cardsgame/server"
+import { MapSchema } from "@colyseus/schema"
 
 export class WarState extends State {
   @type("boolean") isAtWar = false

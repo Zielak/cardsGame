@@ -1,7 +1,8 @@
 import { createServer } from "https"
 
 import certs from "@cardsgame/example-certs"
-import { Server, WebSocketTransport } from "@cardsgame/server"
+import { Server } from "@colyseus/core"
+import { WebSocketTransport } from "@colyseus/ws-transport"
 import express from "express"
 
 import { exitHandler } from "./exitHandler"

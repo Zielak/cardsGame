@@ -1,7 +1,8 @@
 const { createServer } = require("https")
 
 const { key, cert } = require("@cardsgame/example-certs")() // Generate certificates if needed
-const { Server, WebSocketTransport } = require("@cardsgame/server")
+const { Server } = require("@colyseus/core")
+const { WebSocketTransport } = require("@colyseus/ws-transport")
 const express = require("express")
 
 const exitHandler = require("./exitHandler")

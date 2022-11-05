@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@cardsgame/client": "^0.22.0",
-    "@cardsgame/example-certs": "^0.22.0"
+    "@cardsgame/example-certs": "^0.22.0",
+    "@colyseus/schema": "^1.0.42"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.1",

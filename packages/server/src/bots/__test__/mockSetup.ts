@@ -1,5 +1,5 @@
 import type { ActionTemplate } from "../../actions/actionTemplate.js"
-import { commands } from "../../commands/index.js"
+import { commands } from "../../index.js"
 import type { State } from "../../state/state.js"
 import type { BotNeuron } from "../botNeuron.js"
 
