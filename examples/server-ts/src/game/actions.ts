@@ -1,11 +1,8 @@
 import {
+  type ActionTemplate,
   commands,
-  type Pile,
-  type Deck,
   type Player,
-  ActionTemplate,
-  type Container,
-  ClassicCard,
+  entities,
 } from "@cardsgame/server"
 
 import { MarkPlayerPlayed, Battle, ResetPlayersPlayed } from "./commands"
@@ -31,16 +28,16 @@ export const PickCard: ActionTemplate<WarState> = {
     con().its("playersPlayed").its(playerSessionID).equals(false)
   },
   command: (state, event) => {
-    const container = state.query<Container>({ owner: event.player })
-    const deck = container.query<Deck>({ type: "deck" })
+    const container = state.query<entities.Container>({ owner: event.player })
+    const deck = container.query<entities.Deck>({ type: "deck" })
     console.log("deck has", deck.childCount, "children")
 
-    const pile = container.query<Pile>({ type: "pile" })
+    const pile = container.query<entities.Pile>({ type: "pile" })
 
     const count = state.ante + 1
     console.log("picking up", count, "cards")
 
-    const cards = deck.getChildren<ClassicCard>().splice(-count)
+    const cards = deck.getChildren<entities.ClassicCard>().splice(-count)
     console.log("actually picked up", cards.length)
 
     const topCard = cards[cards.length - 1]

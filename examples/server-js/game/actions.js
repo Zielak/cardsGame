@@ -1,4 +1,4 @@
-const { commands, Pile, Deck } = require("@cardsgame/server")
+const { commands, entities } = require("@cardsgame/server")
 
 const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
 const { WarState } = require("./state")
@@ -29,10 +29,10 @@ const PickCard = {
   },
   command: (state, event) => {
     const container = state.query({ owner: event.player })
-    /** @type {Deck} */
+    /** @type {entities.Deck} */
     const deck = container.query({ type: "deck" })
     console.log("deck has", deck.childCount, "children")
-    /** @type {Pile} */
+    /** @type {entities.Pile} */
     const pile = container.query({ type: "pile" })
 
     const count = state.ante + 1

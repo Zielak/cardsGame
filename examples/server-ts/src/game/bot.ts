@@ -1,4 +1,4 @@
-import { BotNeuron } from "@cardsgame/server"
+import { type BotNeuron } from "@cardsgame/server"
 
 import { PickCard } from "./actions"
 import { WarState } from "./state"

@@ -1,4 +1,5 @@
-const { State, defineTypes, MapSchema } = require("@cardsgame/server")
+const { State, defineTypes } = require("@cardsgame/server")
+const { MapSchema } = require("@colyseus/schema")
 
 class WarState extends State {
   constructor() {

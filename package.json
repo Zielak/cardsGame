@@ -18,7 +18,7 @@
     "test": "jest --config config/jest.config.cjs --silent --maxWorkers=75%",
     "test:ci": "jest --config config/jest.config.cjs --silent --ci --maxWorkers=1 --coverage --coverageReporters=lcovonly",
     "coveralls": "coveralls < coverage/lcov.info",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint . --ext .js,.cjs,.jsx,.ts,.tsx",
     "build:ci": "lerna run --stream --concurrency 2 --scope \"@cardsgame/!(example)*\" build",
     "build": "./scripts/build.sh",
     "prepare": "npm run bootstrap && husky install",

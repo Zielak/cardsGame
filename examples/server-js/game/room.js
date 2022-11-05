@@ -1,17 +1,11 @@
 const cardsGameServer = require("@cardsgame/server")
-const {
-  commands,
-  standardDeckFactory,
-  Container,
-  ClassicCard,
-  Deck,
-  Pile,
-  Room,
-} = cardsGameServer
+const { commands, standardDeckFactory, entities, Room } = cardsGameServer
 
 const actions = require("./actions")
 const botActivities = require("./bot")
 const { WarState } = require("./state")
+
+const { Container, ClassicCard, Deck, Pile } = entities
 
 class WarGame extends Room {
   constructor(options) {

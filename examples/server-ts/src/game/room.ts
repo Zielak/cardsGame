@@ -1,10 +1,7 @@
 import {
   commands,
   standardDeckFactory,
-  Container,
-  ClassicCard,
-  Deck,
-  Pile,
+  entities,
   Room,
 } from "@cardsgame/server"
 
@@ -14,8 +11,8 @@ import { WarState } from "./state"
 
 export class WarGame extends Room<WarState> {
   // Just some quick references to basic entities
-  deck: Deck
-  pile: Pile
+  deck: entities.Deck
+  pile: entities.Pile
 
   constructor(options) {
     super(options)
@@ -29,16 +26,16 @@ export class WarGame extends Room<WarState> {
 
     const { state } = this
 
-    this.deck = new Deck(state, {
+    this.deck = new entities.Deck(state, {
       name: "mainDeck",
       x: 50,
     })
-    this.pile = new Pile(state, {
+    this.pile = new entities.Pile(state, {
       name: "mainPile",
     })
     standardDeckFactory().forEach(
       (data) =>
-        new ClassicCard(state, {
+        new entities.ClassicCard(state, {
           parent: this.deck,
           suit: data.suit,
           rank: data.rank,
@@ -58,21 +55,21 @@ export class WarGame extends Room<WarState> {
 
     state.players.forEach((player, idx) => {
       // Eeach player will has his own Container.
-      const container = new Container(state, {
+      const container = new entities.Container(state, {
         owner: player,
         ownersMainFocus: true,
       })
 
       // Create a Deck to contain all player's cards
       decks.push(
-        new Deck(state, {
+        new entities.Deck(state, {
           parent: container,
           name: `player${player.name}Deck`,
         })
       )
 
       // A Pile container, to hold all currently played cards
-      new Pile(state, { parent: container, y: -10 })
+      new entities.Pile(state, { parent: container, y: -10 })
 
       state.playersPlayed.set(player.clientID, false)
     })
@@ -98,7 +95,7 @@ export class WarGame extends Room<WarState> {
     state.ante = Math.floor(state.round / 2)
 
     const playersDecks = state
-      .queryAll<Deck>({ type: "deck" })
+      .queryAll<entities.Deck>({ type: "deck" })
       .filter((deck) => deck.owner !== undefined)
 
     const someoneLost = playersDecks.some((deck) => deck.countChildren() === 0)
