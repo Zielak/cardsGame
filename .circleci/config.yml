@@ -52,7 +52,6 @@ jobs:
           root: ~/project
           paths:
             - packages/*/lib
-            - packages/*/dist
             - examples/*/dist
 
   build-examples:

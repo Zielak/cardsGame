@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/zielak/cardsGame/issues"
   },
-  "main": "lib/cjs/index.js",
+  "main": "lib/cjs/index.cjs",
   "types": "lib/types/index.d.ts",
   "module": "lib/esm/index.js",
   "files": [
@@ -23,42 +23,42 @@
     "./package.json": "./package.json",
     ".": {
       "import": "./lib/esm/index.js",
-      "require": "./lib/cjs/index.js",
+      "require": "./lib/cjs/index.cjs",
       "types": "./lib/types/index.d.ts"
     },
     "./commands": {
       "import": "./lib/esm/commands/index.js",
-      "require": "./lib/cjs/commands/index.js",
+      "require": "./lib/cjs/commands/index.cjs",
       "types": "./lib/types/commands/index.d.ts"
     },
     "./entities": {
       "import": "./lib/esm/entities/index.js",
-      "require": "./lib/cjs/entities/index.js",
+      "require": "./lib/cjs/entities/index.cjs",
       "types": "./lib/types/entities/index.d.ts"
     },
     "./traits": {
       "import": "./lib/esm/traits/index.js",
-      "require": "./lib/cjs/traits/index.js",
+      "require": "./lib/cjs/traits/index.cjs",
       "types": "./lib/types/traits/index.d.ts"
     },
     "./internal/interaction/filterActionsByInteraction": {
       "import": "./lib/esm/interaction/filterActionsByInteraction.js",
-      "require": "./lib/cjs/interaction/filterActionsByInteraction.js",
+      "require": "./lib/cjs/interaction/filterActionsByInteraction.cjs",
       "types": "./lib/types/interaction/filterActionsByInteraction.d.ts"
     },
     "./internal/interaction/runConditionsOnAction": {
       "import": "./lib/esm/interaction/runConditionsOnAction.js",
-      "require": "./lib/cjs/interaction/runConditionsOnAction.js",
+      "require": "./lib/cjs/interaction/runConditionsOnAction.cjs",
       "types": "./lib/types/interaction/runConditionsOnAction.d.ts"
     },
     "./internal/queries/internalTypes": {
       "import": "./lib/esm/queries/internalTypes.js",
-      "require": "./lib/cjs/queries/internalTypes.js",
+      "require": "./lib/cjs/queries/internalTypes.cjs",
       "types": "./lib/types/queries/internalTypes.d.ts"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json & tsc -p tsconfig.build.cjs.json & wait",
+    "build": "tsc -p tsconfig.build.json & tsc -p tsconfig.build.cjs.json & wait && ../../scripts/mapToCjs.sh ./lib/cjs",
     "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -66,17 +66,15 @@
   "dependencies": {
     "@cardsgame/entity-traits": "^0.22.0",
     "@cardsgame/types": "^0.22.0",
-    "@cardsgame/utils": "^0.22.0",
-    "@colyseus/core": "^0.14.28",
-    "@colyseus/schema": "^1.0.42",
-    "@colyseus/ws-transport": "^0.14.21"
+    "@cardsgame/utils": "^0.22.0"
   },
   "peerDependencies": {
     "@colyseus/core": "^0.14.28",
-    "@colyseus/schema": "^1.0.42",
-    "@colyseus/ws-transport": "^0.14.21"
+    "@colyseus/schema": "^1.0.42"
   },
   "devDependencies": {
-    "@cardsgame/base-configs": "^1.0.0"
+    "@cardsgame/base-configs": "^1.0.0",
+    "@colyseus/core": "^0.14.28",
+    "@colyseus/schema": "^1.0.42"
   }
 }
