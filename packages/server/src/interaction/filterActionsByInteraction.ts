@@ -39,7 +39,7 @@ export const filterActionsByInteraction =
       return interactions.some((definition) => {
         // Check props for every interactive entity in `targets` array
         return message.entities
-          .filter((currentTarget) =>
+          ?.filter((currentTarget) =>
             isChild(currentTarget) ? currentTarget.isInteractive() : false
           )
           .some((entity) => {

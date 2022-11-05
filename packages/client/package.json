@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/zielak/cardsGame/issues"
   },
-  "main": "lib/cjs/index.js",
+  "main": "lib/cjs/index.cjs",
   "types": "lib/types/index.d.ts",
   "module": "lib/esm/index.js",
   "files": [
@@ -20,24 +20,28 @@
     "readme.md"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json & tsc -p tsconfig.build.cjs.json & wait",
+    "build": "tsc -p tsconfig.build.json & tsc -p tsconfig.build.cjs.json & wait && ../../scripts/mapToCjs.sh ./lib/cjs",
     "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
     "test": "echo \"¯\\_(ツ)_/¯\""
   },
   "dependencies": {
     "@cardsgame/types": "^0.22.0",
-    "@cardsgame/utils": "^0.22.0",
-    "@colyseus/schema": "^1.0.32",
-    "colyseus.js": "^0.14.0"
+    "@cardsgame/utils": "^0.22.0"
   },
   "devDependencies": {
-    "@cardsgame/base-configs": "^1.0.0"
+    "@cardsgame/base-configs": "^1.0.0",
+    "@colyseus/schema": "^1.0.42",
+    "colyseus.js": "^0.14.0"
+  },
+  "peerDependencies": {
+    "@colyseus/schema": "^1.0.42",
+    "colyseus.js": "^0.14.0"
   },
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "import": "./lib/esm/index.js",
-      "require": "./lib/cjs/index.js",
+      "require": "./lib/cjs/index.cjs",
       "types": "./lib/types/index.d.ts"
     }
   }

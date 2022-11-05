@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/zielak/cardsGame/issues"
   },
-  "main": "lib/cjs/index.js",
+  "main": "lib/cjs/index.cjs",
   "types": "lib/types/index.d.ts",
   "module": "lib/esm/index.js",
   "files": [
@@ -20,7 +20,7 @@
     "readme.md"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json & tsc -p tsconfig.build.cjs.json & wait",
+    "build": "tsc -p tsconfig.build.json & tsc -p tsconfig.build.cjs.json & wait && ../../scripts/mapToCjs.sh ./lib/cjs",
     "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
     "test": "echo \"¯\\_(ツ)_/¯\"",
     "test:watch": "echo \"¯\\_(ツ)_/¯\""
@@ -29,7 +29,7 @@
     "./package.json": "./package.json",
     ".": {
       "import": "./lib/esm/index.js",
-      "require": "./lib/cjs/index.js",
+      "require": "./lib/cjs/index.cjs",
       "types": "./lib/types/index.d.ts"
     }
   },
