@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-echo "$BASH_VERSION <- this has to be above 4.0"
+if [[ "${BASH_VERSION:0:1}" -lt 4 ]];
+then
+  echo "$BASH_VERSION <- this has to be above 4.0"
+  exit
+fi
 
 shopt -s globstar
 
@@ -23,5 +27,9 @@ for f in $workspace/**/*.js.map; do
   # For .js.map files
   #    "file":"index.js"
   # -> "file":"index.cjs"
-  sed -i "" -E "s/\"file\":\"(.*)\.js\"/\"file\":\"\1.cjs\"/g" $f
+  if [[ $OSTYPE == 'darwin'* ]]; then
+    sed -i "" -E "s/\"file\":\"(.*)\.js\"/\"file\":\"\1.cjs\"/g" $f
+  else
+    sed -i -E "s/\"file\":\"(.*)\.js\"/\"file\":\"\1.cjs\"/g" $f
+  fi
 done
