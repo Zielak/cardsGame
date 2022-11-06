@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/Zielak/cardsGame/compare/v0.22.1...v1.1.0) (2022-11-06)
+
+**Note:** Version bump only for package @cardsgame/example-client-vanilla
+
+
+
+
+
 # [0.22.0](https://github.com/Zielak/cardsGame/compare/v0.21.4...v0.22.0) (2022-09-04)
 
 
