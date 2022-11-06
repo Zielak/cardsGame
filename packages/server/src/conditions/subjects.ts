@@ -194,10 +194,10 @@ class ConditionSubjects<InitialSubjects> {
       )
     }
 
-    if ("length" in subject) {
-      setFlag(this, "subject", subject[0])
-    } else if (isParent(subject)) {
+    if (isParent(subject)) {
       setFlag(this, "subject", subject.getBottom())
+    } else if ("length" in subject) {
+      setFlag(this, "subject", subject[0])
     } else {
       throwError(this, `bottom | Couldn't decide how to get the "bottom" value`)
     }
@@ -218,10 +218,10 @@ class ConditionSubjects<InitialSubjects> {
       )
     }
 
-    if ("length" in subject) {
-      setFlag(this, "subject", subject[subject.length - 1])
-    } else if (isParent(subject)) {
+    if (isParent(subject)) {
       setFlag(this, "subject", subject.getTop())
+    } else if ("length" in subject) {
+      setFlag(this, "subject", subject[subject.length - 1])
     } else {
       throwError(this, `top | Couldn't decide how to get the "top" value`)
     }

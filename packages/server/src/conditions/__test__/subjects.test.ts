@@ -2,6 +2,7 @@ import {
   SmartEntity,
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
+import { Line } from "../../entities/line.js"
 import { State } from "../../state/state.js"
 
 import { ConditionsTest } from "./conditions.js"
@@ -151,6 +152,72 @@ describe("nthChild", () => {
 
       expect(() => con().set(array).nthChild(-2)).toThrow("Out of bounds")
       expect(() => con().set(array).nthChild(10)).toThrow("Out of bounds")
+    })
+  })
+})
+
+describe("top", () => {
+  describe("pass", () => {
+    it("grabs child of Parent", () => {
+      expect(con().set(parent).top.grab()).toBe(childC)
+    })
+    it("grabs child of array", () => {
+      const array = ["zero", 1, []]
+
+      expect(con().set(array).top.grab()).toBe(array[2])
+    })
+    it("grabs child of ArraySchema", () => {
+      state.clients.push("clientA")
+      state.clients.push("clientB")
+
+      expect(() => con().its("clients").top).not.toThrow()
+      expect(con().its("clients").top.grab()).toBe("clientB")
+    })
+    it("test on Line, as it has 'length' property", () => {
+      const line = new Line(state)
+      line.addChildren([childA, childB, childC])
+
+      expect(con().set(line).top.grab()).toBe(childC)
+    })
+  })
+
+  describe("fail", () => {
+    it("fails on unexpected values", () => {
+      expect(() => con().set("qwerty").top).toThrow()
+      expect(() => con().set(123).top).toThrow()
+    })
+  })
+})
+
+describe("bottom", () => {
+  describe("pass", () => {
+    it("grabs child of Parent", () => {
+      expect(con().set(parent).bottom.grab()).toBe(childA)
+    })
+    it("grabs child of array", () => {
+      const array = ["zero", 1, []]
+
+      expect(con().set(array).bottom.grab()).toBe(array[0])
+    })
+    it("grabs child of ArraySchema", () => {
+      state.clients.push("clientA")
+      state.clients.push("clientB")
+
+      expect(() => con().its("clients").bottom).not.toThrow()
+      expect(con().its("clients").bottom.grab()).toBe("clientA")
+    })
+    it("test on Line, as it has 'length' property", () => {
+      const line = new Line(state)
+      line.addChildren([childA, childB, childC])
+
+      expect(con().set(line).bottom.grab()).toBe(childA)
+    })
+  })
+
+  describe("fail", () => {
+    it("fails on unexpected values", () => {
+      expect(() => con().set("qwerty").bottom).toThrow()
+      expect(() => con().set(123).bottom).toThrow()
     })
   })
 })
