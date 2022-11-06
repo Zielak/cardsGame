@@ -1,5 +1,8 @@
 import type { Command } from "../command.js"
-import type { ClientMessageConditions } from "../interaction/conditions.js"
+import type {
+  ClientMessageConditions,
+  ClientMessageInitialSubjects,
+} from "../interaction/conditions.js"
 import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
 import type { State } from "../state/state.js"
 
@@ -13,10 +16,13 @@ export interface BaseActionTemplate<S extends State> {
   /**
    * This action will be ignored when one of the assertions fail.
    *
-   * @param {ClientMessageConditions<S>} con contains references to "command",
-   * "event", "data", "player" and "entity". Default subject is set to the game state.
+   * @param con conditions runner. Default subject is set to the game state.
+   * @param initialSubjects Direct references to subjects brought with player's event
    */
-  conditions: (con: ClientMessageConditions<S>) => void
+  conditions: (
+    con: ClientMessageConditions<S>,
+    initialSubjects: ClientMessageInitialSubjects
+  ) => void
 
   /**
    * Generate a `Command` to run for this action.

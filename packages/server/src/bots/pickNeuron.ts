@@ -14,7 +14,11 @@ import type { ChildTrait } from "../traits/child.js"
 import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
 import type { BotNeuron } from "./botNeuron.js"
-import { BotConditions, EntityConditions } from "./conditions.js"
+import {
+  BotConditions,
+  BotConditionsInitialSubjects,
+  EntityConditions,
+} from "./conditions.js"
 
 const logs = new Logs("pickNeuron", true, { serverStyle: chalk.bgGreen.white })
 
@@ -25,9 +29,10 @@ const filterNeuronConditions =
   <S extends State>(state: S, bot: Bot) =>
   (neuron: BotNeuron<S>): boolean => {
     if (neuron.conditions) {
-      const con = new BotConditions<S>(state, { player: bot })
+      const initialSubjects: BotConditionsInitialSubjects = { player: bot }
+      const con = new BotConditions<S>(state, initialSubjects)
       try {
-        neuron.conditions(con)
+        neuron.conditions(con, initialSubjects)
       } catch (e) {
         return false
       }

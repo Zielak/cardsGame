@@ -39,7 +39,7 @@ export const runConditionsOnAction = <S extends State>(
   let result = true
   let debugErrorMessage = ""
   try {
-    action.conditions(conditionsChecker)
+    action.conditions(conditionsChecker, initialSubjects)
   } catch (e) {
     result = false
     debugErrorMessage = (e as Error).message

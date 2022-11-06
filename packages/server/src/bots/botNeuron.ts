@@ -3,7 +3,11 @@ import type { Bot } from "../player/index.js"
 import type { QuerableProps } from "../queries/types.js"
 import type { State } from "../state/state.js"
 
-import type { BotConditions, EntityConditions } from "./conditions.js"
+import type {
+  BotConditions,
+  BotConditionsInitialSubjects,
+  EntityConditions,
+} from "./conditions.js"
 
 export interface BotNeuron<S extends State> {
   name: string
@@ -18,7 +22,10 @@ export interface BotNeuron<S extends State> {
    * Optional, but without this, bot will  brute force its way through all
    * game elements to understand if this action can be played.
    */
-  conditions?: (con: BotConditions<S>) => void
+  conditions?: (
+    con: BotConditions<S>,
+    initialSubjects: BotConditionsInitialSubjects
+  ) => void
 
   /**
    * With higher values bot is more likely to pick that Neuron.
