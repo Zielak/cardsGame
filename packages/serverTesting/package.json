@@ -34,8 +34,10 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@cardsgame/base-configs": "^1.1.0",
     "@cardsgame/server": "^1.1.0",
     "@cardsgame/types": "^1.1.0"
+  },
+  "devDependencies": {
+    "@cardsgame/base-configs": "^1.1.0"
   }
 }
