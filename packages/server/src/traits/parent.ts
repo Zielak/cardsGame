@@ -59,7 +59,7 @@ export class ParentTrait {
   childrenPointers: Map<ChildTrait, string>
 
   /**
-   * Used by [ChildTrait.`isInteractive`](ChildTrait#isinteractive).
+   * Used by [ChildTrait.`isInteractive`](/api/server/classes/ChildTrait#isInteractive).
    *
    * If set to true, will prevent its direct children from getting interaction events.
    *

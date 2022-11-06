@@ -231,7 +231,7 @@ workflows:
           <<: *filters-main-and-development
           context: SonarCloud
           requires:
-            - install
+            - test
       - coverage:
           <<: *filters-main-and-development
           requires:

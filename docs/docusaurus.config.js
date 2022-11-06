@@ -12,7 +12,7 @@ const config = {
   tagline: "Create your own multiplayer cards game(s)",
   url: "https://cardsgame.darekgreenly.com",
   baseUrl: "/",
-  onBrokenLinks: "throw",
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
   organizationName: "Zielak",
