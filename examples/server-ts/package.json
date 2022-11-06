@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/example-server-ts",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Simplest implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@cardsgame/example-certs": "^1.1.0",
-    "@cardsgame/server": "^1.1.0",
+    "@cardsgame/server": "^1.1.2",
     "@cardsgame/types": "^1.1.0",
     "@cardsgame/utils": "^1.1.0",
     "@colyseus/core": "^0.14.28",
