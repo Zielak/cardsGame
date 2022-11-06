@@ -2,13 +2,16 @@
   "search.exclude": {
     "**/dist": true,
     "**/lib": true,
-    "docs/docs/api/**": true
+    "docs/docs/api/**": true,
+    "docs/build/**": true,
+    "docs/.docusaurus/**": true
   },
   "files.exclude": {
-    // "**/dist": true,
-    // "**/lib": true,
-    // "**/node_modules": true,
-    // "docs/docs/api/**": true
+    "**/lib": true,
+    "**/node_modules": true,
+    "docs/docs/api/**": true,
+    "docs/build/**": true,
+    "docs/.docusaurus/**": true
   },
   "cSpell.words": ["cardsgame", "colyseus"]
 }

@@ -6,7 +6,7 @@ import type { State } from "../state/state.js"
 import type { ParentTrait } from "./parent.js"
 
 /**
- * @category Trait
+ * @category Child
  */
 export function isChild(entity: unknown): entity is ChildTrait {
   return (

@@ -9,6 +9,16 @@ import { globalEntitiesContext } from "./entitiesContext.js"
  * Class Decorator!
  * Remember given class as possible parent to any kinds of child entities
  * Also enables syncing any previously remembered children kind on this constructor
+ *
+ * @example
+ * ```ts
+ * @canBeChild
+ * @containsChildren
+ * export class Container extends Entity<ContainerOptions> {
+ *   // ...
+ * }
+ * ```
+ *
  * @category Annotation
  */
 export function containsChildren(parentConstructor: typeof Entity): void {

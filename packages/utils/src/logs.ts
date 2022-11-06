@@ -14,6 +14,9 @@ export const chalk = new Chalk.Instance({
 
 const BROWSER_DEBUG_STYLE = "margin-left:2em;"
 
+/**
+ * @ignore
+ */
 export enum LogLevels {
   silent,
   error,

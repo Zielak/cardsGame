@@ -8,7 +8,7 @@ import { isChild } from "./child.js"
 import { isParent } from "./parent.js"
 
 /**
- * @category Trait
+ * @category Ownership
  */
 export function hasOwnership(entity: unknown): entity is OwnershipTrait {
   return (

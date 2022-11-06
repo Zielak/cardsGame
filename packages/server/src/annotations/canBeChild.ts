@@ -7,6 +7,14 @@ import { globalEntitiesContext } from "./entitiesContext.js"
  * Decorator!
  * Register an entity class as possible child for any other parent entities.
  *
+ * @example
+ * ```ts
+ * @canBeChild
+ * export class ClassicCard extends Entity<ClassicCardOptions> {
+ *   // ...
+ * }
+ * ```
+ *
  * @category Annotation
  */
 export function canBeChild(childConstructor: AnyClass): void {

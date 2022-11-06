@@ -4,7 +4,12 @@ import { Schema } from "@colyseus/schema"
 import { type } from "../annotations/type.js"
 import type { State } from "../state/state.js"
 
-// TODO: add generics, so we get types for hook names...
+/**
+ * @param hookName
+ * @param args
+ * TODO: add generics, so we get types for hook names...
+ * @ignore
+ */
 export function executeHook(hookName: string, ...args: any[]): void {
   const proto = Object.getPrototypeOf(this)
   const { hooks } = proto
@@ -53,6 +58,8 @@ export class Entity<T> extends Schema {
  * all of the base constructor's "Trait Constructors".
  * @param derivedCtor
  * @param baseCtors
+ *
+ * @category Trait
  */
 export const applyTraitsMixins =
   (baseCtors: any[]) =>

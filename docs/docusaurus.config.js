@@ -30,7 +30,7 @@ const config = {
           ...typedocOptions,
           id: `api-${package}`,
           entryPoints: [`../packages/${package}/src/index.ts`],
-          tsconfig: [`../packages/${package}/src/tsconfig.json`],
+          tsconfig: [`../packages/${package}/tsconfig.build.json`],
           out: `api/${package}`,
 
           sidebar: {

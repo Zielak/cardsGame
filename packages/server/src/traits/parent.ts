@@ -11,7 +11,7 @@ import { executeHook } from "./entity.js"
 import { errors } from "./parent/errors.js"
 
 /**
- * @category Trait
+ * @category Parent
  */
 export function isParent(entity: unknown): entity is ParentTrait {
   return (
@@ -25,7 +25,7 @@ export type ChildAddedHandler = (child: ChildTrait) => void
 export type ChildRemovedHandler = (idx: number) => void
 
 /**
- * @category Trait
+ * @category Parent
  */
 export const hasChildren = (entity: unknown): boolean =>
   isParent(entity) ? entity.countChildren() > 0 : false

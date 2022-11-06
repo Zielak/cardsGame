@@ -20,6 +20,12 @@ class SelectedChildData extends Schema {
   }
 }
 
+/**
+ *
+ * @param entity
+ * @returns
+ * @category SelectableChildren
+ */
 export function hasSelectableChildren(
   entity: unknown
 ): entity is SelectableChildrenTrait {
@@ -35,7 +41,7 @@ export function hasSelectableChildren(
  * Holds indexes of selected children and in which order were these chosen.
  *
  * > TODO: This trait is clearly dependant on ParentTrait. There should be a way of checking/ensuring this dependency is met
- * @category Trait
+ * @category SelectableChildren
  */
 export class SelectableChildrenTrait {
   selectedChildren: ArraySchema<SelectedChildData>

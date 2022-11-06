@@ -95,6 +95,7 @@ export const decimal = (value: number, maxZeroes = 2): number => {
 
 /**
  *
+ * @category Number
  */
 export const lerp = (a: number, b: number, t: number): number => {
   return a * (1 - t) + b * t
@@ -102,6 +103,7 @@ export const lerp = (a: number, b: number, t: number): number => {
 
 /**
  *
+ * @category Number
  */
 export const distance = (
   ax: number,

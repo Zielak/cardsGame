@@ -3,7 +3,7 @@
   "exclude": ["lib", "**/*.test.*", "**/__*__/**/*"],
   "compilerOptions": {
     "lib": ["ES2020", "DOM"],
-    "types": ["@cardsgame/types", "jest"],
+    "types": ["@cardsgame/types"],
     "declarationDir": "./lib/types/",
     "outDir": "./lib/esm/"
   }
