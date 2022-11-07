@@ -16,11 +16,4 @@ describe("standardDeckFactory", () => {
     expect(cards.length).toBe(4)
     expect(cards).toMatchSnapshot()
   })
-
-  it("respects sets", () => {
-    const cards = standardDeckFactory(new Set(["2", "3"]), new Set(["H", "C"]))
-
-    expect(cards.length).toBe(4)
-    expect(cards).toMatchSnapshot()
-  })
 })

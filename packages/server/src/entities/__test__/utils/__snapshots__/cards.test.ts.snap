@@ -20,24 +20,3 @@ exports[`standardDeckFactory respects arrays 1`] = `
   },
 ]
 `;
-
-exports[`standardDeckFactory respects sets 1`] = `
-[
-  {
-    "rank": "2",
-    "suit": "H",
-  },
-  {
-    "rank": "3",
-    "suit": "H",
-  },
-  {
-    "rank": "2",
-    "suit": "C",
-  },
-  {
-    "rank": "3",
-    "suit": "C",
-  },
-]
-`;
