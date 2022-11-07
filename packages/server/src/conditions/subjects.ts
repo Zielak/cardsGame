@@ -23,6 +23,10 @@ class ConditionSubjects<InitialSubjects> {
   /**
    * Sets new subject. This can be anything.
    * @yields completely new subject, provided in the argument
+   * @example
+   * ```ts
+   * con().set([1, 2, 3]).as("choices")
+   * ```
    */
   set(newSubject: unknown): this {
     setFlag(this, "subject", newSubject)
@@ -36,7 +40,7 @@ class ConditionSubjects<InitialSubjects> {
    * @yields an entity, found by `QuerableProps` query
    * @example
    * ```ts
-   * con.query({ name: "deck" }).not.empty()
+   * con().query({ name: "deck" }).not.empty()
    * ```
    */
   query(props: QuerableProps): this {
@@ -102,7 +106,7 @@ class ConditionSubjects<InitialSubjects> {
    * @yields subject prop's value to be asserted. Will remember the reference to the object, so you can chain key checks
    * @example
    * ```ts
-   * con.entity
+   * con().entity
    *   .its("propA").equals("foo")
    *   .and.its("propB").above(5)
    *
@@ -365,6 +369,7 @@ class ConditionSubjects<InitialSubjects> {
    * @example
    * ```ts
    * con().query({ name: "deck" }).as("deck")
+   * // ...
    * con().get("deck").children.not.empty()
    * ```
    */

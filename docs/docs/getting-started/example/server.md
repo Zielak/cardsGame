@@ -11,13 +11,14 @@ You can inspect [contents of `@cardsgame/example-server-ts`](https://github.com/
 Prepare your Node.js with basic dependencies.
 
 ```
-npm i --save express @cardsgame/server @cardsgame/utils
+npm i --save express @cardsgame/server @cardsgame/utils @colyseus/core @colyseus/ws-transport
 ```
 
 - [`@cardsgame/server`](/api/server/) - the core functionalities
 - [`@cardsgame/utils`](/api/utils/) - set of utility functions which may come in handy
+- `@colyseus/core` and `@colyseus/ws-transport` - peer dependencies from [Colyseus](https://docs.colyseus.io/colyseus/)
 
-For devDependencies we also include:
+For `devDependencies` we also include:
 
 ```
 npm i --save-dev @cardsgame/types @cardsgame/example-certs
@@ -40,7 +41,8 @@ In this tutorial let's focus on setting up the game on your local machine. Some 
 import { createServer } from "https"
 
 import certs from "@cardsgame/example-certs"
-import { Server, WebSocketTransport } from "@cardsgame/server"
+import { Server } from "@colyseus/core"
+import { WebSocketTransport } from "@colyseus/ws-transport"
 import express from "express"
 
 import { exitHandler } from "./exitHandler"
