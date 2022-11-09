@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/Zielak/cardsGame/compare/v1.1.2...v1.2.0) (2022-11-09)
+
+
+### Features
+
+* defineRoom for simplicity, and documented ([d861106](https://github.com/Zielak/cardsGame/commit/d861106339882890128c433e4a0543a1b6e8838d))
+
+
+
+
+
 ## [1.1.2](https://github.com/Zielak/cardsGame/compare/v1.1.1...v1.1.2) (2022-11-06)
 
 **Note:** Version bump only for package @cardsgame/example-server-ts

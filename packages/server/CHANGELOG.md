@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/zielak/cardsGame/compare/v1.1.2...v1.2.0) (2022-11-09)
+
+
+### Bug Fixes
+
+* allow direct references to event in conditions ([2051a3c](https://github.com/zielak/cardsGame/commit/2051a3c2669e70467d631cfc052898c6829c1346))
+* cards ranks and suits in arrays ([e742717](https://github.com/zielak/cardsGame/commit/e7427177c910e338ba19d6e98c6be61db6f791de))
+
+
+### Features
+
+* defineRoom for simplicity, and documented ([d861106](https://github.com/zielak/cardsGame/commit/d861106339882890128c433e4a0543a1b6e8838d))
+
+
+
+
+
 ## [1.1.2](https://github.com/zielak/cardsGame/compare/v1.1.1...v1.1.2) (2022-11-06)
 
 
