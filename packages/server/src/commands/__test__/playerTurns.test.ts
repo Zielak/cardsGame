@@ -1,5 +1,6 @@
+import { TestRoom } from "../../__helpers__/room.js"
 import { Player } from "../../player/player.js"
-import { Room } from "../../room.js"
+import type { Room } from "../../room/base.js"
 import { State } from "../../state/state.js"
 import { NextPlayer, PreviousPlayer } from "../playerTurns.js"
 
@@ -17,7 +18,7 @@ beforeEach(() => {
     new Player({ clientID: "d" })
   )
 
-  room = new Room()
+  room = new TestRoom()
 })
 
 describe("NextPlayer", () => {

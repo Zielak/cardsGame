@@ -1,7 +1,7 @@
 import { def } from "@cardsgame/utils"
 
 import { Bot } from "../player/bot.js"
-import type { Room } from "../room.js"
+import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 
 /**

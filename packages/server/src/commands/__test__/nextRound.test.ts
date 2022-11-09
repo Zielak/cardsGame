@@ -1,4 +1,5 @@
-import { Room } from "../../room.js"
+import { TestRoom } from "../../__helpers__/room.js"
+import type { Room } from "../../room/base.js"
 import { State } from "../../state/state.js"
 import { NextRound } from "../nextRound.js"
 
@@ -9,7 +10,7 @@ let room: Room<State>
 
 beforeEach(() => {
   state = new State()
-  room = new Room()
+  room = new TestRoom()
 })
 
 describe("execute", () => {

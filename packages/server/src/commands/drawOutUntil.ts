@@ -1,7 +1,7 @@
 import { def } from "@cardsgame/utils"
 
 import { Command, Target, TargetHolder } from "../command.js"
-import type { Room } from "../room.js"
+import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 import type { ChildTrait } from "../traits/child.js"
 import type { ParentTrait } from "../traits/parent.js"

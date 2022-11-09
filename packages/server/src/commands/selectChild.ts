@@ -1,7 +1,7 @@
 import { logs } from "@cardsgame/utils"
 
 import { Command, Target, TargetHolder } from "../command.js"
-import type { Room } from "../room.js"
+import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 import type { ParentTrait } from "../traits/parent.js"
 import type { SelectableChildrenTrait } from "../traits/selectableChildren.js"

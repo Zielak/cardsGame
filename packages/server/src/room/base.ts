@@ -2,47 +2,40 @@ import { logs } from "@cardsgame/utils"
 import { Client, Room as colRoom } from "@colyseus/core"
 import type { IBroadcastOptions } from "@colyseus/core/build/Room.js"
 
-import type { ActionsSet } from "./actions/actionTemplate.js"
-import type { BotNeuron } from "./bots/botNeuron.js"
-import { BotRunner } from "./bots/runner.js"
-import type { Command } from "./command.js"
-import { CommandsManager } from "./commandsManager.js"
+import type { ActionsSet } from "../actions/actionTemplate.js"
+import type { BotActionsSet } from "../bots/botNeuron.js"
+import { BotRunner } from "../bots/runner.js"
+import type { Command } from "../command.js"
+import { CommandsManager } from "../commandsManager.js"
 import type {
   IntegrationHookNames,
   IntegrationHooks,
   IntegrationHookCallbackContext,
   IntegrationHookData,
-} from "./integration.js"
-import { fallback } from "./messages/fallback.js"
-import { messages } from "./messages/messageHandler.js"
-import type { Player, ServerPlayerMessage, Bot } from "./player/index.js"
-import type { State } from "./state/state.js"
-import { debugRoomMessage } from "./utils/debugRoomMessage.js"
+} from "../integration.js"
+import { fallback } from "../messages/fallback.js"
+import { messages } from "../messages/messageHandler.js"
+import type { Player, ServerPlayerMessage, Bot } from "../player/index.js"
+import type { State } from "../state/state.js"
+import { debugRoomMessage } from "../utils/debugRoomMessage.js"
 
-// export interface IRoom<S extends State> {
-//   botActivities?: BotNeuron<S>[]
-//   canGameStart(): boolean
-//   onInitGame(options: Record<string, any>): void
-//   onStartGame(state: S): void | Command[]
-//   onPlayerTurnStarted(player: Player): void | Command[]
-//   onPlayerTurnEnded(player: Player): void | Command[]
-//   onRoundStart(): void | Command[]
-//   onRoundEnd(): void | Command[]
-// }
+import type { RoomDefinition } from "./roomType.js"
 
 type BroadcastOptions = IBroadcastOptions & {
   undo: boolean
 }
 
-export class Room<S extends State> extends colRoom<S> {
+export abstract class Room<S extends State>
+  extends colRoom<S>
+  implements RoomDefinition<S>
+{
   patchRate = 100 // ms = 10FPS
 
   commandsManager: CommandsManager<S>
   botRunner: BotRunner<S>
 
   possibleActions: ActionsSet<S>
-
-  botActivities: BotNeuron<S>[]
+  botActivities: BotActionsSet<S>
   botClients: Bot[] = []
 
   /**
@@ -51,12 +44,14 @@ export class Room<S extends State> extends colRoom<S> {
   integrationHooks: Record<string, IntegrationHooks<S>>
   /**
    * Currently running integration test
+   * @private
    */
   currentIntegration: { name: string; data: IntegrationHookData }
   /**
    * An object passed down to integration hooks.
    * Contains limited set of methods on room and
    * additional (readonly) data defined in integration itself
+   * @private
    */
   integrationContext: IntegrationHookCallbackContext<S>
 

@@ -1,6 +1,7 @@
+import { TestRoom } from "../../__helpers__/room.js"
 import { ClassicCard } from "../../entities/classicCard.js"
 import { Hand } from "../../entities/hand.js"
-import { Room } from "../../room.js"
+import type { Room } from "../../room/base.js"
 import { State } from "../../state/state.js"
 import { Deselect, Select, ToggleSelection } from "../selectChild.js"
 
@@ -12,7 +13,7 @@ let hand: Hand
 
 beforeEach(() => {
   state = new State()
-  room = new Room()
+  room = new TestRoom()
   hand = new Hand(state)
   new ClassicCard(state, { parent: hand })
   new ClassicCard(state, { parent: hand })

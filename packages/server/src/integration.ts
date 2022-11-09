@@ -1,4 +1,4 @@
-import type { Room } from "./room.js"
+import type { Room } from "./room/base.js"
 import type { State } from "./state/state.js"
 
 export type IntegrationHookCallbackContext<S extends State> = {

@@ -1,5 +1,5 @@
 import { Command, Targets, TargetsHolder } from "../command.js"
-import type { Room } from "../room.js"
+import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 import type { TwoSidedTrait } from "../traits/twoSided.js"
 

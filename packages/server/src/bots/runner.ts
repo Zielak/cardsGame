@@ -2,7 +2,7 @@ import { logs } from "@cardsgame/utils"
 
 import type { Bot } from "../player/bot.js"
 import type { Player } from "../player/player.js"
-import type { Room } from "../room.js"
+import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 

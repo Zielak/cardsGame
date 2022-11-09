@@ -1,4 +1,10 @@
-import { type ActionTemplate, Room, State } from "@cardsgame/server"
+import {
+  type ActionTemplate,
+  Room,
+  State,
+  defineRoom,
+  type RoomConstructor,
+} from "@cardsgame/server"
 
 import { ExecuteEvent, executeEventSetup } from "./executeEvent.js"
 import { InitState, initStateSetup } from "./initState.js"
@@ -75,7 +81,7 @@ export type SetupOptions<S extends State, R extends Room<S>> = {
    * Used only in `executeEvent()`,
    * don't have to provide if you won't use that function.
    */
-  roomConstructor?: new () => R
+  roomConstructor?: RoomConstructor<S, R>
   /**
    * List of custom entities present in your game, if any.
    * Used to figure out entity constructor just by it's `type`
@@ -130,7 +136,7 @@ export function setupServerTesting<
       } else {
         room = roomConstructor
           ? new roomConstructor()
-          : (new Room<S>() as unknown as R)
+          : new (defineRoom<S, R>("TestingRoom", {}))()
       }
       room.onInitGame = function () {
         // Overwrite room's own state creation function?

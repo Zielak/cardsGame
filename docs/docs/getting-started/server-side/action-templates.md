@@ -1,21 +1,26 @@
+---
+sidebar_position: 2
+---
+
 # Action Templates
 
-Game's [`Room`](./room) holds a set of all action templates.
+Game's [`Room`](./room) holds a set of all action templates in `possibleActions` set.
 
-With Action Templates you're helping to decipher players intention during play. They may interact with UI in many different ways at any time they wish. It's our job to filter out "illegal" moves.
+With Action Templates we're _codifying_ game rules - they're helping decipher players' intention during play. Players may interact with UI in many different ways at any time they wish. It's our job to filter out "illegal" moves.
 
-Action template is simply a definition of:
+Action template is a definition of:
 
 - `interaction` - _what did client touch/say?_
-- `conditions` - _can client perform this action?_
+- `conditions` - _can client perform this action at this moment?_
 - `command` - _what exactly should be done?_
 
 Here's how a basic action may look like:
 
 ```ts title="./actions/takeOneCard.ts"
-import { commands, ActionTemplate, Deck, Hand } from "@cardsgame/server"
+import { commands, ActionTemplate } from "@cardsgame/server"
+import { Deck, Hand } from "@cardsgame/server/entities"
 
-import { MyGameState } from "./state"
+import { MyGameState } from "../state.js"
 
 export const TakeOneCard: ActionTemplate<MyGameState> = {
   name: "TakeOneCard",
@@ -28,7 +33,7 @@ export const TakeOneCard: ActionTemplate<MyGameState> = {
   ],
 
   conditions: (con) => {
-    con().itsPlayersTurn()
+    con("It's not your turn yet!").itsPlayersTurn()
   },
 
   command: (state, event) => {
@@ -118,35 +123,36 @@ Client may send more details available in `data` field of the message (typed `Cl
 
 _Is players intention legal?_
 
-Use [`conditions` framework](./conditions.md), first and only argument of `conditions` function, to define a set of rules for this action. If one of these rules fail, the action will be ignored.
+Use [`conditions` framework](./conditions.md), passed as first argument of `conditions` function, to define a set of rules for this action. If one of these rules fail, the action will be ignored.
 
 [`conditions`](./conditions.md) have references to the player, their whole event object and current game's state. You can use its API to construct easily readable assertions.
 
 ```ts
 // Example for card interaction
 // You can name it `con` for short.
-checkConditions: (con) => {
+conditions: (con, { player }) => {
   con().itsPlayersTurn()
 
   // Grab current player's `hand` and remember it
   // under alias "chosenCards"
-  con({
+  con().remember("chosenCards", {
     type: "hand",
     parent: {
-      owner: con.getPlayer(),
+      owner: player,
       type: "container",
     },
-  }).as("chosenCards")
+  })
 
   // Change subject to previously remembered "chosenCards"
   // and ensure its got nothing inside.
-  con("chosenCards").children.not.empty()
+  con().get("chosenCards").children.is.not.empty()
 }
 
 // Example for custom command with expected additional data
-checkConditions: (con) => {
+conditions: (con) => {
   con().itsPlayersTurn()
-  con("data").its("suit").equals("S")
+  // When client sent data as `{ "suits": "S" }`
+  con().subject.data.its("suit").equals("S")
 }
 ```
 

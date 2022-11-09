@@ -1,5 +1,6 @@
+import { TestRoom } from "../../__helpers__/room.js"
 import { ClassicCard } from "../../entities/classicCard.js"
-import { Room } from "../../room.js"
+import type { Room } from "../../room/base.js"
 import { State } from "../../state/state.js"
 import { FaceDown, FaceUp, Flip } from "../twoSided.js"
 
@@ -11,7 +12,7 @@ let cards: ClassicCard[]
 
 beforeEach(() => {
   state = new State()
-  room = new Room()
+  room = new TestRoom()
   cards = [
     new ClassicCard(state),
     new ClassicCard(state),

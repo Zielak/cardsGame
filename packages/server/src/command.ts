@@ -1,6 +1,6 @@
 import { logs } from "@cardsgame/utils"
 
-import type { Room } from "./room.js"
+import type { Room } from "./room/base.js"
 import type { State } from "./state/state.js"
 
 export interface Command<S extends State = State> {

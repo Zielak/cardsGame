@@ -1,4 +1,5 @@
-import { Room } from "../../room.js"
+import { TestRoom } from "../../__helpers__/room.js"
+import type { Room } from "../../room/base.js"
 import { State } from "../../state/state.js"
 import { Broadcast } from "../index.js"
 
@@ -11,7 +12,7 @@ const message = 123
 
 beforeEach(() => {
   state = new State()
-  room = new Room()
+  room = new TestRoom()
 })
 
 describe("constructor", () => {

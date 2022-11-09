@@ -7,7 +7,7 @@ import {
   Targets,
   TargetsHolder,
 } from "../command.js"
-import type { Room } from "../room.js"
+import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 import type { ParentTrait } from "../traits/parent.js"
 

@@ -1,15 +1,18 @@
 import { Client, Room as ColyRoom } from "@colyseus/core"
 import { ArraySchema } from "@colyseus/schema"
 
-import { start } from "../messages/start.js"
-import { Room } from "../room.js"
+import type { State } from "../../index.js"
+import { start } from "../../messages/start.js"
+import { Room } from "../base.js"
 
 let room: Room<any>
 
 jest.mock("@colyseus/core")
 
+class TestRoom extends Room<State> {}
+
 beforeEach(() => {
-  room = new Room()
+  room = new TestRoom()
   room.setPatchRate(0)
   room.clients = []
   room.state = {

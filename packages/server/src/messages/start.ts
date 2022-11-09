@@ -3,7 +3,7 @@ import type { Client } from "@colyseus/core"
 
 import { Sequence } from "../commands/index.js"
 import { Player } from "../player/player.js"
-import type { Room } from "../room.js"
+import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 
 /**

@@ -1,8 +1,9 @@
+import { TestRoom } from "../__helpers__/room.js"
 import type { ActionTemplate } from "../actions/actionTemplate.js"
 import { Command } from "../command.js"
 import { CommandsManager } from "../commandsManager.js"
 import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
-import { Room } from "../room.js"
+import type { Room } from "../room/base.js"
 import { State } from "../state/state.js"
 import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
@@ -40,7 +41,7 @@ describe("action", () => {
   beforeEach(() => {
     state = new State()
     event = populatePlayerEvent(state, event, clientID)
-    room = new Room()
+    room = new TestRoom()
     room.possibleActions = new Set(actions)
     manager = new CommandsManager(room)
   })

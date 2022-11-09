@@ -70,3 +70,5 @@ export interface BotNeuron<S extends State> {
    */
   playerEventData?: (state: S, bot: Bot) => any
 }
+
+export type BotActionsSet<S extends State> = Set<BotNeuron<S>>

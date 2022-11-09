@@ -5,7 +5,7 @@ import type { Command } from "./command.js"
 import { filterActionsByInteraction } from "./interaction/filterActionsByInteraction.js"
 import { runConditionsOnAction } from "./interaction/runConditionsOnAction.js"
 import type { Player, ServerPlayerMessage } from "./player/index.js"
-import type { Room } from "./room.js"
+import type { Room } from "./room/base.js"
 import type { State } from "./state/state.js"
 
 /**

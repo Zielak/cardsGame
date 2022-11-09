@@ -1,11 +1,11 @@
 import { times } from "@cardsgame/utils"
 
+import { TestRoom } from "../../__helpers__/room.js"
 import {
   LabeledEntity,
   LabeledParent,
 } from "../../__test__/helpers/labeledEntities.js"
 import type { Command } from "../../command.js"
-import { Room } from "../../room.js"
 import { State } from "../../state/state.js"
 import { Noop, ChangeParent, DealCards } from "../index.js"
 
@@ -19,7 +19,7 @@ let playerA: LabeledParent
 let playerB: LabeledParent
 let backup: LabeledParent
 
-const room = new Room()
+const room = new TestRoom()
 
 beforeEach(() => {
   state = new State()

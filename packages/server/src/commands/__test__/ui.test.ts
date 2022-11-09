@@ -1,5 +1,6 @@
+import { TestRoom } from "../../__helpers__/room.js"
 import { Player } from "../../player/player.js"
-import { Room } from "../../room.js"
+import type { Room } from "../../room/base.js"
 import { State } from "../../state/state.js"
 import { RevealUI, HideUI } from "../ui.js"
 
@@ -19,7 +20,7 @@ beforeEach(() => {
   )
   state.ui.set(UI_KEY1, "")
   state.ui.set(UI_KEY2, "")
-  room = new Room()
+  room = new TestRoom()
 })
 
 describe("RevealUI", () => {

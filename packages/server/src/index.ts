@@ -12,7 +12,7 @@ export * from "./utils/index.js"
 export * from "./command.js"
 export * from "./integration.js"
 export * from "./playerViewPosition.js"
-export * from "./room.js"
+export * from "./room/index.js"
 
 export * as commands from "./commands/index.js"
 export * as entities from "./entities/index.js"
