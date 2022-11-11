@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/zielak/cardsGame/compare/v1.2.0...v1.3.0) (2022-11-11)
+
+
+### Features
+
+* command to undo last action ([3b60517](https://github.com/zielak/cardsGame/commit/3b605176fe4b14fbe3e79715b4331923297685f9))
+
+
+
+
+
 # [1.2.0](https://github.com/zielak/cardsGame/compare/v1.1.2...v1.2.0) (2022-11-09)
 
 
