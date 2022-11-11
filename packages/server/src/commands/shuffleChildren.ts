@@ -22,4 +22,8 @@ export class ShuffleChildren extends Command {
       }
     }
   }
+
+  async undo(state: State): Promise<void> {
+    // TODO: implement and test
+  }
 }

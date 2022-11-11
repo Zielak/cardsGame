@@ -13,7 +13,9 @@ export class Command<S extends State> {
    * @ignore
    */
   protected _subCommands: Command<S>[] = []
+
   private readonly _name: string
+
   get name(): string {
     return this._name
   }

@@ -87,7 +87,7 @@ export class DealCards extends Command {
         if (!onEmptiedCommand) {
           logs.warn(
             "DealCards",
-            `Source emptied before dealing every requested card. Add onEmptied in options to for example refill the source with new entities.`
+            `Source emptied before dealing every requested card. Add onEmptied in options, for example to refill the source with new entities.`
           )
           break
         } else {
@@ -106,6 +106,11 @@ export class DealCards extends Command {
     )
 
     logs.log(_, `Done dealing cards.`)
+  }
+
+  async undo(state: State, room: Room<any>): Promise<void> {
+    // Handled fully with subcommands
+    super.undo(state, room)
   }
 }
 

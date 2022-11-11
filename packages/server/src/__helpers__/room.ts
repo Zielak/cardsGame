@@ -9,6 +9,7 @@ const TestRoom = defineRoom("TestRoom", {
 TestRoom.prototype.broadcast = noop
 TestRoom.prototype.commandsManager = {
   execute: noop,
+  undoLastCommand: jest.fn(),
 } as any
 TestRoom.prototype.botRunner = {
   onRoundStart: noop,

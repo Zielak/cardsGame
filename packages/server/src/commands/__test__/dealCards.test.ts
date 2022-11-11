@@ -9,8 +9,6 @@ import type { Command } from "../../command.js"
 import { State } from "../../state/state.js"
 import { Noop, ChangeParent, DealCards } from "../index.js"
 
-jest.mock("../../room.js")
-
 let state: State
 let entities: LabeledEntity[]
 let source: LabeledParent

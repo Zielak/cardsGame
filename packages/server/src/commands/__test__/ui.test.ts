@@ -4,8 +4,6 @@ import type { Room } from "../../room/base.js"
 import { State } from "../../state/state.js"
 import { RevealUI, HideUI } from "../ui.js"
 
-jest.mock("../../room.js")
-
 let state: State
 let room: Room<State>
 

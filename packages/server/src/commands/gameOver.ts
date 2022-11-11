@@ -18,5 +18,7 @@ export class GameOver<Data = any> extends Command {
 
   async undo(state: State, room: Room<any>): Promise<void> {
     state.isGameOver = false
+
+    room.broadcast("gameFinished", this.data, { undo: true })
   }
 }

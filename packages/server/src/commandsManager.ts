@@ -2,6 +2,7 @@ import { chalk, logs } from "@cardsgame/utils"
 
 import type { ActionsSet, ActionTemplate } from "./actions/actionTemplate.js"
 import type { Command } from "./command.js"
+import { Undo } from "./commands/undo.js"
 import { filterActionsByInteraction } from "./interaction/filterActionsByInteraction.js"
 import { runConditionsOnAction } from "./interaction/runConditionsOnAction.js"
 import type { Player, ServerPlayerMessage } from "./player/index.js"
@@ -15,6 +16,9 @@ export class CommandsManager<S extends State> {
   history: Command[] = []
   incoming: Map<Player, ServerPlayerMessage> = new Map()
 
+  /**
+   * @deprecated only used internally, and looks useless now.
+   */
   currentCommand: Command
   actionPending = false
 
@@ -135,8 +139,29 @@ export class CommandsManager<S extends State> {
 
     this.actionPending = false
     this.currentCommand = null
-    this.history.push(command)
+    if (!(command instanceof Undo)) {
+      this.history.push(command)
+    }
 
     return true
+  }
+
+  async undoLastCommand(state: S): Promise<void> {
+    if (this.history.length === 0) {
+      logs.error("undo", `history is empty, nothing to undo`)
+      return
+    }
+
+    const lastCommand = this.history.pop()
+
+    logs.group(lastCommand.name, "UNDO")
+
+    try {
+      await lastCommand.undo(state, this.room)
+      logs.groupEnd(lastCommand.name, "UNDO | done")
+    } catch (error) {
+      logs.error("undo", `action FAILED`, error)
+      logs.groupEnd(lastCommand.name, "UNDO | failed")
+    }
   }
 }

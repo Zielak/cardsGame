@@ -3,8 +3,6 @@ import type { Room } from "../../room/base.js"
 import { State } from "../../state/state.js"
 import { BotRunner } from "../runner.js"
 
-jest.mock("../../room.js")
-
 let runner: BotRunner<State>
 let state: State
 let room: Room<State>
