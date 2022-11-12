@@ -36,6 +36,16 @@ export const filterActionsByInteraction =
         interactions.map((def) => JSON.stringify(def))
       )
 
+      // Expecting interaction but without entity reference?
+      // Most likely "dragend" outside bounds of any entity. Synonymous to "dragcancel"?
+      if (
+        !message.entity &&
+        message.messageType === "EntityInteraction" &&
+        interactions.length === 0
+      ) {
+        return true
+      }
+
       return interactions.some((definition) => {
         // Check props for every interactive entity in `targets` array
         return message.entities

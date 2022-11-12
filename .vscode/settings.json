@@ -13,5 +13,6 @@
     "docs/build/**": true,
     "docs/.docusaurus/**": true
   },
-  "cSpell.words": ["cardsgame", "colyseus"]
+  "cSpell.words": ["cardsgame", "colyseus"],
+  "jestrunner.configPath": "config/jest.config.cjs"
 }
