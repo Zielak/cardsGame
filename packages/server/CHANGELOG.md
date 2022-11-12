@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.1](https://github.com/zielak/cardsGame/compare/v1.3.0...v1.3.1) (2022-11-12)
+
+
+### Bug Fixes
+
+* enable empty dragend interaction as canceling ([df059a3](https://github.com/zielak/cardsGame/commit/df059a348e284b180e4833c8d2f3cb9217d97dfb))
+
+
+
+
+
 # [1.3.0](https://github.com/zielak/cardsGame/compare/v1.2.0...v1.3.0) (2022-11-11)
 
 
