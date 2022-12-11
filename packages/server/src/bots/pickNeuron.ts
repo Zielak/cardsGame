@@ -2,11 +2,12 @@ import { performance } from "perf_hooks"
 
 import { chalk, decimal, Logs } from "@cardsgame/utils"
 
+import { isEntityActionDefinition } from "../actions/entityAction.js"
+import { isMessageActionDefinition } from "../actions/messageAction.js"
 import {
-  isInteractionOfEntities,
-  isInteractionOfEvent,
-} from "../actions/typecheck.js"
-import { runConditionsOnAction } from "../interaction/runConditionsOnAction.js"
+  ClientMessageConditions,
+  ClientMessageInitialSubjects,
+} from "../interaction/conditions.js"
 import type { Bot } from "../player/bot.js"
 import { queryRunner } from "../queries/runner.js"
 import type { State } from "../state/state.js"
@@ -19,6 +20,7 @@ import {
   BotConditionsInitialSubjects,
   EntityConditions,
 } from "./conditions.js"
+import { markDebugTime } from "./utils.js"
 
 const logs = new Logs("pickNeuron", true, { serverStyle: chalk.bgGreen.white })
 
@@ -45,13 +47,9 @@ const filterNeuronConditions =
  * Grabs entities, which could become given neuron's interaction target
  */
 const auxillaryEntitiesFilter =
-  <S extends State>(
-    state: S,
-    bot: Bot,
-    { action, entitiesFilter }: BotNeuron<S>
-  ) =>
+  <S extends State>(state: S, { action, entitiesFilter }: BotNeuron<S>) =>
   (entity: ChildTrait): boolean => {
-    if (!action || !isInteractionOfEntities(action)) {
+    if (!action || !isEntityActionDefinition(action)) {
       // `getNeuronsAvailableEvents()` already ensures this action is of entities...
       return true
     } else if (Array.isArray(entitiesFilter)) {
@@ -74,13 +72,22 @@ const grabAllInteractionEntities = <S extends State>(
 ): ChildTrait[] => {
   const { action } = neuron
 
-  if (!action || !isInteractionOfEntities(action)) {
+  if (!action || !isEntityActionDefinition(action)) {
     logs.debug(`not an action of entities`)
     return []
   }
 
   // Grab all entities from INTERACTIONS
   const queries = action.interaction(bot)
+
+  if (queries === "*") {
+    logs.debug(
+      `Action "${chalk.bold(
+        action.name
+      )}" has a "catch-all" definition, ignoring (for now?)`
+    )
+    return []
+  }
 
   logs.debug(
     `Action "${chalk.bold(action.name)}" has ${queries.length} QuerableProps`
@@ -101,12 +108,12 @@ const getNeuronsAvailableEvents = <S extends State>(
   if (!neuron.action) {
     throw new Error(`Neuron without children should have an "action" assigned!`)
   }
-  if (isInteractionOfEntities(neuron.action)) {
+  if (isEntityActionDefinition(neuron.action)) {
     // Grab only interesting entities
     const allEntities = grabAllInteractionEntities(state, bot, neuron)
 
     const interactionTargets = allEntities.filter(
-      auxillaryEntitiesFilter(state, bot, neuron)
+      auxillaryEntitiesFilter(state, neuron)
     )
 
     logs.debug(
@@ -127,15 +134,33 @@ const getNeuronsAvailableEvents = <S extends State>(
       .filter((event) => {
         logs.debug("entity.idxPath:", event.entityPath)
         const serverEvent = populatePlayerEvent(state, event, bot)
-        const error = runConditionsOnAction(state, serverEvent, neuron.action)
 
-        return typeof error === "undefined"
+        const initialSubjects = Object.keys(serverEvent)
+          .filter(
+            (key) => !["timestamp", "entities", "entityPath"].includes(key)
+          )
+          .reduce((o, key) => {
+            o[key] = serverEvent[key]
+            return o
+          }, {} as ClientMessageInitialSubjects)
+
+        const conditionsChecker = new ClientMessageConditions<S>(
+          state,
+          initialSubjects
+        )
+
+        try {
+          return false
+          // neuron.action.checkConditions(conditionsChecker, initialSubjects, {})
+        } catch (e) {
+          return false
+        }
       })
 
     logs.debug(`\`-> testedEvents ${testedEvents.length}`)
 
     return testedEvents
-  } else if (isInteractionOfEvent(neuron.action)) {
+  } else if (isMessageActionDefinition(neuron.action)) {
     const message: ClientPlayerMessage = {
       messageType: neuron.action.messageType,
       data: neuron.playerEventData
@@ -151,19 +176,6 @@ const getNeuronsAvailableEvents = <S extends State>(
 export type ChosenBotNeuronResult<S extends State> = {
   message: ClientPlayerMessage
   neuron: BotNeuron<S>
-}
-
-const _time = (_start): string => {
-  const delta = decimal(performance.now() - _start, 1)
-  let color
-  if (delta >= 100) {
-    color = chalk.white.bgRed
-  } else if (delta >= 50) {
-    color = chalk.white.bgYellow
-  } else {
-    color = chalk.bgGreen
-  }
-  return color(`(${delta}ms)`)
 }
 
 /**
@@ -185,7 +197,7 @@ export const pickNeuron = <S extends State>(
   logs.debug(chalk.white("Conditions of Neurons:"))
   const neurons = rootNeuron.children.filter(filterNeuronConditions(state, bot))
   if (neurons.length === 0) {
-    logs.groupEnd(`Discarded ALL neurons, abort ${_time(_start)}.`) // End root logs group
+    logs.groupEnd(`Discarded ALL neurons, abort ${markDebugTime(_start)}.`) // End root logs group
     return undefined
   } else {
     neurons.forEach((neuron) => {
@@ -224,7 +236,7 @@ export const pickNeuron = <S extends State>(
 
   const _actionsCount = chalk.bold(`${results.length} actions`)
   logs.groupEnd(
-    `${_countByConditions} neurons => ${_actionsCount} ${_time(_start)}`
+    `${_countByConditions} neurons => ${_actionsCount} ${markDebugTime(_start)}`
   )
 
   return results[0]

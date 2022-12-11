@@ -2,7 +2,7 @@ import { logs } from "@cardsgame/utils"
 import { Client, Room as colRoom } from "@colyseus/core"
 import type { IBroadcastOptions } from "@colyseus/core/build/Room.js"
 
-import type { ActionsSet } from "../actions/actionTemplate.js"
+import type { ActionDefinition } from "../actions/types.js"
 import type { BotActionsSet } from "../bots/botNeuron.js"
 import { BotRunner } from "../bots/runner.js"
 import type { Command } from "../command.js"
@@ -32,9 +32,14 @@ export abstract class Room<S extends State>
   patchRate = 100 // ms = 10FPS
 
   commandsManager: CommandsManager<S>
-  botRunner: BotRunner<S>
 
-  possibleActions: ActionsSet<S>
+  /**
+   * May be undefined if the game doesn't include any
+   * bot-related configuration
+   */
+  botRunner?: BotRunner<S>
+
+  possibleActions: ActionDefinition<S>[]
   botActivities: BotActionsSet<S>
   botClients: Bot[] = []
 
@@ -84,11 +89,13 @@ export abstract class Room<S extends State>
 
     if (!this.possibleActions) {
       logs.warn(`Room:${this.name}`, "You didn't define any `possibleActions`!")
-      this.possibleActions = new Set([])
+      this.possibleActions = []
     }
 
     this.commandsManager = new CommandsManager<S>(this)
-    this.botRunner = new BotRunner<S>(this)
+    if (this.botActivities) {
+      this.botRunner = new BotRunner<S>(this)
+    }
 
     // Register all known messages
     messages.forEach((callback, type) => {
@@ -190,7 +197,8 @@ export abstract class Room<S extends State>
 
   /**
    * Handles new incoming event from client (human or bot).
-   * @returns `true` if action was executed, `false` if not, or if it failed.
+   * @returns DEPRECATE - is anyone listening to this return value?...
+   *     `true` if action was executed, `false` if not, or if it failed.
    */
   async handleMessage(message: ServerPlayerMessage): Promise<boolean> {
     let result = false
@@ -215,7 +223,7 @@ export abstract class Room<S extends State>
     }
 
     if (result) {
-      this.botRunner.onAnyMessage()
+      this.botRunner?.onAnyMessage()
     }
 
     return result

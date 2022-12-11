@@ -222,6 +222,31 @@ describe("bottom", () => {
   })
 })
 
+describe("idx", () => {
+  describe("pass", () => {
+    it("grabs idx of child", () => {
+      expect(() => con().set(childA).idx.equals(0)).not.toThrow()
+      expect(() => con().set(childB).idx.equals(1)).not.toThrow()
+      expect(() => con().set(childC).idx.equals(2)).not.toThrow()
+    })
+
+    it("also works on parent", () => {
+      expect(() => con().set(parent).idx.equals(0)).not.toThrow()
+    })
+  })
+
+  describe("fail", () => {
+    it("on unexpected subjects", () => {
+      const reason = "Expected subject to be a child"
+
+      expect(() => con().set(123).idx.equals(0)).toThrow(reason)
+      expect(() => con().set("childB").idx.equals(0)).toThrow(reason)
+      expect(() => con().set([1, 2, 3, 4]).idx.equals(0)).toThrow(reason)
+      expect(() => con().idx.equals(0)).toThrow(reason)
+    })
+  })
+})
+
 describe("subject references", () => {
   describe("get/as", () => {
     it("works", () => {

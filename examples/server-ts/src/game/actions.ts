@@ -1,14 +1,14 @@
 import {
-  type ActionTemplate,
   commands,
   type Player,
   entities,
+  defineEntityAction,
 } from "@cardsgame/server"
 
 import { MarkPlayerPlayed, Battle, ResetPlayersPlayed } from "./commands"
 import { WarState } from "./state"
 
-export const PickCard: ActionTemplate<WarState> = {
+export const PickCard = defineEntityAction<WarState>({
   name: "PickCard",
   interaction: (player) => [
     {
@@ -64,4 +64,4 @@ export const PickCard: ActionTemplate<WarState> = {
       ...roundFinishingCommands,
     ])
   },
-}
+})

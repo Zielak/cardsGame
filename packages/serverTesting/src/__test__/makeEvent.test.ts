@@ -12,16 +12,16 @@ beforeAll(() => {
 })
 
 it("makes valid event for string interaction", () => {
-  const message = { data: "nothing" }
+  const data = "nothing"
   events = [
-    makeEventInner(message, "customMessage"),
-    makeEvent(state, message, "customMessage"),
+    makeEventInner("customMessage", data),
+    makeEvent(state, "customMessage", data),
   ]
 
   events.forEach((event) => {
     expect(event).toBeDefined()
     expect(event.messageType).toBe("customMessage")
     expect(event.timestamp).toBeDefined()
-    expect(event.data).toStrictEqual(message.data)
+    expect(event.data).toStrictEqual(data)
   })
 })

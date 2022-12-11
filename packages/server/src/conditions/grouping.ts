@@ -115,6 +115,22 @@ class ConditionGrouping<
    * Resets `subject` back to `state` before each iteration.
    *
    * Effectively works like `OR` in logical operations
+   *
+   * @example
+   * ```ts
+   * // Will pass with the first statement and ignore the rest
+   * con().either(
+   *   () => con().set(1).equals(1),
+   *   () => con().set(0).equals(1),
+   *   () => con().set(0).equals(1)
+   * )
+   *
+   * // Both statements fail, will throw with top message: "none passed"
+   * con("none passed").either(
+   *   () => con("zero is one").set(0).equals(1),
+   *   () => con("one is two").set(1).equals(2)
+   * )
+   * ```
    */
   either(
     groupName: string,

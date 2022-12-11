@@ -27,13 +27,13 @@ beforeEach(() => {
 
   state.currentPlayerIdx = 0
 })
-test("Bot1, their turn, can pick only S and C", () => {
+test.skip("Bot1, their turn, can pick only S and C", () => {
   const goal = pickNeuron(rootNeuron, state, bot1)
   expect(goal.neuron.name).toBe(PlayCardGoal.name)
   expect(goal.message.entityPath).toBeDefined()
 })
 
-test("Bot2, not their turn, can only scream", () => {
+test.skip("Bot2, not their turn, can only scream", () => {
   const goal = pickNeuron(rootNeuron, state, bot2)
   expect(goal.neuron.name).toBe(ScreamYESGoal.name)
   expect(goal.message.messageType).toBe("scream")

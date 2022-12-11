@@ -2,7 +2,7 @@ module.exports = {
   preset: "ts-jest",
   // preset: "ts-jest/presets/js-with-babel-esm",
   testMatch: [
-    "**/__tests__/**/*.test.[jt]s?(x)",
+    "**/__test__/**/*.test.[jt]s?(x)",
     "**/?(*.)+(spec|test).[jt]s?(x)",
   ],
   transformIgnorePatterns: ["node_modules/(?!(@cardsgame)/)"],

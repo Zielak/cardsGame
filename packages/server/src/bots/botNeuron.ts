@@ -1,4 +1,4 @@
-import type { ActionTemplate } from "../actions/actionTemplate.js"
+import type { ActionDefinition } from "../actions/types.js"
 import type { Bot } from "../player/index.js"
 import type { QuerableProps } from "../queries/types.js"
 import type { State } from "../state/state.js"
@@ -43,9 +43,9 @@ export interface BotNeuron<S extends State> {
   thinkScale?: number
 
   /**
-   * `ActionTemplate` associated with this Neuron.
+   * `ActionDefinition` associated with this Neuron.
    */
-  action?: ActionTemplate<S>
+  action?: ActionDefinition<S>
 
   /**
    * Child neurons of this one.

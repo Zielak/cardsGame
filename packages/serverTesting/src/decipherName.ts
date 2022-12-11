@@ -18,7 +18,7 @@ const deciphers: Record<
 }
 
 /**
- * Populates object with props deciphered from entitie's name.
+ * Populates object with props deciphered from entity's name.
  * Modifies object in place if `targetObject` was provided,
  * or creates a new one otherwise.
  */

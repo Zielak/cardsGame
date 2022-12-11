@@ -1,4 +1,4 @@
-const { commands, entities } = require("@cardsgame/server")
+const { commands, entities, defineEntityAction } = require("@cardsgame/server")
 
 const { MarkPlayerPlayed, Battle, ResetPlayersPlayed } = require("./commands")
 const { WarState } = require("./state")
@@ -6,9 +6,9 @@ const { WarState } = require("./state")
 /**
  * This comment block enables autocompletion and suggestions
  * for ActionTemplate in JS projects. Neat!
- * @type {import("@cardsgame/server").ActionTemplate<WarState>}
+ * @type {import("@cardsgame/server").EntityActionDefinition<WarState>}
  */
-const PickCard = {
+const PickCard = defineEntityAction({
   name: "PickCard",
   interaction: (player) => [
     {
@@ -63,7 +63,7 @@ const PickCard = {
       ...roundFinishingCommands,
     ])
   },
-}
+})
 
 module.exports = [PickCard]
 

@@ -17,7 +17,7 @@ export class WarGame extends Room<WarState> {
   constructor(options) {
     super(options)
     this.maxClients = 2
-    this.possibleActions = new Set([PickCard])
+    this.possibleActions = [PickCard]
     this.botActivities = new Set([JustPlayGoal])
   }
 

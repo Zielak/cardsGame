@@ -34,10 +34,10 @@ describe("onCreate", () => {
   })
 
   it("creates an empty set for non-existing possibleActions", () => {
-    expect(room.possibleActions instanceof Set).toBe(false)
+    expect(Array.isArray(room.possibleActions)).toBe(false)
 
     room.onCreate()
-    expect(room.possibleActions instanceof Set).toBe(true)
+    expect(Array.isArray(room.possibleActions)).toBe(true)
   })
 })
 

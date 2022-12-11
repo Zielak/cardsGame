@@ -2,6 +2,7 @@ import { isMapLike } from "@cardsgame/utils"
 
 import type { QuerableProps } from "../queries/types.js"
 import type { State } from "../state/state.js"
+import { isChild } from "../traits/child.js"
 import { isParent } from "../traits/parent.js"
 import { hasSelectableChildren } from "../traits/selectableChildren.js"
 
@@ -345,6 +346,41 @@ class ConditionSubjects<InitialSubjects> {
 
     const count = subject.countUnselectedChildren()
     setFlag(this, "subject", count)
+
+    return this
+  }
+
+  /**
+   * @yields {number} value of `idx` of the entity
+   */
+  get idx(): this {
+    const subject = getFlag(this, "subject")
+
+    if (!isChild(subject)) {
+      throwError(this, `idx | Expected subject to be a child`)
+    } else {
+      setFlag(this, "subject", subject.idx)
+    }
+
+    return this
+  }
+
+  /**
+   * @yields {number} value of `selectionIndex` of the entity
+   */
+  get selectionIndex(): this {
+    const subject = getFlag(this, "subject")
+
+    if (!isChild(subject)) {
+      throwError(this, `selectionIndex | Expected subject to be a child`)
+    } else if (!hasSelectableChildren(subject.parent)) {
+      throwError(
+        this,
+        `selectionIndex | Parent without ability to select children`
+      )
+    } else {
+      setFlag(this, "subject", subject.parent.getSelectionIndex(subject.idx))
+    }
 
     return this
   }

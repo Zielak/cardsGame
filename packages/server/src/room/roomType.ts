@@ -1,4 +1,4 @@
-import type { ActionsSet } from "../actions/actionTemplate.js"
+import type { ActionDefinition } from "../actions/types.js"
 import type { BotActionsSet } from "../bots/botNeuron.js"
 import type { Command } from "../command.js"
 import type { IntegrationHooks } from "../integration.js"
@@ -20,7 +20,7 @@ export interface RoomDefinition<S extends State> extends ColyRoomDefinition {
   /**
    * Set of all possible actions players can take in this game
    */
-  possibleActions: ActionsSet<S>
+  possibleActions: ActionDefinition<S>[]
   /**
    * Set of all possible actions a bot can take, with some guidance
    */

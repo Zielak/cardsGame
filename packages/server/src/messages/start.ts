@@ -69,10 +69,10 @@ function startTheGame(this: Room<State>): void {
     this._executeIntegrationHook("startPost")
     if (state.turnBased) {
       this.onPlayerTurnStarted(state.currentPlayer)
-      this.botRunner.onPlayerTurnStarted(state.currentPlayer)
+      this.botRunner?.onPlayerTurnStarted(state.currentPlayer)
     }
     this.onRoundStart()
-    this.botRunner.onRoundStart()
+    this.botRunner?.onRoundStart()
   }
 
   if (postStartCommands) {

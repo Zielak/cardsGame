@@ -1,9 +1,9 @@
 import {
-  type ActionTemplate,
   Room,
   State,
   defineRoom,
   type RoomConstructor,
+  type ActionDefinition,
 } from "@cardsgame/server"
 
 import { ExecuteEvent, executeEventSetup } from "./executeEvent.js"
@@ -71,7 +71,7 @@ export type SetupOptions<S extends State, R extends Room<S>> = {
    * Used only in `testEvent()`,
    * don't have to provide if you won't use that function.
    */
-  action: ActionTemplate<S>
+  action: ActionDefinition<S>
   /**
    * Used only in `initState()`,
    * don't have to provide if you won't use that function.

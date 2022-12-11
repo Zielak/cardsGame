@@ -1,16 +1,16 @@
-import type { ActionTemplate, State } from "@cardsgame/server"
+import { defineEntityAction, defineMessageAction } from "@cardsgame/server"
 import { Noop } from "@cardsgame/server/commands"
 
-export const ActionPickCard: ActionTemplate<State> = {
+export const ActionPickCard = defineEntityAction({
   name: "ActionPickCard",
   interaction: () => [{ type: "classicCard" }],
-  conditions: (con) => {},
+  conditions: () => {},
   command: () => new Noop(),
-}
+})
 
-export const ActionMessage: ActionTemplate<State> = {
+export const ActionMessage = defineMessageAction({
   name: "ActionMessage",
   messageType: "customMessage",
-  conditions: (con) => {},
+  conditions: () => {},
   command: () => new Noop(),
-}
+})

@@ -48,9 +48,9 @@ export const TakeOneCard: ActionTemplate<MyGameState> = {
 }
 ```
 
-## 1. `interaction`
+## 1. Interaction
 
-Interactions definition may relate to player interacting with an in-game object, or sending a custom command.
+Interactions definition may relate to player interacting with an in-game object, or sending a custom command by clicking some UI element.
 
 ### A) _Player interacts with game entity_
 

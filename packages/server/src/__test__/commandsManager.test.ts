@@ -1,5 +1,5 @@
 import { TestRoom } from "../__helpers__/room.js"
-import type { ActionTemplate } from "../actions/actionTemplate.js"
+import { defineEntityAction } from "../actions/entityAction.js"
 import { GameOver } from "../commands/gameOver.js"
 import { Noop } from "../commands/noop.js"
 import { Undo } from "../commands/undo.js"
@@ -15,25 +15,27 @@ let manager: CommandsManager<State>
 
 const clientID = "testClient"
 
-const actions: ActionTemplate<State>[] = [
-  {
+const conditions = (): void => {}
+
+const actions = [
+  defineEntityAction<State>({
     name: "Action1",
     interaction: () => [{ name: "one", type: "foo" }],
-    conditions: (con) => {},
+    conditions,
     command: () => new Noop(),
-  } as ActionTemplate<State>,
-  {
+  }),
+  defineEntityAction<State>({
     name: "Action2",
     interaction: () => [{ name: "two", type: "bar" }],
-    conditions: (con) => {},
+    conditions,
     command: () => new Noop(),
-  } as ActionTemplate<State>,
-  {
+  }),
+  defineEntityAction<State>({
     name: "GameOver",
     interaction: () => [{ name: "three", type: "foo" }],
-    conditions: (con) => {},
+    conditions,
     command: () => new GameOver(null),
-  } as ActionTemplate<State>,
+  }),
 ]
 
 describe("commandsManager", () => {
@@ -41,7 +43,7 @@ describe("commandsManager", () => {
     state = new State()
     // event = populatePlayerEvent(state, event, clientID)
     room = new TestRoom()
-    room.possibleActions = new Set(actions)
+    room.possibleActions = actions
     manager = new CommandsManager(room)
     room.commandsManager = manager
   })

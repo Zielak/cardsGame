@@ -5,6 +5,7 @@
     "experimentalDecorators": true,
     "noEmit": true,
     "types": [
+      "./types",
       "@cardsgame/types",
       "@colyseus/core",
       "@colyseus/ws-transport",

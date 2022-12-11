@@ -1,9 +1,10 @@
-import type { ActionTemplate } from "../../actions/actionTemplate.js"
+import { defineEntityAction } from "../../actions/entityAction.js"
+import { defineMessageAction } from "../../actions/messageAction.js"
 import { commands } from "../../index.js"
 import type { State } from "../../state/state.js"
 import type { BotNeuron } from "../botNeuron.js"
 
-const ScreamAction: ActionTemplate<State> = {
+const ScreamAction = defineMessageAction({
   name: "ScreamNO",
   messageType: "scream",
   conditions: (con) => {
@@ -11,25 +12,25 @@ const ScreamAction: ActionTemplate<State> = {
   },
   command: (state, event) =>
     new commands.Broadcast(event.messageType, event.data),
-}
+})
 
-const PlayCardAction: ActionTemplate<State> = {
+const PlayCardAction = defineEntityAction({
   name: "PlayCard",
   interaction: (player) => [{ type: "classicCard", owner: player }],
   conditions: (con) => {
     con().itsPlayersTurn()
   },
-  command: (state, room) => new commands.NextPlayer(),
-}
+  command: () => new commands.NextPlayer(),
+})
 
-const DoNothingAction: ActionTemplate<State> = {
+const DoNothingAction = defineEntityAction({
   name: "DoNothingAction",
   interaction: () => [{ type: "classicCard" }],
   conditions: (con) => {
     con().itsPlayersTurn()
   },
-  command: (state, room) => new commands.Noop(),
-}
+  command: () => new commands.Noop(),
+})
 
 export const PlayCardGoal: BotNeuron<State> = {
   name: "PlayCardGoal",

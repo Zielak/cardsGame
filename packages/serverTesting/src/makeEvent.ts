@@ -8,24 +8,29 @@ import { CLIENT_ID } from "./setup.js"
 import type { StateGetter } from "./types.js"
 
 export interface MakeEvent {
-  (
-    message: RawInteractionClientPlayerMessage,
-    messageType?: string
-  ): ServerPlayerMessage
+  (messageType: string, data?: unknown): ServerPlayerMessage
 }
 
+/**
+ * Construct message event object for use in `testEvent()`
+ */
 export function makeEvent<S extends State>(
   state: S,
-  message: RawInteractionClientPlayerMessage,
-  messageType = "EntityInteraction"
+  messageType: string,
+  data?: unknown
 ): ServerPlayerMessage {
-  return populatePlayerEvent(state, { ...message, messageType }, CLIENT_ID)
+  const message: ClientPlayerMessage = {
+    messageType,
+    data,
+  }
+
+  return populatePlayerEvent(state, message, CLIENT_ID)
 }
 
 export function makeEventSetup<S extends State>(
   getState: StateGetter<S>
 ): MakeEvent {
-  return function makeEventInner(message, messageType) {
-    return makeEvent(getState(), message, messageType)
+  return function makeEventInner(messageType, data) {
+    return makeEvent(getState(), messageType, data)
   }
 }

@@ -8,7 +8,7 @@ export interface ExecuteEvent {
    *
    * Sends the message to room handle, just like the real client user would.
    * This effectively executes everything `testEvent()` would, AND all commands
-   * defined in the ActionTemplate (if the conditions pass).
+   * defined in the Action definition (if the conditions pass).
    *
    * @param event player's event, use `makeInteraction()` or `makeEvent()` for convenience
    *
