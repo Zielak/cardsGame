@@ -24,6 +24,35 @@ describe("every", () => {
     new SmartEntity(state, { parent, name: "childB" })
     new SmartEntity(state, { parent, name: "childC" })
   })
+
+  describe("restores previous default subject", () => {
+    test("pass", () => {
+      expect(con().grab()).toBe(state)
+
+      con()
+        .set([1, 2, 3])
+        .every((con) => {
+          expect(typeof con().grab()).toBe("number")
+        })
+
+      expect(con().grab()).toBe(state)
+    })
+
+    test("fail", () => {
+      expect(con().grab()).toBe(state)
+
+      expect(() => {
+        con()
+          .set([1, 2, 3])
+          .every((con) => {
+            con().equals(1)
+          })
+      }).toThrow()
+
+      expect(con().grab()).toBe(state)
+    })
+  })
+
   describe("pass", () => {
     it.todo("tests entities structure")
 
@@ -81,6 +110,35 @@ describe("some", () => {
     new SmartEntity(state, { parent, name: "childB" })
     new SmartEntity(state, { parent, name: "childC" })
   })
+
+  describe("restores previous default subject", () => {
+    test("pass", () => {
+      expect(con().grab()).toBe(state)
+
+      con()
+        .set([1, 2, 3])
+        .some((con) => {
+          expect(typeof con().grab()).toBe("number")
+        })
+
+      expect(con().grab()).toBe(state)
+    })
+
+    test("fail", () => {
+      expect(con().grab()).toBe(state)
+
+      expect(() => {
+        con()
+          .set([1, 2, 3])
+          .some((con) => {
+            con().equals("foo")
+          })
+      }).toThrow()
+
+      expect(con().grab()).toBe(state)
+    })
+  })
+
   describe("pass", () => {
     it("tests an array", () => {
       expect(() =>

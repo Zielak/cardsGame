@@ -46,12 +46,23 @@ class ConditionGrouping<
       throwError(this, `each | Expected subject to be an array`)
     }
 
+    const lastDefaultSubject = getFlag(this, "defaultSubject")
+
     subject.forEach((item, index) => {
       setFlag(this, "defaultSubject", item)
       setFlag(this, "subject", item)
-      const con = getFlag(this, "_rootReference")
-      predicate.call(con, con, item, index, subject)
+
+      try {
+        const con = getFlag(this, "_rootReference")
+        predicate.call(con, con, item, index, subject)
+      } catch (error) {
+        setFlag(this, "defaultSubject", lastDefaultSubject)
+
+        throw error
+      }
     })
+
+    setFlag(this, "defaultSubject", lastDefaultSubject)
 
     return this
   }
@@ -89,9 +100,12 @@ class ConditionGrouping<
       throwError(this, `some | Expected subject to be an array`)
     }
 
+    const lastDefaultSubject = getFlag(this, "defaultSubject")
+
     const result = subject.some((item, index) => {
       setFlag(this, "defaultSubject", item)
       setFlag(this, "subject", item)
+
       try {
         const con = getFlag(this, "_rootReference")
         predicate.call(con, con, item, index, subject)
@@ -102,6 +116,8 @@ class ConditionGrouping<
         return false
       }
     })
+
+    setFlag(this, "defaultSubject", lastDefaultSubject)
 
     if (!result) {
       throwError(this, `some | all of the functions failed.`)
