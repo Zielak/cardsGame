@@ -17,17 +17,26 @@ import {
 } from "./messageAction.js"
 import { isRootActionDefinition } from "./rootAction.js"
 
+/**
+ * @ignore
+ */
 export type BasicActionDefinition<S extends State> =
   | EntityActionDefinition<S>
   | MessageActionDefinition<S>
   | DragActionDefinition<S>
 
+/**
+ * @ignore
+ */
 export type ActionDefinition<S extends State = State> =
   | CompoundActionDefinition<S>
   | EntityActionDefinition<S>
   | MessageActionDefinition<S>
   | DragActionDefinition<S>
 
+/**
+ * @ignore
+ */
 export function isBasicActionDefinition<S extends State>(
   o: unknown
 ): o is BasicActionDefinition<S> {
@@ -38,12 +47,18 @@ export function isBasicActionDefinition<S extends State>(
   )
 }
 
+/**
+ * @ignore
+ */
 export function isActionsCollection<S extends State>(
   o: unknown
 ): o is ActionsCollection<S> {
   return isRootActionDefinition<S>(o) || isCompoundActionDefinition<S>(o)
 }
 
+/**
+ * @ignore
+ */
 export function isActionsCollection_quick<S extends State>(
   o: unknown
 ): o is ActionsCollection<S> {

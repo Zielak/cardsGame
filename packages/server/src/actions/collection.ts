@@ -15,6 +15,9 @@ export interface CollectionContext<S extends State>
   successfulActions: Set<ActionDefinition<S>>
 }
 
+/**
+ * @ignore
+ */
 export interface ActionsCollection<
   S extends State,
   C extends CollectionContext<S> = {
@@ -46,6 +49,9 @@ export interface ActionsCollection<
   hasFinished: (context: C) => boolean
 }
 
+/**
+ * @ignore
+ */
 export type CollectionConditionsResult<
   A extends BaseActionDefinition<S>,
   S extends State

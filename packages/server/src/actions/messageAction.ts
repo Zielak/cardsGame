@@ -8,6 +8,9 @@ import type { State } from "../state/state.js"
 
 import type { BaseActionDefinition, BaseActionTemplate } from "./base.js"
 
+/**
+ * @category Action definitions
+ */
 export interface MessageActionTemplate<S extends State = State>
   extends BaseActionTemplate<S> {
   /**
@@ -16,6 +19,9 @@ export interface MessageActionTemplate<S extends State = State>
   messageType: string
 }
 
+/**
+ * @ignore
+ */
 export class MessageActionDefinition<S extends State = State>
   implements BaseActionDefinition<S>
 {
@@ -78,7 +84,9 @@ export function isMessageActionDefinition<S extends State>(
   return templateMatches
 }
 
-// function, because I don't want people extending it
+/**
+ * @category Action definitions
+ */
 export function defineMessageAction<S extends State = State>(
   template: MessageActionTemplate<S>
 ): MessageActionDefinition<S> {

@@ -15,6 +15,9 @@ import { isChild } from "../traits/child.js"
 
 import type { BaseActionDefinition, BaseActionTemplate } from "./base.js"
 
+/**
+ * @category Action definitions
+ */
 export interface EntityActionTemplate<S extends State = State>
   extends BaseActionTemplate<S> {
   /**
@@ -59,6 +62,9 @@ export function isEntityActionTemplate<S extends State = State>(
   return hasInteractionField && hasValidInteractionTypeField
 }
 
+/**
+ * @ignore
+ */
 export class EntityActionDefinition<S extends State>
   implements BaseActionDefinition<S>
 {
@@ -160,10 +166,8 @@ export function isEntityActionDefinition<S extends State>(
   return templateMatches
 }
 
-// function, because I don't want people extending it
 /**
- * FIXME: should be stateless, so I don't have to have factories
- *        these only complicate things for bots and reusability in compound actions
+ * @category Action definitions
  */
 export function defineEntityAction<S extends State = State>(
   template: EntityActionTemplate<S>

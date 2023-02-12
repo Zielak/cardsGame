@@ -26,6 +26,9 @@ const randomPlayerNames = [
   "Zoltan",
 ]
 
+/**
+ * @category Utility
+ */
 export function getRandomName(): string {
   randomPlayerNames.sort(() => {
     return Math.floor(Math.random() * 3) - 1

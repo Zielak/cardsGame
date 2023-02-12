@@ -19,6 +19,10 @@ export interface BotOptions extends PlayerOptions {
   intelligence?: number
 }
 
+/**
+ *
+ * @category Bot
+ */
 export class Bot extends Player {
   actionDelay: (() => number) | number
   intelligence: number
@@ -35,6 +39,13 @@ export class Bot extends Player {
   }
 }
 
+/**
+ * Type guard to ensure an object is Bot, and not just Player
+ * @param player
+ * @returns {boolean}
+ *
+ * @category Bot
+ */
 export function isBot(player: unknown): player is Bot {
   return (
     player &&

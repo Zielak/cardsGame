@@ -30,6 +30,9 @@ export interface BaseActionTemplate<S extends State> {
   command: (state: S, event: ServerPlayerMessage) => Command
 }
 
+/**
+ * @ignore
+ */
 export interface BaseActionDefinition<S extends State> {
   name: string
 

@@ -7,6 +7,8 @@ export type SortingFunction = (childA: ChildTrait, childB: ChildTrait) => number
  * TODO: document
  * @param child
  * @returns
+ *
+ *
  */
 export function sortOnChildAdded(child: ChildTrait): void {
   if (!this.autoSort) return
@@ -39,6 +41,8 @@ const rankScores = {
  * @param childA
  * @param childB
  * @returns
+ *
+ * @category Utility
  */
 export const defaultHandOfCardsSorting = (
   childA: ClassicCard,

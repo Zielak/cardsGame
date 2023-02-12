@@ -25,6 +25,9 @@ type DragEndTemplate<S extends State> = Omit<
   "interactionType" | "name"
 >
 
+/**
+ * @category Action definitions
+ */
 export interface DragActionTemplate<S extends State = State> {
   name: string
 
@@ -72,6 +75,9 @@ export function isDragActionTemplate<S extends State = State>(
   return hasValidStart && hasValidEnd
 }
 
+/**
+ * @ignore
+ */
 export class DragActionDefinition<S extends State>
   implements BaseActionDefinition<S>
 {
@@ -139,6 +145,9 @@ export function isDragActionDefinition<S extends State>(
   return templateMatches
 }
 
+/**
+ * @category Action definitions
+ */
 export function defineDragAction<S extends State = State>(
   template: DragActionTemplate<S>
 ): DragActionDefinition<S> {
