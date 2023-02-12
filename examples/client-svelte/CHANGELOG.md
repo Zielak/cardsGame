@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/Zielak/cardsGame/compare/v1.3.1...v1.4.0) (2023-02-12)
+
+
+### Features
+
+* dragging actions ([9e45343](https://github.com/Zielak/cardsGame/commit/9e45343097786c3a9481e8a12fe08f209c94b931))
+
+
+
+
+
 # [1.1.0](https://github.com/Zielak/cardsGame/compare/v0.22.1...v1.1.0) (2022-11-06)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/zielak/cardsGame/compare/v1.3.1...v1.4.0) (2023-02-12)
+
+
+### Features
+
+* rework action templates and tests ([0efa22a](https://github.com/zielak/cardsGame/commit/0efa22a9f83adae211ba43086e86898ea33c67bf))
+
+
+
+
+
 ## [1.3.1](https://github.com/zielak/cardsGame/compare/v1.3.0...v1.3.1) (2022-11-12)
 
 **Note:** Version bump only for package @cardsgame/server-testing
