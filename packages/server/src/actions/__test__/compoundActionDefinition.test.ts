@@ -3,6 +3,7 @@ import type {
   ClientMessageConditions,
   ClientMessageInitialSubjects,
 } from "../../interaction/conditions.js"
+import { ENTITY_INTERACTION } from "../../interaction/types.js"
 import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import type { State } from "../../state/state.js"
 import type { BaseActionTemplate } from "../base.js"
@@ -91,7 +92,7 @@ describe("CompoundActionDefinition", () => {
       baseMessage = {
         entity: targetEntity,
         entities,
-        messageType: "EntityInteraction",
+        messageType: ENTITY_INTERACTION,
         timestamp: 123,
       }
 
@@ -112,7 +113,8 @@ describe("CompoundActionDefinition", () => {
           {
             entity: targetEntity,
             entities,
-            messageType: "EntityInteraction",
+            messageType: ENTITY_INTERACTION,
+            interaction: "tap",
             timestamp: 123,
           },
           context

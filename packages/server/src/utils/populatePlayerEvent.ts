@@ -1,9 +1,12 @@
 import type { Player, ServerPlayerMessage } from "../player/index.js"
 import { getEntitiesAlongPath } from "../state/helpers.js"
 import type { State } from "../state/state.js"
-import { isChild } from "../traits/child.js"
+import { ChildTrait, isChild } from "../traits/child.js"
 
 const sanitizeIdxPath = (value: unknown): number => {
+  if (value !== value) {
+    throw new Error(`sanitizeIdxPath | received ${value}`)
+  }
   if (typeof value === "number") {
     return value
   }
@@ -16,7 +19,9 @@ const sanitizeIdxPath = (value: unknown): number => {
     }
     return num
   }
-  return 998
+  throw new Error(
+    `sanitizeIdxPath | couldn't parse value of type "${typeof value}"`
+  )
 }
 
 /**
@@ -56,7 +61,7 @@ export function populatePlayerEvent(
     timestamp: +Date.now(),
   }
 
-  if (message.entityPath) {
+  if (message.entityPath && Array.isArray(message.entityPath)) {
     newEvent.entityPath = message.entityPath.map(sanitizeIdxPath)
     newEvent.entities = getEntitiesAlongPath(state, newEvent.entityPath)
       .reverse()
@@ -72,6 +77,13 @@ export function populatePlayerEvent(
 
   if (player) {
     newEvent.player = player
+
+    if (message.interaction === "dragstart") {
+      player.dragStartEntity = newEvent.entity as ChildTrait
+      newEvent.draggedEntity = player.dragStartEntity
+    } else if (message.interaction === "dragend" && player?.dragStartEntity) {
+      newEvent.draggedEntity = player.dragStartEntity
+    }
   }
 
   return newEvent

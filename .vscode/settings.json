@@ -14,5 +14,6 @@
     "docs/.docusaurus/**": true
   },
   "cSpell.words": ["cardsgame", "colyseus"],
-  "jestrunner.configPath": "config/jest.config.cjs"
+  "jestrunner.configPath": "config/jest.config.cjs",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

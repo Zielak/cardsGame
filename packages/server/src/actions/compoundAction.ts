@@ -17,6 +17,16 @@ import type {
 } from "./collection.js"
 import { BasicActionDefinition, isBasicActionDefinition } from "./types.js"
 
+/**
+ * TODO: decide what to do
+ * 1. game-moving-cards-test-server has a use case
+ * 2. no idea how to make bots deal with compound actions...
+ */
+
+/**
+ * ~~@deprecated Focus on drag&drop. Continue with compound once you find a CONCRETE use case for it.~~
+ * game-moving-cards-test-server might be enough of use case
+ */
 export interface CompoundActionTemplate<S extends State = State> {
   name: string
 
@@ -68,6 +78,8 @@ function optionalAbortIsValid(o: object): boolean {
 
 /**
  * @ignore
+ * ~~@deprecated Focus on drag&drop. Continue with compound once you find a CONCRETE use case for it.~~
+ * game-moving-cards-test-server might be enough of use case
  */
 export function isCompoundActionTemplate<S extends State = State>(
   o: unknown
@@ -79,6 +91,10 @@ export function isCompoundActionTemplate<S extends State = State>(
   return actionsAreValid(o) && finishIsValid(o) && optionalAbortIsValid(o)
 }
 
+/**
+ * ~~@deprecated Focus on drag&drop. Continue with compound once you find a CONCRETE use case for it.~~
+ * game-moving-cards-test-server might be enough of use case
+ */
 export interface CompoundContext<S extends State> extends CollectionContext<S> {
   successfulActions: Set<BasicActionDefinition<S>>
   successfulAbort: Set<BasicActionDefinition<S>>
@@ -87,6 +103,10 @@ export interface CompoundContext<S extends State> extends CollectionContext<S> {
   finished: boolean
 }
 
+/**
+ * ~~@deprecated Focus on drag&drop. Continue with compound once you find a CONCRETE use case for it.~~
+ * game-moving-cards-test-server might be enough of use case
+ */
 export class CompoundActionDefinition<S extends State = State>
   implements ActionsCollection<S, CompoundContext<S>>
 {
@@ -268,6 +288,8 @@ export class CompoundActionDefinition<S extends State = State>
 
 /**
  * @ignore
+ * ~~@deprecated Focus on drag&drop. Continue with compound once you find a CONCRETE use case for it.~~
+ * game-moving-cards-test-server might be enough of use case
  */
 export function isCompoundActionDefinition<S extends State>(
   o: unknown
@@ -289,6 +311,8 @@ export function isCompoundActionDefinition<S extends State>(
 
 /**
  * @ignore
+ * ~~@deprecated Focus on drag&drop. Continue with compound once you find a CONCRETE use case for it.~~
+ * game-moving-cards-test-server might be enough of use case
  */
 export function isCompoundActionDefinition_quick<S extends State>(
   o: unknown
@@ -301,6 +325,10 @@ export function isCompoundActionDefinition_quick<S extends State>(
 }
 
 // function, because I don't want people extending it
+/**
+ * ~~@deprecated Focus on drag&drop. Continue with compound once you find a CONCRETE use case for it.~~
+ * game-moving-cards-test-server might be enough of use case
+ */
 export function defineCompoundAction<S extends State = State>(
   template: CompoundActionTemplate<S>
 ): CompoundActionDefinition<S> {

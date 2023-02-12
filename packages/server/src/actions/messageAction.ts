@@ -21,7 +21,11 @@ export class MessageActionDefinition<S extends State = State>
 {
   name: string
 
-  get messageType(): string {
+  /**
+   * Only for use in bots internals
+   * @ignore
+   */
+  get templateMessageType(): string {
     return this.template.messageType
   }
 

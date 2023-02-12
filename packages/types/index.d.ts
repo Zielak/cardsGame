@@ -1,3 +1,6 @@
+/**
+ * Event types coming from client ot server
+ */
 interface ClientMessageTypes {
   start: void
   bot_add: { intelligence: number }
@@ -5,10 +8,19 @@ interface ClientMessageTypes {
   EntityInteraction: RawInteractionClientPlayerMessage
 }
 
+/**
+ * Event types coming from server to client
+ */
 interface ServerMessageTypes {
   gameInfo: ServerMessage<string>
   gameWarn: ServerMessage<string>
   gameError: ServerMessage<string>
+
+  dragStatus: ServerMessage<{
+    interaction: "dragstart" | "dragend"
+    idxPath: string
+    status: boolean
+  }>
 }
 
 type RecordOfServerMessages<R extends Record<string, unknown>> = {

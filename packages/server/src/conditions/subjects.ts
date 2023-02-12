@@ -1,8 +1,10 @@
 import { isMapLike } from "@cardsgame/utils"
 
+import type { Player } from "../index.js"
 import type { QuerableProps } from "../queries/types.js"
 import type { State } from "../state/state.js"
 import { isChild } from "../traits/child.js"
+import { hasOwnership } from "../traits/ownership.js"
 import { isParent } from "../traits/parent.js"
 import { hasSelectableChildren } from "../traits/selectableChildren.js"
 
@@ -392,8 +394,35 @@ class ConditionSubjects<InitialSubjects> {
    * @yields `player`
    */
   get owner(): this {
-    setFlag(this, "subject", getInitialSubject(this, "player").owner)
-    resetPropDig(this)
+    const subject = getFlag(this, "subject")
+
+    if (!isChild(subject) || !hasOwnership(subject)) {
+      throwError(this, `owner | Expected subject to be ownable child`)
+    } else {
+      setFlag(this, "subject", subject.owner)
+    }
+
+    return this
+  }
+
+  /**
+   * **REQUIRES** `"player"` initial subject
+   *
+   * Changes subject to entity of current dragging happening.
+   * @yields `entity`
+   */
+  get playersDraggedEntity(): this {
+    const player = getInitialSubject<Player>(this, "player")
+
+    if (!player) {
+      throwError(this, `playersDraggedEntity | Expected player in event`)
+    } else {
+      setFlag(
+        this,
+        "subject",
+        getInitialSubject<Player>(this, "player").dragStartEntity
+      )
+    }
 
     return this
   }

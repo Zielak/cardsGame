@@ -93,29 +93,32 @@ export class RootActionDefinition<S extends State = State>
       S
     > = new Map()
 
-    // Compounds
-    this.actions.filter(isCompoundActionDefinition).forEach((action) => {
-      const context = rootContext.subContexts.get(action) as CompoundContext<S>
-      const subRejectedActions = action.checkConditions(
-        con,
-        initialSubjects,
-        context
-      )
+    rootContext.successfulActions.forEach((action) => {
+      if (isCompoundActionDefinition(action)) {
+        // Compounds
+        const context = rootContext.subContexts.get(
+          action
+        ) as CompoundContext<S>
+        const subRejectedActions = action.checkConditions(
+          con,
+          initialSubjects,
+          context
+        )
 
-      subRejectedActions.forEach((error, action) => {
-        rejectedActions.set(action, error)
-      })
+        subRejectedActions.forEach((error, action) => {
+          rejectedActions.set(action, error)
+        })
 
-      if (action.successfulActionsCount(context) === 0) {
-        rootContext.successfulActions.delete(action)
-      }
-    })
-    // Basic actions
-    this.actions.filter(isBasicActionDefinition).forEach((action) => {
-      const error = runConditionOnAction(con, initialSubjects, action)
-      if (error) {
-        rejectedActions.set(action, error)
-        rootContext.successfulActions.delete(action)
+        if (action.successfulActionsCount(context) === 0) {
+          rootContext.successfulActions.delete(action)
+        }
+      } else if (isBasicActionDefinition(action)) {
+        // Basic actions
+        const error = runConditionOnAction(con, initialSubjects, action)
+        if (error) {
+          rejectedActions.set(action, error)
+          rootContext.successfulActions.delete(action)
+        }
       }
     })
 

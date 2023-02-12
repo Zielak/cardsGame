@@ -23,11 +23,11 @@ export class Room<
     })
 
     room.onStateChange.once((state) => {
-      logs.log("ROOM, state initiated:", state)
+      logs.debug("ROOM, state initiated:", state)
       this.onFirstStateChange(state)
     })
     room.onStateChange((state) => {
-      logs.log("ROOM, state updated:", state)
+      logs.debug("ROOM, state updated:", state)
       this.onStateChange(state)
     })
     room.onLeave((code) => {

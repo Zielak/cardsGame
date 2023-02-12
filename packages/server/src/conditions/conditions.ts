@@ -23,7 +23,7 @@ class ConditionsMethods<S, I = Record<string, any>> {
 
 abstract class Conditions<
   S extends State,
-  InitialSubjects = Record<string, any>
+  InitialSubjects extends Record<string, any> = Record<string, any>
 > extends Function {
   /**
    * @param state game's state reference

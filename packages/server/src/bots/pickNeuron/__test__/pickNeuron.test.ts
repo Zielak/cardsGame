@@ -1,15 +1,14 @@
-import { ClassicCard, Hand } from "../../entities/index.js"
-import { Bot } from "../../player/index.js"
-import { State } from "../../state/state.js"
-import { pickNeuron } from "../pickNeuron.js"
-
+import { ClassicCard, Hand } from "../../../entities/index.js"
+import { Bot } from "../../../player/index.js"
+import { State } from "../../../state/state.js"
 import {
   PlayCardGoal,
   rootNeuron,
   ScreamGoal,
   ScreamNOGoal,
   ScreamYESGoal,
-} from "./mockSetup.js"
+} from "../../__test__/mockSetup.js"
+import { pickNeuron } from "../pickNeuron.js"
 
 let state: State, bot1: Bot, bot2: Bot, hand: Hand
 

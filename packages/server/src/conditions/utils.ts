@@ -96,10 +96,10 @@ export function setRef(
 /**
  * @ignore
  */
-export function getInitialSubject(
+export function getInitialSubject<T>(
   target: Record<string, any>,
   refName: string
-): any {
+): T {
   return getFlag(target, "initialSubjects")[refName]
 }
 

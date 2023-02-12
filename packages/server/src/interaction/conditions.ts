@@ -10,7 +10,6 @@ export type ClientMessageInitialSubjects = {
   messageType: string
   /**
    * Changes current `subject` to Interaction-related events
-   * @deprecate seems needless as we have ActionTemplate.event
    */
   event: InteractionType
   /**

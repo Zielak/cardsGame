@@ -6,16 +6,8 @@ import type {
   CollectionConditionsResult,
   CollectionContext,
 } from "./actions/collection.js"
-import {
-  CompoundActionDefinition,
-  CompoundContext,
-  isCompoundActionDefinition,
-} from "./actions/compoundAction.js"
-import {
-  isRootActionDefinition,
-  RootActionDefinition,
-  RootContext,
-} from "./actions/rootAction.js"
+import type { CompoundActionDefinition } from "./actions/compoundAction.js"
+import { RootActionDefinition } from "./actions/rootAction.js"
 import type { Command } from "./command.js"
 import { Undo } from "./commands/undo.js"
 import {
@@ -25,6 +17,7 @@ import {
 import type { Player, ServerPlayerMessage } from "./player/index.js"
 import type { Room } from "./room/base.js"
 import type { State } from "./state/state.js"
+import type { ChildTrait } from "./traits/index.js"
 
 /**
  * @ignore
@@ -32,8 +25,6 @@ import type { State } from "./state/state.js"
 export class CommandsManager<S extends State> {
   history: Command[] = []
   incoming: Map<Player, ServerPlayerMessage> = new Map()
-
-  // TODO: https://miro.com/app/board/uXjVO-eFeDg=/?moveToWidget=3458764538687486805&cot=14
 
   /**
    * Map of clientID to a tuple of:
@@ -52,7 +43,7 @@ export class CommandsManager<S extends State> {
   }
 
   /**
-   * @returns `false` when command throws with an error/fails to execute.
+   * @throws when all actions fail to execute
    */
   handlePlayerEvent(message: ServerPlayerMessage): Promise<boolean> {
     if (this.playerHasActionPending(message.player)) {
@@ -74,7 +65,7 @@ export class CommandsManager<S extends State> {
 
     if (!prerequisitesResult) {
       action.teardownContext(context)
-      this.throwNoActions(message)
+      this.abort(message)
     }
 
     // 2. Conditions
@@ -82,7 +73,7 @@ export class CommandsManager<S extends State> {
 
     if (!conditionsResult) {
       action.teardownContext(context)
-      this.throwNoActions(message)
+      this.abort(message)
     }
 
     // 3. Command
@@ -92,6 +83,15 @@ export class CommandsManager<S extends State> {
     this.handlePendingActions(message, action, context)
 
     action.teardownContext(context)
+    if (message.draggedEntity) {
+      this.sendMessage(message.player.clientID, "dragStatus", {
+        data: {
+          interaction: message.interaction,
+          idxPath: (message.draggedEntity as ChildTrait).idxPath.join(","),
+          status: true,
+        },
+      } as ServerMessageTypes["dragStatus"])
+    }
 
     // 5. Run the command
     return this.executeCommand(this.room.state, chosenCommand)
@@ -126,7 +126,6 @@ export class CommandsManager<S extends State> {
 
     logs.group(chalk.blue("Conditions"))
 
-    // TODO: butcher `runAllConditions` and simplify it all in here
     /**
      * 1. setup initialSubjects and conditionsChecker
      * 2. run `checkConditions` on each sub actions (children or root OR children of pending)
@@ -191,6 +190,11 @@ export class CommandsManager<S extends State> {
     action: ActionsCollection<S>,
     context: CollectionContext<S>
   ): void {
+    // if()
+    /**
+     * @deprecated Function focused on use of compoundActions. Focus on drag&drop instead. Continue with compound once you find a CONCRETE use case for it.
+     */
+    /*
     if (
       isCompoundActionDefinition(action) &&
       action.hasFinished(context as CompoundContext<S>)
@@ -228,7 +232,7 @@ export class CommandsManager<S extends State> {
         )
         this.pendingActions.set(message.player.clientID, subAction)
       }
-    }
+    }*/
   }
 
   async executeCommand(state: S, command: Command): Promise<boolean> {
@@ -278,13 +282,30 @@ export class CommandsManager<S extends State> {
    * Does given player have some unfinished actions?
    */
   private playerHasActionPending(player: Player): boolean {
+    const result = this.pendingActions.has(player.clientID)
+    logs.debug(
+      `player ${player.clientID} ${
+        result ? "has" : "doesn't have"
+      } pending actions.`
+    )
     return this.pendingActions.has(player.clientID)
   }
 
   /**
    * There were no successful actions remaining.
    */
-  private throwNoActions(message: ServerPlayerMessage): void {
+  private abort(message: ServerPlayerMessage): void {
+    if (message.draggedEntity) {
+      this.sendMessage(message.player.clientID, "dragStatus", {
+        data: {
+          interaction: message.interaction,
+          idxPath: (message.draggedEntity as ChildTrait).idxPath.join(","),
+          status: false,
+        },
+      } as ServerMessageTypes["dragStatus"])
+    }
+
+    // throwNoActions
     throw new Error(
       `No more actions to evaluate for "${
         message.player ? message.player.clientID : message.interaction
@@ -300,6 +321,7 @@ export class CommandsManager<S extends State> {
     message: ServerPlayerMessage,
     rejectedActions: CollectionConditionsResult<BaseActionDefinition<S>, S>
   ): void {
+    const { clientID } = message.player
     logs.error(`${rejectedActions.size} actions didn't pass. Reasons:`)
     rejectedActions.forEach((error, action) => {
       logs.error(
@@ -309,22 +331,22 @@ export class CommandsManager<S extends State> {
       )
     })
 
-    const client = this.room.clients.find(
-      (client) => client.sessionId === message.player.clientID
-    )
-
     rejectedActions.forEach((error, action) => {
       if (!error.internal) {
-        logs.debug(
-          "sending an error message to",
-          message.player.clientID,
-          client.sessionId,
-          error
-        )
-        client.send("gameWarn", {
+        logs.debug("sending an error message to", clientID, error)
+
+        this.sendMessage(clientID, "gameWarn", {
           data: `${action.name}: ${error.message}`,
         } as ServerMessageTypes["gameWarn"])
       }
     })
+  }
+
+  private sendMessage(clientID: string, type: string, message: any): void {
+    const client = this.room.clients.find(
+      (client) => client.sessionId === clientID
+    )
+
+    client.send(type, message)
   }
 }

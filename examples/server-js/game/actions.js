@@ -17,7 +17,7 @@ const PickCard = defineEntityAction({
     },
   ],
   conditions: (con) => {
-    const playerSessionID = con().ref.player.grab().clientID
+    const playerSessionID = con().$.player.grab().clientID
     console.log("playerSessionID:", playerSessionID)
     console.log("state.playersPlayed:", [
       ...con().grabState().playersPlayed.entries(),

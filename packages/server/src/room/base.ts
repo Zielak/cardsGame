@@ -197,7 +197,7 @@ export abstract class Room<S extends State>
 
   /**
    * Handles new incoming event from client (human or bot).
-   * @returns DEPRECATE - is anyone listening to this return value?...
+   * @returns ~~DEPRECATE - is anyone listening to this return value?...~~ server testing might benefit
    *     `true` if action was executed, `false` if not, or if it failed.
    */
   async handleMessage(message: ServerPlayerMessage): Promise<boolean> {
@@ -206,21 +206,21 @@ export abstract class Room<S extends State>
     debugRoomMessage(message)
 
     if (!message.player) {
-      logs.log("handleMessage", "You're not a player, get out!")
-      return false
+      throw new Error("client is not a player")
     }
 
     if (this.state.isGameOver) {
-      logs.log("handleMessage", "Game's already over!")
-      return false
+      throw new Error("game's already over")
     }
 
-    try {
-      result = await this.commandsManager.handlePlayerEvent(message)
-    } catch (e) {
-      logs.log("handleMessage FAILED", e.message)
-      return false
-    }
+    result = await this.commandsManager.handlePlayerEvent(message)
+    // try {
+    //   result = await this.commandsManager.handlePlayerEvent(message)
+    // } catch (e) {
+    //   logs.error("handleMessage FAILED", e.message)
+    //   logs.error((e as Error).stack)
+    //   return false
+    // }
 
     if (result) {
       this.botRunner?.onAnyMessage()

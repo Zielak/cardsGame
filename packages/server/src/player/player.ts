@@ -2,6 +2,7 @@ import { logs, def } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
 import { type } from "../annotations/type.js"
+import type { ChildTrait } from "../traits/child.js"
 
 import { getRandomName } from "./names.js"
 
@@ -20,9 +21,16 @@ export class Player extends Schema implements IPlayerDefinition {
    */
   @type("number") score = 0
   /**
+   * Utilize this in a time-sensitive game
    * @category Player
    */
   @type("number") timeLeft = -1
+
+  /**
+   * An entity with which dragging was started
+   * @ignore
+   */
+  dragStartEntity: ChildTrait
 
   constructor(options: PlayerOptions) {
     super()

@@ -1,4 +1,5 @@
 import type { Command } from "../../command.js"
+import { ENTITY_INTERACTION } from "../../interaction/types.js"
 import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import type { State } from "../../state/state.js"
 import type { BaseActionTemplate } from "../base.js"
@@ -73,7 +74,7 @@ describe("isEntityActionTemplate", () => {
         interaction,
         interactionType: "dragstart",
       })
-    ).toBe(true)
+    ).toBe(false)
     expect(
       isEntityActionTemplate({
         ...baseTemplate,
@@ -172,7 +173,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
     baseMessage = {
       entity: targetEntity,
       entities,
-      messageType: "EntityInteraction",
+      messageType: ENTITY_INTERACTION,
       timestamp: 123,
     }
   })
@@ -234,11 +235,31 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
       }
     })
 
+    describe("interactionType not defined on template (default tap)", () => {
+      test("interaction expects no entities", () => {
+        expect(
+          new EntityActionDefinition({
+            ...baseTemplate,
+            interaction: () => [],
+          }).checkPrerequisites(message)
+        ).toBe(false)
+      })
+      test("interaction catch-all", () => {
+        expect(
+          new EntityActionDefinition({
+            ...baseTemplate,
+            interaction: () => "*",
+          }).checkPrerequisites(message)
+        ).toBe(false)
+      })
+    })
+
     it("accepts, if action expects no entities", () => {
       expect(
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [],
+          interactionType: "dragend",
         }).checkPrerequisites(message)
       ).toBe(true)
     })
@@ -251,12 +272,6 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
       ).toBe(false)
     })
     it("accepts with catch-all", () => {
-      expect(
-        new EntityActionDefinition({
-          ...baseTemplate,
-          interaction: () => "*",
-        }).checkPrerequisites(message)
-      ).toBe(true)
       expect(
         new EntityActionDefinition({
           ...baseTemplate,

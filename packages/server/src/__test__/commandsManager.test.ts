@@ -4,6 +4,7 @@ import { GameOver } from "../commands/gameOver.js"
 import { Noop } from "../commands/noop.js"
 import { Undo } from "../commands/undo.js"
 import { CommandsManager } from "../commandsManager.js"
+import { ENTITY_INTERACTION, Player } from "../index.js"
 import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
 import type { Room } from "../room/base.js"
 import { State } from "../state/state.js"
@@ -46,6 +47,19 @@ describe("commandsManager", () => {
     room.possibleActions = actions
     manager = new CommandsManager(room)
     room.commandsManager = manager
+  })
+
+  describe("handlePlayerEvent", () => {
+    it("throws on failing message", () => {
+      expect(() =>
+        manager.handlePlayerEvent({
+          messageType: ENTITY_INTERACTION,
+          timestamp: 123,
+          interaction: "tap",
+          player: new Player({ clientID: "foo" }),
+        })
+      ).toThrow()
+    })
   })
 
   describe("executeCommand", () => {

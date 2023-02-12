@@ -1,5 +1,6 @@
 import { logs } from "@cardsgame/utils"
 
+import { ENTITY_INTERACTION } from "../interaction/types.js"
 import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
@@ -18,7 +19,7 @@ export function entityInteraction(
 ): void {
   const newMessage = populatePlayerEvent(
     this.state,
-    { ...message, messageType: "EntityInteraction" },
+    { ...message, messageType: ENTITY_INTERACTION },
     client.sessionId
   )
   this.handleMessage(newMessage).catch((e) =>

@@ -6,6 +6,7 @@ import {
   isCompoundActionDefinition,
   isCompoundActionDefinition_quick,
 } from "./compoundAction.js"
+import { DragActionDefinition, isDragActionDefinition } from "./dragAction.js"
 import {
   EntityActionDefinition,
   isEntityActionDefinition,
@@ -19,15 +20,22 @@ import { isRootActionDefinition } from "./rootAction.js"
 export type BasicActionDefinition<S extends State> =
   | EntityActionDefinition<S>
   | MessageActionDefinition<S>
+  | DragActionDefinition<S>
 
 export type ActionDefinition<S extends State = State> =
   | CompoundActionDefinition<S>
-  | BasicActionDefinition<S>
+  | EntityActionDefinition<S>
+  | MessageActionDefinition<S>
+  | DragActionDefinition<S>
 
 export function isBasicActionDefinition<S extends State>(
   o: unknown
 ): o is BasicActionDefinition<S> {
-  return isEntityActionDefinition(o) || isMessageActionDefinition(o)
+  return (
+    isEntityActionDefinition(o) ||
+    isMessageActionDefinition(o) ||
+    isDragActionDefinition(o)
+  )
 }
 
 export function isActionsCollection<S extends State>(

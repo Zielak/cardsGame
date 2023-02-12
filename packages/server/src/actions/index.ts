@@ -1,4 +1,5 @@
 export * from "./compoundAction.js"
+export * from "./dragAction.js"
 export * from "./entityAction.js"
 export * from "./messageAction.js"
 export * from "./collection.js"

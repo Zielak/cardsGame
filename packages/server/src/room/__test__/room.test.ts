@@ -1,11 +1,11 @@
 import { Client, Room as ColyRoom } from "@colyseus/core"
 import { ArraySchema } from "@colyseus/schema"
 
-import type { State } from "../../index.js"
+import { ENTITY_INTERACTION, Player, State } from "../../index.js"
 import { start } from "../../messages/start.js"
 import { Room } from "../base.js"
 
-let room: Room<any>
+let room: Room<State>
 
 jest.mock("@colyseus/core")
 
@@ -18,7 +18,7 @@ beforeEach(() => {
   room.state = {
     isGameOver: false,
     clients: new ArraySchema(),
-  }
+  } as State
 })
 
 describe("onCreate", () => {
@@ -41,8 +41,33 @@ describe("onCreate", () => {
   })
 })
 
+describe("handleMessage", () => {
+  describe("throws error", () => {
+    test("if message did't include player", async () => {
+      await expect(
+        room.handleMessage({
+          messageType: ENTITY_INTERACTION,
+          timestamp: 123456,
+        })
+      ).rejects.toThrow("client is not a player")
+    })
+
+    test("if game is already over", async () => {
+      room.state.isGameOver = true
+      await expect(
+        room.handleMessage({
+          messageType: ENTITY_INTERACTION,
+          timestamp: 123456,
+          player: new Player({ clientID: "qwf" }),
+        })
+      ).rejects.toThrow("game's already over")
+    })
+  })
+})
+
 describe("broadcast", () => {
   beforeEach(() => {
+    // the fuk?
     ColyRoom.prototype.broadcast
   })
 

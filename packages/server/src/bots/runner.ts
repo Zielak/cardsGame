@@ -7,7 +7,7 @@ import type { State } from "../state/state.js"
 import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
 import type { BotNeuron } from "./botNeuron.js"
-import { pickNeuron } from "./pickNeuron.js"
+import { pickNeuron } from "./pickNeuron/pickNeuron.js"
 
 export class BotRunner<S extends State> {
   neuronTree: BotNeuron<S>

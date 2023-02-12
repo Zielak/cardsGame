@@ -15,6 +15,10 @@ export type ServerPlayerMessage = ClientPlayerMessage & {
    */
   entities?: unknown[]
   /**
+   * During `dragStart`/`dragEnd` happening, this is the entity related to `dragStart` event.
+   */
+  draggedEntity?: unknown
+  /**
    * It's the time when the message has arrived to the server
    */
   timestamp: number

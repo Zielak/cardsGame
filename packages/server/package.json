@@ -64,12 +64,12 @@
     "@cardsgame/utils": "^1.1.0"
   },
   "peerDependencies": {
-    "@colyseus/core": "^0.14.28",
-    "@colyseus/schema": "^1.0.42"
+    "@colyseus/core": "^0.14.36",
+    "@colyseus/schema": "^1.0.45"
   },
   "devDependencies": {
     "@cardsgame/base-configs": "^1.1.0",
-    "@colyseus/core": "^0.14.28",
-    "@colyseus/schema": "^1.0.42"
+    "@colyseus/core": "^0.14.36",
+    "@colyseus/schema": "^1.0.45"
   }
 }

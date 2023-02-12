@@ -1,10 +1,11 @@
-import { def, logs } from "@cardsgame/utils"
+import { logs } from "@cardsgame/utils"
 
 import type { Command } from "../command.js"
 import type {
   ClientMessageConditions,
   ClientMessageInitialSubjects,
 } from "../interaction/conditions.js"
+import { ENTITY_INTERACTION } from "../interaction/types.js"
 import type { Player } from "../player/player.js"
 import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
 import type { QuerableProps } from "../queries/index.js"
@@ -22,24 +23,21 @@ export interface EntityActionTemplate<S extends State = State>
    * Return "*" to indicate interest in any entity interactions
    *
    * Return empty array to indicate interest in interaction events without
-   * a reference to entities. Example: "dragend" interaction ending outside
-   * any container - intention would be to cancel dragging.
+   * a reference to entities.
    */
   interaction: (player: Player) => QuerableProps[] | "*"
 
   /**
-   * How do you expect entities to be interacted with.
+   * How do you expect entities to be interacted with, `tap` or `dragend`.
    *
-   * Default is "tap" - a sequence of touchStart&End or mouseDown&Up
+   * Default is `tap` - a sequence of touchStart&End or mouseDown&Up
+   *
    */
-  interactionType?: InteractionType
+  interactionType?: Omit<InteractionType, "dragstart">
 }
 
 function validInteractionType(v: unknown): v is InteractionType {
-  return (
-    typeof v === "string" &&
-    ["tap", "dragstart", "dragend"].some((type) => v === type)
-  )
+  return typeof v === "string" && ["tap", "dragend"].some((type) => v === type)
 }
 
 /**
@@ -66,6 +64,14 @@ export class EntityActionDefinition<S extends State>
 {
   name: string
 
+  /**
+   * Only for use in bots internals
+   * @ignore
+   */
+  get templateInteraction(): EntityActionTemplate<S>["interaction"] {
+    return this.template.interaction
+  }
+
   constructor(private template: EntityActionTemplate<S>) {
     this.name = template.name
   }
@@ -73,10 +79,13 @@ export class EntityActionDefinition<S extends State>
 
   checkPrerequisites(message: ServerPlayerMessage): boolean {
     const { template } = this
-    if (
-      "interactionType" in template &&
-      template.interactionType !== message.interaction
-    ) {
+
+    if (!("interactionType" in template)) {
+      if (message.interaction !== "tap") {
+        return false
+      }
+      // Continue
+    } else if (template.interactionType !== message.interaction) {
       return false
     }
 
@@ -101,7 +110,7 @@ export class EntityActionDefinition<S extends State>
     // Most likely "dragend" outside bounds of any entity. Synonymous to "dragcancel"?
     if (
       !message.entity &&
-      message.messageType === "EntityInteraction" &&
+      message.messageType === ENTITY_INTERACTION &&
       interactions.length === 0
     ) {
       return true
@@ -140,7 +149,7 @@ export class EntityActionDefinition<S extends State>
  */
 export function isEntityActionDefinition<S extends State>(
   o: unknown
-): o is EntityActionTemplate<S> {
+): o is EntityActionDefinition<S> {
   if (typeof o !== "object" && !(o instanceof EntityActionDefinition)) {
     return false
   }

@@ -47,8 +47,6 @@ export class ChildTrait {
   }
 
   /**
-   * TODO: Limit the number of automatic getters. Just make these a `getIdxPath` functions. QueryRunner grabs all the "props" and ignores functions.
-   *
    * @category ChildTrait
    * @returns array of indexes for this entity access
    */

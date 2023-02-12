@@ -30,11 +30,11 @@
   },
   "devDependencies": {
     "@cardsgame/base-configs": "^1.1.0",
-    "@colyseus/schema": "^1.0.42",
+    "@colyseus/schema": "^1.0.45",
     "colyseus.js": "^0.14.0"
   },
   "peerDependencies": {
-    "@colyseus/schema": "^1.0.42",
+    "@colyseus/schema": "^1.0.45",
     "colyseus.js": "^0.14.0"
   },
   "exports": {

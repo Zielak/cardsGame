@@ -78,7 +78,10 @@ export function getEntitiesAlongPath(
     const idx = remainingPath.shift()
     const newChild = parent.getChild(idx)
     if (!newChild) {
-      logs.error("getEntitiesAlongPath", `This entity doesn't have such child.`)
+      logs.error(
+        "getEntitiesAlongPath",
+        `This entity doesn't have [${idx}] child.`
+      )
       return result
     }
 
