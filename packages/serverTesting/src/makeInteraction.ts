@@ -21,7 +21,7 @@ export interface MakeInteraction {
 export function makeInteraction<S extends State>(
   state: S,
   entityQuery: QuerableProps,
-  interaction?: InteractionType
+  interaction: InteractionType = "tap"
 ): ServerPlayerMessage {
   if (!state) {
     throw new Error(`state is undefined, can't prepare an event without it`)

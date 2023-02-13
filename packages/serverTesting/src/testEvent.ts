@@ -35,7 +35,7 @@ function testCollectionAction<S extends State>(
   // 2. Conditions
   action.checkConditions(con, ini, context)
 
-  return context.successfulActions.size > 0
+  return action.successfulActionsCount(context) > 0
 }
 
 function testBasicAction<S extends State>(

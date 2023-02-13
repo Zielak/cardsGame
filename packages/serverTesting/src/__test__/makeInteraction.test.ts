@@ -53,4 +53,15 @@ describe("state", () => {
       expect(event.entity).toBeUndefined()
     })
   })
+
+  describe("interaction", () => {
+    it("passes interaction type", () => {
+      expect(
+        makeInteraction(state, { name: "S6" }, "dragstart").interaction
+      ).toBe("dragstart")
+    })
+    it("sets default to tap", () => {
+      expect(makeInteraction(state, { name: "S6" }).interaction).toBe("tap")
+    })
+  })
 })
