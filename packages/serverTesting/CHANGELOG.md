@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://github.com/zielak/cardsGame/compare/v1.4.0...v1.4.1) (2023-02-13)
+
+
+### Bug Fixes
+
+* **serverTesting:** compound action ([529958b](https://github.com/zielak/cardsGame/commit/529958b6f6a9cfe2ccd2a09b4832b7a01607cfd7))
+
+
+
+
+
 # [1.4.0](https://github.com/zielak/cardsGame/compare/v1.3.1...v1.4.0) (2023-02-12)
 
 
