@@ -6,7 +6,10 @@ import {
   isCompoundActionDefinition,
   isCompoundActionDefinition_quick,
 } from "./compoundAction.js"
-import { DragActionDefinition, isDragActionDefinition } from "./dragAction.js"
+import {
+  DragActionDefinition,
+  isDragActionDefinition,
+} from "./drag/dragAction.js"
 import {
   EntityActionDefinition,
   isEntityActionDefinition,

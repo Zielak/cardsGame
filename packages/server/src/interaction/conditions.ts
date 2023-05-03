@@ -4,24 +4,26 @@ import type { State } from "../state/state.js"
 
 export type ClientMessageInitialSubjects = {
   /**
-   * Changes current `subject` to game-specific player command. Defaults to "EntityInteraction"
+   * ~~Changes current `subject` to~~ game-specific player command. Defaults to "EntityInteraction"
    * @deprecate seems needless as we have ActionTemplate.messageType
    */
   messageType: string
   /**
-   * Changes current `subject` to Interaction-related events
+   * ~~Changes current `subject` to~~ Interaction-related events
+   *
+   * TODO: rename to `interaction` so it matches with what comes from the client, see: RawInteractionClientPlayerMessage
    */
   event: InteractionType
   /**
-   * Changes current `subject` to event's additional data
+   * ~~Changes current `subject` to~~ event's additional data
    */
   data: any
   /**
-   * Changes current `subject` to interacting `Player`
+   * ~~Changes current `subject` to~~ interacting `Player`
    */
   player: Player
   /**
-   * Changes current `subject` to entity being interacted with
+   * ~~Changes current `subject` to~~ entity being interacted with
    */
   entity: unknown
 }

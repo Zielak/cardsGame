@@ -15,5 +15,6 @@
   },
   "cSpell.words": ["cardsgame", "colyseus"],
   "jestrunner.configPath": "config/jest.config.cjs",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.autoImportFileExcludePatterns": ["index.ts", "lib/**"]
 }

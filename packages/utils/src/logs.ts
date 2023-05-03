@@ -243,7 +243,7 @@ export class Logs {
   constructor(
     name: string,
     private readonly enabled = false,
-    options?: LogsOptions
+    options: LogsOptions = {}
   ) {
     if (isBrowser) {
       this.setupBrowserLogs(name, options.browserStyle)
@@ -252,17 +252,22 @@ export class Logs {
     }
   }
 
-  setupServerLogs(name: string, style: Chalk.Chalk): void {
+  setupServerLogs(name: string, style: Chalk.Chalk = Chalk.dim): void {
     let indentLevel = 0
     const getIndent = (): string => {
       return Array(indentLevel).fill("│ ").join("")
     }
 
+    const nameAndFirst = (first: string) => `${name} ${first}`
+
     this["error"] =
       this.enabled && logLevel >= LogLevels.error
         ? function (first, ...args: any[]): void {
             console.error.apply(console, [
-              style(getIndent() + chalk.bgRed.white(` ${first} `)),
+              style(
+                getIndent() +
+                  chalk.bgRed.white(` ${name ? nameAndFirst(first) : first} `)
+              ),
               ...args.map(syntaxHighlight),
             ])
           }
@@ -271,7 +276,12 @@ export class Logs {
       this.enabled && logLevel >= LogLevels.warn
         ? function (first, ...args: any[]): void {
             console.warn.apply(console, [
-              style(getIndent() + chalk.bgYellow.black(` ${first} `)),
+              style(
+                getIndent() +
+                  chalk.bgYellow.black(
+                    ` ${name ? nameAndFirst(first) : first} `
+                  )
+              ),
               ...args.map(syntaxHighlight),
             ])
           }
@@ -280,7 +290,10 @@ export class Logs {
       this.enabled && logLevel >= LogLevels.info
         ? function (first, ...args: any[]): void {
             console.info.apply(console, [
-              style(getIndent() + chalk.bgBlue.black(` ${first} `)),
+              style(
+                getIndent() +
+                  chalk.bgBlue.black(` ${name ? nameAndFirst(first) : first} `)
+              ),
               ...args.map(syntaxHighlight),
             ])
           }
@@ -299,6 +312,7 @@ export class Logs {
           }
         : noop
     const _log = this["log"]
+
     this["debug"] = this["verbose"] =
       this.enabled && logLevel >= LogLevels.verbose
         ? function (...args: any[]): void {

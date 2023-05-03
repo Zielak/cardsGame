@@ -3,17 +3,31 @@ import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 
 export class Broadcast<
-  MessageTypes extends Record<string, unknown>
+  MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>,
+  T extends keyof AllServerMessageTypes<MoreMessageTypes> = keyof AllServerMessageTypes<MoreMessageTypes>
 > extends Command {
-  constructor(public type: keyof MessageTypes, public message?: unknown) {
+  public type: T
+  public message: AllServerMessageTypes<MoreMessageTypes>[T]
+
+  constructor(type: T, message?: AllServerMessageTypes<MoreMessageTypes>[T]) {
     super()
+
+    this.type = type
+    this.message = message
   }
 
-  async execute(state: State, room: Room<any>): Promise<void> {
-    room.broadcast(this.type as string, this.message)
+  async execute(
+    state: State,
+    room: Room<any, MoreMessageTypes>
+  ): Promise<void> {
+    room.broadcast(this.type, this.message)
   }
 
-  async undo(state: State, room: Room<any>): Promise<void> {
-    room.broadcast(this.type as string, this.message, { undo: true })
+  async undo(state: State, room: Room<any, MoreMessageTypes>): Promise<void> {
+    room.broadcast(this.type, this.message, { undo: true })
   }
 }
+
+type keys = keyof ServerMessageTypes | keyof { test: number }
+
+let T: keys

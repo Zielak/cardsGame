@@ -261,11 +261,8 @@ export class CompoundActionDefinition<S extends State = State>
     event: ServerPlayerMessage,
     context: CompoundContext<S>
   ): Command<S> {
-    const [first] = [
-      ...context.successfulActions,
-      ...context.successfulAbort,
-      ...context.successfulFinish,
-    ]
+    const first = this.getSuccessfulAction(context)
+
     return first.getCommand(state, event)
   }
 
@@ -277,6 +274,13 @@ export class CompoundActionDefinition<S extends State = State>
     return context.aborted || context.finished
   }
 
+  getSuccessfulAction(context: CompoundContext<S>): BasicActionDefinition<S> {
+    return [
+      ...context.successfulActions,
+      ...context.successfulAbort,
+      ...context.successfulFinish,
+    ][0]
+  }
   successfulActionsCount(context: CompoundContext<S>): number {
     return (
       context.successfulAbort.size +

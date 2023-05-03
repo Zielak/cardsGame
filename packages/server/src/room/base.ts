@@ -1,5 +1,5 @@
 import { logs } from "@cardsgame/utils"
-import { Client, Room as colRoom } from "@colyseus/core"
+import { Client, ISendOptions, Room as colRoom } from "@colyseus/core"
 import type { IBroadcastOptions } from "@colyseus/core/build/Room.js"
 
 import type { ActionDefinition } from "../actions/types.js"
@@ -24,8 +24,14 @@ import type { RoomDefinition } from "./roomType.js"
 type BroadcastOptions = IBroadcastOptions & {
   undo: boolean
 }
+type ClientSendOptions = ISendOptions & {
+  undo: boolean
+}
 
-export abstract class Room<S extends State>
+export abstract class Room<
+    S extends State,
+    MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>
+  >
   extends colRoom<S>
   implements RoomDefinition<S>
 {
@@ -172,9 +178,53 @@ export abstract class Room<S extends State>
     }
   }
 
-  broadcast(
+  /**
+   * For convenience. Wraps message with additional data (like undo)
+   */
+  clientSend(
+    clientID: string,
     type: string | number,
     message?: any,
+    options?: ClientSendOptions
+  ): void {
+    const wrappedMessage: ServerMessage = {
+      data: message,
+    }
+    const cleanOptions: ClientSendOptions = {
+      ...options,
+    }
+    if (options?.undo) {
+      wrappedMessage.undo = true
+      delete cleanOptions.undo
+    }
+
+    const client = this.clients.find((client) => client.sessionId === clientID)
+
+    if (!client) {
+      logs.warn(
+        "clientSend",
+        'trying to send message to non-existing client "${clientID}"'
+      )
+    }
+
+    this.clients
+      .find((client) => client.sessionId === clientID)
+      .send(
+        type,
+        wrappedMessage,
+        Object.keys(cleanOptions).length > 0 ? cleanOptions : undefined
+      )
+  }
+
+  /**
+   * For convenience. Wraps message with additional data (like undo)
+   */
+  broadcast<
+    T extends keyof AllServerMessageTypes<MoreMessageTypes>
+    // M extends MoreMessageTypes & ServerMessageTypes
+  >(
+    type: T,
+    message?: AllServerMessageTypes<MoreMessageTypes>[T],
     options?: BroadcastOptions
   ): void {
     const wrappedMessage: ServerMessage = {
@@ -189,9 +239,9 @@ export abstract class Room<S extends State>
     }
 
     if (Object.keys(cleanOptions).length > 0) {
-      super.broadcast(type, wrappedMessage, cleanOptions)
+      super.broadcast(type as string | number, wrappedMessage, cleanOptions)
     } else {
-      super.broadcast(type, wrappedMessage)
+      super.broadcast(type as string | number, wrappedMessage)
     }
   }
 

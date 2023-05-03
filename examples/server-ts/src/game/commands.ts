@@ -70,7 +70,7 @@ export class Battle extends Command<WarState> {
     }
 
     const subCommands: Command[] = [
-      new commands.Broadcast("battleResult", data),
+      new commands.Broadcast<WarMessageTypes>("battleResult", data),
       new commands.Wait(500),
     ]
 

@@ -16,6 +16,8 @@ interface ServerMessageTypes {
   gameWarn: ServerMessage<string>
   gameError: ServerMessage<string>
 
+  gameFinished: ServerMessage<void>
+
   dragStatus: ServerMessage<{
     interaction: "dragstart" | "dragend"
     idxPath: string
@@ -26,6 +28,8 @@ interface ServerMessageTypes {
 type RecordOfServerMessages<R extends Record<string, unknown>> = {
   [key in keyof R]: ServerMessage<R[key]>
 }
+type AllServerMessageTypes<MoreMessageTypes extends Record<string, unknown>> =
+  ServerMessageTypes & MoreMessageTypes
 
 /**
  * Message sent by server, either directly to one client

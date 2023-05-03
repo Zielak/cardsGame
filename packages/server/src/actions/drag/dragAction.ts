@@ -1,29 +1,21 @@
-import type { Command } from "../command.js"
-import { Noop } from "../commands/noop.js"
+import { chalk, Logs } from "@cardsgame/utils"
+
+import type { Command } from "../../command.js"
 import type {
   ClientMessageConditions,
   ClientMessageInitialSubjects,
-} from "../interaction/conditions.js"
-import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
-import type { State } from "../state/state.js"
+} from "../../interaction/conditions.js"
+import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
+import type { State } from "../../state/state.js"
+import type { ChildTrait } from "../../traits/child.js"
+import type { BaseActionDefinition } from "../base.js"
 
-import type { BaseActionDefinition } from "./base.js"
-import { EntityActionDefinition, EntityActionTemplate } from "./entityAction.js"
+import { DragEndActionTemplate, DragEndActionDefinition } from "./end.js"
+import { DragStartActionDefinition, DragStartActionTemplate } from "./start.js"
 
-type OptionalCommand<S extends State> = Partial<
-  Pick<EntityActionTemplate<S>, "command">
->
-
-type DragStartTemplate<S extends State> = Omit<
-  EntityActionTemplate<S>,
-  "interactionType" | "name" | "command"
-> &
-  OptionalCommand<S>
-
-type DragEndTemplate<S extends State> = Omit<
-  EntityActionTemplate<S>,
-  "interactionType" | "name"
->
+export const tapFallbackLog = new Logs("tapFallback", true, {
+  serverStyle: chalk.yellowBright,
+})
 
 /**
  * @category Action definitions
@@ -34,13 +26,13 @@ export interface DragActionTemplate<S extends State = State> {
   /**
    * Definition for event related to "dragStart"
    */
-  start: DragStartTemplate<S>
+  start: DragStartActionTemplate<S>
 
   /**
    * Definition for event related to "dragEnd".
    * Only considered after passing previous "start" action.
    */
-  end: DragEndTemplate<S>
+  end: DragEndActionTemplate<S>
 }
 
 /**
@@ -82,52 +74,60 @@ export class DragActionDefinition<S extends State>
   implements BaseActionDefinition<S>
 {
   name: string
-  start: EntityActionDefinition<S>
-  end: EntityActionDefinition<S>
+  start: DragStartActionDefinition<S>
+  end: DragEndActionDefinition<S>
 
   constructor(private template: DragActionTemplate<S>) {
     this.name = template.name
-    this.start = new EntityActionDefinition({
-      name: `start_${template.name}`,
-      interactionType: "dragstart",
-      interaction: template.start.interaction,
-      conditions: template.start.conditions,
-      command: template.start.command ?? (() => new Noop()),
-    })
-    this.end = new EntityActionDefinition({
-      name: `end_${template.name}`,
-      ...template.end,
-      interactionType: "dragend",
-    })
+    this.start = new DragStartActionDefinition(template.start)
+    this.end = new DragEndActionDefinition(template.end)
   }
 
   checkPrerequisites(message: ServerPlayerMessage): boolean {
-    if (message.interaction === "dragstart") {
-      return this.start.checkPrerequisites(message)
-    } else if (message.interaction === "dragend") {
-      return this.end.checkPrerequisites(message)
-    }
-    return false
+    return (
+      this.end.checkPrerequisites(message) ||
+      this.start.checkPrerequisites(message)
+    )
   }
 
   checkConditions(
     con: ClientMessageConditions<S>,
     initialSubjects: ClientMessageInitialSubjects
   ): void {
-    if (initialSubjects.event === "dragstart") {
+    const { event, player } = initialSubjects
+
+    if (isStartEvent(event, player.isTapDragging)) {
       return this.start.checkConditions(con, initialSubjects)
-    } else if (initialSubjects.event === "dragend") {
+    } else if (isEndEvent(event, player.isTapDragging)) {
       return this.end.checkConditions(con, initialSubjects)
     }
   }
 
   getCommand(state: S, event: ServerPlayerMessage): Command<State> {
-    if (event.interaction === "dragstart") {
+    const { interaction, player } = event
+
+    if (isStartEvent(interaction, player.isTapDragging)) {
       return this.start.getCommand(state, event)
-    } else if (event.interaction === "dragend") {
+    } else if (isEndEvent(interaction, player.isTapDragging)) {
       return this.end.getCommand(state, event)
     }
   }
+}
+
+function isStartEvent(
+  interaction: InteractionType,
+  isTapDragging: boolean
+): boolean {
+  return (
+    interaction === "dragstart" || (interaction === "tap" && !isTapDragging)
+  )
+}
+
+function isEndEvent(
+  interaction: InteractionType,
+  isTapDragging: boolean
+): boolean {
+  return interaction === "dragend" || (interaction === "tap" && isTapDragging)
 }
 
 /**

@@ -16,6 +16,10 @@ export type ServerPlayerMessage = ClientPlayerMessage & {
   entities?: unknown[]
   /**
    * During `dragStart`/`dragEnd` happening, this is the entity related to `dragStart` event.
+   *
+   * Populated only during drag events. With `tap` fallback events, refer to player's `dragStartEntity`.
+   *
+   * @deprecated with tap fallback I would have to modify a message on the fly... Lets use Player's prop instead
    */
   draggedEntity?: unknown
   /**

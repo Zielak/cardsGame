@@ -130,7 +130,7 @@ export class RootActionDefinition<S extends State = State>
     event: ServerPlayerMessage,
     rootContext: RootContext<S>
   ): Command<S> {
-    const [action] = rootContext.successfulActions
+    const action = this.getSuccessfulAction(rootContext)
 
     if (isCompoundActionDefinition(action)) {
       const context = rootContext.subContexts.get(action) as CompoundContext<S>
@@ -145,6 +145,9 @@ export class RootActionDefinition<S extends State = State>
     return true
   }
 
+  getSuccessfulAction(context: RootContext<S>): ActionDefinition<S> {
+    return [...context.successfulActions][0]
+  }
   successfulActionsCount(context: RootContext<S>): number {
     return context.successfulActions.size
   }

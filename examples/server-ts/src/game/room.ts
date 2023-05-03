@@ -9,7 +9,7 @@ import { PickCard } from "./actions"
 import { JustPlayGoal } from "./bot"
 import { WarState } from "./state"
 
-export class WarGame extends Room<WarState> {
+export class WarGame extends Room<WarState, WarMessageTypes> {
   // Just some quick references to basic entities
   deck: entities.Deck
   pile: entities.Pile

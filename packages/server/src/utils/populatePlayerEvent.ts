@@ -1,3 +1,4 @@
+import { ENTITY_INTERACTION } from "../interaction/types.js"
 import type { Player, ServerPlayerMessage } from "../player/index.js"
 import { getEntitiesAlongPath } from "../state/helpers.js"
 import type { State } from "../state/state.js"
@@ -77,13 +78,6 @@ export function populatePlayerEvent(
 
   if (player) {
     newEvent.player = player
-
-    if (message.interaction === "dragstart") {
-      player.dragStartEntity = newEvent.entity as ChildTrait
-      newEvent.draggedEntity = player.dragStartEntity
-    } else if (message.interaction === "dragend" && player?.dragStartEntity) {
-      newEvent.draggedEntity = player.dragStartEntity
-    }
   }
 
   return newEvent

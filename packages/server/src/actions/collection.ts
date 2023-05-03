@@ -45,6 +45,7 @@ export interface ActionsCollection<
 
   allActionsCount: () => number
 
+  getSuccessfulAction: (context: C) => ActionDefinition<S>
   successfulActionsCount: (context: C) => number
   hasFinished: (context: C) => boolean
 }

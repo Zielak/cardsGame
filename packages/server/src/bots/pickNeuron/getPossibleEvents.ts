@@ -1,4 +1,4 @@
-import { isDragActionDefinition } from "../../actions/dragAction.js"
+import { isDragActionDefinition } from "../../actions/drag/dragAction.js"
 import { isEntityActionDefinition } from "../../actions/entityAction.js"
 import { isMessageActionDefinition } from "../../actions/messageAction.js"
 import {

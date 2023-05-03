@@ -103,7 +103,6 @@ describe("player", () => {
     )
 
     expect(result.player).toBe(player)
-
     expect(result.draggedEntity).toBeUndefined()
   })
 
@@ -119,7 +118,6 @@ describe("player", () => {
     )
 
     expect(result.player).toBe(player)
-
     expect(result.draggedEntity).toBeUndefined()
   })
 })
@@ -163,42 +161,5 @@ describe("entity", () => {
     expect(result.entity).toBe(undefined)
 
     expect(result.draggedEntity).toBeUndefined()
-  })
-})
-
-describe("dragstart", () => {
-  it("remembers entity in player.dragStartEntity", () => {
-    expect(player.dragStartEntity).toBeUndefined()
-
-    result = populatePlayerEvent(
-      state,
-      {
-        messageType: ENTITY_INTERACTION,
-        interaction: "dragstart",
-        entityPath: [0],
-      },
-      player
-    )
-
-    expect(result.draggedEntity).toBe(entity)
-    expect(player.dragStartEntity).toBe(entity)
-  })
-})
-
-describe("dragend", () => {
-  it("brings back player's dragged entity into the event", () => {
-    player.dragStartEntity = entity
-
-    result = populatePlayerEvent(
-      state,
-      {
-        messageType: ENTITY_INTERACTION,
-        interaction: "dragend",
-        entityPath: [],
-      },
-      player
-    )
-
-    expect(result.draggedEntity).toBe(entity)
   })
 })

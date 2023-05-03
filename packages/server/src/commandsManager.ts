@@ -7,7 +7,12 @@ import type {
   CollectionContext,
 } from "./actions/collection.js"
 import type { CompoundActionDefinition } from "./actions/compoundAction.js"
+import {
+  isDragActionDefinition,
+  tapFallbackLog,
+} from "./actions/drag/dragAction.js"
 import { RootActionDefinition } from "./actions/rootAction.js"
+import type { ActionDefinition } from "./actions/types.js"
 import type { Command } from "./command.js"
 import { Undo } from "./commands/undo.js"
 import {
@@ -65,7 +70,7 @@ export class CommandsManager<S extends State> {
 
     if (!prerequisitesResult) {
       action.teardownContext(context)
-      this.abort(message)
+      this.runFailed(message)
     }
 
     // 2. Conditions
@@ -73,25 +78,19 @@ export class CommandsManager<S extends State> {
 
     if (!conditionsResult) {
       action.teardownContext(context)
-      this.abort(message)
+      this.runFailed(message)
     }
 
     // 3. Command
+    const successfulSubAction = action.getSuccessfulAction(context)
+
     const chosenCommand = this.pickCommand(message, action, context)
 
     // 4. Pending actions
     this.handlePendingActions(message, action, context)
 
     action.teardownContext(context)
-    if (message.draggedEntity) {
-      this.sendMessage(message.player.clientID, "dragStatus", {
-        data: {
-          interaction: message.interaction,
-          idxPath: (message.draggedEntity as ChildTrait).idxPath.join(","),
-          status: true,
-        },
-      } as ServerMessageTypes["dragStatus"])
-    }
+    this.runSuccessful(message, successfulSubAction)
 
     // 5. Run the command
     return this.executeCommand(this.room.state, chosenCommand)
@@ -176,6 +175,7 @@ export class CommandsManager<S extends State> {
     const successCount = action.successfulActionsCount(context)
 
     if (successCount > 1) {
+      // Will this ever happen? We're putting this responsibility down to actions
       logs.warn(
         "handlePlayerEvent",
         `Whoops, even after filtering actions by conditions, I still have ${successCount} actions! Applying only the first one (ordering actions matters!).`
@@ -293,13 +293,14 @@ export class CommandsManager<S extends State> {
 
   /**
    * There were no successful actions remaining.
+   * @throws
    */
-  private abort(message: ServerPlayerMessage): void {
-    if (message.draggedEntity) {
+  private runFailed(message: ServerPlayerMessage): void {
+    if (message.player.dragStartEntity) {
       this.sendMessage(message.player.clientID, "dragStatus", {
         data: {
           interaction: message.interaction,
-          idxPath: (message.draggedEntity as ChildTrait).idxPath.join(","),
+          idxPath: message.player.dragStartEntity.idxPath.join(","),
           status: false,
         },
       } as ServerMessageTypes["dragStatus"])
@@ -311,6 +312,28 @@ export class CommandsManager<S extends State> {
         message.player ? message.player.clientID : message.interaction
       }" event, ignoring...`
     )
+  }
+
+  /**
+   * There were no successful actions remaining.
+   * @throws
+   */
+  private runSuccessful(
+    message: ServerPlayerMessage,
+    successfulAction: ActionDefinition<S>
+  ): void {
+    const { interaction, player } = message
+
+    if (player.dragStartEntity) {
+      // TODO: move to Drag Action?
+      this.sendMessage(player.clientID, "dragStatus", {
+        data: {
+          interaction: interaction,
+          idxPath: player.dragStartEntity.idxPath.join(","),
+          status: true,
+        },
+      } as ServerMessageTypes["dragStatus"])
+    }
   }
 
   /**
@@ -347,6 +370,6 @@ export class CommandsManager<S extends State> {
       (client) => client.sessionId === clientID
     )
 
-    client.send(type, message)
+    client?.send(type, message)
   }
 }

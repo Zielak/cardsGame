@@ -27,10 +27,18 @@ export class Player extends Schema implements IPlayerDefinition {
   @type("number") timeLeft = -1
 
   /**
-   * An entity with which dragging was started
+   * An entity with which dragging was started.
+   *
+   * Needs to be visible for Commands.
    * @ignore
    */
   dragStartEntity: ChildTrait
+
+  /**
+   * Is player currently using `tap` events to play a drag action?
+   * (accessibility dragging fallback)
+   */
+  isTapDragging = false
 
   constructor(options: PlayerOptions) {
     super()
