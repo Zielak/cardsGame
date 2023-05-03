@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/zielak/cardsGame/compare/v1.4.1...v1.5.0) (2023-05-03)
+
+
+### Features
+
+* drag tap fallback ([552552a](https://github.com/zielak/cardsGame/commit/552552a24d8b15baa4c26de3dc10684c93588602))
+
+
+
+
+
 ## [1.4.1](https://github.com/zielak/cardsGame/compare/v1.4.0...v1.4.1) (2023-02-13)
 
 
