@@ -10,14 +10,12 @@ export type ClientMessageInitialSubjects = {
   messageType: string
   /**
    * ~~Changes current `subject` to~~ Interaction-related events
-   *
-   * TODO: rename to `interaction` so it matches with what comes from the client, see: RawInteractionClientPlayerMessage
    */
-  event: InteractionType
+  interaction: InteractionType
   /**
    * ~~Changes current `subject` to~~ event's additional data
    */
-  data: any
+  data?: any
   /**
    * ~~Changes current `subject` to~~ interacting `Player`
    */

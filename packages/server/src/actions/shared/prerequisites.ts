@@ -20,6 +20,12 @@ export function checkInteractionQueries(
     return true
   }
 
+  if (typeof interactions === "string") {
+    throw new Error(
+      `Invalid use of interactions, got "${interactions}" where only "*" is accepted as a string.`
+    )
+  }
+
   logs.debug(
     `got`,
     interactions.length,

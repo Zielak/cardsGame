@@ -7,7 +7,6 @@ import type {
 } from "../../interaction/conditions.js"
 import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import type { State } from "../../state/state.js"
-import type { ChildTrait } from "../../traits/child.js"
 import type { BaseActionDefinition } from "../base.js"
 
 import { DragEndActionTemplate, DragEndActionDefinition } from "./end.js"
@@ -94,11 +93,11 @@ export class DragActionDefinition<S extends State>
     con: ClientMessageConditions<S>,
     initialSubjects: ClientMessageInitialSubjects
   ): void {
-    const { event, player } = initialSubjects
+    const { interaction, player } = initialSubjects
 
-    if (isStartEvent(event, player.isTapDragging)) {
+    if (isStartEvent(interaction, player.isTapDragging)) {
       return this.start.checkConditions(con, initialSubjects)
-    } else if (isEndEvent(event, player.isTapDragging)) {
+    } else if (isEndEvent(interaction, player.isTapDragging)) {
       return this.end.checkConditions(con, initialSubjects)
     }
   }

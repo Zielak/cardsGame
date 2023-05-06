@@ -24,15 +24,6 @@ export interface EntityActionTemplate<S extends State = State>
    * a reference to entities.
    */
   interaction: InteractionQueries
-
-  // This action only accepts "tap" now!
-  // /**
-  //  * How do you expect entities to be interacted with, `tap` or `dragend`.
-  //  *
-  //  * Default is `tap` - a sequence of touchStart&End or mouseDown&Up
-  //  *
-  //  */
-  // interactionType?: Omit<InteractionType, "dragstart">
 }
 
 function validInteractionType(v: unknown): v is InteractionType {

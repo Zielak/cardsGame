@@ -32,6 +32,12 @@ export const getInteractionEntities = <S extends State>(
     return []
   }
 
+  if (typeof queries === "string") {
+    throw new Error(
+      `Invalid use of interactions, got "${queries}" where only "*" is accepted as a string.`
+    )
+  }
+
   logs.debug(
     `Action "${chalk.bold(action.name)}" has ${queries.length} QuerableProps`
   )

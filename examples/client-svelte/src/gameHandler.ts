@@ -20,7 +20,7 @@ export class GameHandler {
       port: 443,
     },
   })
-  room: Room<WarState, WarMessage>
+  room: Room<WarState, WarMessageTypes>
 
   quickJoin() {
     this.game.joinOrCreate("war").then((room: Room<WarState>) => {

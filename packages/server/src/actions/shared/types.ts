@@ -1,4 +1,7 @@
 import type { Player } from "../../player/player.js"
 import type { QuerableProps } from "../../queries/types.js"
 
-export type InteractionQueries = (player: Player) => QuerableProps[] | "*"
+/**
+ * Only "*" is accepted as string.
+ */
+export type InteractionQueries = (player: Player) => QuerableProps[] | string
