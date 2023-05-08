@@ -10,6 +10,7 @@ export * from "./state/index.js"
 export * from "./utils/index.js"
 
 export * from "./command.js"
+export * from "./commandsManager/utils.js"
 export * from "./integration.js"
 export * from "./playerViewPosition.js"
 export * from "./room/index.js"

@@ -16,7 +16,7 @@ describe("ParentConstructor", () => {
     expect(parent.countChildren()).toBe(0)
 
     expect(parent.hijacksInteractionTarget).toBeDefined()
-    expect(parent.hijacksInteractionTarget).toBe(true)
+    expect(parent.hijacksInteractionTarget).toBe(false)
   })
 })
 

@@ -1,11 +1,13 @@
 import {
   type ActionDefinition,
-  type ActionsCollection,
-  type BasicActionDefinition,
   ClientMessageConditions,
   type ClientMessageInitialSubjects,
-  isActionsCollection,
   type ServerPlayerMessage,
+  extendsBaseActionDefinition,
+  extendsCollectionActionDefinition,
+  prepareContext,
+  type BaseActionDefinition,
+  type CollectionActionDefinition,
   State,
 } from "@cardsgame/server"
 import { runConditionOnAction } from "@cardsgame/server/internal/interaction/runConditionOnAction"
@@ -20,12 +22,12 @@ export interface TestEvent {
 }
 
 function testCollectionAction<S extends State>(
-  action: ActionsCollection<S>,
+  action: CollectionActionDefinition<S>,
   message: ServerPlayerMessage,
   con: ClientMessageConditions<S>,
   ini: ClientMessageInitialSubjects
 ): boolean {
-  const context = action.setupContext()
+  const context = prepareContext(action)
 
   // 1. Prerequisites
   if (!action.checkPrerequisites(message, context)) {
@@ -35,11 +37,11 @@ function testCollectionAction<S extends State>(
   // 2. Conditions
   action.checkConditions(con, ini, context)
 
-  return action.successfulActionsCount(context) > 0
+  return action.hasSuccessfulSubActions(context)
 }
 
 function testBasicAction<S extends State>(
-  action: BasicActionDefinition<S>,
+  action: BaseActionDefinition<S>,
   message: ServerPlayerMessage,
   con: ClientMessageConditions<S>,
   ini: ClientMessageInitialSubjects
@@ -75,14 +77,14 @@ export function testEvent<S extends State>(
     initialSubjects
   )
 
-  if (isActionsCollection(action)) {
+  if (extendsCollectionActionDefinition(action)) {
     return testCollectionAction<S>(
       action,
       message,
       conditionsChecker,
       initialSubjects
     )
-  } else {
+  } else if (extendsBaseActionDefinition(action)) {
     return testBasicAction<S>(
       action,
       message,

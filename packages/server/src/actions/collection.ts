@@ -10,50 +10,95 @@ import type { State } from "../state/state.js"
 import type { BaseActionDefinition } from "./base.js"
 import type { ActionDefinition } from "./types.js"
 
-export interface CollectionContext<S extends State>
-  extends Record<string, unknown> {
-  successfulActions: Set<ActionDefinition<S>>
+export type CollectionContext<
+  C extends Record<string, unknown> = Record<string, unknown>
+> = {
+  /**
+   * Controlled by manager, marks if this instance of action
+   * is marked as `pending` for the player
+   * @readonly please
+   */
+  pending: boolean
+
+  /**
+   * Change to `false` to remove this action from `pending`.
+   */
+  aborted: boolean
+} & C
+
+/**
+ * @ignore
+ */
+export interface CollectionActionDefinition<
+  S extends State,
+  C extends Record<string, unknown> = Record<string, unknown>
+> {
+  name: string
+
+  setupContext: () => C
+  teardownContext: (context: CollectionContext<C>) => void
+
+  /**
+   * Should run checks against interaction in interactionAction etc
+   */
+  checkPrerequisites(
+    message: ServerPlayerMessage,
+    context: CollectionContext<C>
+  ): boolean
+
+  checkConditions: (
+    con: ClientMessageConditions<S>,
+    initialSubjects: ClientMessageInitialSubjects,
+    context: CollectionContext<C>
+  ) => CollectionConditionsResult<BaseActionDefinition<S>>
+
+  getCommand: (
+    state: S,
+    event: ServerPlayerMessage,
+    context: CollectionContext<C>
+  ) => Command<S>
+
+  hasSuccessfulSubActions: (context: CollectionContext<C>) => boolean
+
+  /**
+   * Return `false` if this action should be marked as pending, and be the
+   * only one for evaluation in subsequent player's events?
+   */
+  hasFinished: (context: CollectionContext<C>) => boolean
+
+  /**
+   * Only used for debugging, for logs
+   */
+  _allActionsCount?: () => number
+  /**
+   * Only used for debugging, for logs
+   */
+  _successfulActionsCount?: (context: CollectionContext<C>) => number
+
+  /**
+   * @deprecated figure out if needed...
+   */
+  getSuccessfulAction?: (context: CollectionContext<C>) => ActionDefinition<S>
 }
 
 /**
  * @ignore
  */
-export interface ActionsCollection<
-  S extends State,
-  C extends CollectionContext<S> = {
-    successfulActions: Set<ActionDefinition<S>>
-  }
-> {
-  name: string
-  // actions: readonly ActionDefinition<S>[]
-
-  setupContext: () => C
-  teardownContext: (context: C) => void
-
-  /**
-   * Should run checks against interaction in interactionAction etc
-   */
-  checkPrerequisites(message: ServerPlayerMessage, context: C): boolean
-
-  checkConditions: (
-    con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects,
-    context: C
-  ) => CollectionConditionsResult<BaseActionDefinition<S>, S>
-
-  getCommand: (state: S, event: ServerPlayerMessage, context: C) => Command<S>
-
-  allActionsCount: () => number
-
-  getSuccessfulAction: (context: C) => ActionDefinition<S>
-  successfulActionsCount: (context: C) => number
-  hasFinished: (context: C) => boolean
+export function extendsCollectionActionDefinition<S extends State>(
+  o: unknown
+): o is CollectionActionDefinition<S> {
+  return (
+    typeof o === "object" &&
+    ["setupContext", "teardownContext", "hasSuccessfulSubActions"].every(
+      (m) => m in o && typeof o[m] === "function"
+    )
+  )
 }
 
 /**
  * @ignore
  */
 export type CollectionConditionsResult<
-  A extends BaseActionDefinition<S>,
-  S extends State
+  A extends BaseActionDefinition<any>
+  // S extends State
 > = Map<A, ConditionErrorMessage>

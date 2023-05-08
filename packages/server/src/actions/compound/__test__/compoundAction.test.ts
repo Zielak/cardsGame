@@ -1,6 +1,14 @@
-import type { Command } from "../../command.js"
-import type { State } from "../../state/state.js"
-import type { BaseActionTemplate } from "../base.js"
+import type { Command } from "../../../command.js"
+import type { State } from "../../../state/state.js"
+import type { BaseActionTemplate } from "../../base.js"
+import {
+  defineEntityAction,
+  EntityActionDefinition,
+} from "../../entityAction.js"
+import {
+  defineMessageAction,
+  MessageActionDefinition,
+} from "../../messageAction.js"
 import {
   CompoundActionDefinition,
   CompoundActionTemplate,
@@ -8,11 +16,6 @@ import {
   isCompoundActionDefinition,
   isCompoundActionTemplate,
 } from "../compoundAction.js"
-import { defineEntityAction, EntityActionDefinition } from "../entityAction.js"
-import {
-  defineMessageAction,
-  MessageActionDefinition,
-} from "../messageAction.js"
 
 const conditions = () => {}
 const command = (() => {}) as () => Command<State>

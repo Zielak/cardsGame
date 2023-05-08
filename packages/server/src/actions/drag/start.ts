@@ -28,6 +28,9 @@ export interface DragStartActionTemplate<S extends State = State>
    */
   interaction: InteractionQueries
 
+  /**
+   * @deprecated until valid use case is found.
+   */
   command?: BaseActionTemplate<S>["command"]
 }
 
@@ -64,6 +67,9 @@ export class DragStartActionDefinition<S extends State>
     this.template.conditions(con, initialSubjects)
   }
 
+  /**
+   * @deprecated until valid use case is found.
+   */
   getCommand(state: S, event: ServerPlayerMessage): Command<State> {
     const { interaction, player, entity } = event
 
@@ -77,14 +83,6 @@ export class DragStartActionDefinition<S extends State>
       player.isTapDragging = true
       player.dragStartEntity = entity as ChildTrait
     }
-
-    // player.clientID, "dragStatus", {
-    //   data: {
-    //     interaction: dragInteraction,
-    //     idxPath: player.dragStartEntity.idxPath.join(","),
-    //     status: true,
-    //   },
-    // } as ServerMessageTypes["dragStatus"]
 
     if (this.template.command) {
       return new Sequence("dragStart", [

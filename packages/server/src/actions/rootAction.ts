@@ -1,6 +1,5 @@
-import { logs } from "@cardsgame/utils"
-
 import type { Command } from "../command.js"
+import { prepareContext } from "../commandsManager/utils.js"
 import type {
   ClientMessageConditions,
   ClientMessageInitialSubjects,
@@ -9,24 +8,25 @@ import { runConditionOnAction } from "../interaction/runConditionOnAction.js"
 import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
 import type { State } from "../state/state.js"
 
-import type { BaseActionDefinition } from "./base.js"
-import type {
-  ActionsCollection,
+import { BaseActionDefinition, extendsBaseActionDefinition } from "./base.js"
+import {
+  CollectionActionDefinition,
   CollectionConditionsResult,
   CollectionContext,
+  extendsCollectionActionDefinition,
 } from "./collection.js"
-import {
-  CompoundContext,
-  isCompoundActionDefinition,
-} from "./compoundAction.js"
-import { ActionDefinition, isBasicActionDefinition } from "./types.js"
+import type { ActionDefinition } from "./types.js"
 
-export interface RootContext<S extends State> extends CollectionContext<S> {
-  subContexts: Map<ActionDefinition<S>, CollectionContext<S>>
+export type RootContext<S extends State> = {
+  successfulActions: Set<ActionDefinition<S>>
+  subContexts: Map<
+    ActionDefinition<S>,
+    CollectionContext<Record<string, unknown>>
+  >
 }
 
 export class RootActionDefinition<S extends State = State>
-  implements ActionsCollection<S, RootContext<S>>
+  implements CollectionActionDefinition<S, RootContext<S>>
 {
   name = "root"
 
@@ -44,7 +44,7 @@ export class RootActionDefinition<S extends State = State>
     }
   }
 
-  teardownContext(context: RootContext<S>): void {
+  teardownContext(context: CollectionContext<RootContext<S>>): void {
     // TODO: teardown each sub context from each action?
     context.successfulActions.clear()
     delete context.successfulActions
@@ -54,11 +54,11 @@ export class RootActionDefinition<S extends State = State>
 
   checkPrerequisites(
     message: ServerPlayerMessage,
-    rootContext: RootContext<S>
+    rootContext: CollectionContext<RootContext<S>>
   ): boolean {
     this.actions.forEach((action) => {
-      if (isCompoundActionDefinition(action)) {
-        const context = action.setupContext()
+      if (extendsCollectionActionDefinition(action)) {
+        const context = prepareContext(action)
         rootContext.subContexts.set(action, context)
 
         const result = action.checkPrerequisites(message, context)
@@ -71,7 +71,7 @@ export class RootActionDefinition<S extends State = State>
         }
 
         return result
-      } else if (isBasicActionDefinition(action)) {
+      } else if (extendsBaseActionDefinition(action)) {
         const result = action.checkPrerequisites(message)
         if (result) {
           rootContext.successfulActions.add(action)
@@ -80,39 +80,34 @@ export class RootActionDefinition<S extends State = State>
       }
     })
 
-    return this.successfulActionsCount(rootContext) > 0
+    return this.hasSuccessfulSubActions(rootContext)
   }
 
   checkConditions(
     con: ClientMessageConditions<S>,
     initialSubjects: ClientMessageInitialSubjects,
-    rootContext: RootContext<S>
-  ): CollectionConditionsResult<BaseActionDefinition<S>, S> {
-    const rejectedActions: CollectionConditionsResult<
-      BaseActionDefinition<S>,
-      S
-    > = new Map()
+    rootContext: CollectionContext<RootContext<S>>
+  ): CollectionConditionsResult<BaseActionDefinition<S>> {
+    const rejectedActions: CollectionConditionsResult<BaseActionDefinition<S>> =
+      new Map()
 
     rootContext.successfulActions.forEach((action) => {
-      if (isCompoundActionDefinition(action)) {
-        // Compounds
-        const context = rootContext.subContexts.get(
-          action
-        ) as CompoundContext<S>
+      if (extendsCollectionActionDefinition(action)) {
+        const context = rootContext.subContexts.get(action)
         const subRejectedActions = action.checkConditions(
           con,
           initialSubjects,
           context
         )
 
-        subRejectedActions.forEach((error, action) => {
+        subRejectedActions?.forEach((error, action) => {
           rejectedActions.set(action, error)
         })
 
-        if (action.successfulActionsCount(context) === 0) {
+        if (!action.hasSuccessfulSubActions(context)) {
           rootContext.successfulActions.delete(action)
         }
-      } else if (isBasicActionDefinition(action)) {
+      } else if (extendsBaseActionDefinition(action)) {
         // Basic actions
         const error = runConditionOnAction(con, initialSubjects, action)
         if (error) {
@@ -128,12 +123,12 @@ export class RootActionDefinition<S extends State = State>
   getCommand(
     state: S,
     event: ServerPlayerMessage,
-    rootContext: RootContext<S>
+    rootContext: CollectionContext<RootContext<S>>
   ): Command<S> {
     const action = this.getSuccessfulAction(rootContext)
 
-    if (isCompoundActionDefinition(action)) {
-      const context = rootContext.subContexts.get(action) as CompoundContext<S>
+    if (extendsCollectionActionDefinition(action)) {
+      const context = rootContext.subContexts.get(action)
       return action.getCommand(state, event, context)
     } else {
       return action.getCommand(state, event)
@@ -145,13 +140,18 @@ export class RootActionDefinition<S extends State = State>
     return true
   }
 
-  getSuccessfulAction(context: RootContext<S>): ActionDefinition<S> {
+  hasSuccessfulSubActions(context: CollectionContext<RootContext<S>>): boolean {
+    return context.successfulActions.size > 0
+  }
+  getSuccessfulAction(
+    context: CollectionContext<RootContext<S>>
+  ): ActionDefinition<S> {
     return [...context.successfulActions][0]
   }
-  successfulActionsCount(context: RootContext<S>): number {
+  _successfulActionsCount(context: CollectionContext<RootContext<S>>): number {
     return context.successfulActions.size
   }
-  allActionsCount(): number {
+  _allActionsCount(): number {
     return this.actions.length
   }
 }

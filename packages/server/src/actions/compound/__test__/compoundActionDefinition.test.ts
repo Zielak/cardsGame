@@ -1,15 +1,20 @@
-import type { Command } from "../../command.js"
+import type { Command } from "../../../command.js"
+import { prepareContext } from "../../../commandsManager/utils.js"
 import type {
   ClientMessageConditions,
   ClientMessageInitialSubjects,
-} from "../../interaction/conditions.js"
-import { ENTITY_INTERACTION } from "../../interaction/types.js"
-import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
-import type { State } from "../../state/state.js"
-import type { BaseActionTemplate } from "../base.js"
-import { CompoundActionDefinition, CompoundContext } from "../compoundAction.js"
-import { defineEntityAction } from "../entityAction.js"
-import { defineMessageAction } from "../messageAction.js"
+} from "../../../interaction/conditions.js"
+import { ENTITY_INTERACTION } from "../../../interaction/types.js"
+import type { ServerPlayerMessage } from "../../../player/serverPlayerMessage.js"
+import type { State } from "../../../state/state.js"
+import type { BaseActionTemplate } from "../../base.js"
+import type { CollectionContext } from "../../collection.js"
+import {
+  CompoundActionDefinition,
+  CompoundContext,
+} from "../../compound/compoundAction.js"
+import { defineEntityAction } from "../../entityAction.js"
+import { defineMessageAction } from "../../messageAction.js"
 
 const conditions = () => {}
 const command = (() => {}) as () => Command<State>
@@ -22,7 +27,7 @@ const baseTemplate: BaseActionTemplate<State> = {
 let baseMessage: ServerPlayerMessage
 let message: ServerPlayerMessage
 let compound: CompoundActionDefinition
-let context: CompoundContext<State>
+let context: CollectionContext<CompoundContext<State>>
 
 const parentEntity = Object.freeze({ type: "pile", name: "mainPile" })
 const targetEntity = Object.freeze({
@@ -63,7 +68,7 @@ beforeEach(() => {
     finishActions: [actionFinish],
   })
   console.log("beforeEach! context")
-  context = compound.setupContext()
+  context = prepareContext<CompoundContext<State>>(compound)
 })
 
 describe("CompoundActionDefinition", () => {
@@ -83,7 +88,7 @@ describe("CompoundActionDefinition", () => {
     })
     it("strips the object", () => {
       compound.teardownContext(context)
-      expect(context).toStrictEqual({})
+      expect(context).toStrictEqual({ pending: false })
     })
   })
 

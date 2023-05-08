@@ -29,6 +29,8 @@ export class Pile extends Entity<PileOptions> {
   create(state: State, options: PileOptions = {}): void {
     this.name = def(options.name, "Pile")
     this.type = def(options.type, "pile")
+
+    this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, true)
   }
 }
 

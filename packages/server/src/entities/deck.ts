@@ -59,6 +59,8 @@ export class Deck extends Entity<DeckOptions> {
     this.name = def(options.name, "Deck")
     this.type = def(options.type, "deck")
 
+    this.hijacksInteractionTarget = def(options.hijacksInteractionTarget, true)
+
     this.childCount = 0
     this.topDeck = new TopDeckElement()
 

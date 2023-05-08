@@ -576,7 +576,7 @@ ParentTrait["trait"] = function constructParentTrait(
   this.hijacksInteractionTarget = def(
     options.hijacksInteractionTarget,
     this.hijacksInteractionTarget,
-    true
+    false
   )
   this.maxChildren = def(
     limit(options.maxChildren, 0, Infinity),

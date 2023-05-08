@@ -48,3 +48,17 @@ export interface BaseActionDefinition<S extends State> {
 
   getCommand: (state: S, event: ServerPlayerMessage) => Command<S>
 }
+
+/**
+ * @ignore
+ */
+export function extendsBaseActionDefinition<S extends State>(
+  o: unknown
+): o is BaseActionDefinition<S> {
+  return (
+    typeof o === "object" &&
+    ["setupContext", "teardownContext", "hasSuccessfulSubActions"].every(
+      (m) => !(m in o)
+    )
+  )
+}

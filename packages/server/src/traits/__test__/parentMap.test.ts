@@ -17,7 +17,7 @@ describe("ParentConstructor", () => {
     const parent = new DumbParent(state, OPTIONS)
 
     expect(parent.countChildren()).toBe(0)
-    expect(parent.hijacksInteractionTarget).toBe(true)
+    expect(parent.hijacksInteractionTarget).toBe(false)
     expect(parent.maxChildren).toBe(Infinity)
   })
   test("remembers custom values", () => {

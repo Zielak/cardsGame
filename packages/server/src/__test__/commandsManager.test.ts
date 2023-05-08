@@ -10,6 +10,8 @@ import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
 import type { Room } from "../room/base.js"
 import { State } from "../state/state.js"
 
+jest.mock("../player/player.js")
+
 let state: State
 let event: ServerPlayerMessage
 let room: Room<State>
@@ -18,6 +20,7 @@ let manager: CommandsManager<State>
 const clientID = "testClient"
 
 const conditions = (): void => {}
+const baseMessage = { timestamp: 123, messageType: ENTITY_INTERACTION }
 
 const actions = [
   defineEntityAction<State>({
@@ -51,15 +54,14 @@ describe("commandsManager", () => {
   })
 
   describe("handlePlayerEvent", () => {
-    it("throws on failing message", () => {
-      expect(() =>
+    it("throws on failing message", async () => {
+      await expect(
         manager.handlePlayerEvent({
-          messageType: ENTITY_INTERACTION,
-          timestamp: 123,
+          ...baseMessage,
           interaction: "tap",
           player: new Player({ clientID: "foo" }),
         })
-      ).toThrow()
+      ).rejects.toThrow()
     })
   })
 

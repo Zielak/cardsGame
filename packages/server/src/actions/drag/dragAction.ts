@@ -5,9 +5,15 @@ import type {
   ClientMessageConditions,
   ClientMessageInitialSubjects,
 } from "../../interaction/conditions.js"
+import { runConditionOnAction } from "../../interaction/runConditionOnAction.js"
 import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import type { State } from "../../state/state.js"
 import type { BaseActionDefinition } from "../base.js"
+import type {
+  CollectionActionDefinition,
+  CollectionConditionsResult,
+  CollectionContext,
+} from "../collection.js"
 
 import { DragEndActionTemplate, DragEndActionDefinition } from "./end.js"
 import { DragStartActionDefinition, DragStartActionTemplate } from "./start.js"
@@ -69,8 +75,17 @@ export function isDragActionTemplate<S extends State = State>(
 /**
  * @ignore
  */
+export type DragContext = {
+  finished: boolean
+  prerequisitesFailed: boolean
+  conditionsFailed: boolean
+}
+
+/**
+ * @ignore
+ */
 export class DragActionDefinition<S extends State>
-  implements BaseActionDefinition<S>
+  implements CollectionActionDefinition<S, DragContext>
 {
   name: string
   start: DragStartActionDefinition<S>
@@ -82,34 +97,85 @@ export class DragActionDefinition<S extends State>
     this.end = new DragEndActionDefinition(template.end)
   }
 
-  checkPrerequisites(message: ServerPlayerMessage): boolean {
-    return (
-      this.end.checkPrerequisites(message) ||
-      this.start.checkPrerequisites(message)
-    )
+  setupContext(): DragContext {
+    return {
+      finished: false,
+      prerequisitesFailed: false,
+      conditionsFailed: false,
+    }
+  }
+
+  teardownContext(context: CollectionContext<DragContext>): void {
+    delete context.finished
+    delete context.prerequisitesFailed
+    delete context.conditionsFailed
+  }
+
+  checkPrerequisites(
+    message: ServerPlayerMessage,
+    context: CollectionContext<DragContext>
+  ): boolean {
+    const result = context.pending
+      ? this.end.checkPrerequisites(message)
+      : this.start.checkPrerequisites(message)
+
+    context.prerequisitesFailed = !result
+
+    if (context.pending && context.prerequisitesFailed) {
+      // Abort, when end failed
+      context.aborted = true
+    }
+
+    return result
   }
 
   checkConditions(
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects
-  ): void {
+    initialSubjects: ClientMessageInitialSubjects,
+    context: CollectionContext<DragContext>
+  ): CollectionConditionsResult<BaseActionDefinition<S>> {
     const { interaction, player } = initialSubjects
+    let error
 
-    if (isStartEvent(interaction, player.isTapDragging)) {
-      return this.start.checkConditions(con, initialSubjects)
-    } else if (isEndEvent(interaction, player.isTapDragging)) {
-      return this.end.checkConditions(con, initialSubjects)
+    if (!context.pending && isStartEvent(interaction, player.isTapDragging)) {
+      error = runConditionOnAction(con, initialSubjects, this.start)
+    } else if (
+      context.pending &&
+      isEndEvent(interaction, player.isTapDragging)
+    ) {
+      error = runConditionOnAction(con, initialSubjects, this.end)
+    }
+
+    if (error) {
+      context.conditionsFailed = true
+      return new Map([error])
     }
   }
 
-  getCommand(state: S, event: ServerPlayerMessage): Command<State> {
+  getCommand(
+    state: S,
+    event: ServerPlayerMessage,
+    context: CollectionContext<DragContext>
+  ): Command<State> {
     const { interaction, player } = event
 
-    if (isStartEvent(interaction, player.isTapDragging)) {
+    if (!context.pending && isStartEvent(interaction, player.isTapDragging)) {
       return this.start.getCommand(state, event)
-    } else if (isEndEvent(interaction, player.isTapDragging)) {
+    } else if (
+      context.pending &&
+      isEndEvent(interaction, player.isTapDragging)
+    ) {
+      context.finished = true
       return this.end.getCommand(state, event)
     }
+  }
+
+  hasSuccessfulSubActions(context: CollectionContext<DragContext>): boolean {
+    return !context.conditionsFailed && !context.prerequisitesFailed
+  }
+
+  hasFinished(context: CollectionContext<DragContext>): boolean {
+    return context.finished
   }
 }
 
