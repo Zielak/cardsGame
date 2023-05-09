@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.2](https://github.com/zielak/cardsGame/compare/v1.5.1...v1.5.2) (2023-05-09)
+
+
+### Bug Fixes
+
+* better handling for pending actions ([2120c86](https://github.com/zielak/cardsGame/commit/2120c866ec21063eee34792be637b56d623ddca4))
+
+
+
+
+
 ## [1.5.1](https://github.com/zielak/cardsGame/compare/v1.5.0...v1.5.1) (2023-05-06)
 
 **Note:** Version bump only for package @cardsgame/server-testing
