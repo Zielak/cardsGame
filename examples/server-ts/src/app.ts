@@ -6,7 +6,7 @@ import { WebSocketTransport } from "@colyseus/ws-transport"
 import express from "express"
 
 import { exitHandler } from "./exitHandler"
-import { WarGame } from "./game/room"
+import WarGame from "./game/room"
 
 const { key, cert } = certs()
 

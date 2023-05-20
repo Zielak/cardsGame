@@ -1,17 +1,18 @@
 import { logs } from "@cardsgame/utils"
 
 import { ENTITY_INTERACTION } from "../../interaction/types.js"
-import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import { queryRunner } from "../../queries/runner.js"
+import { State } from "../../state/state.js"
 import { isChild } from "../../traits/child.js"
+import { ClientMessageContext } from "../types.js"
 
 import type { InteractionQueries } from "./types.js"
 
-export function checkInteractionQueries(
-  message: ServerPlayerMessage,
-  interactionQueries: InteractionQueries
+export function checkInteractionQueries<S extends State>(
+  messageContext: ClientMessageContext<S>,
+  interactionQueries: InteractionQueries<S>
 ): boolean {
-  const interactions = interactionQueries(message.player)
+  const interactions = interactionQueries(messageContext)
 
   const isCatchAll = interactions === "*"
 
@@ -35,8 +36,8 @@ export function checkInteractionQueries(
 
   // Expecting interaction but without entity reference?
   if (
-    !message.entity &&
-    message.messageType === ENTITY_INTERACTION &&
+    !messageContext.entity &&
+    messageContext.messageType === ENTITY_INTERACTION &&
     interactions.length === 0
   ) {
     return true
@@ -44,7 +45,7 @@ export function checkInteractionQueries(
 
   return interactions.some((definition) => {
     // Check props for every interactive entity in `targets` array
-    return message.entities
+    return messageContext.entities
       ?.filter((currentTarget) =>
         isChild(currentTarget) ? currentTarget.isInteractive() : false
       )

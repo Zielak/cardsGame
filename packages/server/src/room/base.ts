@@ -1,5 +1,5 @@
 import { logs } from "@cardsgame/utils"
-import { Client, ISendOptions, Room as colRoom } from "@colyseus/core"
+import { type Client, type ISendOptions, Room as colRoom } from "@colyseus/core"
 import type { IBroadcastOptions } from "@colyseus/core/build/Room.js"
 
 import type { ActionDefinition } from "../actions/types.js"
@@ -16,7 +16,7 @@ import type {
 import { fallback } from "../messages/fallback.js"
 import { messages } from "../messages/messageHandler.js"
 import type { Player, ServerPlayerMessage, Bot } from "../player/index.js"
-import type { State } from "../state/state.js"
+import type { State, StateConstructorOptions } from "../state/state.js"
 import { debugRoomMessage } from "../utils/debugRoomMessage.js"
 
 import type { RoomDefinition } from "./roomType.js"
@@ -33,11 +33,20 @@ export abstract class Room<
     MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>
   >
   extends colRoom<S>
-  implements RoomDefinition<S>
+  implements Required<RoomDefinition<S>>
 {
   patchRate = 100 // ms = 10FPS
 
   commandsManager: CommandsManager<S>
+
+  /**
+   * Reference to your game's `State` class.
+   */
+  stateConstructor: new (
+    options: StateConstructorOptions<S["variantData"]>
+  ) => S
+
+  variantDefaults: Required<S["variantData"]>
 
   /**
    * May be undefined if the game doesn't include any
@@ -45,6 +54,9 @@ export abstract class Room<
    */
   botRunner?: BotRunner<S>
 
+  /**
+   * Set of all possible actions players can take in this game
+   */
   possibleActions: ActionDefinition<S>[]
   botActivities: BotActionsSet<S>
   botClients: Bot[] = []
@@ -90,7 +102,7 @@ export abstract class Room<
     }
   }
 
-  onCreate(options?: Record<string, any>): void {
+  onCreate(options?: RoomCreateOptions): void {
     logs.info(`Room:${this.name}`, "creating new room")
 
     if (!this.possibleActions) {
@@ -109,6 +121,11 @@ export abstract class Room<
     })
     this.onMessage("*", fallback.bind(this))
 
+    // Let the game initialize!
+    // TODO: state constructor options?
+    this.setState(
+      new this.stateConstructor({ variantData: options?.variantData })
+    )
     this.onInitGame(options)
 
     if (this.integrationHooks && options?.test in this.integrationHooks) {
@@ -289,11 +306,15 @@ export abstract class Room<
 
   /**
    * Will be called right after the game room is created.
-   * Create your game state here: `this.setState(new MyState())`.
+   * Create your game state here:
+   *
+   * ~~```this.setState(new MyState())```~~ DON'T
+   *
    * Prepare your play area now.
+   *
    * @param state
    */
-  onInitGame(options?: Record<string, any>): void {
+  onInitGame(options?: RoomCreateOptions): void {
     logs.info("Room", `onInitGame is not implemented!`)
   }
 
@@ -303,7 +324,7 @@ export abstract class Room<
    * After this function, the game will give turn to the first player.
    * @param state
    */
-  onStartGame(state: State): void | Command[] {
+  onStartGame(): void | Command[] {
     logs.info("Room", `onStartGame is not implemented!`)
   }
 

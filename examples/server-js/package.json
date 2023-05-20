@@ -1,6 +1,7 @@
 {
   "name": "@cardsgame/example-server-js",
   "version": "1.5.2",
+  "private": true,
   "description": "Simplest implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",

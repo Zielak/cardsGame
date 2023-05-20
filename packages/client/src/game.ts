@@ -57,7 +57,7 @@ export class Game {
     return this.lobby
   }
 
-  joinOrCreate(roomName: string, options?: Record<string, any>): Promise<Room> {
+  joinOrCreate(roomName: string, options?: RoomCreateOptions): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.joinOrCreate(roomName, options).then((room) => {
@@ -66,7 +66,7 @@ export class Game {
     })
   }
 
-  create(roomName: string, options?: Record<string, any>): Promise<Room> {
+  create(roomName: string, options?: RoomCreateOptions): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.create(roomName, options).then((room) => {
@@ -79,7 +79,7 @@ export class Game {
    * This one is probably useless for game rooms.
    * Use `joinOrCreate` instead.
    */
-  join(roomName: string, options?: Record<string, any>): Promise<Room> {
+  join(roomName: string, options?: RoomCreateOptions): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.join(roomName, options).then((room) => {
@@ -88,7 +88,7 @@ export class Game {
     })
   }
 
-  joinById(roomId: string, options?: Record<string, any>): Promise<Room> {
+  joinById(roomId: string, options?: RoomCreateOptions): Promise<Room> {
     this.room && this.room.leave()
 
     return this.client.joinById(roomId, options).then((room) => {

@@ -1,11 +1,7 @@
 import type { Command } from "../command.js"
-import { prepareContext } from "../commandsManager/utils.js"
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../interaction/conditions.js"
+import { prepareActionContext } from "../commandsManager/utils.js"
+import type { ClientMessageConditions } from "../interaction/conditions.js"
 import { runConditionOnAction } from "../interaction/runConditionOnAction.js"
-import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
 import type { State } from "../state/state.js"
 
 import { BaseActionDefinition, extendsBaseActionDefinition } from "./base.js"
@@ -15,7 +11,7 @@ import {
   CollectionContext,
   extendsCollectionActionDefinition,
 } from "./collection.js"
-import type { ActionDefinition } from "./types.js"
+import type { ActionDefinition, ClientMessageContext } from "./types.js"
 
 export type RootContext<S extends State> = {
   successfulActions: Set<ActionDefinition<S>>
@@ -53,18 +49,18 @@ export class RootActionDefinition<S extends State = State>
   }
 
   checkPrerequisites(
-    message: ServerPlayerMessage,
+    messageContext: ClientMessageContext<S>,
     rootContext: CollectionContext<RootContext<S>>
   ): boolean {
     this.actions.forEach((action) => {
       if (extendsCollectionActionDefinition(action)) {
-        const context = prepareContext(action)
-        rootContext.subContexts.set(action, context)
+        const actionContext = prepareActionContext(action)
+        rootContext.subContexts.set(action, actionContext)
 
-        const result = action.checkPrerequisites(message, context)
+        const result = action.checkPrerequisites(messageContext, actionContext)
 
         if (!result) {
-          action.teardownContext(context)
+          action.teardownContext(actionContext)
           rootContext.subContexts.delete(action)
         } else {
           rootContext.successfulActions.add(action)
@@ -72,7 +68,7 @@ export class RootActionDefinition<S extends State = State>
 
         return result
       } else if (extendsBaseActionDefinition(action)) {
-        const result = action.checkPrerequisites(message)
+        const result = action.checkPrerequisites(messageContext)
         if (result) {
           rootContext.successfulActions.add(action)
         }
@@ -85,7 +81,7 @@ export class RootActionDefinition<S extends State = State>
 
   checkConditions(
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects,
+    messageContext: ClientMessageContext<S>,
     rootContext: CollectionContext<RootContext<S>>
   ): CollectionConditionsResult<BaseActionDefinition<S>> {
     const rejectedActions: CollectionConditionsResult<BaseActionDefinition<S>> =
@@ -93,23 +89,23 @@ export class RootActionDefinition<S extends State = State>
 
     rootContext.successfulActions.forEach((action) => {
       if (extendsCollectionActionDefinition(action)) {
-        const context = rootContext.subContexts.get(action)
+        const actionContext = rootContext.subContexts.get(action)
         const subRejectedActions = action.checkConditions(
           con,
-          initialSubjects,
-          context
+          messageContext,
+          actionContext
         )
 
         subRejectedActions?.forEach((error, action) => {
           rejectedActions.set(action, error)
         })
 
-        if (!action.hasSuccessfulSubActions(context)) {
+        if (!action.hasSuccessfulSubActions(actionContext)) {
           rootContext.successfulActions.delete(action)
         }
       } else if (extendsBaseActionDefinition(action)) {
         // Basic actions
-        const error = runConditionOnAction(con, initialSubjects, action)
+        const error = runConditionOnAction(con, messageContext, action)
         if (error) {
           rejectedActions.set(action, error)
           rootContext.successfulActions.delete(action)
@@ -121,17 +117,16 @@ export class RootActionDefinition<S extends State = State>
   }
 
   getCommand(
-    state: S,
-    event: ServerPlayerMessage,
+    messageContext: ClientMessageContext<S>,
     rootContext: CollectionContext<RootContext<S>>
   ): Command<S> {
     const action = this.getSuccessfulAction(rootContext)
 
     if (extendsCollectionActionDefinition(action)) {
       const context = rootContext.subContexts.get(action)
-      return action.getCommand(state, event, context)
+      return action.getCommand(messageContext, context)
     } else {
-      return action.getCommand(state, event)
+      return action.getCommand(messageContext)
     }
   }
 

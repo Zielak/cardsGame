@@ -1,12 +1,8 @@
 import { chalk, Logs } from "@cardsgame/utils"
 
 import type { Command } from "../../command.js"
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../../interaction/conditions.js"
+import type { ClientMessageConditions } from "../../interaction/conditions.js"
 import { runConditionOnAction } from "../../interaction/runConditionOnAction.js"
-import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import type { State } from "../../state/state.js"
 import type { BaseActionDefinition } from "../base.js"
 import type {
@@ -14,6 +10,7 @@ import type {
   CollectionConditionsResult,
   CollectionContext,
 } from "../collection.js"
+import { ClientMessageContext } from "../types.js"
 
 import { DragEndActionTemplate, DragEndActionDefinition } from "./end.js"
 import { DragStartActionDefinition, DragStartActionTemplate } from "./start.js"
@@ -112,18 +109,18 @@ export class DragActionDefinition<S extends State>
   }
 
   checkPrerequisites(
-    message: ServerPlayerMessage,
-    context: CollectionContext<DragContext>
+    messageContext: ClientMessageContext<S>,
+    actionContext: CollectionContext<DragContext>
   ): boolean {
-    const result = context.pending
-      ? this.end.checkPrerequisites(message)
-      : this.start.checkPrerequisites(message)
+    const result = actionContext.pending
+      ? this.end.checkPrerequisites(messageContext)
+      : this.start.checkPrerequisites(messageContext)
 
-    context.prerequisitesFailed = !result
+    actionContext.prerequisitesFailed = !result
 
-    if (context.pending && context.prerequisitesFailed) {
+    if (actionContext.pending && actionContext.prerequisitesFailed) {
       // Abort, when end failed
-      context.aborted = true
+      actionContext.aborted = true
     }
 
     return result
@@ -131,42 +128,47 @@ export class DragActionDefinition<S extends State>
 
   checkConditions(
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects,
-    context: CollectionContext<DragContext>
+    messageContext: ClientMessageContext<S>,
+    actionContext: CollectionContext<DragContext>
   ): CollectionConditionsResult<BaseActionDefinition<S>> {
-    const { interaction, player } = initialSubjects
+    const { interaction, player } = messageContext
     let error
 
-    if (!context.pending && isStartEvent(interaction, player.isTapDragging)) {
-      error = runConditionOnAction(con, initialSubjects, this.start)
+    if (
+      !actionContext.pending &&
+      isStartEvent(interaction, player.isTapDragging)
+    ) {
+      error = runConditionOnAction(con, messageContext, this.start)
     } else if (
-      context.pending &&
+      actionContext.pending &&
       isEndEvent(interaction, player.isTapDragging)
     ) {
-      error = runConditionOnAction(con, initialSubjects, this.end)
+      error = runConditionOnAction(con, messageContext, this.end)
     }
 
     if (error) {
-      context.conditionsFailed = true
+      actionContext.conditionsFailed = true
       return new Map([error])
     }
   }
 
   getCommand(
-    state: S,
-    event: ServerPlayerMessage,
-    context: CollectionContext<DragContext>
+    messageContext: ClientMessageContext<S>,
+    actionContext: CollectionContext<DragContext>
   ): Command<State> {
-    const { interaction, player } = event
+    const { interaction, player } = messageContext
 
-    if (!context.pending && isStartEvent(interaction, player.isTapDragging)) {
-      return this.start.getCommand(state, event)
+    if (
+      !actionContext.pending &&
+      isStartEvent(interaction, player.isTapDragging)
+    ) {
+      return this.start.getCommand(messageContext)
     } else if (
-      context.pending &&
+      actionContext.pending &&
       isEndEvent(interaction, player.isTapDragging)
     ) {
-      context.finished = true
-      return this.end.getCommand(state, event)
+      actionContext.finished = true
+      return this.end.getCommand(messageContext)
     }
   }
 

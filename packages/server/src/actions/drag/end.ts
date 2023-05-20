@@ -1,13 +1,10 @@
 import type { Command } from "../../command.js"
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../../interaction/conditions.js"
-import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
+import type { ClientMessageConditions } from "../../interaction/conditions.js"
 import type { State } from "../../state/state.js"
 import type { BaseActionDefinition, BaseActionTemplate } from "../base.js"
 import { checkInteractionQueries } from "../shared/prerequisites.js"
 import type { InteractionQueries } from "../shared/types.js"
+import { ClientMessageContext } from "../types.js"
 
 /**
  * @category Action definitions
@@ -22,7 +19,7 @@ export interface DragEndActionTemplate<S extends State = State>
    * Return empty array to indicate interest in interaction events without
    * a reference to entities.
    */
-  interaction: InteractionQueries
+  interaction: InteractionQueries<S>
 }
 
 /**
@@ -35,30 +32,30 @@ export class DragEndActionDefinition<S extends State>
 
   constructor(private template: DragEndActionTemplate<S>) {}
 
-  checkPrerequisites(message: ServerPlayerMessage): boolean {
-    if (message.interaction === "tap") {
-      if (!message.player.isTapDragging) {
+  checkPrerequisites(messageContext: ClientMessageContext<S>): boolean {
+    if (messageContext.interaction === "tap") {
+      if (!messageContext.player.isTapDragging) {
         // Tap fallback available for "end action"
         // only when player has that flag on
         return false
       }
       // Otherwise, let it try its luck with queries
-    } else if (message.interaction !== "dragend") {
+    } else if (messageContext.interaction !== "dragend") {
       // Anything else than "tap" or "dragend" don't interest us here
       return false
     }
 
-    return checkInteractionQueries(message, this.template.interaction)
+    return checkInteractionQueries(messageContext, this.template.interaction)
   }
 
   checkConditions(
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects
+    messageContext: ClientMessageContext<S>
   ): void {
-    this.template.conditions(con, initialSubjects)
+    this.template.conditions(con, messageContext)
   }
 
-  getCommand(state: S, event: ServerPlayerMessage): Command<State> {
-    return this.template.command(state, event)
+  getCommand(messageContext: ClientMessageContext<S>): Command<State> {
+    return this.template.command(messageContext)
   }
 }

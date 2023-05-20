@@ -1,11 +1,12 @@
 import { isDragActionDefinition } from "../../actions/drag/dragAction.js"
 import { isEntityActionDefinition } from "../../actions/entityAction.js"
 import { isMessageActionDefinition } from "../../actions/messageAction.js"
-import {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../../interaction/conditions.js"
+import { ClientMessageConditions } from "../../interaction/conditions.js"
 import { ENTITY_INTERACTION } from "../../interaction/types.js"
+import {
+  playerMessageToInitialSubjects,
+  prepareClientMessageContext,
+} from "../../interaction/utils.js"
 import type { Bot } from "../../player/bot.js"
 import type { State } from "../../state/state.js"
 import { populatePlayerEvent } from "../../utils/populatePlayerEvent.js"
@@ -51,25 +52,22 @@ export const getPossibleEvents = <S extends State>(
       // and test if such event would pass
       .filter((event) => {
         logs.debug("entity.idxPath:", event.entityPath)
-        const serverEvent = populatePlayerEvent(state, event, bot)
+        const message = populatePlayerEvent(state, event, bot)
 
-        const initialSubjects = Object.keys(serverEvent)
-          .filter(
-            (key) => !["timestamp", "entities", "entityPath"].includes(key)
-          )
-          .reduce((o, key) => {
-            o[key] = serverEvent[key]
-            return o
-          }, {} as ClientMessageInitialSubjects)
-
-        const conditionsChecker = new ClientMessageConditions<S>(
+        const initialSubjects = playerMessageToInitialSubjects(message)
+        const messageContext = prepareClientMessageContext(
           state,
           initialSubjects
         )
 
+        const conditionsChecker = new ClientMessageConditions<S>(
+          state,
+          messageContext
+        )
+
         try {
           logs.debug(`pre checkConditions()`)
-          action.checkConditions(conditionsChecker, initialSubjects)
+          action.checkConditions(conditionsChecker, messageContext)
         } catch (e) {
           logs.debug(`checkConditions() FAILED!`, e)
           return false

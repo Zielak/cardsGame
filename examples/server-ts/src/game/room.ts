@@ -1,54 +1,27 @@
-import {
-  commands,
-  standardDeckFactory,
-  entities,
-  Room,
-} from "@cardsgame/server"
+import { commands, entities, defineRoom } from "@cardsgame/server"
 
 import { PickCard } from "./actions"
 import { JustPlayGoal } from "./bot"
 import { WarState } from "./state"
 
-export class WarGame extends Room<WarState, WarMessageTypes> {
-  // Just some quick references to basic entities
-  deck: entities.Deck
-  pile: entities.Pile
+export default defineRoom<WarState>("WarGame", {
+  stateConstructor: WarState,
+  variantDefaults: {
+    anteRatio: 0.5,
+  },
 
-  constructor(options) {
-    super(options)
-    this.maxClients = 2
-    this.possibleActions = [PickCard]
-    this.botActivities = new Set([JustPlayGoal])
-  }
-
-  onInitGame() {
-    this.setState(new WarState())
-
-    const { state } = this
-
-    this.deck = new entities.Deck(state, {
-      name: "mainDeck",
-      x: 50,
-    })
-    this.pile = new entities.Pile(state, {
-      name: "mainPile",
-    })
-    standardDeckFactory().forEach(
-      (data) =>
-        new entities.ClassicCard(state, {
-          parent: this.deck,
-          suit: data.suit,
-          rank: data.rank,
-        })
-    )
-  }
+  maxClients: 2,
+  possibleActions: [PickCard],
+  botActivities: new Set([JustPlayGoal]),
 
   canGameStart() {
     return this.allClientsCount === 2
-  }
+  },
 
   onStartGame() {
     const { state } = this
+
+    const mainDeck = state.query<entities.Deck>({ name: "mainDeck" })
 
     // Prepare all (both) players
     const decks = []
@@ -76,10 +49,10 @@ export class WarGame extends Room<WarState, WarMessageTypes> {
 
     // Shuffle & Deal the cards
     return [
-      new commands.ShuffleChildren(this.deck),
-      new commands.DealCards(this.deck, decks),
+      new commands.ShuffleChildren(mainDeck),
+      new commands.DealCards(mainDeck, decks),
     ]
-  }
+  },
 
   onRoundStart() {
     const { state } = this
@@ -87,12 +60,12 @@ export class WarGame extends Room<WarState, WarMessageTypes> {
     state.players.forEach((player, idx) => {
       state.playersPlayed.set(player.clientID, false)
     })
-  }
+  },
 
   onRoundEnd() {
     const { state } = this
 
-    state.ante = Math.floor(state.round / 2)
+    state.ante = Math.floor(state.round * state.variantData.anteRatio)
 
     const playersDecks = state
       .queryAll<entities.Deck>({ type: "deck" })
@@ -108,5 +81,5 @@ export class WarGame extends Room<WarState, WarMessageTypes> {
         winner: winner.clientID,
       })
     }
-  }
-}
+  },
+})

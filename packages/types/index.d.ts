@@ -85,6 +85,22 @@ type ClientPlayerMessage = RawInteractionClientPlayerMessage & {
   messageType: string
 }
 
+interface RoomCreateOptions {
+  [key: string]: unknown
+  /**
+   * Name of integration test to execute
+   */
+  test?: string
+  /**
+   * Hand picked values for the game's variant
+   */
+  variantData?: Record<string, any>
+  /**
+   * Name of the pre-defined variant preset, players wish to play
+   */
+  variantPreset?: string
+}
+
 /**
  * Player's entry in the game state
  */

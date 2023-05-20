@@ -8,7 +8,7 @@
     "target": "ES2020",
     "sourceMap": true,
     "stripInternal": true,
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": false,
     "forceConsistentCasingInFileNames": true
   }
 }

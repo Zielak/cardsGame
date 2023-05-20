@@ -1,12 +1,10 @@
 import type { Command } from "../../../command.js"
-import { prepareContext } from "../../../commandsManager/utils.js"
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../../../interaction/conditions.js"
+import { prepareActionContext } from "../../../commandsManager/utils.js"
+import type { ClientMessageConditions } from "../../../interaction/conditions.js"
 import { ENTITY_INTERACTION } from "../../../interaction/types.js"
+import { prepareClientMessageContext } from "../../../interaction/utils.js"
 import type { ServerPlayerMessage } from "../../../player/serverPlayerMessage.js"
-import type { State } from "../../../state/state.js"
+import { State } from "../../../state/state.js"
 import type { BaseActionTemplate } from "../../base.js"
 import type { CollectionContext } from "../../collection.js"
 import {
@@ -15,7 +13,12 @@ import {
 } from "../../compound/compoundAction.js"
 import { defineEntityAction } from "../../entityAction.js"
 import { defineMessageAction } from "../../messageAction.js"
+import { ClientMessageContext } from "../../types.js"
 
+jest.mock("../../../state/state.js")
+jest.mock("../../../player/player.js")
+
+const state = new State()
 const conditions = () => {}
 const command = (() => {}) as () => Command<State>
 const baseTemplate: BaseActionTemplate<State> = {
@@ -25,7 +28,7 @@ const baseTemplate: BaseActionTemplate<State> = {
 }
 
 let baseMessage: ServerPlayerMessage
-let message: ServerPlayerMessage
+let messageContext: ClientMessageContext<State>
 let compound: CompoundActionDefinition
 let context: CollectionContext<CompoundContext<State>>
 
@@ -68,7 +71,7 @@ beforeEach(() => {
     finishActions: [actionFinish],
   })
   console.log("beforeEach! context")
-  context = prepareContext<CompoundContext<State>>(compound)
+  context = prepareActionContext<CompoundContext<State>>(compound)
 })
 
 describe("CompoundActionDefinition", () => {
@@ -100,64 +103,62 @@ describe("CompoundActionDefinition", () => {
         messageType: ENTITY_INTERACTION,
         timestamp: 123,
       }
+      messageContext = prepareClientMessageContext(state, baseMessage)
 
       jest.spyOn(actionEntity, "checkPrerequisites")
       jest.spyOn(actionAbort, "checkPrerequisites")
       jest.spyOn(actionFinish, "checkPrerequisites")
 
-      compound.checkPrerequisites(baseMessage, context)
+      compound.checkPrerequisites(messageContext, context)
 
-      expect(actionEntity.checkPrerequisites).toHaveBeenCalledWith(baseMessage)
-      expect(actionAbort.checkPrerequisites).toHaveBeenCalledWith(baseMessage)
-      expect(actionFinish.checkPrerequisites).toHaveBeenCalledWith(baseMessage)
+      expect(actionEntity.checkPrerequisites).toHaveBeenCalledWith(
+        messageContext
+      )
+      expect(actionAbort.checkPrerequisites).toHaveBeenCalledWith(
+        messageContext
+      )
+      expect(actionFinish.checkPrerequisites).toHaveBeenCalledWith(
+        messageContext
+      )
     })
 
     it("returns true on one of the actions matching", () => {
-      expect(
-        compound.checkPrerequisites(
-          {
-            entity: targetEntity,
-            entities,
-            messageType: ENTITY_INTERACTION,
-            interaction: "tap",
-            timestamp: 123,
-          },
-          context
-        )
-      ).toBe(true)
+      messageContext = prepareClientMessageContext(state, {
+        entity: targetEntity,
+        entities,
+        messageType: ENTITY_INTERACTION,
+        interaction: "tap",
+      })
+      expect(compound.checkPrerequisites(messageContext, context)).toBe(true)
     })
 
     it("returns true on abort matching", () => {
-      expect(
-        compound.checkPrerequisites(
-          { messageType: ABORT, timestamp: 123 },
-          context
-        )
-      ).toBe(true)
+      messageContext = prepareClientMessageContext(state, {
+        messageType: ABORT,
+      })
+      expect(compound.checkPrerequisites(messageContext, context)).toBe(true)
     })
 
     it("returns true on finish matching", () => {
-      expect(
-        compound.checkPrerequisites(
-          { messageType: FINISH, timestamp: 123 },
-          context
-        )
-      ).toBe(true)
+      messageContext = prepareClientMessageContext(state, {
+        messageType: FINISH,
+      })
+      expect(compound.checkPrerequisites(messageContext, context)).toBe(true)
     })
 
     it("returns false on non-matching message", () => {
-      expect(
-        compound.checkPrerequisites(
-          { messageType: "foo", timestamp: 123 },
-          context
-        )
-      ).toBe(false)
+      messageContext = prepareClientMessageContext(state, {
+        messageType: "foo",
+      })
+      expect(compound.checkPrerequisites(messageContext, context)).toBe(false)
     })
   })
 
   describe("checkConditions", () => {
     const con = (() => {}) as ClientMessageConditions<State>
-    const ini = {} as ClientMessageInitialSubjects
+    messageContext = prepareClientMessageContext(state, {
+      messageType: ENTITY_INTERACTION,
+    })
 
     describe("runs checkConditions only on actions which passed prerequisites checks", () => {
       beforeEach(() => {
@@ -171,8 +172,11 @@ describe("CompoundActionDefinition", () => {
         context.successfulActions.add(actionAbort)
         expect(context.successfulActions.size).toBe(1)
 
-        compound.checkConditions(con, ini, context)
-        expect(actionAbort.checkConditions).toHaveBeenCalledWith(con, ini)
+        compound.checkConditions(con, messageContext, context)
+        expect(actionAbort.checkConditions).toHaveBeenCalledWith(
+          con,
+          messageContext
+        )
         expect(actionFinish.checkConditions).not.toHaveBeenCalled()
         expect(actionEntity.checkConditions).not.toHaveBeenCalled()
       })
@@ -181,9 +185,12 @@ describe("CompoundActionDefinition", () => {
         context.successfulActions.add(actionFinish)
         expect(context.successfulActions.size).toBe(1)
 
-        compound.checkConditions(con, ini, context)
+        compound.checkConditions(con, messageContext, context)
         expect(actionAbort.checkConditions).not.toHaveBeenCalled()
-        expect(actionFinish.checkConditions).toHaveBeenCalledWith(con, ini)
+        expect(actionFinish.checkConditions).toHaveBeenCalledWith(
+          con,
+          messageContext
+        )
         expect(actionEntity.checkConditions).not.toHaveBeenCalled()
       })
 
@@ -191,15 +198,18 @@ describe("CompoundActionDefinition", () => {
         context.successfulActions.add(actionEntity)
         expect(context.successfulActions.size).toBe(1)
 
-        compound.checkConditions(con, ini, context)
+        compound.checkConditions(con, messageContext, context)
         expect(actionAbort.checkConditions).not.toHaveBeenCalled()
         expect(actionFinish.checkConditions).not.toHaveBeenCalled()
-        expect(actionEntity.checkConditions).toHaveBeenCalledWith(con, ini)
+        expect(actionEntity.checkConditions).toHaveBeenCalledWith(
+          con,
+          messageContext
+        )
       })
 
       test("nothing was successful", () => {
         expect(context.successfulActions.size).toBe(0)
-        compound.checkConditions(con, ini, context)
+        compound.checkConditions(con, messageContext, context)
         expect(actionFinish.checkConditions).not.toHaveBeenCalled()
         expect(actionAbort.checkConditions).not.toHaveBeenCalled()
         expect(actionEntity.checkConditions).not.toHaveBeenCalled()
@@ -219,7 +229,7 @@ describe("CompoundActionDefinition", () => {
       context.successfulActions.add(actionAbort)
       context.successfulActions.add(actionFinish)
 
-      compound.getCommand({} as State, {} as ServerPlayerMessage, context)
+      compound.getCommand({} as ClientMessageContext<State>, context)
 
       expect(actionAbort.getCommand).toHaveBeenCalled()
       expect(actionFinish.getCommand).not.toHaveBeenCalled()

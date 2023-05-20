@@ -41,10 +41,25 @@
       "require": "./lib/cjs/traits/index.cjs",
       "types": "./lib/types/traits/index.d.ts"
     },
+    "./internal/actions/types": {
+      "import": "./lib/esm/actions/types.js",
+      "require": "./lib/cjs/actions/types.cjs",
+      "types": "./lib/types/actions/types.d.ts"
+    },
+    "./internal/commandsManager/utils": {
+      "import": "./lib/esm/commandsManager/utils.js",
+      "require": "./lib/cjs/commandsManager/utils.cjs",
+      "types": "./lib/types/commandsManager/utils.d.ts"
+    },
     "./internal/interaction/runConditionOnAction": {
       "import": "./lib/esm/interaction/runConditionOnAction.js",
       "require": "./lib/cjs/interaction/runConditionOnAction.cjs",
       "types": "./lib/types/interaction/runConditionOnAction.d.ts"
+    },
+    "./internal/interaction/utils": {
+      "import": "./lib/esm/interaction/utils.js",
+      "require": "./lib/cjs/interaction/utils.cjs",
+      "types": "./lib/types/interaction/utils.d.ts"
     },
     "./internal/queries/internalTypes": {
       "import": "./lib/esm/queries/internalTypes.js",

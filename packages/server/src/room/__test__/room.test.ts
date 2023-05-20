@@ -1,13 +1,16 @@
 import { Client, Room as ColyRoom } from "@colyseus/core"
-import { ArraySchema } from "@colyseus/schema"
 
-import { ENTITY_INTERACTION, Player, State } from "../../index.js"
+import { ENTITY_INTERACTION } from "../../interaction/types.js"
 import { start } from "../../messages/start.js"
+import { Player } from "../../player/player.js"
+import { State } from "../../state/state.js"
 import { Room } from "../base.js"
 
-let room: Room<State>
-
+jest.mock("../../state/state.js")
+jest.mock("../../player/player.js")
 jest.mock("@colyseus/core")
+
+let room: Room<State>
 
 class TestRoom extends Room<State> {}
 
@@ -15,10 +18,8 @@ beforeEach(() => {
   room = new TestRoom()
   room.setPatchRate(0)
   room.clients = []
-  room.state = {
-    isGameOver: false,
-    clients: new ArraySchema(),
-  } as State
+  room.state = new State()
+  room.stateConstructor = State
 })
 
 describe("onCreate", () => {

@@ -1,10 +1,7 @@
 import { logs } from "@cardsgame/utils"
 
 import type { Command } from "../../command.js"
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../../interaction/conditions.js"
+import type { ClientMessageConditions } from "../../interaction/conditions.js"
 import { runConditionOnAction } from "../../interaction/runConditionOnAction.js"
 import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import type { State } from "../../state/state.js"
@@ -14,6 +11,7 @@ import type {
   CollectionConditionsResult,
   CollectionContext,
 } from "../collection.js"
+import { ClientMessageContext } from "../types.js"
 
 import { CompoundActionChild, canActionBeInCompound } from "./types.js"
 
@@ -27,6 +25,7 @@ import { CompoundActionChild, canActionBeInCompound } from "./types.js"
  * ~~@deprecated Focus on drag&drop. Continue with compound once you find a CONCRETE use case for it.~~
  * game-moving-cards-test-server might be enough of use case
  * @category Action definitions
+ * @ignore
  */
 export interface CompoundActionTemplate<S extends State = State> {
   name: string
@@ -156,21 +155,21 @@ export class CompoundActionDefinition<S extends State = State>
   }
 
   checkPrerequisites(
-    message: ServerPlayerMessage,
+    messageContext: ClientMessageContext<S>,
     context: CollectionContext<CompoundContext<S>>
   ): boolean {
     logs.group(this.template.name)
 
     this.abortActions
-      .filter((action) => action.checkPrerequisites(message))
+      .filter((action) => action.checkPrerequisites(messageContext))
       .forEach((action) => context.successfulAbort.add(action))
 
     this.actions
-      .filter((action) => action.checkPrerequisites(message))
+      .filter((action) => action.checkPrerequisites(messageContext))
       .forEach((action) => context.successfulActions.add(action))
 
     this.finishActions
-      .filter((action) => action.checkPrerequisites(message))
+      .filter((action) => action.checkPrerequisites(messageContext))
       .forEach((action) => context.successfulFinish.add(action))
 
     logs.groupEnd(
@@ -184,7 +183,7 @@ export class CompoundActionDefinition<S extends State = State>
 
   checkConditions(
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects,
+    messageContext: ClientMessageContext<S>,
     context: CollectionContext<CompoundContext<S>>
   ): CollectionConditionsResult<BaseActionDefinition<S>> {
     const rejectedActions: CollectionConditionsResult<BaseActionDefinition<S>> =
@@ -195,7 +194,7 @@ export class CompoundActionDefinition<S extends State = State>
       if (context.aborted) {
         return
       }
-      const error = runConditionOnAction(con, initialSubjects, action)
+      const error = runConditionOnAction(con, messageContext, action)
       if (error) {
         rejectedActions.set(action, error)
         context.successfulAbort.delete(action)
@@ -220,7 +219,7 @@ export class CompoundActionDefinition<S extends State = State>
       if (context.finished) {
         return
       }
-      const error = runConditionOnAction(con, initialSubjects, action)
+      const error = runConditionOnAction(con, messageContext, action)
       if (error) {
         rejectedActions.set(action, error)
         context.successfulFinish.delete(action)
@@ -242,7 +241,7 @@ export class CompoundActionDefinition<S extends State = State>
 
     // The rest
     context.successfulActions.forEach((action) => {
-      const error = runConditionOnAction(con, initialSubjects, action)
+      const error = runConditionOnAction(con, messageContext, action)
       if (error) {
         rejectedActions.set(action, error)
         context.successfulActions.delete(action)
@@ -255,13 +254,12 @@ export class CompoundActionDefinition<S extends State = State>
   }
 
   getCommand(
-    state: S,
-    event: ServerPlayerMessage,
+    messageContext: ClientMessageContext<S>,
     context: CollectionContext<CompoundContext<S>>
   ): Command<S> {
     const first = this.getSuccessfulAction(context)
 
-    return first.getCommand(state, event)
+    return first.getCommand(messageContext)
   }
 
   /**

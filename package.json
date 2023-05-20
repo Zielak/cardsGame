@@ -2,6 +2,10 @@
   "name": "cardsgame",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
   "repository": {
@@ -12,7 +16,6 @@
     "url": "https://github.com/zielak/cardsGame/issues"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap --hoist",
     "linkup": "scripts/linkup.sh",
     "linkup:colyseus": "scripts/linkupColyseus.sh",
     "test": "jest --config config/jest.config.cjs --silent --maxWorkers=75%",
@@ -21,7 +24,7 @@
     "lint": "eslint . --ext .js,.cjs,.jsx,.ts,.tsx",
     "build:ci": "lerna run --stream --concurrency 2 --scope \"@cardsgame/!(example)*\" build",
     "build": "./scripts/build.sh",
-    "prepare": "npm run bootstrap && husky install",
+    "prepare": "husky install",
     "prerelease:ci": "lerna version --yes",
     "release:ci": "lerna publish from-git --no-verify-access",
     "postrelease:ci": "git rebase main development && git push origin development --no-verify && git checkout main",
@@ -56,7 +59,7 @@
     "ts-node": "^10.9.1",
     "tslib": "^2.4.0",
     "turbo": "^1.6.1",
-    "typescript": "^4.8.4"
+    "typescript": "^5.0.4"
   },
   "config": {
     "commitizen": {

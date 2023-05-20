@@ -1,16 +1,10 @@
 {
   "version": "1.5.2",
-  "packages": [
-    "packages/*",
-    "examples/*"
-  ],
+  "useWorkspaces": true,
   "command": {
     "publish": {
       "conventionalCommits": true,
-      "ignoreChanges": [
-        "*.md",
-        "test/**"
-      ],
+      "ignoreChanges": ["*.md", "test/**"],
       "message": "chore(release): publish %s [skip ci]"
     },
     "version": {

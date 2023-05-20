@@ -2,16 +2,14 @@ import type { Command } from "../../command.js"
 import { Message } from "../../commands/message.js"
 import { Noop } from "../../commands/noop.js"
 import { Sequence } from "../../commands/sequence.js"
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../../interaction/conditions.js"
+import type { ClientMessageConditions } from "../../interaction/conditions.js"
 import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import type { State } from "../../state/state.js"
 import type { ChildTrait } from "../../traits/child.js"
 import type { BaseActionDefinition, BaseActionTemplate } from "../base.js"
 import { checkInteractionQueries } from "../shared/prerequisites.js"
 import type { InteractionQueries } from "../shared/types.js"
+import { ClientMessageContext } from "../types.js"
 
 /**
  * @category Action definitions
@@ -26,7 +24,7 @@ export interface DragStartActionTemplate<S extends State = State>
    * Return empty array to indicate interest in interaction events without
    * a reference to entities.
    */
-  interaction: InteractionQueries
+  interaction: InteractionQueries<S>
 
   /**
    * @deprecated until valid use case is found.
@@ -44,34 +42,34 @@ export class DragStartActionDefinition<S extends State>
 
   constructor(private template: DragStartActionTemplate<S>) {}
 
-  checkPrerequisites(message: ServerPlayerMessage): boolean {
-    if (message.interaction === "tap") {
-      if (message.player.isTapDragging) {
+  checkPrerequisites(messageContext: ClientMessageContext<S>): boolean {
+    if (messageContext.interaction === "tap") {
+      if (messageContext.player.isTapDragging) {
         // Tap fallback is already initiated.
         // This event should fall to endDrag
         return false
       }
       // Otherwise, let it try its luck with queries
-    } else if (message.interaction !== "dragstart") {
+    } else if (messageContext.interaction !== "dragstart") {
       // Anything else than "tap" or "dragstart" don't interest us here
       return false
     }
 
-    return checkInteractionQueries(message, this.template.interaction)
+    return checkInteractionQueries(messageContext, this.template.interaction)
   }
 
   checkConditions(
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects
+    messageContext: ClientMessageContext<S>
   ): void {
-    this.template.conditions(con, initialSubjects)
+    this.template.conditions(con, messageContext)
   }
 
   /**
    * @deprecated until valid use case is found.
    */
-  getCommand(state: S, event: ServerPlayerMessage): Command<State> {
-    const { interaction, player, entity } = event
+  getCommand(messageContext: ClientMessageContext<S>): Command<State> {
+    const { interaction, player, entity } = messageContext
 
     if (interaction === "tap" && !player.isTapDragging) {
       // tapFallbackLog.debug(
@@ -91,10 +89,10 @@ export class DragStartActionDefinition<S extends State>
           idxPath: player.dragStartEntity.idxPath.join(","),
           status: true,
         }),
-        this.template.command(state, event),
+        this.template.command(messageContext),
       ])
     }
 
-    return this.template.command?.(state, event) || new Noop()
+    return this.template.command?.(messageContext) || new Noop()
   }
 }

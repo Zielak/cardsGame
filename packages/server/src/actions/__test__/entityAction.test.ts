@@ -1,8 +1,9 @@
 import type { Command } from "../../command.js"
 import { Noop } from "../../commands/noop.js"
 import { ENTITY_INTERACTION } from "../../interaction/types.js"
-import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
-import type { State } from "../../state/state.js"
+import { prepareClientMessageContext } from "../../interaction/utils.js"
+import { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
+import { State } from "../../state/state.js"
 import type { BaseActionTemplate } from "../base.js"
 import { DragActionDefinition } from "../drag/dragAction.js"
 import {
@@ -12,7 +13,12 @@ import {
   isEntityActionTemplate,
 } from "../entityAction.js"
 import { MessageActionDefinition } from "../messageAction.js"
+import { ClientMessageContext } from "../types.js"
 
+jest.mock("../../state/state.js")
+jest.mock("../../player/player.js")
+
+const state = new State()
 const conditions = () => {}
 const command = (() => {}) as () => Command<State>
 const baseTemplate: BaseActionTemplate<State> = {
@@ -167,6 +173,7 @@ test("defineEntityAction", () => {
 
 describe("EntityActionDefinition.checkPrerequisites", () => {
   let message: ServerPlayerMessage
+  let messageContext: ClientMessageContext<State>
 
   const parentEntity = { type: "pile", name: "mainPile" }
   const targetEntity = {
@@ -189,18 +196,21 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
   })
 
   describe("entity interaction message", () => {
+    beforeEach(() => {
+      messageContext = prepareClientMessageContext(state, message)
+    })
     it("accepts expected entity interaction", () => {
       expect(
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [{ type: targetEntity.type }],
-        }).checkPrerequisites(message)
+        }).checkPrerequisites(messageContext)
       ).toBe(true)
       expect(
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => "*",
-        }).checkPrerequisites(message)
+        }).checkPrerequisites(messageContext)
       ).toBe(true)
     })
     it("rejects unexpected entity interaction", () => {
@@ -208,24 +218,24 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [{ type: "deck" }],
-        }).checkPrerequisites(message)
+        }).checkPrerequisites(messageContext)
       ).toBe(false)
       expect(
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [],
-        }).checkPrerequisites(message)
+        }).checkPrerequisites(messageContext)
       ).toBe(false)
     })
   })
 
   describe("empty entity interaction message", () => {
     beforeEach(() => {
-      message = {
+      messageContext = prepareClientMessageContext(state, {
         ...message,
         entity: undefined,
         entities: [],
-      }
+      })
     })
 
     it("accepts, if action expects no entities", () => {
@@ -233,7 +243,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [],
-        }).checkPrerequisites(message)
+        }).checkPrerequisites(messageContext)
       ).toBe(true)
     })
     it("rejects, if action expects entities", () => {
@@ -241,7 +251,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [{ type: targetEntity.type }],
-        }).checkPrerequisites(message)
+        }).checkPrerequisites(messageContext)
       ).toBe(false)
     })
     it("accepts with catch-all", () => {
@@ -249,7 +259,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => "*",
-        }).checkPrerequisites(message)
+        }).checkPrerequisites(messageContext)
       ).toBe(true)
     })
   })

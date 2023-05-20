@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 # Room
@@ -13,13 +13,10 @@ import { actions } from "./actions.js"
 import { setupState } from "./setupState.js"
 import { MyGameState } from "./state.js"
 
-export default defineRoom("MyGame", {
+export default defineRoom<MyGameState>("MyGame", {
+  stateConstructor: MyGameState,
   maxClients: 4,
   possibleActions: actions,
-
-  onInitGame() {
-    this.setState(setupState(new MyGameState()))
-  },
 
   onStartGame(options) {
     return new commands.Broadcast("Let's start!")
@@ -27,23 +24,22 @@ export default defineRoom("MyGame", {
 })
 ```
 
-Rooms require at the very least:
+A functioning game room require at the very least:
 
-- a list of actions players can make in a game, defined with `possibleActions`,
-- and `onInitGame` which initiates the game's state and spawns all required game elements (in above example, _state preparation_ is extracted into separate file)
+- `stateConstructor` - reference to game [State](state) constructor, will be used to start fresh game state when creating new Room,
+- `possibleActions` - a list of actions players can make in a game,
+- any of the lifecycle methods, to react for example on game start, player's turn end etc
 
-## Lifetime hooks
+## Lifecycle hooks
+
+API for these: [RoomDefinition lifecycle-methods](/api/server/interfaces/RoomDefinition#lifecycle-methods)
 
 ### `onInitGame(options?)`
 
-Will be called right after the game room is created.
-
-Create your game state here using: `this.setState(new MyState())`, and prepare your play area now.
+Will be called right after the game room is created, and game state is setup.
 
 ```ts title="Example: Fresh game state with full deck of cards"
-onInitGame() {
-  this.setState(new MyGameState())
-
+onInitGame(options) {
   const { state } = this
 
   const deck = new Deck(state, { name: "mainDeck" })

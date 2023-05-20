@@ -1,16 +1,20 @@
 import {
   type ActionDefinition,
   ClientMessageConditions,
-  type ClientMessageInitialSubjects,
   type ServerPlayerMessage,
   extendsBaseActionDefinition,
   extendsCollectionActionDefinition,
-  prepareContext,
   type BaseActionDefinition,
   type CollectionActionDefinition,
   State,
 } from "@cardsgame/server"
+import type { ClientMessageContext } from "@cardsgame/server/internal/actions/types"
+import { prepareActionContext } from "@cardsgame/server/internal/commandsManager/utils"
 import { runConditionOnAction } from "@cardsgame/server/internal/interaction/runConditionOnAction"
+import {
+  playerMessageToInitialSubjects,
+  prepareClientMessageContext,
+} from "@cardsgame/server/internal/interaction/utils"
 
 import type { StateGetter } from "./types.js"
 
@@ -23,36 +27,34 @@ export interface TestEvent {
 
 function testCollectionAction<S extends State>(
   action: CollectionActionDefinition<S>,
-  message: ServerPlayerMessage,
-  con: ClientMessageConditions<S>,
-  ini: ClientMessageInitialSubjects
+  messageContext: ClientMessageContext<S>,
+  con: ClientMessageConditions<S>
 ): boolean {
-  const context = prepareContext(action)
+  const context = prepareActionContext(action)
 
   // 1. Prerequisites
-  if (!action.checkPrerequisites(message, context)) {
+  if (!action.checkPrerequisites(messageContext, context)) {
     return false
   }
 
   // 2. Conditions
-  action.checkConditions(con, ini, context)
+  action.checkConditions(con, messageContext, context)
 
   return action.hasSuccessfulSubActions(context)
 }
 
 function testBasicAction<S extends State>(
   action: BaseActionDefinition<S>,
-  message: ServerPlayerMessage,
-  con: ClientMessageConditions<S>,
-  ini: ClientMessageInitialSubjects
+  messageContext: ClientMessageContext<S>,
+  con: ClientMessageConditions<S>
 ): boolean {
   // 1. Prerequisites
-  if (!action.checkPrerequisites(message)) {
+  if (!action.checkPrerequisites(messageContext)) {
     return false
   }
 
   // 2. Conditions
-  const error = runConditionOnAction(con, ini, action)
+  const error = runConditionOnAction(con, messageContext, action)
 
   return !error
 }
@@ -65,32 +67,18 @@ export function testEvent<S extends State>(
   action: ActionDefinition<S>,
   message: ServerPlayerMessage
 ): boolean {
-  const initialSubjects = Object.keys(message)
-    .filter((key) => !["timestamp", "entities", "entityPath"].includes(key))
-    .reduce((o, key) => {
-      o[key] = message[key]
-      return o
-    }, {} as ClientMessageInitialSubjects)
+  const initialSubjects = playerMessageToInitialSubjects(message)
+  const messageContext = prepareClientMessageContext(state, initialSubjects)
 
   const conditionsChecker = new ClientMessageConditions<S>(
     state,
-    initialSubjects
+    messageContext
   )
 
   if (extendsCollectionActionDefinition(action)) {
-    return testCollectionAction<S>(
-      action,
-      message,
-      conditionsChecker,
-      initialSubjects
-    )
+    return testCollectionAction<S>(action, messageContext, conditionsChecker)
   } else if (extendsBaseActionDefinition(action)) {
-    return testBasicAction<S>(
-      action,
-      message,
-      conditionsChecker,
-      initialSubjects
-    )
+    return testBasicAction<S>(action, messageContext, conditionsChecker)
   }
 }
 

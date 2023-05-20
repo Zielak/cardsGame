@@ -1,34 +1,27 @@
-import {
-  commands,
-  type Player,
-  entities,
-  defineEntityAction,
-} from "@cardsgame/server"
+import { commands, entities, defineEntityAction } from "@cardsgame/server"
 
 import { MarkPlayerPlayed, Battle, ResetPlayersPlayed } from "./commands"
 import { WarState } from "./state"
 
 export const PickCard = defineEntityAction<WarState>({
   name: "PickCard",
-  interaction: (player) => [
+  interaction: ({ player }) => [
     {
       type: "deck",
       owner: player,
     },
   ],
-  conditions: (con) => {
-    const playerSessionID = con().subject.player.grab<Player>().clientID
+  conditions: (con, { state, player, variant }) => {
+    const playerSessionID = player.clientID
     console.log("playerSessionID:", playerSessionID)
-    console.log("state.playersPlayed:", [
-      ...con().grabState().playersPlayed.entries(),
-    ])
+    console.log("state.playersPlayed:", [...state.playersPlayed.entries()])
 
     // Current player didn't pick yet
     con().its("playersPlayed").defined()
     con().its("playersPlayed").its(playerSessionID).equals(false)
   },
-  command: (state, event) => {
-    const container = state.query<entities.Container>({ owner: event.player })
+  command: ({ state, player }) => {
+    const container = state.query<entities.Container>({ owner: player })
     const deck = container.query<entities.Deck>({ type: "deck" })
     console.log("deck has", deck.childCount, "children")
 
@@ -58,7 +51,7 @@ export const PickCard = defineEntityAction<WarState>({
       : []
 
     return new commands.Sequence("PickCard", [
-      new MarkPlayerPlayed(event.player.clientID),
+      new MarkPlayerPlayed(player.clientID),
       new commands.ChangeParent(cards, pile),
       new commands.FaceUp(topCard),
       ...roundFinishingCommands,

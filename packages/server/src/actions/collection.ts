@@ -1,14 +1,11 @@
 import type { Command } from "../command.js"
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../interaction/conditions.js"
+import type { ClientMessageConditions } from "../interaction/conditions.js"
 import type { ConditionErrorMessage } from "../interaction/types.js"
 import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
 import type { State } from "../state/state.js"
 
 import type { BaseActionDefinition } from "./base.js"
-import type { ActionDefinition } from "./types.js"
+import type { ActionDefinition, ClientMessageContext } from "./types.js"
 
 export type CollectionContext<
   C extends Record<string, unknown> = Record<string, unknown>
@@ -42,20 +39,20 @@ export interface CollectionActionDefinition<
    * Should run checks against interaction in interactionAction etc
    */
   checkPrerequisites(
-    message: ServerPlayerMessage,
-    context: CollectionContext<C>
+    // message: ServerPlayerMessage, // less is more?
+    messageContext: ClientMessageContext<S>,
+    actionContext: CollectionContext<C>
   ): boolean
 
   checkConditions: (
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects,
-    context: CollectionContext<C>
+    messageContext: ClientMessageContext<S>,
+    actionContext: CollectionContext<C>
   ) => CollectionConditionsResult<BaseActionDefinition<S>>
 
   getCommand: (
-    state: S,
-    event: ServerPlayerMessage,
-    context: CollectionContext<C>
+    messageContext: ClientMessageContext<S>,
+    actionContext: CollectionContext<C>
   ) => Command<S>
 
   hasSuccessfulSubActions: (context: CollectionContext<C>) => boolean

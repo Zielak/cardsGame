@@ -10,13 +10,12 @@ const ScreamAction = defineMessageAction({
   conditions: (con) => {
     con("data").is.defined()
   },
-  command: (state, event) =>
-    new commands.Broadcast(event.messageType, event.data),
+  command: (event) => new commands.Broadcast(event.messageType, event.data),
 })
 
 const PlayCardAction = defineEntityAction({
   name: "PlayCard",
-  interaction: (player) => [{ type: "classicCard", owner: player }],
+  interaction: ({ player }) => [{ type: "classicCard", owner: player }],
   conditions: (con) => {
     con().itsPlayersTurn()
   },

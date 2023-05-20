@@ -7,7 +7,7 @@ import type { State } from "../state/state.js"
 /**
  * @ignore
  */
-export function prepareContext<
+export function prepareActionContext<
   C extends Record<string, unknown> = Record<string, unknown>
 >(action: CollectionActionDefinition<State>): CollectionContext<C> {
   return {

@@ -5,7 +5,7 @@ import type { State } from "../state/state.js"
 
 import type {
   BotConditions,
-  BotConditionsInitialSubjects,
+  BotContext,
   EntityConditions,
 } from "./conditions.js"
 
@@ -22,10 +22,7 @@ export interface BotNeuron<S extends State> {
    * Optional, but without this, bot will  brute force its way through all
    * game elements to understand if this action can be played.
    */
-  conditions?: (
-    con: BotConditions<S>,
-    initialSubjects: BotConditionsInitialSubjects
-  ) => void
+  conditions?: (con: BotConditions<S>, context: BotContext<S>) => void
 
   /**
    * With higher values bot is more likely to pick that Neuron.

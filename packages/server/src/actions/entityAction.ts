@@ -1,14 +1,11 @@
 import type { Command } from "../command.js"
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../interaction/conditions.js"
-import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
+import type { ClientMessageConditions } from "../interaction/conditions.js"
 import type { State } from "../state/state.js"
 
 import type { BaseActionDefinition, BaseActionTemplate } from "./base.js"
 import { checkInteractionQueries } from "./shared/prerequisites.js"
 import type { InteractionQueries } from "./shared/types.js"
+import { ClientMessageContext } from "./types.js"
 
 /**
  * @category Action definitions
@@ -23,7 +20,7 @@ export interface EntityActionTemplate<S extends State = State>
    * Return empty array to indicate interest in interaction events without
    * a reference to entities.
    */
-  interaction: InteractionQueries
+  interaction: InteractionQueries<S>
 }
 
 function validInteractionType(v: unknown): v is InteractionType {
@@ -70,23 +67,23 @@ export class EntityActionDefinition<S extends State>
   }
   abort: () => boolean
 
-  checkPrerequisites(message: ServerPlayerMessage): boolean {
-    if (message.interaction !== "tap") {
+  checkPrerequisites(messageContext: ClientMessageContext<S>): boolean {
+    if (messageContext.interaction !== "tap") {
       return false
     }
 
-    return checkInteractionQueries(message, this.template.interaction)
+    return checkInteractionQueries(messageContext, this.template.interaction)
   }
 
   checkConditions(
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects
+    messageContext: ClientMessageContext<S>
   ): void {
-    this.template.conditions(con, initialSubjects)
+    this.template.conditions(con, messageContext)
   }
 
-  getCommand(state: S, event: ServerPlayerMessage): Command<State> {
-    return this.template.command(state, event)
+  getCommand(messageContext: ClientMessageContext<S>): Command<State> {
+    return this.template.command(messageContext)
   }
 }
 

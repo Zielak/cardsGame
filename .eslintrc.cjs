@@ -12,7 +12,7 @@ module.exports = {
     "import/no-self-import": "error",
     "import/no-unused-modules": "error",
     "import/no-useless-path-segments": "error",
-    "import/no-default-export": "error",
+    "import/no-default-export": "warn",
     "import/order": [
       "error",
       {

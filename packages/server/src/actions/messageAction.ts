@@ -1,12 +1,9 @@
 import type { Command } from "../command.js"
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../interaction/conditions.js"
-import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
+import type { ClientMessageConditions } from "../interaction/conditions.js"
 import type { State } from "../state/state.js"
 
 import type { BaseActionDefinition, BaseActionTemplate } from "./base.js"
+import { ClientMessageContext } from "./types.js"
 
 /**
  * @category Action definitions
@@ -39,19 +36,19 @@ export class MessageActionDefinition<S extends State = State>
     this.name = template.name
   }
 
-  checkPrerequisites(message: ServerPlayerMessage): boolean {
-    return this.template.messageType === message.messageType
+  checkPrerequisites(messageContext: ClientMessageContext<S>): boolean {
+    return this.template.messageType === messageContext.messageType
   }
 
   checkConditions(
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects
+    messageContext: ClientMessageContext<S>
   ): void {
-    this.template.conditions(con, initialSubjects)
+    this.template.conditions(con, messageContext)
   }
 
-  getCommand(state: S, event: ServerPlayerMessage): Command<S> {
-    return this.template.command(state, event)
+  getCommand(messageContext: ClientMessageContext<S>): Command<S> {
+    return this.template.command(messageContext)
   }
 }
 

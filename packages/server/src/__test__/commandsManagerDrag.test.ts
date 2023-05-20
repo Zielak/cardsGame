@@ -58,6 +58,7 @@ describe("drag action is kept in pending", () => {
     state = new State()
     room = new TestRoom()
     room.possibleActions = [dragAnyToPile, dragAnyToLine]
+    room.state = state
     manager = new CommandsManager(room)
     room.commandsManager = manager
     state.players.push(player)
@@ -187,6 +188,7 @@ describe("start on one action and end in another shouldn't be allowed", () => {
     state = new State()
     room = new TestRoom()
     room.possibleActions = [dragHandToHand, dragLineToLine]
+    room.state = state
     manager = new CommandsManager(room)
     room.commandsManager = manager
     state.players.push(player)
@@ -300,6 +302,7 @@ describe("dragging into not allowed place", () => {
     state = new State()
     room = new TestRoom()
     room.possibleActions = [dragToHand]
+    room.state = state
     manager = new CommandsManager(room)
     room.commandsManager = manager
     state.players.push(player)

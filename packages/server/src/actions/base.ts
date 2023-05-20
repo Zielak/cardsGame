@@ -1,10 +1,8 @@
 import type { Command } from "../command.js"
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../interaction/conditions.js"
-import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
+import type { ClientMessageConditions } from "../interaction/conditions.js"
 import type { State } from "../state/state.js"
+
+import { ClientMessageContext } from "./types.js"
 
 /**
  * Template used by game dev.
@@ -20,14 +18,14 @@ export interface BaseActionTemplate<S extends State> {
    */
   conditions: (
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects
+    messageContext: ClientMessageContext<S>
   ) => void
 
   /**
    * Generate a `Command` to run for this action.
    * Use `Sequence()` if you need to run multiple commands.
    */
-  command: (state: S, event: ServerPlayerMessage) => Command
+  command: (messageContext: ClientMessageContext<S>) => Command
 }
 
 /**
@@ -39,14 +37,17 @@ export interface BaseActionDefinition<S extends State> {
   /**
    * Should run checks against interaction in interactionAction etc
    */
-  checkPrerequisites(message: ServerPlayerMessage): boolean
+  checkPrerequisites(
+    // message: ServerPlayerMessage, // less is more?
+    messageContext: ClientMessageContext<S>
+  ): boolean
 
   checkConditions(
     con: ClientMessageConditions<S>,
-    initialSubjects: ClientMessageInitialSubjects
+    messageContext: ClientMessageContext<S>
   ): void
 
-  getCommand: (state: S, event: ServerPlayerMessage) => Command<S>
+  getCommand: (messageContext: ClientMessageContext<S>) => Command<S>
 }
 
 /**

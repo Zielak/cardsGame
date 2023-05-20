@@ -12,13 +12,15 @@ import {
   RootContext,
   isRootActionDefinition,
 } from "./actions/rootAction.js"
+import { ClientMessageContext } from "./actions/types.js"
 import type { Command } from "./command.js"
 import { Undo } from "./commands/undo.js"
-import { prepareContext } from "./commandsManager/utils.js"
+import { prepareActionContext } from "./commandsManager/utils.js"
+import { ClientMessageConditions } from "./interaction/conditions.js"
 import {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "./interaction/conditions.js"
+  playerMessageToInitialSubjects,
+  prepareClientMessageContext,
+} from "./interaction/utils.js"
 import type { Player, ServerPlayerMessage } from "./player/index.js"
 import type { Room } from "./room/base.js"
 import type { State } from "./state/state.js"
@@ -60,7 +62,7 @@ export class CommandsManager<S extends State> {
     const pendingEntry = this.pendingActions.get(message.player.clientID)
 
     const action = pendingEntry?.action ?? this.possibleActions
-    const context = pendingEntry?.context ?? prepareContext(action)
+    const context = pendingEntry?.context ?? prepareActionContext(action)
 
     return this.run(message, action, context)
   }
@@ -70,8 +72,18 @@ export class CommandsManager<S extends State> {
     action: CollectionActionDefinition<S>,
     context: CollectionContext
   ): Promise<boolean> {
+    const initialSubjects = playerMessageToInitialSubjects(message)
+    const messageContext = prepareClientMessageContext(
+      this.room.state,
+      initialSubjects
+    )
+
     // 1. Prerequisites
-    const prerequisitesResult = this.runPrerequisites(message, action, context)
+    const prerequisitesResult = this.runPrerequisites(
+      messageContext,
+      action,
+      context
+    )
 
     if (!prerequisitesResult) {
       this.runFailed(message, action, context)
@@ -79,7 +91,12 @@ export class CommandsManager<S extends State> {
     }
 
     // 2. Conditions
-    const conditionsResult = this.runConditions(message, action, context)
+    const conditionsResult = this.runConditions(
+      message,
+      messageContext,
+      action,
+      context
+    )
 
     if (!conditionsResult) {
       this.runFailed(message, action, context)
@@ -87,7 +104,7 @@ export class CommandsManager<S extends State> {
     }
 
     // 3. Command
-    const chosenCommand = this.pickCommand(message, action, context)
+    const chosenCommand = this.pickCommand(messageContext, action, context)
 
     // 4. Run the command
     const commandResult = await this.executeCommand(
@@ -106,20 +123,23 @@ export class CommandsManager<S extends State> {
   }
 
   runPrerequisites(
-    message: ServerPlayerMessage,
+    messageContext: ClientMessageContext<S>,
     action: CollectionActionDefinition<S>,
-    context: CollectionContext
+    actionContext: CollectionContext
   ): boolean {
     const tmpCount = action._allActionsCount?.() || "?"
 
     // Prerequisites
     logs.group(chalk.blue("Prerequisites"))
 
-    const prerequisitesResult = action.checkPrerequisites(message, context)
+    const prerequisitesResult = action.checkPrerequisites(
+      messageContext,
+      actionContext
+    )
 
     logs.groupEnd(
       `actions count: ${tmpCount} => ${action._successfulActionsCount?.(
-        context
+        actionContext
       )}`
     )
 
@@ -128,6 +148,7 @@ export class CommandsManager<S extends State> {
 
   runConditions(
     message: ServerPlayerMessage,
+    messageContext: ClientMessageContext<S>,
     action: CollectionActionDefinition<S>,
     context: CollectionContext
   ): boolean {
@@ -144,23 +165,17 @@ export class CommandsManager<S extends State> {
      */
 
     // 1. setup initialSubjects and conditionsChecker
-    const initialSubjects = Object.keys(message)
-      .filter((key) => !["timestamp", "entities", "entityPath"].includes(key))
-      .reduce((o, key) => {
-        o[key] = message[key]
-        return o
-      }, {} as ClientMessageInitialSubjects)
 
     const conditionsChecker = new ClientMessageConditions<S>(
       state,
-      initialSubjects
+      messageContext
     )
 
     // 2. run `checkConditions` on each sub actions (children or root OR children of pending)
     // 3. gather each sub-actions results/errors
     const rejectedActions = action.checkConditions(
       conditionsChecker,
-      initialSubjects,
+      messageContext,
       context
     )
 
@@ -179,12 +194,10 @@ export class CommandsManager<S extends State> {
   }
 
   pickCommand(
-    message: ServerPlayerMessage,
+    messageContext: ClientMessageContext<S>,
     action: CollectionActionDefinition<S>,
     context: CollectionContext
   ): Command<S> {
-    const { state } = this.room
-
     const successCount = action._successfulActionsCount?.(context)
 
     if (successCount > 1) {
@@ -194,7 +207,7 @@ export class CommandsManager<S extends State> {
       )
     }
 
-    return action.getCommand(state, message, context)
+    return action.getCommand(messageContext, context)
   }
 
   handlePendingActions(
