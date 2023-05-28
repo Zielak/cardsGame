@@ -99,6 +99,7 @@ export class DragActionDefinition<S extends State>
       error = runConditionOnAction(con, messageContext, this.start)
       if (error) {
         actionContext.conditionsFailed = true
+        actionContext.aborted = true
         return new Map([[this.start, error]])
       }
     } else if (
@@ -108,6 +109,7 @@ export class DragActionDefinition<S extends State>
       error = runConditionOnAction(con, messageContext, this.end)
       if (error) {
         actionContext.conditionsFailed = true
+        actionContext.aborted = true
         return new Map([[this.end, error]])
       }
     }

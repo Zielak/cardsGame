@@ -288,23 +288,10 @@ describe("dragging into not allowed place", () => {
   let toLine: LabeledParent
 
   beforeEach(() => {
-    dragToHand = defineDragAction<State>({
-      name: "DragToHand",
-      start: {
-        interaction: () => "*",
-        conditions,
-      },
-      end: { interaction: () => [{ type: "hand" }], conditions, command },
-    })
-    jest.spyOn(dragToHand.start, "getCommand")
-    jest.spyOn(dragToHand.end, "getCommand")
-
     state = new State()
     room = new TestRoom()
-    room.possibleActions = [dragToHand]
     room.state = state
-    manager = new CommandsManager(room)
-    room.commandsManager = manager
+
     state.players.push(player)
 
     parentHand = new LabeledParent(state, { type: "hand" })
@@ -318,39 +305,116 @@ describe("dragging into not allowed place", () => {
     player.dragStartEntity = fromHand
   })
 
-  it("clears action from pending", async () => {
-    await expect(
-      manager.handlePlayerEvent(
-        populatePlayerEvent(
-          state,
-          {
-            messageType: ENTITY_INTERACTION,
-            entityPath: fromHand.idxPath,
-            interaction: "dragstart",
-          },
-          player.clientID
+  describe("fail on checkPrerequisites", () => {
+    beforeEach(() => {
+      dragToHand = defineDragAction<State>({
+        name: "DragToHand",
+        start: {
+          interaction: () => "*",
+          conditions,
+        },
+        end: { interaction: () => [{ type: "hand" }], conditions, command },
+      })
+      jest.spyOn(dragToHand.start, "getCommand")
+      jest.spyOn(dragToHand.end, "getCommand")
+
+      room.possibleActions = [dragToHand]
+      manager = new CommandsManager(room)
+      room.commandsManager = manager
+    })
+
+    it("clears action from pending", async () => {
+      await expect(
+        manager.handlePlayerEvent(
+          populatePlayerEvent(
+            state,
+            {
+              messageType: ENTITY_INTERACTION,
+              entityPath: fromHand.idxPath,
+              interaction: "dragstart",
+            },
+            player.clientID
+          )
         )
-      )
-    ).resolves.toBe(true)
+      ).resolves.toBe(true)
 
-    expect(dragToHand.start.getCommand).toHaveBeenCalled()
-    expect(manager.pendingActions.get(clientID).action).toBe(dragToHand)
+      expect(dragToHand.start.getCommand).toHaveBeenCalled()
+      expect(manager.pendingActions.get(clientID).action).toBe(dragToHand)
 
-    await expect(
-      manager.handlePlayerEvent(
-        populatePlayerEvent(
-          state,
-          {
-            messageType: ENTITY_INTERACTION,
-            entityPath: toLine.idxPath,
-            interaction: "dragend",
-          },
-          player.clientID
+      await expect(
+        manager.handlePlayerEvent(
+          populatePlayerEvent(
+            state,
+            {
+              messageType: ENTITY_INTERACTION,
+              entityPath: toLine.idxPath,
+              interaction: "dragend",
+            },
+            player.clientID
+          )
         )
-      )
-    ).rejects.toThrow()
+      ).rejects.toThrow()
 
-    expect(dragToHand.end.getCommand).not.toHaveBeenCalled()
-    expect(manager.pendingActions.get(clientID)).toBeUndefined()
+      expect(dragToHand.end.getCommand).not.toHaveBeenCalled()
+      expect(manager.pendingActions.get(clientID)).toBeUndefined()
+    })
+  })
+
+  describe("fail on checkConditions", () => {
+    beforeEach(() => {
+      dragToHand = defineDragAction<State>({
+        name: "DragToHand",
+        start: { interaction: () => "*", conditions },
+        end: {
+          interaction: () => "*",
+          conditions: (con) => {
+            con("Should always fail").set(true).is.false()
+          },
+          command,
+        },
+      })
+      jest.spyOn(dragToHand.start, "getCommand")
+      jest.spyOn(dragToHand.end, "getCommand")
+
+      room.possibleActions = [dragToHand]
+      manager = new CommandsManager(room)
+      room.commandsManager = manager
+    })
+
+    it("clears action from pending", async () => {
+      await expect(
+        manager.handlePlayerEvent(
+          populatePlayerEvent(
+            state,
+            {
+              messageType: ENTITY_INTERACTION,
+              entityPath: fromHand.idxPath,
+              interaction: "dragstart",
+            },
+            player.clientID
+          )
+        )
+      ).resolves.toBe(true)
+
+      expect(dragToHand.start.getCommand).toHaveBeenCalled()
+      expect(manager.pendingActions.get(clientID).action).toBe(dragToHand)
+
+      await expect(
+        manager.handlePlayerEvent(
+          populatePlayerEvent(
+            state,
+            {
+              messageType: ENTITY_INTERACTION,
+              entityPath: toLine.idxPath,
+              interaction: "dragend",
+            },
+            player.clientID
+          )
+        )
+      ).rejects.toThrow()
+
+      expect(dragToHand.end.getCommand).not.toHaveBeenCalled()
+      expect(manager.pendingActions.get(clientID)).toBeUndefined()
+    })
   })
 })
