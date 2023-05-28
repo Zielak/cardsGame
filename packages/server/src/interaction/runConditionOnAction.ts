@@ -1,13 +1,13 @@
 import { chalk, logs } from "@cardsgame/utils"
 
 import type { BaseActionDefinition } from "../actions/base.js"
+import {
+  ClientMessageConditions,
+  ClientMessageContext,
+} from "../conditions/context/clientMessage.js"
 import { getCustomError } from "../conditions/errors.js"
 import type { State } from "../state/state.js"
 
-import type {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "./conditions.js"
 import type { ConditionErrorMessage } from "./types.js"
 
 /**
@@ -20,26 +20,25 @@ export function runConditionOnAction<
   S extends State
 >(
   conditionsChecker: ClientMessageConditions<S>,
-  initialSubjects: ClientMessageInitialSubjects,
+  messageContext: ClientMessageContext<S>,
   action: A
 ): ConditionErrorMessage {
   logs.group(`action: ${chalk.white(action.name)}`)
   let errorMessage: ConditionErrorMessage
 
   try {
-    action.checkConditions(conditionsChecker, initialSubjects)
+    action.checkConditions(conditionsChecker, messageContext)
   } catch (e) {
     const customMessage = getCustomError(conditionsChecker.getCore())
 
     const debugErrorMessage = (e as Error).message
-    logs.debug("\t", debugErrorMessage)
     errorMessage = {
       internal: !customMessage,
       message: customMessage ?? debugErrorMessage,
     }
   }
   logs.groupEnd(
-    `result: ${errorMessage ? chalk.green("true") : chalk.yellow("false")}`
+    `result: ${errorMessage ? chalk.yellow("false") : chalk.green("true")}`
   )
 
   return errorMessage

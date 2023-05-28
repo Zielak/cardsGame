@@ -122,7 +122,7 @@ export type ClientGameStateProps = {
   isGameOver: boolean
 
   playerViewPosition: /*ObjectSchema &*/ IPlayerViewPosition
-  players: IPlayerDefinition[]
+  players: PlayerDefinition[]
 
   tableHeight: number
   tableWidth: number

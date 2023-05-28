@@ -1,5 +1,5 @@
 import { DumbEntity } from "../../__test__/helpers/dumbEntities.js"
-import { ENTITY_INTERACTION } from "../../interaction/types.js"
+import { ENTITY_INTERACTION } from "../../interaction/constants.js"
 import { Player } from "../../player/player.js"
 import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import { State } from "../../state/state.js"

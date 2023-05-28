@@ -12,7 +12,7 @@ module.exports = {
     "import/no-self-import": "error",
     "import/no-unused-modules": "error",
     "import/no-useless-path-segments": "error",
-    "import/no-default-export": "error",
+    "import/no-default-export": "warn",
     "import/order": [
       "error",
       {
@@ -59,6 +59,17 @@ module.exports = {
           { functions: false },
         ],
         "prefer-spread": "off",
+      },
+    },
+    {
+      files: ["*.d.ts"],
+      extends: [
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier",
+      ],
+      rules: {
+        "@typescript-eslint/triple-slash-reference": "off",
       },
     },
     {

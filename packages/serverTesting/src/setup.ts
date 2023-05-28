@@ -136,7 +136,7 @@ export function setupServerTesting<
       } else {
         room = roomConstructor
           ? new roomConstructor()
-          : new (defineRoom<S, R>("TestingRoom", {}))()
+          : new (defineRoom<S, R>("TestingRoom", { stateConstructor }))()
       }
       room.onInitGame = function () {
         // Overwrite room's own state creation function?

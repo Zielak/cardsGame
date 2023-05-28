@@ -28,6 +28,7 @@ class ConditionBase<S> {
   }
 
   /**
+   * @deprecated you can just grab state from context
    * @returns State related with this Conditions instance.
    */
   grabState(): S {

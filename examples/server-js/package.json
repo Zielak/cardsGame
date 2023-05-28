@@ -1,6 +1,7 @@
 {
   "name": "@cardsgame/example-server-js",
   "version": "1.5.2",
+  "private": true,
   "description": "Simplest implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -15,7 +16,7 @@
     "@cardsgame/types": "^1.5.0",
     "@cardsgame/utils": "^1.5.0",
     "@colyseus/core": "^0.14.36",
-    "@colyseus/schema": "^1.0.45",
+    "@colyseus/schema": "^1.0.46",
     "@colyseus/ws-transport": "^0.14.21",
     "express": "^4.17.1"
   }

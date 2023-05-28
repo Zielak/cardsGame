@@ -6,5 +6,3 @@ export type ConditionErrorMessage = {
 
   message: string
 }
-
-export const ENTITY_INTERACTION = "EntityInteraction"

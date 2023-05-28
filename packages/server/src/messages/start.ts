@@ -63,7 +63,7 @@ function startTheGame(this: Room<State>): void {
 
   this._executeIntegrationHook("startPre")
 
-  const postStartCommands = this.onStartGame(state)
+  const postStartCommands = this.onStartGame()
 
   const postStartup = (): void => {
     this._executeIntegrationHook("startPost")

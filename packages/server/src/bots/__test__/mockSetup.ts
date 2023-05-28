@@ -1,5 +1,5 @@
-import { defineEntityAction } from "../../actions/entityAction.js"
-import { defineMessageAction } from "../../actions/messageAction.js"
+import { defineEntityAction } from "../../actions/entity/entityAction.js"
+import { defineMessageAction } from "../../actions/message/messageAction.js"
 import { commands } from "../../index.js"
 import type { State } from "../../state/state.js"
 import type { BotNeuron } from "../botNeuron.js"
@@ -10,13 +10,12 @@ const ScreamAction = defineMessageAction({
   conditions: (con) => {
     con("data").is.defined()
   },
-  command: (state, event) =>
-    new commands.Broadcast(event.messageType, event.data),
+  command: (event) => new commands.Broadcast(event.messageType, event.data),
 })
 
 const PlayCardAction = defineEntityAction({
   name: "PlayCard",
-  interaction: (player) => [{ type: "classicCard", owner: player }],
+  interaction: ({ player }) => [{ type: "classicCard", owner: player }],
   conditions: (con) => {
     con().itsPlayersTurn()
   },
@@ -45,7 +44,7 @@ export const PlayCardGoal: BotNeuron<State> = {
     con().itsPlayersTurn()
   },
   entitiesFilter: [{ suit: ["S", "C"] }],
-  value: (state) => {
+  value: ({ state }) => {
     return 10 - state.players.length
   },
   action: PlayCardAction,
@@ -71,7 +70,7 @@ export const ScreamGoal: BotNeuron<State> = {
   - action of event
   - child neurons
   `,
-  value: (state) => {
+  value: () => {
     return 5
   },
   children: [ScreamNOGoal, ScreamYESGoal],

@@ -12,6 +12,12 @@
   "bugs": {
     "url": "https://github.com/zielak/cardsGame/issues"
   },
-  "main": "",
-  "types": "index"
+  "types": "src/index",
+  "exports": {
+    ".": {
+      "types": {
+        "default": "./src/index.d.ts"
+      }
+    }
+  }
 }

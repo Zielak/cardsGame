@@ -1,10 +1,14 @@
 import type { Player } from "../../player/player.js"
 import type { State } from "../../state/state.js"
 import { Conditions } from "../conditions.js"
+import { ConditionsContextBase } from "../types.js"
 
-type InitialSubjects = { example: "foo"; player?: Player }
+type TestConditionInitialSubjects = {
+  example: "foo"
+  player?: Player
+}
 
-export class ConditionsTest<S extends State> extends Conditions<
-  S,
-  InitialSubjects
-> {}
+type TestConditionsContext<S extends State> = TestConditionInitialSubjects &
+  ConditionsContextBase<S>
+
+export type ConditionsTest = Conditions<TestConditionsContext<State>>

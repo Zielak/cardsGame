@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 # Action Templates
@@ -8,44 +8,42 @@ Game's [`Room`](./room) holds a set of all action templates in `possibleActions`
 
 With Action Templates we're _codifying_ game rules - they're helping decipher players' intention during play. Players may interact with UI in many different ways at any time they wish. It's our job to filter out "illegal" moves.
 
-Action template is a definition of:
+There are many kinds of actions, and in general they consist of:
 
 - `interaction` - _what did client touch/say?_
 - `conditions` - _can client perform this action at this moment?_
 - `command` - _what exactly should be done?_
 
-Here's how a basic action may look like:
+Here's how a basic Entity Action may look like:
 
 ```ts title="./actions/takeOneCard.ts"
-import { commands, ActionTemplate } from "@cardsgame/server"
+import { commands, defineEntityAction } from "@cardsgame/server"
 import { Deck, Hand } from "@cardsgame/server/entities"
 
 import { MyGameState } from "../state.js"
 
-export const TakeOneCard: ActionTemplate<MyGameState> = {
+/**
+ * Player grabs new card from the deck
+ */
+export const TakeOneCard = defineEntityAction<MyGameState>({
   name: "TakeOneCard",
-  description: `Player grabs new card from the deck`,
 
-  interaction: () => [
-    {
-      type: "deck",
-    },
-  ],
+  interaction: () => [{ type: "deck" }],
 
   conditions: (con) => {
     con("It's not your turn yet!").itsPlayersTurn()
   },
 
-  command: (state, event) => {
+  command: ({ state, player }) => {
     const topDeck = state.query<Deck>({ type: "deck" }).getTop()
-    const playersHand = state.query<Hand>({ owner: event.player })
+    const playersHand = state.query<Hand>({ owner: player })
 
     return new commands.Sequence([
       new commands.ChangeParent(topDeck, playersHand),
       new commands.NextPlayer(),
     ])
   },
-}
+})
 ```
 
 ## 1. Interaction
@@ -63,7 +61,7 @@ Read the full description of `QuerableProps`.
 :::
 
 ```ts
-interaction: (player: Player) => QuerableProps[]
+interaction: (messageContext: ClientMessageContext<State>) => QuerableProps[] | "*"
 ```
 
 Describe what kind of elements relate to this action by their props. This is the first place to quickly filter out unrelated interactions. Reference to `player` is provided if you need to query by ownership.
@@ -72,7 +70,7 @@ Describe what kind of elements relate to this action by their props. This is the
 
 ```ts
 // Any deck which belongs to interacting player
-interaction: (player: Player) => [
+interaction: ({ player }) => [
   {
     type: "deck",
     owner: player,
@@ -99,6 +97,12 @@ interaction: () => [
     },
   },
 ]
+```
+
+```ts
+// React on any entity interaction
+// Rely on Conditions to figure out if this action should be performed
+interaction: () => "*"
 ```
 
 ### B) _Player is sending a custom messge_
@@ -165,10 +169,10 @@ If any of these conditions fail, the whole action is disregarded, and internal C
 Construct and return an actual `Command` to execute.
 
 ```ts
-command: (state, event) => {
+command: ({ state, player }) => {
   const source = state.query<Hand>({
     type: "hand",
-    owner: event.player,
+    owner: player,
   })
   const cards = source.getSelectedChildren<ClassicCard>()
   const pile = state.query<Pile>({ type: "pile" })

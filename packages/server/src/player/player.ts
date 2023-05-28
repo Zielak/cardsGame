@@ -6,7 +6,7 @@ import type { ChildTrait } from "../traits/child.js"
 
 import { getRandomName } from "./names.js"
 
-export class Player extends Schema implements IPlayerDefinition {
+export class Player extends Schema implements PlayerDefinition {
   /**
    * @category Player
    */

@@ -1,8 +1,7 @@
-import { ENTITY_INTERACTION } from "../interaction/types.js"
 import type { Player, ServerPlayerMessage } from "../player/index.js"
 import { getEntitiesAlongPath } from "../state/helpers.js"
 import type { State } from "../state/state.js"
-import { ChildTrait, isChild } from "../traits/child.js"
+import { isChild } from "../traits/child.js"
 
 const sanitizeIdxPath = (value: unknown): number => {
   if (value !== value) {

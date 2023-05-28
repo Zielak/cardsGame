@@ -114,7 +114,7 @@ export type StateMockingRecord<S extends State> = ChildrenMockingArray &
   StateMockingProps<S> &
   Partial<{
     clients: string[]
-    players: Partial<IPlayerDefinition>[]
+    players: Partial<PlayerDefinition>[]
   }>
 
 export type StateMockingTuple = [

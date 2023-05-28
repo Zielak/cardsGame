@@ -2,6 +2,8 @@ import { performance } from "perf_hooks"
 
 import { chalk, decimal, Logs } from "@cardsgame/utils"
 
+import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
+import { ENTITY_INTERACTION } from "../../interaction/constants.js"
 import type { Bot } from "../../player/bot.js"
 import type { State } from "../../state/state.js"
 import type { BotNeuron } from "../botNeuron.js"
@@ -30,13 +32,20 @@ export const pickNeuron = <S extends State>(
 ): ChosenBotNeuronResult<S> => {
   const _start = performance.now()
 
+  const botContext: ClientMessageContext<S> = {
+    state,
+    variant: state.variantData,
+    player: bot,
+    messageType: ENTITY_INTERACTION,
+  }
+
   logs.group(
     chalk.white(`pickNeuron(${bot.clientID}/${bot.name}) | ${rootNeuron.name}`)
   )
 
   // 1. Filter all current level neurons by their own conditions
   logs.debug(chalk.white("Conditions of Neurons:"))
-  const neurons = rootNeuron.children.filter(filterNeuronConditions(state, bot))
+  const neurons = rootNeuron.children.filter(filterNeuronConditions(botContext))
   if (neurons.length === 0) {
     logs.groupEnd(`Discarded ALL neurons, abort ${markDebugTime(_start)}.`) // End root logs group
     return undefined
@@ -52,9 +61,9 @@ export const pickNeuron = <S extends State>(
 
   // 2. Sort by their values
   logs.debug(chalk.white("Values:"))
-  neurons.sort((a, b) => b.value(state, bot) - a.value(state, bot))
+  neurons.sort((a, b) => b.value(botContext) - a.value(botContext))
   neurons.forEach((neuron) => {
-    logs.debug(`$${decimal(neuron.value(state, bot))} -> ${neuron.name}`)
+    logs.debug(`$${decimal(neuron.value(botContext))} -> ${neuron.name}`)
   })
 
   logs.debug(chalk.white("Simulating events:"))

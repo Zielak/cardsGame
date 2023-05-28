@@ -20,7 +20,7 @@ export declare type RoomConstructor<
  */
 export function defineRoom<S extends State, R extends Room<S> = Room<S>>(
   name: string,
-  definition: Partial<RoomDefinition<S>>
+  definition: RoomDefinition<S>
 ): RoomConstructor<S, R> {
   const klass = new Function(
     "baseClass",

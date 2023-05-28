@@ -1,14 +1,17 @@
 import type { Command } from "../../command.js"
-import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
-import type { State } from "../../state/state.js"
+import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "../../conditions/context/utils.js"
+import { State } from "../../state/state.js"
 import type { BaseActionTemplate } from "../base.js"
-import { EntityActionDefinition } from "../entityAction.js"
+import { EntityActionDefinition } from "../entity/entityAction.js"
 import {
   defineMessageAction,
+  MessageActionDefinition,
+} from "../message/messageAction.js"
+import {
   isMessageActionDefinition,
   isMessageActionTemplate,
-  MessageActionDefinition,
-} from "../messageAction.js"
+} from "../message/utils.js"
 
 const conditions = () => {}
 const command = (() => {}) as () => Command<State>
@@ -71,13 +74,14 @@ test("defineMessageAction", () => {
 })
 
 describe("EntityActionDefinition.checkPrerequisites", () => {
-  let message: ServerPlayerMessage
+  let messageContext: ClientMessageContext<State>
+  let state: State
 
   beforeEach(() => {
-    message = {
+    state = new State()
+    messageContext = prepareConditionsContext(state, {
       messageType: "foo",
-      timestamp: 123,
-    }
+    })
   })
 
   it("rejects non matching messageType", () => {
@@ -85,7 +89,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
       new MessageActionDefinition({
         ...baseTemplate,
         messageType: "bar",
-      }).checkPrerequisites(message)
+      }).checkPrerequisites(messageContext)
     ).toBe(false)
   })
 
@@ -94,7 +98,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
       new MessageActionDefinition({
         ...baseTemplate,
         messageType: "foo",
-      }).checkPrerequisites(message)
+      }).checkPrerequisites(messageContext)
     ).toBe(true)
   })
 })

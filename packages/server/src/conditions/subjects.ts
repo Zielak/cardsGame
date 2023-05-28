@@ -9,6 +9,7 @@ import { isParent } from "../traits/parent.js"
 import { hasSelectableChildren } from "../traits/selectableChildren.js"
 
 import { throwError } from "./errors.js"
+import { ConditionsContextBase } from "./types.js"
 import {
   getFlag,
   getInitialSubject,
@@ -22,7 +23,10 @@ import {
 /**
  * Getters and methods which change subject
  */
-class ConditionSubjects<InitialSubjects> {
+class ConditionSubjects<
+  Context extends ConditionsContextBase<S>,
+  S extends State = Context["state"]
+> {
   /**
    * Sets new subject. This can be anything.
    * @yields completely new subject, provided in the argument
@@ -77,7 +81,7 @@ class ConditionSubjects<InitialSubjects> {
    * con().subject.entity.its("name").equals("mainDeck")
    * ```
    */
-  get subject(): Record<keyof InitialSubjects, this> {
+  get subject(): Record<keyof Context, this> {
     const subjects = getFlag(this, "initialSubjects")
     const subjectNames = Object.keys(subjects)
     const properties = subjectNames.reduce((descriptor, subjectName) => {
@@ -92,7 +96,7 @@ class ConditionSubjects<InitialSubjects> {
     }, {} as PropertyDescriptorMap)
 
     return Object.defineProperties(
-      {} as Record<keyof InitialSubjects, this>,
+      {} as Record<keyof Context, this>,
       properties
     )
   }
@@ -100,7 +104,7 @@ class ConditionSubjects<InitialSubjects> {
   /**
    * Alias to `con().subject`
    */
-  get $(): Record<keyof InitialSubjects, this> {
+  get $(): Record<keyof Context, this> {
     return this.subject
   }
 

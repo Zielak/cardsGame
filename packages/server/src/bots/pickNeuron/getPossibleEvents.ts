@@ -1,11 +1,10 @@
-import { isDragActionDefinition } from "../../actions/drag/dragAction.js"
-import { isEntityActionDefinition } from "../../actions/entityAction.js"
-import { isMessageActionDefinition } from "../../actions/messageAction.js"
-import {
-  ClientMessageConditions,
-  ClientMessageInitialSubjects,
-} from "../../interaction/conditions.js"
-import { ENTITY_INTERACTION } from "../../interaction/types.js"
+import { isDragActionDefinition } from "../../actions/drag/utils.js"
+import { isEntityActionDefinition } from "../../actions/entity/utils.js"
+import { isMessageActionDefinition } from "../../actions/message/utils.js"
+import { Conditions } from "../../conditions/conditions.js"
+import { playerMessageToInitialSubjects } from "../../conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "../../conditions/context/utils.js"
+import { ENTITY_INTERACTION } from "../../interaction/constants.js"
 import type { Bot } from "../../player/bot.js"
 import type { State } from "../../state/state.js"
 import { populatePlayerEvent } from "../../utils/populatePlayerEvent.js"
@@ -51,25 +50,16 @@ export const getPossibleEvents = <S extends State>(
       // and test if such event would pass
       .filter((event) => {
         logs.debug("entity.idxPath:", event.entityPath)
-        const serverEvent = populatePlayerEvent(state, event, bot)
+        const message = populatePlayerEvent(state, event, bot)
 
-        const initialSubjects = Object.keys(serverEvent)
-          .filter(
-            (key) => !["timestamp", "entities", "entityPath"].includes(key)
-          )
-          .reduce((o, key) => {
-            o[key] = serverEvent[key]
-            return o
-          }, {} as ClientMessageInitialSubjects)
+        const initialSubjects = playerMessageToInitialSubjects(message)
+        const messageContext = prepareConditionsContext(state, initialSubjects)
 
-        const conditionsChecker = new ClientMessageConditions<S>(
-          state,
-          initialSubjects
-        )
+        const conditionsChecker = new Conditions(messageContext)
 
         try {
           logs.debug(`pre checkConditions()`)
-          action.checkConditions(conditionsChecker, initialSubjects)
+          action.checkConditions(conditionsChecker, messageContext)
         } catch (e) {
           logs.debug(`checkConditions() FAILED!`, e)
           return false
@@ -84,14 +74,35 @@ export const getPossibleEvents = <S extends State>(
     const message: ClientPlayerMessage = {
       messageType: action.templateMessageType,
       data: neuron.playerEventData
-        ? neuron.playerEventData(state, bot)
+        ? getDataGivenPlayerEventData(
+            state,
+            bot,
+            neuron.playerEventData,
+            action.templateMessageType
+          )
         : undefined,
     }
 
     return [message]
   } else if (isDragActionDefinition(action)) {
-    // TODO: ? drag action is 2 in one, action.start and action.name are both EntityInteraction actions.
+    // TODO: ? drag action is 2 in one, action.start and action.end are both EntityInteraction actions.
     return []
   }
   throw new Error(`Somehow got "action" in unexpected format`)
+}
+
+function getDataGivenPlayerEventData<S extends State>(
+  state: S,
+  bot: Bot,
+  playerEventData: BotNeuron<S>["playerEventData"],
+  messageType: string
+): ClientPlayerMessage["data"] {
+  const event: ClientPlayerMessage = {
+    messageType: messageType,
+  }
+  const inputMessage = populatePlayerEvent(state, event, bot)
+  const initialSubjects = playerMessageToInitialSubjects(inputMessage)
+  const messageContext = prepareConditionsContext(state, initialSubjects)
+
+  return playerEventData(messageContext)
 }

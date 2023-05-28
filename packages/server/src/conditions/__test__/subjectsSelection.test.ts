@@ -2,12 +2,14 @@ import { DumbEntity, DumbParent } from "../../__test__/helpers/dumbEntities.js"
 import { SelectableParent } from "../../__test__/helpers/selectableParent.js"
 import { SmartEntity } from "../../__test__/helpers/smartEntities.js"
 import { State } from "../../state/state.js"
+import { Conditions } from "../conditions.js"
+import { prepareConditionsContext } from "../context/utils.js"
 
 import { ConditionsTest } from "./conditions.js"
 
 let state: State
 let parent: SelectableParent
-let con: ConditionsTest<State>
+let con: ConditionsTest
 let childA: SmartEntity
 let childB: SmartEntity
 let childC: SmartEntity
@@ -15,13 +17,11 @@ let childD: SmartEntity
 let invalidParent: DumbParent
 let invalidChildA: DumbEntity
 
-SelectableParent
-
 beforeEach(() => {
   state = new State()
   parent = new SelectableParent(state, {})
 
-  con = new ConditionsTest<State>(state, { example: "foo" })
+  con = new Conditions(prepareConditionsContext(state, { example: "foo" }))
 
   childA = new SmartEntity(state, { parent, name: "childA" })
   childB = new SmartEntity(state, { parent, name: "childB" })

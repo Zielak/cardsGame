@@ -85,10 +85,10 @@ export const arrayWith = (count: number): number[] => [...Array(count).keys()]
  * ```
  * @category Array
  */
-export function pickMostCommonProp<T = any>(
+export function pickMostCommonProp<T extends object>(
   collection: T[],
   propKey: string,
-  condition?: (T) => boolean
+  condition?: (arg0: T) => boolean
 ): [string, number] {
   const map: Map<string, number> = new Map()
 

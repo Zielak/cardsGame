@@ -11,7 +11,9 @@ import { ParentTrait } from "../traits/parent.js"
 
 @containsChildren
 @applyTraitsMixins([IdentityTrait, LabelTrait, ParentTrait])
-export class State extends Entity<Record<string, unknown>> {
+export class State<
+  V extends Record<string, unknown> = Record<string, unknown>
+> extends Entity<Record<string, unknown>> {
   type = "state"
 
   @type("number") tableWidth = 60 // 60 cm
@@ -74,6 +76,11 @@ export class State extends Entity<Record<string, unknown>> {
   @type(PlayerViewPosition) playerViewPosition = new PlayerViewPosition()
 
   /**
+   * Current game's variant data.
+   */
+  variantData: V
+
+  /**
    * ID of last known, registered Entity.
    */
   private _lastID = -1
@@ -83,8 +90,11 @@ export class State extends Entity<Record<string, unknown>> {
    */
   private readonly _allEntities = new Map<number, IdentityTrait>()
 
-  constructor() {
+  // TODO: args as game variant? preset? data?
+  constructor(options?: StateConstructorOptions<V>) {
     super(undefined)
+
+    this.variantData = options?.variantData
 
     this.hijacksInteractionTarget = false
   }
@@ -119,3 +129,7 @@ export class State extends Entity<Record<string, unknown>> {
 interface Mixin extends IdentityTrait, LabelTrait, ParentTrait {}
 
 export interface State extends Mixin {}
+
+export type StateConstructorOptions<V> = {
+  variantData: V
+}

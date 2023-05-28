@@ -1,6 +1,7 @@
 {
   "name": "@cardsgame/example-certs",
   "version": "1.4.0",
+  "private": true,
   "description": "Self-signed certificate generation",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
