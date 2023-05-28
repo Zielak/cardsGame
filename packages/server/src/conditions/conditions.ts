@@ -2,43 +2,29 @@ import { applyMixins, logs } from "@cardsgame/utils"
 
 import type { State } from "../state/state.js"
 
+import { ConditionsMethods } from "./allMethods.js"
 import { ConditionAssertions } from "./assertions.js"
 import { ConditionBase } from "./base.js"
 import { ConditionChainers } from "./chainers.js"
 import { ConditionGrouping } from "./grouping.js"
 import { ConditionSubjects } from "./subjects.js"
+import { ConditionsContextBase } from "./types.js"
 import { getFlag, resetPropDig, resetSubject, setFlag } from "./utils.js"
 
-interface ConditionsMethods<S extends State, I = Record<string, any>>
-  extends ConditionBase<S>,
-    ConditionGrouping<S, I>,
-    ConditionChainers,
-    ConditionAssertions,
-    ConditionSubjects<I> {}
-
-class ConditionsMethods<S, I = Record<string, any>> {
-  protected _flags = new Map<string, any>()
-  protected _refs = new Map<string, any>()
-}
-
-abstract class Conditions<
-  S extends State,
-  InitialSubjects extends Record<string, any> = Record<string, any>
+class Conditions<
+  Context extends ConditionsContextBase<S>,
+  S = Context["state"]
 > extends Function {
   /**
    * @param state game's state reference
    * @param subjects additional data to be available while running conditions
    * @param defaultSubject which of the initial subjects to pick back after each assertion? If left empty, `state` will be picked instead.
    */
-  constructor(
-    state: S,
-    subjects: InitialSubjects,
-    defaultSubjectKey?: keyof InitialSubjects
-  ) {
+  constructor(context: Context, defaultSubjectKey?: keyof Context) {
     super()
-    const core = new ConditionsMethods<S, InitialSubjects>()
+    const core = new ConditionsMethods<Context, S>()
 
-    function API(customError): ConditionsMethods<S, InitialSubjects> {
+    function API(customError): ConditionsMethods<Context, S> {
       resetSubject(core)
       resetPropDig(core)
 
@@ -57,22 +43,22 @@ abstract class Conditions<
     }
     API.getCore = () => core
 
-    setFlag(core, "state", state)
+    setFlag(core, "state", context.state)
 
     if (defaultSubjectKey) {
-      if (!(defaultSubjectKey in subjects)) {
+      if (!(defaultSubjectKey in context)) {
         throw new Error(
           `Can't set default subject. "${String(
             defaultSubjectKey
           )}" does not exist in initial subjects.`
         )
       }
-      setFlag(core, "subject", subjects[defaultSubjectKey])
+      setFlag(core, "subject", context[defaultSubjectKey])
     } else {
-      setFlag(core, "subject", state)
+      setFlag(core, "subject", context.state)
     }
-    setFlag(core, "initialSubjects", Object.assign({}, subjects))
-    setFlag(core, "defaultSubject", subjects[defaultSubjectKey] || state)
+    setFlag(core, "initialSubjects", Object.assign({}, context))
+    setFlag(core, "defaultSubject", context[defaultSubjectKey] || context.state)
 
     setFlag(core, "propName", undefined)
     setFlag(core, "currentParent", undefined)
@@ -85,7 +71,10 @@ abstract class Conditions<
   }
 }
 
-interface Conditions<S, InitialSubjects = Record<string, any>> {
+interface Conditions<
+  Context extends ConditionsContextBase<S>,
+  S extends State = Context["state"]
+> {
   /**
    * Provide custom error message. It will be sent to the client when one
    * of the assertions fail in given chain.
@@ -99,14 +88,14 @@ interface Conditions<S, InitialSubjects = Record<string, any>> {
    * con("Can't perform this action until round 5").its("round").is.aboveEq(5)
    * ```
    */
-  (errorMessage?: string): ConditionsMethods<S, InitialSubjects>
+  (errorMessage?: string): ConditionsMethods<Context, S>
 
   /**
    * For internal use only. Get direct reference to the core, without having to
    * call the Conditions function
    * @ignore
    */
-  getCore(): ConditionsMethods<S, InitialSubjects>
+  getCore(): ConditionsMethods<Context, S>
 }
 
 applyMixins(ConditionsMethods, [

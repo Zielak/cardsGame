@@ -3,6 +3,7 @@ import {
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
 import { State } from "../../state/state.js"
+import { Conditions } from "../conditions.js"
 
 import { ConditionsTest } from "./conditions.js"
 
@@ -11,7 +12,7 @@ let parent: SmartParent
 let child: SmartEntity
 let top: SmartEntity
 let bottom: SmartEntity
-let con: ConditionsTest<State>
+let con: ConditionsTest
 
 beforeEach(() => {
   state = new State()
@@ -23,7 +24,11 @@ beforeEach(() => {
   new SmartEntity(state, { parent, name: "child" })
   top = new SmartEntity(state, { parent, name: "childTop" })
 
-  con = new ConditionsTest(state, { example: "foo" })
+  con = new Conditions({
+    state,
+    variant: state.variantData,
+    example: "foo",
+  })
 })
 
 describe("grab", () => {

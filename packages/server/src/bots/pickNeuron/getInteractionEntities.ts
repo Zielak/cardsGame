@@ -1,7 +1,7 @@
 import { chalk } from "@cardsgame/utils"
 
-import { isEntityActionDefinition } from "../../actions/entityAction.js"
-import { prepareClientMessageContext } from "../../interaction/utils.js"
+import { isEntityActionDefinition } from "../../actions/entity/utils.js"
+import { prepareConditionsContext } from "../../conditions/context/utils.js"
 import type { Bot } from "../../player/bot.js"
 import type { State } from "../../state/state.js"
 import type { ChildTrait } from "../../traits/child.js"
@@ -22,7 +22,7 @@ export const getInteractionEntities = <S extends State>(
   }
 
   // Grab all entities from INTERACTIONS
-  const messageContext = prepareClientMessageContext<S>(state, {
+  const messageContext = prepareConditionsContext(state, {
     messageType: "EntityInteraction",
     player: bot,
   })

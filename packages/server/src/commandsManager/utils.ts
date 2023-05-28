@@ -1,7 +1,7 @@
 import type {
   CollectionActionDefinition,
   CollectionContext,
-} from "../actions/collection.js"
+} from "../actions/collection/collection.js"
 import type { State } from "../state/state.js"
 
 /**

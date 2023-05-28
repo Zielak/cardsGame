@@ -1,10 +1,8 @@
 import { noop } from "@cardsgame/utils"
 
 import { defineRoom } from "../room/defineRoom.js"
-import { State } from "../state/state.js"
 
 const TestRoom = defineRoom("TestRoom", {
-  stateConstructor: State,
   onPlayerTurnEnded: jest.fn(),
   onPlayerTurnStarted: jest.fn(),
 })

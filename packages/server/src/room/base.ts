@@ -16,7 +16,7 @@ import type {
 import { fallback } from "../messages/fallback.js"
 import { messages } from "../messages/messageHandler.js"
 import type { Player, ServerPlayerMessage, Bot } from "../player/index.js"
-import type { State, StateConstructorOptions } from "../state/state.js"
+import { State, StateConstructorOptions } from "../state/state.js"
 import { debugRoomMessage } from "../utils/debugRoomMessage.js"
 
 import type { RoomDefinition } from "./roomType.js"
@@ -28,6 +28,9 @@ type ClientSendOptions = ISendOptions & {
   undo: boolean
 }
 
+/**
+ * @ignore
+ */
 export abstract class Room<
     S extends State,
     MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>
@@ -122,10 +125,14 @@ export abstract class Room<
     this.onMessage("*", fallback.bind(this))
 
     // Let the game initialize!
-    // TODO: state constructor options?
-    this.setState(
-      new this.stateConstructor({ variantData: options?.variantData })
-    )
+    if (this.stateConstructor) {
+      this.setState(
+        new this.stateConstructor({ variantData: options?.variantData })
+      )
+    } else {
+      this.setState(new State() as S)
+    }
+
     this.onInitGame(options)
 
     if (this.integrationHooks && options?.test in this.integrationHooks) {

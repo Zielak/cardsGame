@@ -41,10 +41,10 @@
       "require": "./lib/cjs/traits/index.cjs",
       "types": "./lib/types/traits/index.d.ts"
     },
-    "./internal/actions/types": {
-      "import": "./lib/esm/actions/types.js",
-      "require": "./lib/cjs/actions/types.cjs",
-      "types": "./lib/types/actions/types.d.ts"
+    "./internal/actions": {
+      "import": "./lib/esm/actions/internalIndex.js",
+      "require": "./lib/cjs/actions/internalIndex.cjs",
+      "types": "./lib/types/actions/internalIndex.d.ts"
     },
     "./internal/commandsManager/utils": {
       "import": "./lib/esm/commandsManager/utils.js",
@@ -56,10 +56,10 @@
       "require": "./lib/cjs/interaction/runConditionOnAction.cjs",
       "types": "./lib/types/interaction/runConditionOnAction.d.ts"
     },
-    "./internal/interaction/utils": {
-      "import": "./lib/esm/interaction/utils.js",
-      "require": "./lib/cjs/interaction/utils.cjs",
-      "types": "./lib/types/interaction/utils.d.ts"
+    "./internal/conditions/context": {
+      "import": "./lib/esm/conditions/context/internalIndex.js",
+      "require": "./lib/cjs/conditions/context/internalIndex.cjs",
+      "types": "./lib/types/conditions/context/internalIndex.d.ts"
     },
     "./internal/queries/internalTypes": {
       "import": "./lib/esm/queries/internalTypes.js",
@@ -80,11 +80,11 @@
   },
   "peerDependencies": {
     "@colyseus/core": "^0.14.36",
-    "@colyseus/schema": "^1.0.45"
+    "@colyseus/schema": "^1.0.46"
   },
   "devDependencies": {
     "@cardsgame/base-configs": "^1.4.0",
     "@colyseus/core": "^0.14.36",
-    "@colyseus/schema": "^1.0.45"
+    "@colyseus/schema": "^1.0.46"
   }
 }

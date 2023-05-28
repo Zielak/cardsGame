@@ -1,10 +1,10 @@
 import { logs } from "@cardsgame/utils"
 
-import { ENTITY_INTERACTION } from "../../interaction/types.js"
+import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
+import { ENTITY_INTERACTION } from "../../interaction/constants.js"
 import { queryRunner } from "../../queries/runner.js"
 import { State } from "../../state/state.js"
 import { isChild } from "../../traits/child.js"
-import { ClientMessageContext } from "../types.js"
 
 import type { InteractionQueries } from "./types.js"
 

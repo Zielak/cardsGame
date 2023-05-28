@@ -1,9 +1,9 @@
 import { LabeledEntity } from "../../../__test__/helpers/labeledEntities.js"
-import { ENTITY_INTERACTION } from "../../../interaction/types.js"
-import { prepareClientMessageContext } from "../../../interaction/utils.js"
+import { ClientMessageContext } from "../../../conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "../../../conditions/context/utils.js"
+import { ENTITY_INTERACTION } from "../../../interaction/constants.js"
 import { Player } from "../../../player/player.js"
 import { State } from "../../../state/state.js"
-import { ClientMessageContext } from "../../types.js"
 import { checkInteractionQueries } from "../prerequisites.js"
 import type { InteractionQueries } from "../types.js"
 
@@ -20,7 +20,7 @@ beforeEach(() => {
   entity = new LabeledEntity(state, { name: "foo", type: "entity" })
   player = new Player({ clientID })
 
-  messageContext = prepareClientMessageContext(state, {
+  messageContext = prepareConditionsContext(state, {
     player,
     entity,
     entities: [entity],

@@ -62,6 +62,17 @@ module.exports = {
       },
     },
     {
+      files: ["*.d.ts"],
+      extends: [
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier",
+      ],
+      rules: {
+        "@typescript-eslint/triple-slash-reference": "off",
+      },
+    },
+    {
       files: ["*.test.ts", "*.test.tsx"],
       extends: ["plugin:jest/recommended"],
       rules: {

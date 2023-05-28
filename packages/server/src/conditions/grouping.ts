@@ -4,15 +4,16 @@ import type { State } from "../state/state.js"
 
 import type { Conditions } from "./conditions.js"
 import { throwError } from "./errors.js"
+import { ConditionsContextBase } from "./types.js"
 import { getFlag, resetNegation, setFlag } from "./utils.js"
 
 type EitherCallback<C> = (con: C) => any
 type EitherTuple<C> = [string, EitherCallback<C>]
 
 class ConditionGrouping<
-  S extends State,
-  InitialSubjects = Record<string, any>,
-  C = Conditions<S, InitialSubjects>
+  Context extends ConditionsContextBase<S>,
+  S extends State = Context["state"],
+  C = Conditions<Context, S>
 > {
   /**
    * Loops through every item in subject's collection, executing provided function.

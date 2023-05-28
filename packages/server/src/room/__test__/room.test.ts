@@ -1,6 +1,6 @@
 import { Client, Room as ColyRoom } from "@colyseus/core"
 
-import { ENTITY_INTERACTION } from "../../interaction/types.js"
+import { ENTITY_INTERACTION } from "../../interaction/constants.js"
 import { start } from "../../messages/start.js"
 import { Player } from "../../player/player.js"
 import { State } from "../../state/state.js"

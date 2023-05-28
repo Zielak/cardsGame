@@ -1,20 +1,23 @@
 import {
+  Conditions,
   type ActionDefinition,
-  ClientMessageConditions,
   type ServerPlayerMessage,
-  extendsBaseActionDefinition,
-  extendsCollectionActionDefinition,
-  type BaseActionDefinition,
   type CollectionActionDefinition,
   State,
 } from "@cardsgame/server"
-import type { ClientMessageContext } from "@cardsgame/server/internal/actions/types"
-import { prepareActionContext } from "@cardsgame/server/internal/commandsManager/utils"
-import { runConditionOnAction } from "@cardsgame/server/internal/interaction/runConditionOnAction"
 import {
+  BaseActionDefinition,
+  extendsBaseActionDefinition,
+  extendsCollectionActionDefinition,
+} from "@cardsgame/server/internal/actions"
+import { prepareActionContext } from "@cardsgame/server/internal/commandsManager/utils"
+import {
+  ClientMessageContext,
+  ClientMessageConditions,
   playerMessageToInitialSubjects,
-  prepareClientMessageContext,
-} from "@cardsgame/server/internal/interaction/utils"
+  prepareConditionsContext,
+} from "@cardsgame/server/internal/conditions/context"
+import { runConditionOnAction } from "@cardsgame/server/internal/interaction/runConditionOnAction"
 
 import type { StateGetter } from "./types.js"
 
@@ -68,12 +71,9 @@ export function testEvent<S extends State>(
   message: ServerPlayerMessage
 ): boolean {
   const initialSubjects = playerMessageToInitialSubjects(message)
-  const messageContext = prepareClientMessageContext(state, initialSubjects)
+  const messageContext = prepareConditionsContext(state, initialSubjects)
 
-  const conditionsChecker = new ClientMessageConditions<S>(
-    state,
-    messageContext
-  )
+  const conditionsChecker = new Conditions(messageContext)
 
   if (extendsCollectionActionDefinition(action)) {
     return testCollectionAction<S>(action, messageContext, conditionsChecker)

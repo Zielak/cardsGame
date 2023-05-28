@@ -5,22 +5,19 @@ import {
   CollectionActionDefinition,
   CollectionConditionsResult,
   CollectionContext,
-  extendsCollectionActionDefinition,
-} from "./actions/collection.js"
-import {
-  RootActionDefinition,
-  RootContext,
-  isRootActionDefinition,
-} from "./actions/rootAction.js"
-import { ClientMessageContext } from "./actions/types.js"
+} from "./actions/collection/collection.js"
+import { extendsCollectionActionDefinition } from "./actions/collection/utils.js"
+import { RootActionDefinition, RootContext } from "./actions/root/rootAction.js"
+import { isRootActionDefinition } from "./actions/root/utils.js"
 import type { Command } from "./command.js"
 import { Undo } from "./commands/undo.js"
 import { prepareActionContext } from "./commandsManager/utils.js"
-import { ClientMessageConditions } from "./interaction/conditions.js"
+import { Conditions } from "./conditions/conditions.js"
 import {
+  ClientMessageContext,
   playerMessageToInitialSubjects,
-  prepareClientMessageContext,
-} from "./interaction/utils.js"
+} from "./conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "./conditions/context/utils.js"
 import type { Player, ServerPlayerMessage } from "./player/index.js"
 import type { Room } from "./room/base.js"
 import type { State } from "./state/state.js"
@@ -73,7 +70,7 @@ export class CommandsManager<S extends State> {
     context: CollectionContext
   ): Promise<boolean> {
     const initialSubjects = playerMessageToInitialSubjects(message)
-    const messageContext = prepareClientMessageContext(
+    const messageContext = prepareConditionsContext(
       this.room.state,
       initialSubjects
     )
@@ -152,7 +149,6 @@ export class CommandsManager<S extends State> {
     action: CollectionActionDefinition<S>,
     context: CollectionContext
   ): boolean {
-    const { state } = this.room
     const tmpCount = action._successfulActionsCount?.(context)
 
     logs.group(chalk.blue("Conditions"))
@@ -165,11 +161,7 @@ export class CommandsManager<S extends State> {
      */
 
     // 1. setup initialSubjects and conditionsChecker
-
-    const conditionsChecker = new ClientMessageConditions<S>(
-      state,
-      messageContext
-    )
+    const conditionsChecker = new Conditions(messageContext)
 
     // 2. run `checkConditions` on each sub actions (children or root OR children of pending)
     // 3. gather each sub-actions results/errors

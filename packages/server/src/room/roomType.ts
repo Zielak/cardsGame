@@ -21,14 +21,14 @@ interface ColyRoomDefinition {
  */
 export interface RoomDefinition<S extends State> extends ColyRoomDefinition {
   /**
-   * Reference to your game's `State` class.
+   * Reference to your game's `State` class. Will use just basic `State` by default
    */
-  stateConstructor: new (...args: any[]) => S
+  stateConstructor?: new (...args: any[]) => S
 
   /**
    * The base
    */
-  variantDefaults?: Required<S["variantData"]>
+  variantDefaults?: S["variantData"]
 
   /**
    * Set of all possible actions players can take in this game

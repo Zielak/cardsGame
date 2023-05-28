@@ -1,10 +1,12 @@
 import type { Command } from "../../command.js"
-import type { ClientMessageConditions } from "../../interaction/conditions.js"
+import type {
+  ClientMessageConditions,
+  ClientMessageContext,
+} from "../../conditions/context/clientMessage.js"
 import type { State } from "../../state/state.js"
 import type { BaseActionDefinition, BaseActionTemplate } from "../base.js"
 import { checkInteractionQueries } from "../shared/prerequisites.js"
 import type { InteractionQueries } from "../shared/types.js"
-import { ClientMessageContext } from "../types.js"
 
 /**
  * @category Action definitions

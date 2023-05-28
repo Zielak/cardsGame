@@ -1,17 +1,18 @@
 import { logs } from "@cardsgame/utils"
 
 import type { Command } from "../../command.js"
-import type { ClientMessageConditions } from "../../interaction/conditions.js"
+import type {
+  ClientMessageConditions,
+  ClientMessageContext,
+} from "../../conditions/context/clientMessage.js"
 import { runConditionOnAction } from "../../interaction/runConditionOnAction.js"
-import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import type { State } from "../../state/state.js"
 import type { BaseActionDefinition } from "../base.js"
 import type {
   CollectionActionDefinition,
   CollectionConditionsResult,
   CollectionContext,
-} from "../collection.js"
-import { ClientMessageContext } from "../types.js"
+} from "../collection/collection.js"
 
 import { CompoundActionChild, canActionBeInCompound } from "./types.js"
 

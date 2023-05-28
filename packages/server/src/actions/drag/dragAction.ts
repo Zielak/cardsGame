@@ -1,23 +1,22 @@
-import { chalk, Logs } from "@cardsgame/utils"
-
 import type { Command } from "../../command.js"
-import type { ClientMessageConditions } from "../../interaction/conditions.js"
+import type {
+  ClientMessageConditions,
+  ClientMessageContext,
+} from "../../conditions/context/clientMessage.js"
 import { runConditionOnAction } from "../../interaction/runConditionOnAction.js"
+import { ConditionErrorMessage } from "../../interaction/types.js"
 import type { State } from "../../state/state.js"
 import type { BaseActionDefinition } from "../base.js"
 import type {
   CollectionActionDefinition,
   CollectionConditionsResult,
   CollectionContext,
-} from "../collection.js"
-import { ClientMessageContext } from "../types.js"
+} from "../collection/collection.js"
 
+import { DragContext } from "./context.js"
 import { DragEndActionTemplate, DragEndActionDefinition } from "./end.js"
 import { DragStartActionDefinition, DragStartActionTemplate } from "./start.js"
-
-export const tapFallbackLog = new Logs("tapFallback", true, {
-  serverStyle: chalk.yellowBright,
-})
+import { isEndEvent, isStartEvent } from "./utils.js"
 
 /**
  * @category Action definitions
@@ -35,47 +34,6 @@ export interface DragActionTemplate<S extends State = State> {
    * Only considered after passing previous "start" action.
    */
   end: DragEndActionTemplate<S>
-}
-
-/**
- * @ignore
- */
-export function isDragActionTemplate<S extends State = State>(
-  o: unknown
-): o is DragActionTemplate<S> {
-  if (typeof o !== "object") {
-    return false
-  }
-
-  const optionalStartCommand =
-    "start" in o && typeof o["start"] === "object" && "command" in o["start"]
-      ? typeof o["start"]["command"] === "function"
-      : true
-
-  const hasValidStart =
-    "start" in o &&
-    typeof o["start"] === "object" &&
-    typeof o["start"]["interaction"] === "function" &&
-    typeof o["start"]["conditions"] === "function" &&
-    optionalStartCommand
-
-  const hasValidEnd =
-    "end" in o &&
-    typeof o["end"] === "object" &&
-    typeof o["end"]["interaction"] === "function" &&
-    typeof o["end"]["conditions"] === "function" &&
-    typeof o["end"]["command"] === "function"
-
-  return hasValidStart && hasValidEnd
-}
-
-/**
- * @ignore
- */
-export type DragContext = {
-  finished: boolean
-  prerequisitesFailed: boolean
-  conditionsFailed: boolean
 }
 
 /**
@@ -132,23 +90,26 @@ export class DragActionDefinition<S extends State>
     actionContext: CollectionContext<DragContext>
   ): CollectionConditionsResult<BaseActionDefinition<S>> {
     const { interaction, player } = messageContext
-    let error
+    let error: ConditionErrorMessage
 
     if (
       !actionContext.pending &&
       isStartEvent(interaction, player.isTapDragging)
     ) {
       error = runConditionOnAction(con, messageContext, this.start)
+      if (error) {
+        actionContext.conditionsFailed = true
+        return new Map([[this.start, error]])
+      }
     } else if (
       actionContext.pending &&
       isEndEvent(interaction, player.isTapDragging)
     ) {
       error = runConditionOnAction(con, messageContext, this.end)
-    }
-
-    if (error) {
-      actionContext.conditionsFailed = true
-      return new Map([error])
+      if (error) {
+        actionContext.conditionsFailed = true
+        return new Map([[this.end, error]])
+      }
     }
   }
 
@@ -173,43 +134,12 @@ export class DragActionDefinition<S extends State>
   }
 
   hasSuccessfulSubActions(context: CollectionContext<DragContext>): boolean {
-    return !context.conditionsFailed && !context.prerequisitesFailed
+    return !(context.conditionsFailed || context.prerequisitesFailed)
   }
 
   hasFinished(context: CollectionContext<DragContext>): boolean {
     return context.finished
   }
-}
-
-function isStartEvent(
-  interaction: InteractionType,
-  isTapDragging: boolean
-): boolean {
-  return (
-    interaction === "dragstart" || (interaction === "tap" && !isTapDragging)
-  )
-}
-
-function isEndEvent(
-  interaction: InteractionType,
-  isTapDragging: boolean
-): boolean {
-  return interaction === "dragend" || (interaction === "tap" && isTapDragging)
-}
-
-/**
- * @ignore
- */
-export function isDragActionDefinition<S extends State>(
-  o: unknown
-): o is DragActionDefinition<S> {
-  if (typeof o !== "object" && !(o instanceof DragActionDefinition)) {
-    return false
-  }
-
-  const templateMatches = "template" in o && isDragActionTemplate(o["template"])
-
-  return templateMatches
 }
 
 /**

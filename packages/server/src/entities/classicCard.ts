@@ -41,22 +41,25 @@ import { TwoSidedTrait } from "../traits/twoSided.js"
   LabelTrait,
   OwnershipTrait,
 ])
-export class ClassicCard extends Entity<ClassicCardOptions> {
+export class ClassicCard<
+  S extends Suit = Suit,
+  R extends Rank = Rank
+> extends Entity<ClassicCardOptions<S, R>> {
   // @filter(faceDownOnlyOwner)
   /**
    * @category ClassicCard
    */
-  @type("string") suit: string
+  @type("string") suit: S
 
   // @filter(faceDownOnlyOwner)
   /**
    * @category ClassicCard
    */
-  @type("string") rank: string
+  @type("string") rank: R
 
-  create(state: State, options: ClassicCardOptions = {}): void {
-    this.suit = def(options.suit, "X")
-    this.rank = def(options.rank, "Y")
+  create(state: State, options: ClassicCardOptions<S, R> = {}): void {
+    this.suit = def(options.suit, "X" as S)
+    this.rank = def(options.rank, "Y" as R)
     this.name = options.suit + options.rank
     this.type = "classicCard"
     this.faceUp = def(options.faceUp, false)
@@ -71,10 +74,10 @@ interface Mixin
     LabelTrait,
     OwnershipTrait {}
 
-type ClassicCardOptions = Partial<
+type ClassicCardOptions<S, R> = Partial<
   NonFunctionProperties<Mixin> & {
-    suit: string
-    rank: string
+    suit: S
+    rank: R
   }
 >
 

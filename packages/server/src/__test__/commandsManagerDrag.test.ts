@@ -5,7 +5,7 @@ import {
 } from "../actions/drag/dragAction.js"
 import { Noop } from "../commands/noop.js"
 import { CommandsManager } from "../commandsManager.js"
-import { ENTITY_INTERACTION } from "../interaction/types.js"
+import { ENTITY_INTERACTION } from "../interaction/constants.js"
 import { Player } from "../player/player.js"
 import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
 import type { Room } from "../room/base.js"

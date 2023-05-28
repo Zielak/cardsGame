@@ -4,11 +4,11 @@ import type { BaseActionTemplate } from "../../base.js"
 import {
   defineEntityAction,
   EntityActionDefinition,
-} from "../../entityAction.js"
+} from "../../entity/entityAction.js"
 import {
   defineMessageAction,
   MessageActionDefinition,
-} from "../../messageAction.js"
+} from "../../message/messageAction.js"
 import {
   CompoundActionDefinition,
   CompoundActionTemplate,

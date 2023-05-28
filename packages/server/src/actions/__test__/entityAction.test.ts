@@ -1,7 +1,8 @@
 import type { Command } from "../../command.js"
 import { Noop } from "../../commands/noop.js"
-import { ENTITY_INTERACTION } from "../../interaction/types.js"
-import { prepareClientMessageContext } from "../../interaction/utils.js"
+import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "../../conditions/context/utils.js"
+import { ENTITY_INTERACTION } from "../../interaction/constants.js"
 import { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import { State } from "../../state/state.js"
 import type { BaseActionTemplate } from "../base.js"
@@ -9,11 +10,12 @@ import { DragActionDefinition } from "../drag/dragAction.js"
 import {
   defineEntityAction,
   EntityActionDefinition,
+} from "../entity/entityAction.js"
+import {
   isEntityActionDefinition,
   isEntityActionTemplate,
-} from "../entityAction.js"
-import { MessageActionDefinition } from "../messageAction.js"
-import { ClientMessageContext } from "../types.js"
+} from "../entity/utils.js"
+import { MessageActionDefinition } from "../message/messageAction.js"
 
 jest.mock("../../state/state.js")
 jest.mock("../../player/player.js")
@@ -197,7 +199,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
 
   describe("entity interaction message", () => {
     beforeEach(() => {
-      messageContext = prepareClientMessageContext(state, message)
+      messageContext = prepareConditionsContext(state, message)
     })
     it("accepts expected entity interaction", () => {
       expect(
@@ -231,7 +233,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
 
   describe("empty entity interaction message", () => {
     beforeEach(() => {
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         ...message,
         entity: undefined,
         entities: [],

@@ -1,6 +1,6 @@
 import { logs } from "@cardsgame/utils"
 
-import { ENTITY_INTERACTION } from "../interaction/types.js"
+import { ENTITY_INTERACTION } from "../interaction/constants.js"
 import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 import type { ChildTrait } from "../traits/index.js"
@@ -42,7 +42,7 @@ export async function entityInteraction(
   try {
     await this.handleMessage(newMessage)
   } catch (e) {
-    logs.error(
+    logs.log(
       "ROOM",
       `EntityInteraction failed for client: "${client.sessionId}": ${e}`
     )

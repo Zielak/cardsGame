@@ -1,11 +1,12 @@
-import type { Command } from "../command.js"
-import type { ClientMessageConditions } from "../interaction/conditions.js"
-import type { State } from "../state/state.js"
-
-import type { BaseActionDefinition, BaseActionTemplate } from "./base.js"
-import { checkInteractionQueries } from "./shared/prerequisites.js"
-import type { InteractionQueries } from "./shared/types.js"
-import { ClientMessageContext } from "./types.js"
+import type { Command } from "../../command.js"
+import type {
+  ClientMessageConditions,
+  ClientMessageContext,
+} from "../../conditions/context/clientMessage.js"
+import type { State } from "../../state/state.js"
+import type { BaseActionDefinition, BaseActionTemplate } from "../base.js"
+import { checkInteractionQueries } from "../shared/prerequisites.js"
+import type { InteractionQueries } from "../shared/types.js"
 
 /**
  * @category Action definitions
@@ -21,29 +22,6 @@ export interface EntityActionTemplate<S extends State = State>
    * a reference to entities.
    */
   interaction: InteractionQueries<S>
-}
-
-function validInteractionType(v: unknown): v is InteractionType {
-  return typeof v === "string" && ["tap", "dragend"].some((type) => v === type)
-}
-
-/**
- * @ignore
- */
-export function isEntityActionTemplate<S extends State = State>(
-  o: unknown
-): o is EntityActionTemplate<S> {
-  if (typeof o !== "object") {
-    return false
-  }
-
-  const hasInteractionField =
-    "interaction" in o && typeof o["interaction"] === "function"
-
-  const hasValidInteractionTypeField =
-    "interactionType" in o ? validInteractionType(o["interactionType"]) : true
-
-  return hasInteractionField && hasValidInteractionTypeField
 }
 
 /**
@@ -88,22 +66,6 @@ export class EntityActionDefinition<S extends State>
 }
 
 /**
- * @ignore
- */
-export function isEntityActionDefinition<S extends State>(
-  o: unknown
-): o is EntityActionDefinition<S> {
-  if (typeof o !== "object" && !(o instanceof EntityActionDefinition)) {
-    return false
-  }
-
-  const templateMatches =
-    "template" in o && isEntityActionTemplate(o["template"])
-
-  return templateMatches
-}
-
-/**
  * @category Action definitions
  */
 export function defineEntityAction<S extends State = State>(
@@ -111,3 +73,9 @@ export function defineEntityAction<S extends State = State>(
 ): EntityActionDefinition<S> {
   return new EntityActionDefinition(template)
 }
+
+/**
+ * @category Action definitions
+ */
+export type EntityActionTemplateInteraction<S extends State> =
+  EntityActionTemplate<S>["interaction"]

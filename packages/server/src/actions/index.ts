@@ -1,7 +1,13 @@
 export * from "./compound/compoundAction.js"
-export * from "./drag/dragAction.js"
-export * from "./entityAction.js"
-export * from "./messageAction.js"
-export * from "./base.js"
-export * from "./collection.js"
+export { defineDragAction, DragActionDefinition } from "./drag/dragAction.js"
+export {
+  defineEntityAction,
+  EntityActionTemplateInteraction,
+  EntityActionDefinition,
+} from "./entity/entityAction.js"
+export {
+  defineMessageAction,
+  MessageActionDefinition,
+} from "./message/messageAction.js"
+export * from "./collection/collection.js"
 export * from "./types.js"

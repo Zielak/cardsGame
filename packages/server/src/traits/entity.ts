@@ -45,7 +45,7 @@ export class Entity<T> extends Schema {
   private readonly _executeHook = executeHook
 
   create(state: State, options: Partial<T> = {}): void {
-    logs.warn(
+    logs.log(
       `Entity`,
       `"${this.constructor.name}" instance doesn't have its own 'create()' method`
     )

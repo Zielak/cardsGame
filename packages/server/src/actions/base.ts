@@ -1,8 +1,9 @@
 import type { Command } from "../command.js"
-import type { ClientMessageConditions } from "../interaction/conditions.js"
+import {
+  ClientMessageConditions,
+  ClientMessageContext,
+} from "../conditions/context/clientMessage.js"
 import type { State } from "../state/state.js"
-
-import { ClientMessageContext } from "./types.js"
 
 /**
  * Template used by game dev.

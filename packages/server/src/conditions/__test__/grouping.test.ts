@@ -3,19 +3,21 @@ import {
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
 import { State } from "../../state/state.js"
+import { Conditions } from "../conditions.js"
+import { prepareConditionsContext } from "../context/utils.js"
 import { getCustomError } from "../errors.js"
 
 import { ConditionsTest } from "./conditions.js"
 
 let state: State
 let parent: SmartParent
-let con: ConditionsTest<State>
+let con: ConditionsTest
 
 beforeEach(() => {
   state = new State()
   parent = new SmartParent(state, { name: "parent" })
 
-  con = new ConditionsTest<State>(state, { example: "foo" })
+  con = new Conditions(prepareConditionsContext(state, { example: "foo" }))
 })
 
 describe("every", () => {

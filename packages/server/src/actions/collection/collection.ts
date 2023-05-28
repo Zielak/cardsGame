@@ -1,11 +1,12 @@
-import type { Command } from "../command.js"
-import type { ClientMessageConditions } from "../interaction/conditions.js"
-import type { ConditionErrorMessage } from "../interaction/types.js"
-import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
-import type { State } from "../state/state.js"
-
-import type { BaseActionDefinition } from "./base.js"
-import type { ActionDefinition, ClientMessageContext } from "./types.js"
+import type { Command } from "../../command.js"
+import type {
+  ClientMessageConditions,
+  ClientMessageContext,
+} from "../../conditions/context/clientMessage.js"
+import type { ConditionErrorMessage } from "../../interaction/types.js"
+import type { State } from "../../state/state.js"
+import type { BaseActionDefinition } from "../base.js"
+import type { ActionDefinition } from "../types.js"
 
 export type CollectionContext<
   C extends Record<string, unknown> = Record<string, unknown>
@@ -76,20 +77,6 @@ export interface CollectionActionDefinition<
    * @deprecated figure out if needed...
    */
   getSuccessfulAction?: (context: CollectionContext<C>) => ActionDefinition<S>
-}
-
-/**
- * @ignore
- */
-export function extendsCollectionActionDefinition<S extends State>(
-  o: unknown
-): o is CollectionActionDefinition<S> {
-  return (
-    typeof o === "object" &&
-    ["setupContext", "teardownContext", "hasSuccessfulSubActions"].every(
-      (m) => m in o && typeof o[m] === "function"
-    )
-  )
 }
 
 /**

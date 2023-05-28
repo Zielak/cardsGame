@@ -7,6 +7,7 @@ import { isParent } from "../traits/parent.js"
 import { hasSelectableChildren } from "../traits/selectableChildren.js"
 
 import { throwError } from "./errors.js"
+import { ConditionsContextBase } from "./types.js"
 import { getFlag, getRef, postAssertion, resetNegation } from "./utils.js"
 
 const getMessage = (
@@ -68,7 +69,10 @@ function assert(
   postAssertion(this)
 }
 
-class ConditionAssertions {
+class ConditionAssertions<
+  Context extends ConditionsContextBase<S>,
+  S extends State = Context["state"]
+> {
   /**
    * @asserts subject should be empty. Usable against JS primitives AND Entities.
    */
@@ -554,19 +558,35 @@ class ConditionAssertions {
   /**
    * Runs given callback with current `subject` as the only argument.
    * @asserts if given callback returns truthy
+   *
    * @example
    * ```ts
-   * const isKing = (card: ClassicCard) => {
-   *   return card.rank === "K"
-   * }
    * // Will test if target of interaction is in fact a King
-   * con.entity.test(isKing)
+   * con().entity.test((card: ClassicCard) => {
+   *   return card.rank === "K"
+   * })
+   * ```
+   *
+   * @example
+   * ```ts
+   * import { AssertionTester } from "@cardsgame/server"
+   *
+   * // More generic approach using state-defined variants data
+   * const isAttackCard: AssertionTester<MyGameState> = (card, { variant }) => {
+   *   return card.rank === variant.attackRank
+   * }
+   *
+   * // ...
+   *
+   * // Will test if target of interaction is "attack card" type
+   * con().entity.test(isAttackCard)
    * ```
    */
-  test(tester: (subject: any) => boolean): this {
+  test(tester: (subject: unknown, context: Context) => boolean): this {
     const subject = getFlag(this, "subject")
+    const initialSubjects = getFlag(this, "initialSubjects")
 
-    const result = tester.call(undefined, subject)
+    const result = tester.call(undefined, subject, initialSubjects)
 
     assert.call(
       this,

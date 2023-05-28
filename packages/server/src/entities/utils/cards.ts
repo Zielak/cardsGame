@@ -6,14 +6,14 @@ import type { ClassicCard } from "../classicCard.js"
  * All basic ranks in an array (order matters)
  */
 // prettier-ignore
-export const ALL_CARD_RANKS = [
+export const ALL_CARD_RANKS: Rank[] = [
   "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"
 ]
 
 /**
  * All basic suits in an array (order matters)
  */
-export const ALL_CARD_SUITS = ["D", "S", "H", "C"]
+export const ALL_CARD_SUITS: Suit[] = ["D", "S", "H", "C"]
 
 /**
  * Will generate an array of card options.
@@ -30,8 +30,8 @@ export const ALL_CARD_SUITS = ["D", "S", "H", "C"]
  */
 export const standardDeckFactory = (
   // prettier-ignore
-  ranks: string[] = ALL_CARD_RANKS,
-  suits: string[] = ALL_CARD_SUITS
+  ranks: Rank[] = ALL_CARD_RANKS,
+  suits: Suit[] = ALL_CARD_SUITS
 ): Pick<ClassicCard, "rank" | "suit">[] => {
   const cards: Pick<ClassicCard, "rank" | "suit">[] = []
 

@@ -1,19 +1,21 @@
 import type { Command } from "../../../command.js"
 import { prepareActionContext } from "../../../commandsManager/utils.js"
-import type { ClientMessageConditions } from "../../../interaction/conditions.js"
-import { ENTITY_INTERACTION } from "../../../interaction/types.js"
-import { prepareClientMessageContext } from "../../../interaction/utils.js"
+import type {
+  ClientMessageConditions,
+  ClientMessageContext,
+} from "../../../conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "../../../conditions/context/utils.js"
+import { ENTITY_INTERACTION } from "../../../interaction/constants.js"
 import type { ServerPlayerMessage } from "../../../player/serverPlayerMessage.js"
 import { State } from "../../../state/state.js"
 import type { BaseActionTemplate } from "../../base.js"
-import type { CollectionContext } from "../../collection.js"
+import type { CollectionContext } from "../../collection/collection.js"
 import {
   CompoundActionDefinition,
   CompoundContext,
 } from "../../compound/compoundAction.js"
-import { defineEntityAction } from "../../entityAction.js"
-import { defineMessageAction } from "../../messageAction.js"
-import { ClientMessageContext } from "../../types.js"
+import { defineEntityAction } from "../../entity/entityAction.js"
+import { defineMessageAction } from "../../message/messageAction.js"
 
 jest.mock("../../../state/state.js")
 jest.mock("../../../player/player.js")
@@ -103,7 +105,7 @@ describe("CompoundActionDefinition", () => {
         messageType: ENTITY_INTERACTION,
         timestamp: 123,
       }
-      messageContext = prepareClientMessageContext(state, baseMessage)
+      messageContext = prepareConditionsContext(state, baseMessage)
 
       jest.spyOn(actionEntity, "checkPrerequisites")
       jest.spyOn(actionAbort, "checkPrerequisites")
@@ -123,7 +125,7 @@ describe("CompoundActionDefinition", () => {
     })
 
     it("returns true on one of the actions matching", () => {
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         entity: targetEntity,
         entities,
         messageType: ENTITY_INTERACTION,
@@ -133,21 +135,21 @@ describe("CompoundActionDefinition", () => {
     })
 
     it("returns true on abort matching", () => {
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         messageType: ABORT,
       })
       expect(compound.checkPrerequisites(messageContext, context)).toBe(true)
     })
 
     it("returns true on finish matching", () => {
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         messageType: FINISH,
       })
       expect(compound.checkPrerequisites(messageContext, context)).toBe(true)
     })
 
     it("returns false on non-matching message", () => {
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         messageType: "foo",
       })
       expect(compound.checkPrerequisites(messageContext, context)).toBe(false)
@@ -156,7 +158,7 @@ describe("CompoundActionDefinition", () => {
 
   describe("checkConditions", () => {
     const con = (() => {}) as ClientMessageConditions<State>
-    messageContext = prepareClientMessageContext(state, {
+    messageContext = prepareConditionsContext(state, {
       messageType: ENTITY_INTERACTION,
     })
 

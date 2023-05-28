@@ -7,6 +7,8 @@ import { Grid } from "../../entities/grid.js"
 import { Player } from "../../player/player.js"
 import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
 import { State } from "../../state/state.js"
+import { Conditions } from "../conditions.js"
+import { prepareConditionsContext } from "../context/utils.js"
 
 import { ConditionsTest } from "./conditions.js"
 
@@ -18,9 +20,10 @@ let selectableParent: SelectableParent
 let child: SmartEntity
 let top: SmartEntity
 let bottom: SmartEntity
-let con: ConditionsTest<State>
+let con: ConditionsTest
 let player1: Player
 let player2: Player
+let context
 
 const UI_KEY1 = "uiKey1"
 const UI_KEY2 = "uiKey2"
@@ -48,7 +51,11 @@ beforeEach(() => {
   state.ui.set(UI_KEY1, player1.clientID)
   state.ui.set(UI_KEY2, "")
 
-  con = new ConditionsTest<State>(state, { example: "foo", player: player1 })
+  context = prepareConditionsContext(state, {
+    example: "foo",
+    player: player1,
+  })
+  con = new Conditions(context)
 })
 
 describe("equals", () => {
@@ -344,6 +351,43 @@ test("matchesPropOf", () => {
   expect(() => con().set("test").matchesPropOf(bottom)).toThrow()
 })
 
+describe("test", () => {
+  it("passes", () => {
+    expect(() =>
+      con()
+        .set(true)
+        .test((subject) => subject === true)
+    ).not.toThrow()
+
+    expect(() =>
+      con()
+        .set(true)
+        .not.test((subject) => subject === false)
+    ).not.toThrow()
+  })
+
+  it("fails as expected", () => {
+    expect(() =>
+      con()
+        .set(false)
+        .test((subject) => subject === true)
+    ).toThrow("returned falsy")
+
+    expect(() =>
+      con()
+        .set(true)
+        .not.test((subject) => subject === true)
+    ).toThrow("returned truthy")
+  })
+
+  it("passes down initial subjects", () => {
+    const spy = jest.fn().mockReturnValue(true)
+    con().set(1).test(spy)
+
+    expect(spy).toHaveBeenCalledWith(1, context)
+  })
+})
+
 describe("revealedUI", () => {
   test("passes", () => {
     // player1
@@ -354,7 +398,9 @@ describe("revealedUI", () => {
     expect(() => con().revealedUI(UI_KEY2)).toThrow("client doesn't have")
 
     // player2
-    con = new ConditionsTest<State>(state, { example: "foo", player: player2 })
+    con = new Conditions(
+      prepareConditionsContext(state, { example: "foo", player: player2 })
+    )
 
     expect(() => con().has.not.revealedUI()).not.toThrow()
     expect(() => con().has.not.revealedUI(UI_KEY1)).not.toThrow()

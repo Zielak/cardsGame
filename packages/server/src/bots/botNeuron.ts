@@ -1,13 +1,14 @@
 import type { ActionDefinition } from "../actions/types.js"
-import type { Bot } from "../player/index.js"
+import {
+  BotEntityAuxConditions,
+  BotEntityAuxContext,
+} from "../conditions/context/botEntityAux.js"
+import {
+  ClientMessageConditions,
+  ClientMessageContext,
+} from "../conditions/context/clientMessage.js"
 import type { QuerableProps } from "../queries/types.js"
 import type { State } from "../state/state.js"
-
-import type {
-  BotConditions,
-  BotContext,
-  EntityConditions,
-} from "./conditions.js"
 
 export interface BotNeuron<S extends State> {
   name: string
@@ -22,7 +23,10 @@ export interface BotNeuron<S extends State> {
    * Optional, but without this, bot will  brute force its way through all
    * game elements to understand if this action can be played.
    */
-  conditions?: (con: BotConditions<S>, context: BotContext<S>) => void
+  conditions?: (
+    con: ClientMessageConditions<S>,
+    context: ClientMessageContext<S>
+  ) => void
 
   /**
    * With higher values bot is more likely to pick that Neuron.
@@ -32,7 +36,7 @@ export interface BotNeuron<S extends State> {
    *
    * Optional, by default the value is considered to be `0`.
    */
-  value: (state: S, bot: Bot) => number
+  value: (context: ClientMessageContext<S>) => number
 
   /**
    * Scale up/down the time it takes the bot to act on this neuron.
@@ -59,13 +63,18 @@ export interface BotNeuron<S extends State> {
    * Can simply be additional `QuerableProps` object, or more advanced function
    * of conditions - subject is automatically set to each entity.
    */
-  entitiesFilter?: ((con: EntityConditions<S>) => void) | QuerableProps[]
+  entitiesFilter?:
+    | ((
+        con: BotEntityAuxConditions<S>,
+        context: BotEntityAuxContext<S>
+      ) => void)
+    | QuerableProps[]
 
   /**
    * Make bot generate additional `data`, if needed.
    * Will be passed to `ClientPlayerMessage.data`
    */
-  playerEventData?: (state: S, bot: Bot) => any
+  playerEventData?: (context: ClientMessageContext<S>) => any
 }
 
 export type BotActionsSet<S extends State> = Set<BotNeuron<S>>

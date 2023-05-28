@@ -1,17 +1,19 @@
-import type { Command } from "../command.js"
-import { prepareActionContext } from "../commandsManager/utils.js"
-import type { ClientMessageConditions } from "../interaction/conditions.js"
-import { runConditionOnAction } from "../interaction/runConditionOnAction.js"
-import type { State } from "../state/state.js"
-
-import { BaseActionDefinition, extendsBaseActionDefinition } from "./base.js"
+import type { Command } from "../../command.js"
+import { prepareActionContext } from "../../commandsManager/utils.js"
+import type {
+  ClientMessageConditions,
+  ClientMessageContext,
+} from "../../conditions/context/clientMessage.js"
+import { runConditionOnAction } from "../../interaction/runConditionOnAction.js"
+import type { State } from "../../state/state.js"
+import { BaseActionDefinition, extendsBaseActionDefinition } from "../base.js"
 import {
   CollectionActionDefinition,
   CollectionConditionsResult,
   CollectionContext,
-  extendsCollectionActionDefinition,
-} from "./collection.js"
-import type { ActionDefinition, ClientMessageContext } from "./types.js"
+} from "../collection/collection.js"
+import { extendsCollectionActionDefinition } from "../collection/utils.js"
+import type { ActionDefinition } from "../types.js"
 
 export type RootContext<S extends State> = {
   successfulActions: Set<ActionDefinition<S>>
@@ -149,21 +151,4 @@ export class RootActionDefinition<S extends State = State>
   _allActionsCount(): number {
     return this.actions.length
   }
-}
-
-/**
- * @ignore
- */
-export function isRootActionDefinition<S extends State>(
-  o: unknown
-): o is RootActionDefinition<S> {
-  if (typeof o !== "object" && !(o instanceof RootActionDefinition)) {
-    return false
-  }
-
-  const nameIsValid = "name" in o && o["name"] === "root"
-
-  const hasActions = "actions" in o && Array.isArray(o["actions"])
-
-  return nameIsValid && hasActions
 }

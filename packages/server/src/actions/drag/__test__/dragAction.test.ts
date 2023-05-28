@@ -1,22 +1,17 @@
 import type { Command } from "../../../command.js"
 import { prepareActionContext } from "../../../commandsManager/utils.js"
-import type { ClientMessageInitialSubjects } from "../../../interaction/conditions.js"
-import { ENTITY_INTERACTION } from "../../../interaction/types.js"
-import { prepareClientMessageContext } from "../../../interaction/utils.js"
+import { ClientMessageContext } from "../../../conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "../../../conditions/context/utils.js"
+import { ENTITY_INTERACTION } from "../../../interaction/constants.js"
 import { Player } from "../../../player/player.js"
 import type { ServerPlayerMessage } from "../../../player/serverPlayerMessage.js"
 import { State } from "../../../state/state.js"
-import type { CollectionContext } from "../../collection.js"
-import { EntityActionDefinition } from "../../entityAction.js"
-import { MessageActionDefinition } from "../../messageAction.js"
-import { ClientMessageContext } from "../../types.js"
-import {
-  DragActionDefinition,
-  DragContext,
-  defineDragAction,
-  isDragActionDefinition,
-  isDragActionTemplate,
-} from "../dragAction.js"
+import type { CollectionContext } from "../../collection/collection.js"
+import { EntityActionDefinition } from "../../entity/entityAction.js"
+import { MessageActionDefinition } from "../../message/messageAction.js"
+import { DragContext } from "../context.js"
+import { DragActionDefinition, defineDragAction } from "../dragAction.js"
+import { isDragActionDefinition, isDragActionTemplate } from "../utils.js"
 
 jest.mock("../../../player/player.js")
 jest.mock("../../../state/state.js")
@@ -196,7 +191,7 @@ describe("DragActionDefinition", () => {
       def.start.checkPrerequisites = jest.fn()
       def.end.checkPrerequisites = jest.fn()
 
-      messageContext = prepareClientMessageContext(state, message)
+      messageContext = prepareConditionsContext(state, message)
 
       def.checkPrerequisites(messageContext, context)
 
@@ -210,7 +205,7 @@ describe("DragActionDefinition", () => {
 
       context.pending = true
 
-      messageContext = prepareClientMessageContext(state, message)
+      messageContext = prepareConditionsContext(state, message)
 
       def.checkPrerequisites(messageContext, context)
 
@@ -220,7 +215,7 @@ describe("DragActionDefinition", () => {
 
     describe("start", () => {
       it("accepts only dragstart", () => {
-        messageContext = prepareClientMessageContext(state, {
+        messageContext = prepareConditionsContext(state, {
           ...message,
           interaction: "dragstart",
         })
@@ -229,7 +224,7 @@ describe("DragActionDefinition", () => {
 
       it("accepts tap only if player isn't tap-dragging yet", () => {
         message.interaction = "tap"
-        messageContext = prepareClientMessageContext(state, message)
+        messageContext = prepareConditionsContext(state, message)
 
         expect(def.start.checkPrerequisites(messageContext)).toBe(true)
 
@@ -239,7 +234,7 @@ describe("DragActionDefinition", () => {
       })
 
       it("doesn't accept dragend", () => {
-        messageContext = prepareClientMessageContext(state, {
+        messageContext = prepareConditionsContext(state, {
           ...message,
           interaction: "dragend",
         })
@@ -249,7 +244,7 @@ describe("DragActionDefinition", () => {
 
     describe("end", () => {
       it("accepts only dragstart", () => {
-        messageContext = prepareClientMessageContext(state, {
+        messageContext = prepareConditionsContext(state, {
           ...message,
           interaction: "dragend",
         })
@@ -259,7 +254,7 @@ describe("DragActionDefinition", () => {
       it("accepts tap only if player has initiated tap-dragging", () => {
         message.interaction = "tap"
         player.isTapDragging = true
-        messageContext = prepareClientMessageContext(state, message)
+        messageContext = prepareConditionsContext(state, message)
 
         expect(def.end.checkPrerequisites(messageContext)).toBe(true)
 
@@ -269,7 +264,7 @@ describe("DragActionDefinition", () => {
       })
 
       it("doesn't accept dragstart", () => {
-        messageContext = prepareClientMessageContext(state, {
+        messageContext = prepareConditionsContext(state, {
           ...message,
           interaction: "dragstart",
         })
@@ -295,7 +290,7 @@ describe("DragActionDefinition", () => {
       def.start.checkConditions = jest.fn()
       def.end.checkConditions = jest.fn()
 
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         ...message,
         interaction: "dragstart",
       })
@@ -316,7 +311,7 @@ describe("DragActionDefinition", () => {
       def.end.checkConditions = jest.fn()
 
       player.isTapDragging = false
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         ...message,
         interaction: "tap",
       })
@@ -337,7 +332,7 @@ describe("DragActionDefinition", () => {
       def.end.checkConditions = jest.fn()
 
       context.pending = true
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         ...message,
         interaction: "dragend",
       })
@@ -354,7 +349,7 @@ describe("DragActionDefinition", () => {
 
       context.pending = true
       player.isTapDragging = true
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         ...message,
         interaction: "tap",
       })
@@ -371,7 +366,7 @@ describe("DragActionDefinition", () => {
       def.start.getCommand = jest.fn()
       def.end.getCommand = jest.fn()
 
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         ...message,
         interaction: "dragstart",
       })
@@ -395,7 +390,7 @@ describe("DragActionDefinition", () => {
       def.end.getCommand = jest.fn()
 
       player.dragStartEntity = fromEntity as any
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         ...message,
         interaction: "dragstart",
       })
@@ -413,7 +408,7 @@ describe("DragActionDefinition", () => {
       def.end.getCommand = jest.fn()
 
       player.isTapDragging = false
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         ...message,
         interaction: "tap",
       })
@@ -431,7 +426,7 @@ describe("DragActionDefinition", () => {
       def.end.getCommand = jest.fn()
 
       context.pending = true
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         ...message,
         interaction: "dragend",
       })
@@ -450,7 +445,7 @@ describe("DragActionDefinition", () => {
 
       context.pending = true
       player.isTapDragging = true
-      messageContext = prepareClientMessageContext(state, {
+      messageContext = prepareConditionsContext(state, {
         ...message,
         interaction: "tap",
       })

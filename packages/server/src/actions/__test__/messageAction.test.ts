@@ -1,15 +1,17 @@
 import type { Command } from "../../command.js"
-import { prepareClientMessageContext } from "../../interaction/utils.js"
+import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "../../conditions/context/utils.js"
 import { State } from "../../state/state.js"
 import type { BaseActionTemplate } from "../base.js"
-import { EntityActionDefinition } from "../entityAction.js"
+import { EntityActionDefinition } from "../entity/entityAction.js"
 import {
   defineMessageAction,
+  MessageActionDefinition,
+} from "../message/messageAction.js"
+import {
   isMessageActionDefinition,
   isMessageActionTemplate,
-  MessageActionDefinition,
-} from "../messageAction.js"
-import { ClientMessageContext } from "../types.js"
+} from "../message/utils.js"
 
 const conditions = () => {}
 const command = (() => {}) as () => Command<State>
@@ -77,7 +79,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
 
   beforeEach(() => {
     state = new State()
-    messageContext = prepareClientMessageContext(state, {
+    messageContext = prepareConditionsContext(state, {
       messageType: "foo",
     })
   })
