@@ -184,7 +184,7 @@ class ConditionAssertions<
    * Compares current subject to given value, no coercion (strict equality).
    * @asserts that subject is equal to provided value.
    */
-  equals(value: unknown): this {
+  equals<T = unknown>(value: T): this {
     const subject = getFlag(this, "subject")
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""

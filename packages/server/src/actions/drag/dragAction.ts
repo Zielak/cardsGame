@@ -32,52 +32,67 @@ export interface DragActionTemplate<S extends State = State> {
   /**
    * Definition for event related to "dragEnd".
    * Only considered after passing previous "start" action.
+   *
+   * Define as array, if your action can end in multiple places.
    */
-  end: DragEndActionTemplate<S>
+  end: DragEndActionTemplate<S> | DragEndActionTemplate<S>[]
 }
 
 /**
  * @ignore
  */
 export class DragActionDefinition<S extends State>
-  implements CollectionActionDefinition<S, DragContext>
+  implements CollectionActionDefinition<S, DragContext<S>>
 {
   name: string
   start: DragStartActionDefinition<S>
-  end: DragEndActionDefinition<S>
+  end: DragEndActionDefinition<S>[]
 
   constructor(private template: DragActionTemplate<S>) {
     this.name = template.name
     this.start = new DragStartActionDefinition(template.start)
-    this.end = new DragEndActionDefinition(template.end)
+
+    this.end = Array.isArray(template.end)
+      ? template.end.map((end) => new DragEndActionDefinition(end))
+      : [new DragEndActionDefinition(template.end)]
   }
 
-  setupContext(): DragContext {
+  setupContext(): DragContext<S> {
     return {
       finished: false,
       prerequisitesFailed: false,
       conditionsFailed: false,
+      successfulEnd: new Set(),
     }
   }
 
-  teardownContext(context: CollectionContext<DragContext>): void {
+  teardownContext(context: CollectionContext<DragContext<S>>): void {
     delete context.finished
     delete context.prerequisitesFailed
     delete context.conditionsFailed
+    context.successfulEnd.clear()
+    delete context.successfulEnd
   }
 
   checkPrerequisites(
     messageContext: ClientMessageContext<S>,
-    actionContext: CollectionContext<DragContext>
+    actionContext: CollectionContext<DragContext<S>>
   ): boolean {
-    const result = actionContext.pending
-      ? this.end.checkPrerequisites(messageContext)
-      : this.start.checkPrerequisites(messageContext)
+    let result: boolean
+    if (actionContext.pending) {
+      this.end
+        .filter((action) => action.checkPrerequisites(messageContext))
+        .forEach((action) => actionContext.successfulEnd.add(action))
+
+      result = actionContext.successfulEnd.size > 0
+    } else {
+      result = this.start.checkPrerequisites(messageContext)
+    }
 
     actionContext.prerequisitesFailed = !result
 
     if (actionContext.pending && actionContext.prerequisitesFailed) {
-      // Abort, when end failed
+      // Abort, when all ends fail
       actionContext.aborted = true
     }
 
@@ -87,37 +102,45 @@ export class DragActionDefinition<S extends State>
   checkConditions(
     con: ClientMessageConditions<S>,
     messageContext: ClientMessageContext<S>,
-    actionContext: CollectionContext<DragContext>
+    actionContext: CollectionContext<DragContext<S>>
   ): CollectionConditionsResult<BaseActionDefinition<S>> {
     const { interaction, player } = messageContext
-    let error: ConditionErrorMessage
+    const rejectedActions: CollectionConditionsResult<BaseActionDefinition<S>> =
+      new Map()
 
     if (
       !actionContext.pending &&
       isStartEvent(interaction, player.isTapDragging)
     ) {
-      error = runConditionOnAction(con, messageContext, this.start)
+      const error = runConditionOnAction(con, messageContext, this.start)
       if (error) {
-        actionContext.conditionsFailed = true
-        actionContext.aborted = true
-        return new Map([[this.start, error]])
+        rejectedActions.set(this.start, error)
       }
     } else if (
       actionContext.pending &&
       isEndEvent(interaction, player.isTapDragging)
     ) {
-      error = runConditionOnAction(con, messageContext, this.end)
-      if (error) {
-        actionContext.conditionsFailed = true
-        actionContext.aborted = true
-        return new Map([[this.end, error]])
-      }
+      actionContext.successfulEnd.forEach((action) => {
+        const error = runConditionOnAction(con, messageContext, action)
+
+        if (error) {
+          rejectedActions.set(action, error)
+          actionContext.successfulEnd.delete(action)
+        }
+      })
     }
+
+    if (rejectedActions.size > 0) {
+      actionContext.conditionsFailed = true
+      actionContext.aborted = true
+    }
+
+    return rejectedActions
   }
 
   getCommand(
     messageContext: ClientMessageContext<S>,
-    actionContext: CollectionContext<DragContext>
+    actionContext: CollectionContext<DragContext<S>>
   ): Command<State> {
     const { interaction, player } = messageContext
 
@@ -131,15 +154,15 @@ export class DragActionDefinition<S extends State>
       isEndEvent(interaction, player.isTapDragging)
     ) {
       actionContext.finished = true
-      return this.end.getCommand(messageContext)
+      return [...actionContext.successfulEnd][0].getCommand(messageContext)
     }
   }
 
-  hasSuccessfulSubActions(context: CollectionContext<DragContext>): boolean {
+  hasSuccessfulSubActions(context: CollectionContext<DragContext<S>>): boolean {
     return !(context.conditionsFailed || context.prerequisitesFailed)
   }
 
-  hasFinished(context: CollectionContext<DragContext>): boolean {
+  hasFinished(context: CollectionContext<DragContext<S>>): boolean {
     return context.finished
   }
 }

@@ -46,14 +46,14 @@ describe("drag action is kept in pending", () => {
       end: { interaction: () => [{ type: "pile" }], conditions, command },
     })
     jest.spyOn(dragAnyToPile.start, "getCommand")
-    jest.spyOn(dragAnyToPile.end, "getCommand")
+    jest.spyOn(dragAnyToPile.end[0], "getCommand")
     dragAnyToLine = defineDragAction<State>({
       name: "OnlyHandToLine",
       start: { interaction: () => "*", conditions, command },
       end: { interaction: () => [{ type: "line" }], conditions, command },
     })
     jest.spyOn(dragAnyToLine.start, "getCommand")
-    jest.spyOn(dragAnyToLine.end, "getCommand")
+    jest.spyOn(dragAnyToLine.end[0], "getCommand")
 
     state = new State()
     room = new TestRoom()
@@ -106,8 +106,8 @@ describe("drag action is kept in pending", () => {
 
     expect(manager.pendingActions.get(clientID)).toBeUndefined()
 
-    expect(dragAnyToPile.end.getCommand).toHaveBeenCalled()
-    expect(dragAnyToLine.end.getCommand).not.toHaveBeenCalled()
+    expect(dragAnyToPile.end[0].getCommand).toHaveBeenCalled()
+    expect(dragAnyToLine.end[0].getCommand).not.toHaveBeenCalled()
   })
 
   it("starts with A, and tries to end with B", async () => {
@@ -144,8 +144,8 @@ describe("drag action is kept in pending", () => {
       )
     ).rejects.toThrow()
 
-    expect(dragAnyToPile.end.getCommand).not.toHaveBeenCalled()
-    expect(dragAnyToLine.end.getCommand).not.toHaveBeenCalled()
+    expect(dragAnyToPile.end[0].getCommand).not.toHaveBeenCalled()
+    expect(dragAnyToLine.end[0].getCommand).not.toHaveBeenCalled()
 
     expect(manager.pendingActions.get(clientID)).toBeUndefined()
   })
@@ -171,7 +171,7 @@ describe("start on one action and end in another shouldn't be allowed", () => {
       end: { interaction: () => [{ type: "hand" }], conditions, command },
     })
     jest.spyOn(dragHandToHand.start, "getCommand")
-    jest.spyOn(dragHandToHand.end, "getCommand")
+    jest.spyOn(dragHandToHand.end[0], "getCommand")
 
     dragLineToLine = defineDragAction<State>({
       name: "OnlyLineToLine",
@@ -183,7 +183,7 @@ describe("start on one action and end in another shouldn't be allowed", () => {
       end: { interaction: () => [{ type: "line" }], conditions, command },
     })
     jest.spyOn(dragLineToLine.start, "getCommand")
-    jest.spyOn(dragLineToLine.end, "getCommand")
+    jest.spyOn(dragLineToLine.end[0], "getCommand")
 
     state = new State()
     room = new TestRoom()
@@ -237,8 +237,8 @@ describe("start on one action and end in another shouldn't be allowed", () => {
       )
     ).resolves.toBe(true)
 
-    expect(dragHandToHand.end.getCommand).toHaveBeenCalled()
-    expect(dragLineToLine.end.getCommand).not.toHaveBeenCalled()
+    expect(dragHandToHand.end[0].getCommand).toHaveBeenCalled()
+    expect(dragLineToLine.end[0].getCommand).not.toHaveBeenCalled()
 
     expect(manager.pendingActions.get(clientID)).toBeUndefined()
   })
@@ -275,8 +275,8 @@ describe("start on one action and end in another shouldn't be allowed", () => {
       )
     ).rejects.toThrow()
 
-    expect(dragHandToHand.end.getCommand).not.toHaveBeenCalled()
-    expect(dragLineToLine.end.getCommand).not.toHaveBeenCalled()
+    expect(dragHandToHand.end[0].getCommand).not.toHaveBeenCalled()
+    expect(dragLineToLine.end[0].getCommand).not.toHaveBeenCalled()
   })
 })
 
@@ -316,7 +316,7 @@ describe("dragging into not allowed place", () => {
         end: { interaction: () => [{ type: "hand" }], conditions, command },
       })
       jest.spyOn(dragToHand.start, "getCommand")
-      jest.spyOn(dragToHand.end, "getCommand")
+      jest.spyOn(dragToHand.end[0], "getCommand")
 
       room.possibleActions = [dragToHand]
       manager = new CommandsManager(room)
@@ -355,7 +355,7 @@ describe("dragging into not allowed place", () => {
         )
       ).rejects.toThrow()
 
-      expect(dragToHand.end.getCommand).not.toHaveBeenCalled()
+      expect(dragToHand.end[0].getCommand).not.toHaveBeenCalled()
       expect(manager.pendingActions.get(clientID)).toBeUndefined()
     })
   })
@@ -374,7 +374,7 @@ describe("dragging into not allowed place", () => {
         },
       })
       jest.spyOn(dragToHand.start, "getCommand")
-      jest.spyOn(dragToHand.end, "getCommand")
+      jest.spyOn(dragToHand.end[0], "getCommand")
 
       room.possibleActions = [dragToHand]
       manager = new CommandsManager(room)
@@ -413,7 +413,7 @@ describe("dragging into not allowed place", () => {
         )
       ).rejects.toThrow()
 
-      expect(dragToHand.end.getCommand).not.toHaveBeenCalled()
+      expect(dragToHand.end[0].getCommand).not.toHaveBeenCalled()
       expect(manager.pendingActions.get(clientID)).toBeUndefined()
     })
   })
