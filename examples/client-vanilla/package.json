@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/example-client-vanilla",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "description": "Simplest client-side implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
@@ -12,8 +12,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@cardsgame/client": "^1.5.0",
-    "@cardsgame/example-certs": "^1.4.0",
+    "@cardsgame/client": "^1.6.0",
+    "@cardsgame/example-certs": "^1.6.0",
     "@colyseus/schema": "^1.0.46"
   },
   "devDependencies": {

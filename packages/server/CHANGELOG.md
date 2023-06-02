@@ -3,398 +3,232 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [1.5.2](https://github.com/zielak/cardsGame/compare/v1.5.1...v1.5.2) (2023-05-09)
-
+# [1.6.0](https://github.com/zielak/cardsGame/compare/v1.5.2...v1.6.0) (2023-06-02)
 
 ### Bug Fixes
 
-* better handling for pending actions ([2120c86](https://github.com/zielak/cardsGame/commit/2120c866ec21063eee34792be637b56d623ddca4))
+- commands call optional botRunner ([48c4102](https://github.com/zielak/cardsGame/commit/48c4102e612a35e8fbd5245a330ca4f6db76ad5d))
 
+### Features
 
+- function testing in query runner ([e071e30](https://github.com/zielak/cardsGame/commit/e071e307d41e18dded2728f5f57cf3954dc42b4a))
+- multiple drag end definition on action ([8b296af](https://github.com/zielak/cardsGame/commit/8b296affae31423a6ebdcb62158262b2660e3023))
 
+## [1.5.2](https://github.com/zielak/cardsGame/compare/v1.5.1...v1.5.2) (2023-05-09)
 
+### Bug Fixes
+
+- better handling for pending actions ([2120c86](https://github.com/zielak/cardsGame/commit/2120c866ec21063eee34792be637b56d623ddca4))
 
 ## [1.5.1](https://github.com/zielak/cardsGame/compare/v1.5.0...v1.5.1) (2023-05-06)
 
 **Note:** Version bump only for package @cardsgame/server
 
-
-
-
-
 # [1.5.0](https://github.com/zielak/cardsGame/compare/v1.4.1...v1.5.0) (2023-05-03)
-
 
 ### Features
 
-* drag tap fallback ([552552a](https://github.com/zielak/cardsGame/commit/552552a24d8b15baa4c26de3dc10684c93588602))
-
-
-
-
+- drag tap fallback ([552552a](https://github.com/zielak/cardsGame/commit/552552a24d8b15baa4c26de3dc10684c93588602))
 
 # [1.4.0](https://github.com/zielak/cardsGame/compare/v1.3.1...v1.4.0) (2023-02-12)
 
-
 ### Bug Fixes
 
-* grouping actions not restoring defaultSubject ([fbf613c](https://github.com/zielak/cardsGame/commit/fbf613c3d812f938ba3b115f8046e939f6c73326))
-
+- grouping actions not restoring defaultSubject ([fbf613c](https://github.com/zielak/cardsGame/commit/fbf613c3d812f938ba3b115f8046e939f6c73326))
 
 ### Features
 
-* dragging actions ([9e45343](https://github.com/zielak/cardsGame/commit/9e45343097786c3a9481e8a12fe08f209c94b931))
-* rework action templates and tests ([0efa22a](https://github.com/zielak/cardsGame/commit/0efa22a9f83adae211ba43086e86898ea33c67bf))
-
-
-
-
+- dragging actions ([9e45343](https://github.com/zielak/cardsGame/commit/9e45343097786c3a9481e8a12fe08f209c94b931))
+- rework action templates and tests ([0efa22a](https://github.com/zielak/cardsGame/commit/0efa22a9f83adae211ba43086e86898ea33c67bf))
 
 ## [1.3.1](https://github.com/zielak/cardsGame/compare/v1.3.0...v1.3.1) (2022-11-12)
 
-
 ### Bug Fixes
 
-* enable empty dragend interaction as canceling ([df059a3](https://github.com/zielak/cardsGame/commit/df059a348e284b180e4833c8d2f3cb9217d97dfb))
-
-
-
-
+- enable empty dragend interaction as canceling ([df059a3](https://github.com/zielak/cardsGame/commit/df059a348e284b180e4833c8d2f3cb9217d97dfb))
 
 # [1.3.0](https://github.com/zielak/cardsGame/compare/v1.2.0...v1.3.0) (2022-11-11)
 
-
 ### Features
 
-* command to undo last action ([3b60517](https://github.com/zielak/cardsGame/commit/3b605176fe4b14fbe3e79715b4331923297685f9))
-
-
-
-
+- command to undo last action ([3b60517](https://github.com/zielak/cardsGame/commit/3b605176fe4b14fbe3e79715b4331923297685f9))
 
 # [1.2.0](https://github.com/zielak/cardsGame/compare/v1.1.2...v1.2.0) (2022-11-09)
 
-
 ### Bug Fixes
 
-* allow direct references to event in conditions ([2051a3c](https://github.com/zielak/cardsGame/commit/2051a3c2669e70467d631cfc052898c6829c1346))
-* cards ranks and suits in arrays ([e742717](https://github.com/zielak/cardsGame/commit/e7427177c910e338ba19d6e98c6be61db6f791de))
-
+- allow direct references to event in conditions ([2051a3c](https://github.com/zielak/cardsGame/commit/2051a3c2669e70467d631cfc052898c6829c1346))
+- cards ranks and suits in arrays ([e742717](https://github.com/zielak/cardsGame/commit/e7427177c910e338ba19d6e98c6be61db6f791de))
 
 ### Features
 
-* defineRoom for simplicity, and documented ([d861106](https://github.com/zielak/cardsGame/commit/d861106339882890128c433e4a0543a1b6e8838d))
-
-
-
-
+- defineRoom for simplicity, and documented ([d861106](https://github.com/zielak/cardsGame/commit/d861106339882890128c433e4a0543a1b6e8838d))
 
 ## [1.1.2](https://github.com/zielak/cardsGame/compare/v1.1.1...v1.1.2) (2022-11-06)
 
-
 ### Bug Fixes
 
-* top and bottom on Line subject ([456e4d1](https://github.com/zielak/cardsGame/commit/456e4d165e7b42fbd6f98c4f876749cd5b2ee14a))
-
-
-
-
+- top and bottom on Line subject ([456e4d1](https://github.com/zielak/cardsGame/commit/456e4d165e7b42fbd6f98c4f876749cd5b2ee14a))
 
 # [1.1.0](https://github.com/zielak/cardsGame/compare/v0.22.1...v1.1.0) (2022-11-06)
 
-
 ### Features
 
-* modules, init ([9016fe4](https://github.com/zielak/cardsGame/commit/9016fe4be7bb99ad8fcb7732b4e04379d9f9cde9))
-
-
-
-
+- modules, init ([9016fe4](https://github.com/zielak/cardsGame/commit/9016fe4be7bb99ad8fcb7732b4e04379d9f9cde9))
 
 ## [0.22.1](https://github.com/zielak/cardsGame/compare/v0.22.0...v0.22.1) (2022-10-16)
 
-
 ### Bug Fixes
 
-* **server:** handle optional interactionType ([87d6393](https://github.com/zielak/cardsGame/commit/87d6393ed576beae0920be4745f8e904512e3b3d))
-
-
-
-
+- **server:** handle optional interactionType ([87d6393](https://github.com/zielak/cardsGame/commit/87d6393ed576beae0920be4745f8e904512e3b3d))
 
 # [0.22.0](https://github.com/zielak/cardsGame/compare/v0.21.4...v0.22.0) (2022-09-04)
 
-
 ### Features
 
-* allow drag and drop ([3b56271](https://github.com/zielak/cardsGame/commit/3b56271583bc61dad8c9865ce5f7f3e5b1c2428f))
-
-
-
-
+- allow drag and drop ([3b56271](https://github.com/zielak/cardsGame/commit/3b56271583bc61dad8c9865ce5f7f3e5b1c2428f))
 
 ## [0.21.3](https://github.com/zielak/cardsGame/compare/v0.21.2...v0.21.3) (2022-08-31)
 
-
 ### Bug Fixes
 
-* **server:** selection not acting up on client ([92aab4d](https://github.com/zielak/cardsGame/commit/92aab4ddb7550e742fe6703fed62bec2dc03aecc))
-
-
-
-
+- **server:** selection not acting up on client ([92aab4d](https://github.com/zielak/cardsGame/commit/92aab4ddb7550e742fe6703fed62bec2dc03aecc))
 
 ## [0.21.2](https://github.com/zielak/cardsGame/compare/v0.21.1...v0.21.2) (2022-07-28)
 
-
 ### Bug Fixes
 
-* empty() cares about entities now ([871b7a6](https://github.com/zielak/cardsGame/commit/871b7a6a7aea4d5327a693e30a91d991ee1b3a2a))
-
-
-
-
+- empty() cares about entities now ([871b7a6](https://github.com/zielak/cardsGame/commit/871b7a6a7aea4d5327a693e30a91d991ee1b3a2a))
 
 ## [0.21.1](https://github.com/zielak/cardsGame/compare/v0.21.0...v0.21.1) (2022-07-24)
 
-
 ### Bug Fixes
 
-* expose selection container ([ae30d3a](https://github.com/zielak/cardsGame/commit/ae30d3a59531fa51b4630fec640c99531459a9fa))
-
-
-
-
+- expose selection container ([ae30d3a](https://github.com/zielak/cardsGame/commit/ae30d3a59531fa51b4630fec640c99531459a9fa))
 
 # [0.21.0](https://github.com/zielak/cardsGame/compare/v0.20.3...v0.21.0) (2022-07-24)
 
-
 ### Features
 
-* new Selection container ([d1198cc](https://github.com/zielak/cardsGame/commit/d1198cc17b2c6b445946150ee6e4e9e329a05097))
-
-
-
-
+- new Selection container ([d1198cc](https://github.com/zielak/cardsGame/commit/d1198cc17b2c6b445946150ee6e4e9e329a05097))
 
 ## [0.20.3](https://github.com/zielak/cardsGame/compare/v0.20.2...v0.20.3) (2022-07-17)
 
-
 ### Bug Fixes
 
-* align line with actual use case ([466d1f5](https://github.com/zielak/cardsGame/commit/466d1f52565981a135dd9d42c16ce370ddde12c3))
-
-
-
-
+- align line with actual use case ([466d1f5](https://github.com/zielak/cardsGame/commit/466d1f52565981a135dd9d42c16ce370ddde12c3))
 
 ## [0.20.2](https://github.com/zielak/cardsGame/compare/v0.20.1...v0.20.2) (2022-07-16)
 
-
 ### Bug Fixes
 
-* standardDeckFactory accepting sets ([1b16690](https://github.com/zielak/cardsGame/commit/1b166907daae9189fba1a1c0e60f2987108bcb67))
-
-
-
-
+- standardDeckFactory accepting sets ([1b16690](https://github.com/zielak/cardsGame/commit/1b166907daae9189fba1a1c0e60f2987108bcb67))
 
 ## [0.20.1](https://github.com/zielak/cardsGame/compare/v0.20.0...v0.20.1) (2022-06-18)
 
 **Note:** Version bump only for package @cardsgame/server
 
-
-
-
-
 # [0.20.0](https://github.com/zielak/cardsGame/compare/v0.19.3...v0.20.0) (2022-06-18)
-
 
 ### Features
 
-* more generics around messages ([c135fab](https://github.com/zielak/cardsGame/commit/c135fab2cdb97a26f71c806680c511667e6e5b6e))
-
-
-
-
+- more generics around messages ([c135fab](https://github.com/zielak/cardsGame/commit/c135fab2cdb97a26f71c806680c511667e6e5b6e))
 
 ## [0.19.3](https://github.com/zielak/cardsGame/compare/v0.19.2...v0.19.3) (2022-06-14)
 
-
 ### Bug Fixes
 
-* leave child filtering for now ([33c091c](https://github.com/zielak/cardsGame/commit/33c091c084dd3639b713d3419748a7ecf889f76e))
-
-
-
-
+- leave child filtering for now ([33c091c](https://github.com/zielak/cardsGame/commit/33c091c084dd3639b713d3419748a7ecf889f76e))
 
 ## [0.19.2](https://github.com/zielak/cardsGame/compare/v0.19.1...v0.19.2) (2022-05-25)
 
-
 ### Bug Fixes
 
-* wasn't possible to override "hijacks" prop ([6b68b80](https://github.com/zielak/cardsGame/commit/6b68b804374c6079eaa05b973b074fa2fe08cbaf))
-
-
-
-
+- wasn't possible to override "hijacks" prop ([6b68b80](https://github.com/zielak/cardsGame/commit/6b68b804374c6079eaa05b973b074fa2fe08cbaf))
 
 ## [0.19.1](https://github.com/zielak/cardsGame/compare/v0.19.0...v0.19.1) (2022-05-23)
 
-
 ### Bug Fixes
 
-* creating and selecting children in one go ([04ccae8](https://github.com/zielak/cardsGame/commit/04ccae83d76335add145f86a63080621bf2123ae))
-
-
-
-
+- creating and selecting children in one go ([04ccae8](https://github.com/zielak/cardsGame/commit/04ccae83d76335add145f86a63080621bf2123ae))
 
 # [0.19.0](https://github.com/zielak/cardsGame/compare/v0.18.2...v0.19.0) (2022-05-23)
 
-
 ### Features
 
-* integration hooks now hold data ([9749a18](https://github.com/zielak/cardsGame/commit/9749a18b4a83311ce136174c726af986b1f07903))
-
-
-
-
+- integration hooks now hold data ([9749a18](https://github.com/zielak/cardsGame/commit/9749a18b4a83311ce136174c726af986b1f07903))
 
 ## [0.18.2](https://github.com/zielak/cardsGame/compare/v0.18.1...v0.18.2) (2022-05-20)
 
-
 ### Bug Fixes
 
-* integration context functions not bound to room ([95cf7f2](https://github.com/zielak/cardsGame/commit/95cf7f2650f403898485cfd86e4315e111080b44))
-
-
-
-
+- integration context functions not bound to room ([95cf7f2](https://github.com/zielak/cardsGame/commit/95cf7f2650f403898485cfd86e4315e111080b44))
 
 ## [0.18.1](https://github.com/zielak/cardsGame/compare/v0.18.0...v0.18.1) (2022-05-02)
 
-
 ### Bug Fixes
 
-* **integration:** forgot to export ([21a7314](https://github.com/zielak/cardsGame/commit/21a731493c114547431aac4f0d38f8c714fe7fcf))
-
-
-
-
+- **integration:** forgot to export ([21a7314](https://github.com/zielak/cardsGame/commit/21a731493c114547431aac4f0d38f8c714fe7fcf))
 
 # [0.18.0](https://github.com/zielak/cardsGame/compare/v0.17.1...v0.18.0) (2022-05-02)
 
-
 ### Features
 
-* **integration:** expose addClient function ([4c548ff](https://github.com/zielak/cardsGame/commit/4c548ff689d0e210f35aa5b55c2e908574715d60))
-
-
-
-
+- **integration:** expose addClient function ([4c548ff](https://github.com/zielak/cardsGame/commit/4c548ff689d0e210f35aa5b55c2e908574715d60))
 
 ## [0.17.1](https://github.com/zielak/cardsGame/compare/v0.17.0...v0.17.1) (2022-04-18)
 
 **Note:** Version bump only for package @cardsgame/server
 
-
-
-
-
 # [0.17.0](https://github.com/zielak/cardsGame/compare/v0.16.1...v0.17.0) (2022-04-11)
-
 
 ### Features
 
-* hooks for integration tests ([9a5e387](https://github.com/zielak/cardsGame/commit/9a5e38724e77ab82e492330b542fffac452d929f))
-
-
-
-
+- hooks for integration tests ([9a5e387](https://github.com/zielak/cardsGame/commit/9a5e38724e77ab82e492330b542fffac452d929f))
 
 # [0.16.0](https://github.com/zielak/cardsGame/compare/v0.15.0...v0.16.0) (2022-04-02)
 
-
 ### Features
 
-* **server:** pass messages from failed conditions to client ([cb7a389](https://github.com/zielak/cardsGame/commit/cb7a3893c7e3fc2649be9ae02e0d66304f5d035f))
-
-
-
-
+- **server:** pass messages from failed conditions to client ([cb7a389](https://github.com/zielak/cardsGame/commit/cb7a3893c7e3fc2649be9ae02e0d66304f5d035f))
 
 # [0.15.0](https://github.com/zielak/cardsGame/compare/v0.14.1...v0.15.0) (2022-03-26)
 
-
 ### Features
 
-* added docs portal ([fbd4162](https://github.com/zielak/cardsGame/commit/fbd41622c2966cf2ae8f9221348c53d9a2fcee94))
-
-
-
-
+- added docs portal ([fbd4162](https://github.com/zielak/cardsGame/commit/fbd41622c2966cf2ae8f9221348c53d9a2fcee94))
 
 ## [0.14.1](https://github.com/zielak/cardsGame/compare/v0.14.0...v0.14.1) (2022-03-22)
 
 **Note:** Version bump only for package @cardsgame/server
 
-
-
-
-
 # [0.14.0](https://github.com/zielak/cardsGame/compare/v0.13.1...v0.14.0) (2022-03-21)
-
 
 ### Features
 
-* init server-testing package ([efe8f12](https://github.com/zielak/cardsGame/commit/efe8f1297290f52f5d7a01933edbea1425e6142e))
-
-
-
-
+- init server-testing package ([efe8f12](https://github.com/zielak/cardsGame/commit/efe8f1297290f52f5d7a01933edbea1425e6142e))
 
 ## [0.13.1](https://github.com/zielak/cardsGame/compare/v0.13.0...v0.13.1) (2022-03-18)
 
-
 ### Bug Fixes
 
-* **server:** getSelectionIndex on unselected item ([7b45416](https://github.com/zielak/cardsGame/commit/7b4541605d75c5acdfdcce0ba9d19daf456a35fa))
-
-
-
-
+- **server:** getSelectionIndex on unselected item ([7b45416](https://github.com/zielak/cardsGame/commit/7b4541605d75c5acdfdcce0ba9d19daf456a35fa))
 
 # [0.13.0](https://github.com/zielak/cardsGame/compare/v0.12.18...v0.13.0) (2022-02-27)
 
 **Note:** Version bump only for package @cardsgame/server
 
-
-
-
-
 ## [0.12.17](https://github.com/zielak/cardsGame/compare/v0.12.16...v0.12.17) (2022-02-13)
-
 
 ### Bug Fixes
 
-* all published versions ([9427e75](https://github.com/zielak/cardsGame/commit/9427e7530dfd0131eca35e2683f19ca720486d25))
-
-
-
-
+- all published versions ([9427e75](https://github.com/zielak/cardsGame/commit/9427e7530dfd0131eca35e2683f19ca720486d25))
 
 ## [0.12.9](https://github.com/zielak/cardsGame/compare/v0.12.7...v0.12.9) (2022-02-07)
 
-
 ### Bug Fixes
 
-* **server:** had some issue with importing populatePlayerEvent for some reason ([ef124a7](https://github.com/zielak/cardsGame/commit/ef124a748e5c93729681e12ed6c601a7e6b6a20e))
-
-
-
-
+- **server:** had some issue with importing populatePlayerEvent for some reason ([ef124a7](https://github.com/zielak/cardsGame/commit/ef124a748e5c93729681e12ed6c601a7e6b6a20e))
 
 ## [0.12.8](https://github.com/zielak/cardsGame/compare/v0.12.7...v0.12.8) (2022-01-30)
 
