@@ -41,7 +41,7 @@ export class NextPlayer extends Command {
       )
     }
 
-    room.botRunner.onPlayerTurnStarted(state.currentPlayer)
+    room.botRunner?.onPlayerTurnStarted(state.currentPlayer)
   }
   async undo(state: State, room: Room<any>): Promise<void> {
     super.undo(state, room)
