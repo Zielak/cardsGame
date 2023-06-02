@@ -9,6 +9,8 @@ import type {
   Spread,
 } from "../entities/index.js"
 
+import { QuerableProps } from "./types.js"
+
 /**
  * Used internally and in `@cardsgame/server-testing` package.
  * Not for public usage
@@ -43,5 +45,29 @@ export type CommonKeysToIgnore =
  * @ignore
  */
 export type EntityOptions = Partial<
-  AllowArrays<Omit<NonFunctionProperties<EveryEntity>, CommonKeysToIgnore>>
+  Omit<NonFunctionProperties<EveryEntity>, CommonKeysToIgnore>
 >
+
+export type HelperQuerableProps = {
+  parent?: QuerableProps
+  selected?: boolean
+  selectionIndex?: number | number[]
+}
+
+export type EntityQuerableProps = {
+  [k in keyof EntityOptions]:
+    | EntityOptions[k]
+    | EntityOptions[k][]
+    | ((value: EntityOptions[k]) => boolean)
+}
+
+const helperQuerablePropKeys: (keyof HelperQuerableProps)[] = [
+  "parent",
+  "selected",
+  "selectionIndex",
+]
+export const isHelperQuerableProp = (
+  s: unknown
+): s is keyof HelperQuerableProps => {
+  return helperQuerablePropKeys.includes(s as any)
+}

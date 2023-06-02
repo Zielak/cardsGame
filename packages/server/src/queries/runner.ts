@@ -3,7 +3,6 @@ import {
   isChild,
   hasIdentity,
   hasOwnership,
-  isParent,
   hasSelectableChildren,
 } from "../traits/index.js"
 
@@ -19,42 +18,36 @@ export const queryRunner =
       return false
     }
 
-    return Object.keys(props).every((propName) => {
-      if (Array.isArray(props[propName])) {
-        return props[propName].some(verifyValue(propName, entity))
+    return Object.keys(props).every((propName: keyof QuerableProps) => {
+      const expected = props[propName]
+
+      if (typeof expected === "function") {
+        return (expected as (value: any) => boolean)(entity[propName])
+      } else if (Array.isArray(expected)) {
+        return expected.some(verifyValue(propName, entity))
       } else {
-        return verifyValue(propName, entity)(props[propName])
+        return verifyValue(propName, entity)(expected)
       }
     })
   }
 
-function verifyValue(propName: string, entity: ChildTrait) {
-  return function verifyValueIteration(value: any): boolean {
+function verifyValue(propName: keyof QuerableProps, entity: ChildTrait) {
+  return function verifyValueIteration(value: unknown): boolean {
     const { parent } = entity
 
     switch (propName) {
       case "parent":
-        // Current Entity ust have an identity AND be a child
-        if (!hasIdentity(parent)) {
+        // The parent must have identity AND be a child
+        // (so not expecting root State also)
+        if (!hasIdentity(parent) || !isChild(parent)) {
           return false
-        }
-        if (!isChild(parent)) {
-          return false
-        }
-        // It's in root state...
-        if (parent.id === -1) {
-          return false
-        }
-
-        // If provided "parent" is direct reference to other entity
-        if (isParent(value)) {
-          return value === parent
         }
 
         // Else, it's probably another set of QuerableProps
         return queryRunner(value)(parent)
 
       case "owner":
+        // Only evaluate owner field on entities that have ownership trait
         if (!hasOwnership(entity)) {
           return false
         }

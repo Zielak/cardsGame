@@ -14,7 +14,10 @@
     "docs/.docusaurus/**": true
   },
   "cSpell.words": ["cardsgame", "colyseus"],
-  "jestrunner.configPath": "config/jest.config.cjs",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.preferences.autoImportFileExcludePatterns": ["index.ts", "lib/**"]
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "index.ts",
+    "lib/**"
+  ],
+  "jest.jestCommandLine": "node_modules/.bin/jest --config config/jest.config.cjs --silent "
 }

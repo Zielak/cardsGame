@@ -1,4 +1,7 @@
-import type { EntityOptions } from "./internalTypes.js"
+import type {
+  EntityQuerableProps,
+  HelperQuerableProps,
+} from "./internalTypes.js"
 
 /**
  * Interface used to search for an entity.
@@ -8,8 +11,4 @@ import type { EntityOptions } from "./internalTypes.js"
  * - `selected` - query only for selected or not-selected items
  * - `selectionIndex` - query by items selection index, if it was in fact selected
  */
-export interface QuerableProps extends EntityOptions {
-  parent?: QuerableProps
-  selected?: boolean
-  selectionIndex?: number | number[]
-}
+export type QuerableProps = HelperQuerableProps & EntityQuerableProps
