@@ -26,6 +26,7 @@ interface PlayerDefinition {
   name: string
   score: number
   timeLeft: number
+  hasEntityInMainFocus: boolean
 }
 
 /**

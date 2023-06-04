@@ -27,7 +27,8 @@ export function type(
         .set(field, typeDef)
     }
 
-    return colType(typeDef, typesContext)(target, field)
+    // Apply for Colyseus
+    colType(typeDef, typesContext)(target, field)
   }
 }
 

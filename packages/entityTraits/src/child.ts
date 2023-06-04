@@ -1,1 +1,3 @@
-export const ChildTraitTypeDef = { idx: "number" }
+export const ChildTraitTypeDef = {
+  idx: "number",
+}

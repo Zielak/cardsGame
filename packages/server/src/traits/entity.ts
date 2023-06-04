@@ -4,6 +4,12 @@ import { Schema } from "@colyseus/schema"
 import { type } from "../annotations/type.js"
 import type { State } from "../state/state.js"
 
+import {
+  ClassWithIED,
+  ENTITY_INTERNAL_KEY,
+  InternalEntityData,
+} from "./entity/types.js"
+
 /**
  * @param hookName
  * @param args
@@ -11,8 +17,9 @@ import type { State } from "../state/state.js"
  * @ignore
  */
 export function executeHook(hookName: string, ...args: any[]): void {
-  const proto = Object.getPrototypeOf(this)
-  const { hooks } = proto
+  const internal: InternalEntityData =
+    Object.getPrototypeOf(this)[ENTITY_INTERNAL_KEY]
+  const { hooks } = internal
 
   if (hooks && hooks.has(hookName)) {
     hooks.get(hookName).forEach((fn) => fn.apply(this, args))
@@ -26,14 +33,39 @@ export class Entity<T> extends Schema {
   constructor(state: State, options: Partial<T> = {}) {
     super()
 
-    const proto = Object.getPrototypeOf(this)
+    const internal: InternalEntityData =
+      Object.getPrototypeOf(this)[ENTITY_INTERNAL_KEY]
 
-    // First, apply all traits and their "constructors"
-    if (proto.traitsConstructors) {
-      proto.traitsConstructors.forEach((fun) => {
-        fun.call(this, state, options)
-      }, this)
-    }
+    const colyDescriptors = this._definition.descriptors
+
+    // Attach all trait's properties
+    Object.getOwnPropertyNames(internal.localPropDescriptor)
+      .filter((name) => internal.localPropDescriptor[name])
+      .forEach((name) => {
+        const local = internal.localPropDescriptor[name]
+        const colyDescriptor = colyDescriptors[name]
+
+        if (colyDescriptor) {
+          // Both local and external/coly are defined => merge
+          Object.defineProperty(this, name, {
+            get: local.get,
+            set: (v) => {
+              local.set.call(this, v)
+              colyDescriptor.set.call(this, local.get.call(this))
+            },
+            enumerable: true,
+            configurable: true,
+          })
+        } else {
+          // external/coly is not defined => use local as-is
+          Object.defineProperty(this, name, local)
+        }
+      })
+
+    // Apply `create` "constructors" of all traits
+    internal.traitsConstructors?.forEach((fun) => {
+      fun.call(this, state, options)
+    }, this)
 
     // Execute our Entity's `create` "constructor"
     this.create(state, options)
@@ -64,29 +96,35 @@ export class Entity<T> extends Schema {
 export const applyTraitsMixins =
   (baseCtors: any[]) =>
   (derivedCtor: AnyClass): void => {
-    const derived = derivedCtor.prototype
+    // logs.debug("$ applyTraitsMixins", derivedCtor.name)
 
-    if (!Object.prototype.hasOwnProperty.call(derived, "traitsConstructors")) {
-      Object.defineProperty(derived, "traitsConstructors", {
-        value: [],
+    const derived: ClassWithIED = derivedCtor.prototype
+
+    // Place for everything internal
+    if (!Object.prototype.hasOwnProperty.call(derived, ENTITY_INTERNAL_KEY)) {
+      Object.defineProperty(derived, ENTITY_INTERNAL_KEY, {
+        value: {
+          traitsConstructors: [],
+          hooks: new Map(),
+          localPropDescriptor: {},
+        } as InternalEntityData,
       })
     }
-    if (!Object.prototype.hasOwnProperty.call(derived, "hooks")) {
-      Object.defineProperty(derived, "hooks", {
-        value: new Map(),
-      })
-    }
 
+    const internal = derived[ENTITY_INTERNAL_KEY]
+
+    // For each Trait
     baseCtors.forEach((baseCtor) => {
-      Object.getOwnPropertyNames(baseCtor.prototype)
-        .filter((name) => name !== "constructor")
-        .forEach((name) => {
-          Object.defineProperty(
-            derived,
-            name,
-            Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
-          )
-        })
+      const traitPropertyNames = Object.getOwnPropertyNames(
+        baseCtor.prototype
+      ).filter((v) => v !== "constructor")
+
+      traitPropertyNames.forEach((name) => {
+        internal.localPropDescriptor[name] = Object.getOwnPropertyDescriptor(
+          baseCtor.prototype,
+          name
+        )
+      })
 
       Object.getOwnPropertyNames(baseCtor).forEach((name) => {
         if (name === "typeDef") {
@@ -94,13 +132,13 @@ export const applyTraitsMixins =
             type(baseCtor.typeDef[field])(derived, field)
           }
         } else if (name === "trait") {
-          derived.traitsConstructors.push(baseCtor.trait)
+          internal.traitsConstructors.push(baseCtor.trait)
         } else if (name === "hooks" && typeof baseCtor.hooks === "object") {
           Object.keys(baseCtor.hooks).forEach((hookKey) => {
-            if (!derived.hooks.has(hookKey)) {
-              derived.hooks.set(hookKey, [])
+            if (!internal.hooks.has(hookKey)) {
+              internal.hooks.set(hookKey, [])
             }
-            derived.hooks.get(hookKey).push(baseCtor.hooks[hookKey])
+            internal.hooks.get(hookKey).push(baseCtor.hooks[hookKey])
           })
         }
       })

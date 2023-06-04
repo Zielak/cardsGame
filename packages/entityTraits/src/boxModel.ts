@@ -1,1 +1,4 @@
-export const BoxModelTypeDef = { height: "number", width: "number" }
+export const BoxModelTypeDef = {
+  height: "number",
+  width: "number",
+}

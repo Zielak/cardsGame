@@ -1,5 +1,6 @@
 import { DumbEntity, DumbParent } from "../../__test__/helpers/dumbEntities.js"
 import { State } from "../../state/state.js"
+import { ENTITY_INTERNAL_KEY } from "../entity/types.js"
 import type { ParentTrait } from "../parent.js"
 
 let state: State
@@ -12,15 +13,15 @@ beforeEach(() => {
   new DumbEntity(state, { parent }) // 1
   new DumbEntity(state, { parent }) // 2
 
-  parent["hooks"].set("childAdded", [jest.fn()])
-  parent["hooks"].set("childRemoved", [jest.fn()])
-  parent["hooks"].set("childIndexUpdated", [jest.fn()])
+  parent[ENTITY_INTERNAL_KEY]["hooks"].set("childAdded", [jest.fn()])
+  parent[ENTITY_INTERNAL_KEY]["hooks"].set("childRemoved", [jest.fn()])
+  parent[ENTITY_INTERNAL_KEY]["hooks"].set("childIndexUpdated", [jest.fn()])
 })
 
 describe("hooks", () => {
   describe("childRemoved", () => {
     it("gets called with index of removed item", () => {
-      const spy = parent["hooks"].get("childRemoved")[0]
+      const spy = parent[ENTITY_INTERNAL_KEY]["hooks"].get("childRemoved")[0]
       parent.removeChildAt(2)
 
       expect(spy).toHaveBeenCalledWith(2)
@@ -29,14 +30,16 @@ describe("hooks", () => {
 
   describe("childIndexUpdated", () => {
     it("isn't called when removing last child", () => {
-      const spy = parent["hooks"].get("childIndexUpdated")[0]
+      const spy =
+        parent[ENTITY_INTERNAL_KEY]["hooks"].get("childIndexUpdated")[0]
       parent.removeChildAt(2)
 
       expect(spy).not.toHaveBeenCalled()
     })
 
     it("gets called multiple times, when removing first item in array mode", () => {
-      const spy = parent["hooks"].get("childIndexUpdated")[0]
+      const spy =
+        parent[ENTITY_INTERNAL_KEY]["hooks"].get("childIndexUpdated")[0]
       expect(parent.countChildren()).toBe(3)
       parent.removeChildAt(0)
 

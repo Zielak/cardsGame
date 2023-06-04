@@ -27,6 +27,17 @@ export class Player extends Schema implements PlayerDefinition {
   @type("number") timeLeft = -1
 
   /**
+   * Automatically applied after any entity this player
+   * owns has their `ownersMainFocus` set to true.
+   *
+   * Don't change manually.
+   *
+   * @readonly
+   * @category Player
+   */
+  @type("boolean") hasEntityInMainFocus = false
+
+  /**
    * An entity with which dragging was started.
    *
    * Needs to be visible for Commands.

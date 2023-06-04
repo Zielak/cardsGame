@@ -23,7 +23,13 @@ export function hasOwnership(entity: unknown): entity is OwnershipTrait {
  * @category Trait
  */
 export class OwnershipTrait {
-  private _owner: Player
+  /**
+   * ID of the player owning this entity. Synced with client-side and automatically parsed after changing `entity.owner` from the server-side.
+   * @category OwnershipTrait
+   */
+  ownerID: string
+
+  private $_owner: Player
 
   /**
    * Get the real owner of this thing, by traversing `this.parent` chain.
@@ -35,8 +41,8 @@ export class OwnershipTrait {
    * @category OwnershipTrait
    */
   get owner(): Player | undefined {
-    if (this._owner) {
-      return this._owner
+    if (this.$_owner) {
+      return this.$_owner
     }
     if (isChild(this)) {
       const parent = this.parent
@@ -47,30 +53,52 @@ export class OwnershipTrait {
     }
   }
 
-  set owner(value: Player) {
-    this._owner = value
-    this.ownerID = value ? value.clientID : undefined
+  set owner(newOwner: Player) {
+    if (this.$_ownersMainFocus) {
+      // Release previous owner from this as main focus
+      this.$_owner.hasEntityInMainFocus = false
+    }
+
+    this.$_owner = newOwner
+    this.ownerID = newOwner ? newOwner.clientID : undefined
+
+    if (this.$_ownersMainFocus && newOwner) {
+      // Apply main focus on the new owner
+      newOwner.hasEntityInMainFocus = true
+    }
   }
 
-  /**
-   * ID of the player owning this entity
-   * @category OwnershipTrait
-   */
-  ownerID: string
+  private $_ownersMainFocus = false
 
   /**
    * Is this entity/container to be the main focus for this player?
    * To be used by client-side implementation.
    * @category OwnershipTrait
    */
-  ownersMainFocus: boolean
+  get ownersMainFocus(): boolean {
+    return this.$_ownersMainFocus
+  }
+
+  set ownersMainFocus(newValue: boolean) {
+    // console.log("$ ownersMainFocus setter", newValue)
+    this.$_ownersMainFocus = newValue
+
+    if (this.$_owner) {
+      this.$_owner.hasEntityInMainFocus = newValue
+    }
+  }
 }
 
 OwnershipTrait["typeDef"] = OwnershipTraitTypeDef
 OwnershipTrait["trait"] = function constructOwnershipTrait(
+  this: OwnershipTrait,
   state: State,
   options: Partial<OwnershipTrait> = {}
 ): void {
   this.owner = def(options.owner, undefined)
   this.ownersMainFocus = def(options.ownersMainFocus, false)
+
+  if (this.owner && this.ownersMainFocus) {
+    this.owner.hasEntityInMainFocus = this.ownersMainFocus
+  }
 }

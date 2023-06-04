@@ -22,7 +22,7 @@ import { globalEntitiesContext } from "./entitiesContext.js"
  * @category Annotation
  */
 export function containsChildren(parentConstructor: typeof Entity): void {
-  logs.debug("containsChildren", parentConstructor.name)
+  // logs.debug("containsChildren", parentConstructor.name)
 
   const context = globalEntitiesContext
 
