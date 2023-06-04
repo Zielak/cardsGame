@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/server-testing",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "type": "module",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
@@ -34,8 +34,8 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@cardsgame/server": "^1.6.0",
-    "@cardsgame/types": "^1.6.0"
+    "@cardsgame/server": "^1.7.0",
+    "@cardsgame/types": "^1.7.0"
   },
   "devDependencies": {
     "@cardsgame/base-configs": "^1.6.0"

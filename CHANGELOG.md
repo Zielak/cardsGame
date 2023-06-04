@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/zielak/cardsGame/compare/v1.6.0...v1.7.0) (2023-06-04)
+
+### Features
+
+- player now has hasEntityInMainFocus prop ([9cf0614](https://github.com/zielak/cardsGame/commit/9cf0614700cb7c31fad4f7164ebe2030afb7d690))
+
 # [1.6.0](https://github.com/zielak/cardsGame/compare/v1.5.2...v1.6.0) (2023-06-02)
 
 ### Bug Fixes

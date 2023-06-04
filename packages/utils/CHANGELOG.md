@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/zielak/cardsGame/compare/v1.6.0...v1.7.0) (2023-06-04)
+
+**Note:** Version bump only for package @cardsgame/utils
+
 # [1.6.0](https://github.com/zielak/cardsGame/compare/v1.5.2...v1.6.0) (2023-06-02)
 
 **Note:** Version bump only for package @cardsgame/utils
