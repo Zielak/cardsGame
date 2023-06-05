@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/example-server-ts",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "private": true,
   "description": "Simplest implementation example of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
@@ -14,16 +14,16 @@
   },
   "dependencies": {
     "@cardsgame/example-certs": "^1.6.0",
-    "@cardsgame/server": "^1.7.0",
-    "@cardsgame/types": "^1.7.0",
-    "@cardsgame/utils": "^1.7.0",
+    "@cardsgame/server": "^1.7.1",
+    "@cardsgame/types": "^1.7.1",
+    "@cardsgame/utils": "^1.7.1",
     "@colyseus/core": "^0.14.36",
     "@colyseus/schema": "^1.0.46",
     "@colyseus/ws-transport": "^0.14.21",
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "@cardsgame/example-types": "^1.7.0",
+    "@cardsgame/example-types": "^1.7.1",
     "typescript": "^5.0.4"
   }
 }

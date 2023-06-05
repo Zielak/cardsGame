@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.1](https://github.com/zielak/cardsGame/compare/v1.7.0...v1.7.1) (2023-06-05)
+
+### Bug Fixes
+
+- backward compatibility ([9b55662](https://github.com/zielak/cardsGame/commit/9b55662a1dfb164d07a8780ad6f60e91971627cc))
+
 # [1.7.0](https://github.com/zielak/cardsGame/compare/v1.6.0...v1.7.0) (2023-06-04)
 
 **Note:** Version bump only for package @cardsgame/utils
