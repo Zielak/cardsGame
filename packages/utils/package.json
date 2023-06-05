@@ -1,7 +1,6 @@
 {
   "name": "@cardsgame/utils",
   "version": "1.7.0",
-  "type": "module",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -13,8 +12,8 @@
     "url": "https://github.com/zielak/cardsGame/issues"
   },
   "main": "lib/cjs/index.cjs",
-  "types": "lib/types/index.d.ts",
   "module": "lib/esm/index.js",
+  "types": "lib/types/index.d.ts",
   "files": [
     "lib",
     "readme.md"
@@ -35,6 +34,11 @@
   },
   "exports": {
     "./package.json": "./package.json",
+    ".": {
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.cjs",
+      "types": "./lib/types/index.d.ts"
+    },
     "./array": {
       "import": "./lib/esm/array.js",
       "require": "./lib/cjs/array.cjs",
@@ -79,11 +83,6 @@
       "import": "./lib/esm/utils.js",
       "require": "./lib/cjs/utils.cjs",
       "types": "./lib/types/utils.d.ts"
-    },
-    ".": {
-      "import": "./lib/esm/index.js",
-      "require": "./lib/cjs/index.cjs",
-      "types": "./lib/types/index.d.ts"
     }
   }
 }
