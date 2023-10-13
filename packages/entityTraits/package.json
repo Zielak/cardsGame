@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/entity-traits",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -33,6 +33,6 @@
     }
   },
   "devDependencies": {
-    "@cardsgame/base-configs": "^1.7.1"
+    "@cardsgame/base-configs": "^1.7.2"
   }
 }

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.2](https://github.com/zielak/cardsGame/compare/v1.7.1...v1.7.2) (2023-10-13)
+
+### Bug Fixes
+
+- include sourcesContents in map files ([#89](https://github.com/zielak/cardsGame/issues/89)) ([659eac0](https://github.com/zielak/cardsGame/commit/659eac07daf0eeff8cdb553492f9f1b69f35154c))
+
 ## [1.7.1](https://github.com/zielak/cardsGame/compare/v1.7.0...v1.7.1) (2023-06-05)
 
 ### Bug Fixes
