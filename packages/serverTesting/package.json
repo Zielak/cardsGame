@@ -1,6 +1,6 @@
 {
   "name": "@cardsgame/server-testing",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
@@ -33,7 +33,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@cardsgame/server": "^1.7.2",
+    "@cardsgame/server": "^1.7.3",
     "@cardsgame/types": "^1.7.1"
   },
   "devDependencies": {
