@@ -9,6 +9,7 @@ import { IdentityTrait } from "../traits/identity.js"
 import { LabelTrait } from "../traits/label.js"
 import { ParentTrait } from "../traits/parent.js"
 
+// @ts-expect-error no idea what it wants. Can't variantDefaults from options to state's body!
 @containsChildren
 @applyTraitsMixins([IdentityTrait, LabelTrait, ParentTrait])
 export class State<
@@ -94,7 +95,8 @@ export class State<
   constructor(options?: StateConstructorOptions<V>) {
     super(undefined)
 
-    this.variantData = options?.variantData
+    this.variantData =
+      options?.variantData ?? options?.variantDefaults ?? ({} as V)
 
     this.hijacksInteractionTarget = false
   }
@@ -132,4 +134,5 @@ export interface State extends Mixin {}
 
 export type StateConstructorOptions<V> = {
   variantData: V
+  variantDefaults: V
 }

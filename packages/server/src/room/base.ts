@@ -127,7 +127,10 @@ export abstract class Room<
     // Let the game initialize!
     if (this.stateConstructor) {
       this.setState(
-        new this.stateConstructor({ variantData: options?.variantData })
+        new this.stateConstructor({
+          variantData: options?.variantData,
+          variantDefaults: this.variantDefaults,
+        })
       )
     } else {
       this.setState(new State() as S)
