@@ -1,8 +1,8 @@
 export * from "./setup.js"
 export {
   EntityMockingDefinition,
-  StateMockingRecord,
-  StateMockingTuple,
+  InitialStateDescription as StateMockingRecord,
+  PopulateStateTuple as StateMockingTuple,
 } from "./types.js"
 
 export { initState } from "./initState.js"

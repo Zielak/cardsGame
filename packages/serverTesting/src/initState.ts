@@ -1,78 +1,64 @@
 import { Player, State } from "@cardsgame/server"
 
-import { copyPrimitives } from "./state/copyPrimitives.js"
-import { parseChildren } from "./state/parseChildren.js"
-import type { EntityConstructor, StateMockingRecord } from "./types.js"
+import {
+  copyEntityPrimitives,
+  copyStatePrimitives,
+} from "./state/copyPrimitives.js"
+import type { StateGetter, InitialStateDescription } from "./types.js"
 
 export interface InitState<S extends State> {
   /**
-   * Create your state and populate it with provided props and entities.
-   * Include definitions of child entities in `children` array.
+   * Populate your state with initial props (including players & clients).
+   * Returns `state` object for further initial modification.
+   *
+   * To populate state with entities - prefer to use `populateState()`
    *
    * @example
    * ```ts
    * state = initState({
    *   isGameStarted: true,
-   *   children: [
-   *     {
-   *       type: "hand",
-   *       children: [{ name: "SK" }],
-   *       selected: [0],
-   *     },
+   *   round: 10,
+   *   players: [
+   *     { clientID: "clientA", name: "Darek" },
+   *     { clientID: "clientB", name: "Alan" },
    *   ],
    * })
    * ```
-   * - Would create a hand
-   * - Add new card King of Spades to the hand
-   * - And finally mark that card as selected
-   *
+   * - Would mark game as already started and set round to 10
+   * - And create 2 `Player` entries in `state.players` array
    */
-  (statePreparation?: StateMockingRecord<S>): S
+  (statePreparation: InitialStateDescription<S>): S
 }
 
 /**
- * Create your state and populate it with provided props and entities.
- * Include definitions of child entities in `children` array.
+ * Populate your state with initial props (including players & clients).
+ * Returns `state` object for further initial modification.
+ *
+ * To populate state with entities - prefer to use `populateState()`
  *
  * @example
  * ```ts
- * state = initState(
- *   State,
- *   {
- *     isGameStarted: true,
- *     children: [
- *       {
- *         type: "hand",
- *         children: [{ name: "SK" }],
- *         selected: [0],
- *       },
- *     ],
- *   }
- * )
+ * state = initState({
+ *   isGameStarted: true,
+ *   round: 10,
+ *   players: [
+ *     { clientID: "clientA", name: "Darek" },
+ *     { clientID: "clientB", name: "Alan" },
+ *   ],
+ * })
  * ```
- * - Would create a hand
- * - Add new card King of Spades to the hand
- * - And finally mark that card as selected
- *
+ * - Would mark game as already started and set round to 10
+ * - And create 2 `Player` entries in `state.players` array
  */
 export function initState<S extends State>(
-  statePreparation?: StateMockingRecord<S>,
-  stateConstructor?: new () => S,
-  gameEntities?: Record<string, EntityConstructor>
+  state: S,
+  statePreparation: InitialStateDescription<S>
 ): S {
-  if (!stateConstructor) {
-    stateConstructor = State as unknown as new () => S
-  }
-  const state = new stateConstructor()
-
   if (!statePreparation) {
-    return state
+    throw new Error("initState | statePreparation is required")
   }
 
-  copyPrimitives(state, statePreparation)
-
-  // Recursively add all children
-  parseChildren(state, state, statePreparation, gameEntities)
+  copyStatePrimitives(state, statePreparation)
 
   // State's ArraySchema and MapSchemas, careful
   statePreparation.clients?.forEach((clientID) => {
@@ -91,10 +77,9 @@ export function initState<S extends State>(
 }
 
 export function initStateSetup<S extends State>(
-  stateConstructor?: new () => S,
-  gameEntities?: Record<string, EntityConstructor>
+  getState: StateGetter<S>
 ): InitState<S> {
-  return function initStateInner(stateRecord: StateMockingRecord<S>) {
-    return initState(stateRecord, stateConstructor, gameEntities)
+  return function initStateInner(statePreparation: InitialStateDescription<S>) {
+    return initState<S>(getState(), statePreparation)
   }
 }
