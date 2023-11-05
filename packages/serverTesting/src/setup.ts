@@ -1,7 +1,6 @@
 import {
   Room,
   State,
-  defineRoom,
   type RoomConstructor,
   type ActionDefinition,
 } from "@cardsgame/server"
@@ -14,12 +13,9 @@ import {
   makeInteractionSetup,
 } from "./makeInteraction.js"
 import { PopulateState, populateStateSetup } from "./populateState.js"
+import { Reset, resetSetup } from "./reset.js"
 import { type TestEvent, testEventSetup } from "./testEvent.js"
 import type { EntityConstructor, RoomGetter, StateGetter } from "./types.js"
-
-interface Resetter<S extends State, R extends Room<S>> {
-  (newState: S, newRoom?: R): void
-}
 
 // Sadly TS doesn't "extract" JSDoc from function types, so I gotta copy them here. At least first paragraphs, without examples
 /**
@@ -28,23 +24,26 @@ interface Resetter<S extends State, R extends Room<S>> {
  */
 export type SetupAPI<S extends State, R extends Room<S>> = {
   /**
-   * Will remember new reference to the State and Room object for use in other
-   * functions of `setupServerTesting()`.
+   * Resets `room` and `state`, using `roomConstructor` provided earlier
+   * with `setupServerTesting`.
+   * To be used with `beforeEach()` of testing frameworks.
    *
    * Without calling this function, for example `populateState(...entitiesMap)`
    * might end up populating state object of previous test runs (which is bad!).
    */
-  reset: Resetter<S, R>
+  reset: Reset<S, R>
   /**
-   * Create your state and populate it with provided props and entities.
-   * Include definitions of child entities in `children` array.
+   * Populate your state with initial props (including players & clients).
+   * Returns `state` object for further initial modification.
+   *
+   * To populate state with entities - prefer to use `populateState()`
    */
   initState: InitState<S>
   /**
    * Populates state with new entities.
    *
    * Use AFTER you prepared the base state yourself by using your
-   * game's own state preparation functions. Modifies state in-place.
+   * game's own state preparation functions.
    */
   populateState: PopulateState<S>
   /**
@@ -73,12 +72,7 @@ export type SetupOptions<S extends State, R extends Room<S>> = {
    */
   action: ActionDefinition<S>
   /**
-   * Used only in `initState()`,
-   * don't have to provide if you won't use that function.
-   */
-  stateConstructor?: new () => S
-  /**
-   * Used only in `executeEvent()`,
+   * Used to construct State automatically and in `executeEvent()`,
    * don't have to provide if you won't use that function.
    */
   roomConstructor?: RoomConstructor<S, R>
@@ -107,7 +101,6 @@ export function setupServerTesting<
   S extends State,
   R extends Room<S> = Room<S>
 >({
-  stateConstructor,
   action,
   gameEntities,
   roomConstructor,
@@ -129,23 +122,11 @@ export function setupServerTesting<
    * FACADE
    */
   return {
-    reset: (newState, newRoom) => {
-      state = newState
-      if (newRoom) {
-        room = newRoom
-      } else {
-        room = roomConstructor
-          ? new roomConstructor()
-          : new (defineRoom<S, R>("TestingRoom", { stateConstructor }))()
-      }
-      room.onInitGame = function () {
-        // Overwrite room's own state creation function?
-        this.setState(state)
-      }
-      // Would be called by server app, setup commands manager etc.
-      room.onCreate()
-    },
-    initState: initStateSetup(stateConstructor, gameEntities),
+    reset: resetSetup<S, R>((resetRoom, resetState) => {
+      room = resetRoom
+      state = resetState
+    }, roomConstructor),
+    initState: initStateSetup(stateGetter),
     populateState: populateStateSetup(stateGetter, gameEntities),
     makeEvent: makeEventSetup(stateGetter),
     makeInteraction: makeInteractionSetup(stateGetter),

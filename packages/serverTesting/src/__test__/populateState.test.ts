@@ -3,16 +3,15 @@ import { defaultHandOfCardsSorting, State } from "@cardsgame/server"
 import type { ClassicCard, Hand } from "@cardsgame/server/entities"
 
 import { objectsNamed } from "../entityDefinitionHelpers.js"
-import { initState } from "../initState.js"
 import {
   PopulateState,
   populateState,
   populateStateSetup,
 } from "../populateState.js"
-import type { StateMockingTuple } from "../types.js"
+import type { PopulateStateTuple } from "../types.js"
 
 let state: State
-let args: StateMockingTuple[]
+let args: PopulateStateTuple[]
 let populateStateInner: PopulateState<State>
 const stateGetter = (): State => state
 
@@ -20,12 +19,11 @@ beforeAll(() => {
   populateStateInner = populateStateSetup(stateGetter)
 })
 beforeEach(() => {
-  state = undefined
+  state = new State()
 })
 
 describe("adds child directly to empty state", () => {
   beforeEach(() => {
-    state = new State()
     args = [[null, { children: [{ name: "S10" }] }]]
   })
 
@@ -48,7 +46,7 @@ describe("adds child directly to empty state", () => {
 
 describe("adds children to existing hand", () => {
   beforeEach(() => {
-    state = initState({ children: [{ type: "hand" }] })
+    populateStateInner([null, { children: [{ type: "hand" }] }])
     args = [[{ type: "hand" }, { children: [{ name: "S10" }] }]]
   })
 
@@ -80,7 +78,7 @@ describe("to existing hand with autoSorting, add and select the FIRST DEFINED ca
   // of the array be assigned with
   let hand: Hand
   beforeEach(() => {
-    state = initState({ children: [{ type: "hand" }] })
+    populateStateInner([null, { children: [{ type: "hand" }] }])
     hand = state.query<Hand>({ type: "hand" })
     hand.autoSort = defaultHandOfCardsSorting
 
@@ -113,9 +111,12 @@ describe("to existing hand with autoSorting, add and select the FIRST DEFINED ca
 
 describe("appends some values to existing entities", () => {
   beforeEach(() => {
-    state = initState({
-      children: [{ type: "hand", children: [{ name: "S10" }] }],
-    })
+    populateStateInner([
+      null,
+      {
+        children: [{ type: "hand", children: [{ name: "S10" }] }],
+      },
+    ])
     args = [
       [{ type: "hand" }, { name: "namedHand" }],
       [{ name: "S10" }, { faceUp: false }],
@@ -152,9 +153,12 @@ describe("appends some values to existing entities", () => {
 
 describe("throws when adding child to non-parent", () => {
   beforeEach(() => {
-    state = initState({
-      children: [{ name: "S10" }],
-    })
+    populateStateInner([
+      null,
+      {
+        children: [{ name: "S10" }],
+      },
+    ])
     args = [[{ name: "S10" }, { children: [{ name: "SA" }] }]]
   })
 

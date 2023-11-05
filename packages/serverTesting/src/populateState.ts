@@ -1,11 +1,11 @@
 import { type State, traits } from "@cardsgame/server"
 
-import { copyPrimitives } from "./state/copyPrimitives.js"
+import { copyEntityPrimitives } from "./state/copyPrimitives.js"
 import { parseChildren } from "./state/parseChildren.js"
 import type {
   EntityConstructor,
   StateGetter,
-  StateMockingTuple,
+  PopulateStateTuple,
 } from "./types.js"
 
 export interface PopulateState<S extends State> {
@@ -15,7 +15,7 @@ export interface PopulateState<S extends State> {
    * Use AFTER you prepared the base state yourself by using your
    * game's own state preparation functions. Modifies state in-place.
    *
-   * @param {...StateMockingTuple} entitiesMap Tuples of "entity queries" to "entity definitions".
+   * @param {...PopulateStateTuple} entitiesMap Tuples of "entity queries" to "entity definitions".
    * Finds an already existing entity and fills it with new data/entities to test.
    *
    * @example
@@ -50,7 +50,7 @@ export interface PopulateState<S extends State> {
    *
    * @returns the same state just for convenience.
    */
-  (...entitiesMap: StateMockingTuple[]): S
+  (...entitiesMap: PopulateStateTuple[]): S
 }
 
 /**
@@ -107,8 +107,8 @@ export interface PopulateState<S extends State> {
  */
 export function populateState<S extends State>(
   state: S,
-  entitiesMap: StateMockingTuple[],
-  gameEntities?: Record<string, EntityConstructor>,
+  entitiesMap: PopulateStateTuple[],
+  gameEntities?: Record<string, EntityConstructor>
 ): S {
   if (!entitiesMap) {
     return state
@@ -117,7 +117,7 @@ export function populateState<S extends State>(
   entitiesMap.forEach(([query, def]) => {
     const entity = state.query(query) || state
 
-    copyPrimitives(entity, def)
+    copyEntityPrimitives(entity, def)
 
     // Recursively add all children
     if (def.children) {
@@ -126,8 +126,8 @@ export function populateState<S extends State>(
       } else {
         throw new Error(
           `entity isn't of ParentTrait and cannot accept children. query: ${JSON.stringify(
-            query,
-          )}, `,
+            query
+          )}, `
         )
       }
     }
@@ -138,7 +138,7 @@ export function populateState<S extends State>(
 
 export function populateStateSetup<S extends State>(
   getState: StateGetter<S>,
-  gameEntities?: Record<string, EntityConstructor>,
+  gameEntities?: Record<string, EntityConstructor>
 ): PopulateState<S> {
   return function populateStateInner(...args): S {
     return populateState(getState(), args, gameEntities)
