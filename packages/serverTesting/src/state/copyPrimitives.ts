@@ -1,38 +1,21 @@
-import type { traits, State } from "@cardsgame/server"
+import type { traits } from "@cardsgame/server"
 
-import type {
-  EntityMockingDefinition,
-  InitialStateDescription,
-} from "../types.js"
-
-function copyPrimitives(target, preparation): void {
-  // Copy primitive values
-  Object.keys(preparation)
-    .filter(
-      (key) =>
-        typeof target[key] !== "object" && typeof target[key] !== "function"
-    )
-    .forEach((key) => {
-      target[key] = preparation[key]
-    })
-}
+import type { EntityMockingDefinition } from "../types.js"
 
 /**
  * Copies every primitive value from `preparation` onto the Entity
  */
-export function copyEntityPrimitives(
+export function copyPrimitives(
   entity: traits.ChildTrait | traits.ParentTrait,
-  preparation: EntityMockingDefinition
+  preparation: EntityMockingDefinition,
 ): void {
-  copyPrimitives(entity, preparation)
-}
-
-/**
- * Copies every primitive value from `preparation` onto the State
- */
-export function copyStatePrimitives<S extends State>(
-  state: S,
-  statePreparation: InitialStateDescription<S>
-): void {
-  copyPrimitives(state, statePreparation)
+  // Copy primitive values
+  Object.keys(preparation)
+    .filter(
+      (key) =>
+        typeof entity[key] !== "object" && typeof entity[key] !== "function",
+    )
+    .forEach((key) => {
+      entity[key] = preparation[key]
+    })
 }

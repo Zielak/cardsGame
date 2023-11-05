@@ -4,28 +4,74 @@ import type { ClassicCard, Hand } from "@cardsgame/server/entities"
 import { initState, InitState, initStateSetup } from "../initState.js"
 
 let state: State
-const getState = () => state
 let initStateInner: InitState<State>
 
 beforeAll(() => {
-  initStateInner = initStateSetup(getState)
+  initStateInner = initStateSetup(State)
 })
 
-beforeEach(() => {
-  state = new State()
+it("creates new State instance", () => {
+  expect(initStateInner({}) instanceof State).toBeTruthy()
+  expect(initStateInner() instanceof State).toBeTruthy()
+  expect(initState({}) instanceof State).toBeTruthy()
+  expect(initState() instanceof State).toBeTruthy()
 })
 
-describe("basics", () => {
-  it("returns the same state as provided", () => {
-    expect(initStateInner({})).toBe(state)
-    expect(initState(getState(), {})).toBe(state)
+describe("children", () => {
+  it("creates cards", () => {
+    state = initStateInner({
+      children: [{ type: "classicCard", name: "D7" }],
+    })
+
+    const firstChild = state.getBottom<ClassicCard>()
+
+    expect(firstChild.type).toBe("classicCard")
   })
 
-  it("requires state preparation object", () => {
-    // @ts-expect-error test
-    expect(() => initStateInner()).toThrow()
-    // @ts-expect-error test
-    expect(() => initState()).toThrow()
+  test("type defaults to classicCard", () => {
+    state = initStateInner({
+      children: [{ name: "D7" }],
+    })
+
+    const firstChild = state.getBottom<ClassicCard>()
+
+    expect(firstChild.type).toBe("classicCard")
+  })
+
+  it("creates children recursively", () => {
+    state = initStateInner({
+      children: [
+        {
+          type: "hand",
+          children: [{ name: "D7" }, { name: "C8" }],
+        },
+      ],
+    })
+
+    const hand = state.getChild<Hand>(0)
+
+    expect(hand.type).toBe("hand")
+    expect(hand.getBottom<ClassicCard>().type).toBe("classicCard")
+    expect(hand.getBottom<ClassicCard>().name).toBe("D7")
+    expect(hand.getTop<ClassicCard>().type).toBe("classicCard")
+    expect(hand.getTop<ClassicCard>().name).toBe("C8")
+  })
+
+  it("prepares selected children", () => {
+    state = initStateInner({
+      children: [
+        {
+          type: "hand",
+          children: [{ name: "D7" }, { name: "C8" }],
+          selected: [1],
+        },
+      ],
+    })
+
+    const hand = state.getChild<Hand>(0)
+
+    expect(hand.isChildSelected(0)).toBe(false)
+    expect(hand.isChildSelected(1)).toBe(true)
   })
 })
 
@@ -59,23 +105,14 @@ describe("State", () => {
       players: [
         { clientID: "namedPlayer", name: "Joe" },
         { clientID: "unnamedPlayer" },
-        { name: "Nat" },
-        {},
       ],
     })
 
     // expect(state.players instanceof ArraySchema).toBe(true)
-    expect(state.players.length).toBe(4)
+    expect(state.players.length).toBe(2)
     expect(state.players[0].clientID).toBe("namedPlayer")
     expect(state.players[0].name).toBe("Joe")
-
     expect(state.players[1].clientID).toBe("unnamedPlayer")
     expect(typeof state.players[1].name).toBe("string")
-
-    expect(typeof state.players[2].clientID).toBe("string")
-    expect(state.players[2].name).toBe("Nat")
-
-    expect(typeof state.players[3].clientID).toBe("string")
-    expect(typeof state.players[3].name).toBe("string")
   })
 })

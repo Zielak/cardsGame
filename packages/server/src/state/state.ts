@@ -134,6 +134,6 @@ interface Mixin extends IdentityTrait, LabelTrait, ParentTrait {}
 export interface State extends Mixin {}
 
 export type StateConstructorOptions<V> = {
-  variantData?: V
+  variantData: V
   variantDefaults: V
 }

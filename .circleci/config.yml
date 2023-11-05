@@ -181,7 +181,7 @@ jobs:
 
 orbs:
   aws-s3: circleci/aws-s3@3.0.0
-  sonarcloud: sonarsource/sonarcloud@2.0.0
+  sonarcloud: sonarsource/sonarcloud@1.0.1
 
 anchors-filters:
   - &filters-main-and-development

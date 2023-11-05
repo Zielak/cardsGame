@@ -99,30 +99,27 @@ type StateMockingProps<S> = Partial<
 >
 
 /**
- * An object _describing_ an initial root state.
- * This definition may contain state's props like `"isGameStarted"`.
- *
- * To populate state with entities - use `populateState()`
- *
- * @example Game state at round 10, with 2 players playing.
+ * An object _describing_ a root state.
+ * This definition may contain state's props like `"isGameStarted"`,
+ * and all the other [entities](#entitymockingdefinition) in `"children"` array.
+ * @example Game state at round 10, only one card on the table.
  * ```ts
  * {
- *   isGameStarted: true,
  *   round: 10,
- *   players: [
- *     { clientID: CLIENT_ID, name: "Darek" },
- *     { clientID: "clientB", name: "Pau" },
- *   ],
+ *   children: [
+ *     {type: "classicCard", name: "D7"}
+ *   ]
  * }
  * ```
  */
-export type InitialStateDescription<S extends State> = StateMockingProps<S> &
+export type StateMockingRecord<S extends State> = ChildrenMockingArray &
+  StateMockingProps<S> &
   Partial<{
     clients: string[]
     players: Partial<PlayerDefinition>[]
   }>
 
-export type PopulateStateTuple = [
+export type StateMockingTuple = [
   QuerableProps | undefined,
   EntityMockingDefinition,
 ]

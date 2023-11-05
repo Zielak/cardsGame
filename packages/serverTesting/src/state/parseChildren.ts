@@ -5,7 +5,7 @@ import { decipherName } from "../decipherName.js"
 import { defaultEntities } from "../entities.js"
 import type { EntityConstructor, EntityMockingDefinition } from "../types.js"
 
-import { copyEntityPrimitives } from "./copyPrimitives.js"
+import { copyPrimitives } from "./copyPrimitives.js"
 
 /**
  * Following `preparation` recursively, creates every child entity everywhere.
@@ -35,7 +35,7 @@ export function parseChildren(
     const child = new entityConstructor(state, options)
     entity.addChild(child)
 
-    copyEntityPrimitives(child, childDef)
+    copyPrimitives(child, childDef)
 
     if (traits.isParent(child)) {
       parseChildren(state, child, childDef, gameEntities)
