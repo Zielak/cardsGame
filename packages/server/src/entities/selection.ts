@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { def, logs } from "@cardsgame/utils"
 
 import { canBeChild } from "../annotations/canBeChild.js"
@@ -34,7 +35,7 @@ export class Selection extends Entity<SelectionOptions> {
     if (options.parent) {
       delete options.parent
       logs.warn(
-        "Selection container must stay at top level. Removing `options.parent`."
+        "Selection container must stay at top level. Removing `options.parent`.",
       )
     }
 

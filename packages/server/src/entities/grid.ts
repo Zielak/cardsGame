@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { def } from "@cardsgame/utils"
 
 import { canBeChild } from "../annotations/canBeChild.js"
@@ -93,7 +94,7 @@ export class Grid extends Entity<GridOptions> {
 
   getChildAt<T extends ChildTrait>(column: number, row: number): T {
     return this.getChildren<T>().find(
-      (child) => child.idx === column + row * this.columns
+      (child) => child.idx === column + row * this.columns,
     )
   }
 }

@@ -19,7 +19,7 @@ export interface BaseActionTemplate<S extends State> {
    */
   conditions: (
     con: ClientMessageConditions<S>,
-    messageContext: ClientMessageContext<S>
+    messageContext: ClientMessageContext<S>,
   ) => void
 
   /**
@@ -30,6 +30,7 @@ export interface BaseActionTemplate<S extends State> {
 }
 
 /**
+ * For internal usage only, used also by server-testing lib
  * @ignore
  */
 export interface BaseActionDefinition<S extends State> {
@@ -40,27 +41,28 @@ export interface BaseActionDefinition<S extends State> {
    */
   checkPrerequisites(
     // message: ServerPlayerMessage, // less is more?
-    messageContext: ClientMessageContext<S>
+    messageContext: ClientMessageContext<S>,
   ): boolean
 
   checkConditions(
     con: ClientMessageConditions<S>,
-    messageContext: ClientMessageContext<S>
+    messageContext: ClientMessageContext<S>,
   ): void
 
   getCommand: (messageContext: ClientMessageContext<S>) => Command<S>
 }
 
 /**
+ * For internal usage only, used also by server-testing lib
  * @ignore
  */
 export function extendsBaseActionDefinition<S extends State>(
-  o: unknown
+  o: unknown,
 ): o is BaseActionDefinition<S> {
   return (
     typeof o === "object" &&
     ["setupContext", "teardownContext", "hasSuccessfulSubActions"].every(
-      (m) => !(m in o)
+      (m) => !(m in o),
     )
   )
 }

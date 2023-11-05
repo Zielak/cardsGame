@@ -23,8 +23,12 @@ export type ClientMessageAssertionTester<S extends State> = Parameters<
   ReturnType<ClientMessageConditions<S>>["test"]
 >[0]
 
+/**
+ * For internal usage only, used also by server-testing lib
+ * @ignore
+ */
 export const playerMessageToInitialSubjects = (
-  message: ServerPlayerMessage
+  message: ServerPlayerMessage,
 ): ClientMessageInitialSubjects => {
   const initialSubjects = Object.keys(message)
     .filter((key) => !["timestamp"].includes(key))

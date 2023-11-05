@@ -73,11 +73,20 @@ module.exports = {
       },
     },
     {
-      files: ["*.test.ts", "*.test.tsx"],
+      files: ["**/__test__/**/*.ts", "*.test.ts", "*.test.tsx"],
       extends: ["plugin:jest/recommended"],
       rules: {
         "no-empty": "warn",
         "@typescript-eslint/ban-ts-comment": "warn",
+        "@typescript-eslint/no-unsafe-declaration-merging": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+      },
+    },
+    {
+      files: ["examples/**/*.ts"],
+      extends: ["plugin:jest/recommended"],
+      rules: {
+        "@typescript-eslint/explicit-function-return-type": "off",
       },
     },
   ],

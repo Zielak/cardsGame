@@ -2,14 +2,15 @@
   "compilerOptions": {
     "declaration": true,
     "esModuleInterop": true,
-    "moduleResolution": "node16",
-    "module": "node16",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "lib": ["ES2020"],
     "target": "ES2020",
     "sourceMap": true,
     "inlineSources": true,
     "stripInternal": true,
     "verbatimModuleSyntax": false,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "5.0"
   }
 }

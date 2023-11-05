@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { applyMixins, logs } from "@cardsgame/utils"
 
 import type { State } from "../state/state.js"
@@ -13,7 +14,7 @@ import { getFlag, resetPropDig, resetSubject, setFlag } from "./utils.js"
 
 class Conditions<
   Context extends ConditionsContextBase<S>,
-  S = Context["state"]
+  S = Context["state"],
 > extends Function {
   /**
    * @param state game's state reference
@@ -49,8 +50,8 @@ class Conditions<
       if (!(defaultSubjectKey in context)) {
         throw new Error(
           `Can't set default subject. "${String(
-            defaultSubjectKey
-          )}" does not exist in initial subjects.`
+            defaultSubjectKey,
+          )}" does not exist in initial subjects.`,
         )
       }
       setFlag(core, "subject", context[defaultSubjectKey])
@@ -73,7 +74,7 @@ class Conditions<
 
 interface Conditions<
   Context extends ConditionsContextBase<S>,
-  S extends State = Context["state"]
+  S extends State = Context["state"],
 > {
   /**
    * Provide custom error message. It will be sent to the client when one

@@ -3,12 +3,12 @@ import { logs } from "@cardsgame/utils"
 import type { Room } from "./room/base.js"
 import type { State } from "./state/state.js"
 
-export interface Command<S extends State = State> {
+export interface ICommand<S extends State = State> {
   execute(state: S, room: Room<S>): Promise<void>
   undo(state: S, room: Room<S>): Promise<void>
 }
 
-export class Command<S extends State> {
+export abstract class Command<S extends State = State> implements ICommand<S> {
   /**
    * @ignore
    */
@@ -27,6 +27,10 @@ export class Command<S extends State> {
    */
   constructor(name?: string) {
     this._name = name || this.constructor.name
+  }
+
+  execute(state: S, room: Room<S, Record<string, unknown>>): Promise<void> {
+    throw new Error("Method not implemented.")
   }
 
   /**
@@ -60,8 +64,8 @@ export class Command<S extends State> {
    */
   protected async subExecute(
     state: S,
-    room: Room<any>,
-    command: Command
+    room: Room<S>,
+    command: Command<S>,
   ): Promise<void> {
     this._subCommands.push(command)
     await command.execute(state, room)

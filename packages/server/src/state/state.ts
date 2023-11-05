@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { ArraySchema, MapSchema } from "@colyseus/schema"
 
 import { containsChildren } from "../annotations/containsChildren.js"
@@ -13,7 +14,7 @@ import { ParentTrait } from "../traits/parent.js"
 @containsChildren
 @applyTraitsMixins([IdentityTrait, LabelTrait, ParentTrait])
 export class State<
-  V extends Record<string, unknown> = Record<string, unknown>
+  V extends Record<string, unknown> = Record<string, unknown>,
 > extends Entity<Record<string, unknown>> {
   type = "state"
 
@@ -110,7 +111,7 @@ export class State<
     if (this._allEntities.has(entity.id)) {
       if (this._allEntities.get(entity.id) !== entity) {
         throw new Error(
-          "State: registering entity, which was already registered WITH DIFFERENT ID?"
+          "State: registering entity, which was already registered WITH DIFFERENT ID?",
         )
       }
       return

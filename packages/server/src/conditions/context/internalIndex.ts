@@ -1,3 +1,7 @@
-export * from "./botEntityAux.js"
-export * from "./clientMessage.js"
-export * from "./utils.js"
+// export * from "./botEntityAux.js"
+export {
+  playerMessageToInitialSubjects,
+  ClientMessageContext,
+  ClientMessageConditions,
+} from "./clientMessage.js"
+export { prepareConditionsContext } from "./utils.js"

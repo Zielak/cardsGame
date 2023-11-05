@@ -1,15 +1,9 @@
-import {
-  ClassicCard,
-  Container,
-  Deck,
-  Grid,
-  Hand,
-  Line,
-  Pile,
-  Spread,
-} from "@cardsgame/server/entities"
+import { entities } from "@cardsgame/server"
 
 import type { EntityConstructor } from "./types.js"
+
+const { ClassicCard, Container, Deck, Grid, Hand, Line, Pile, Spread } =
+  entities
 
 export const defaultEntities: Record<string, EntityConstructor> = {
   classicCard: ClassicCard,

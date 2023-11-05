@@ -12,6 +12,7 @@
   "bugs": {
     "url": "https://github.com/zielak/cardsGame/issues"
   },
+  "type": "module",
   "exports": {
     "./package.json": "./package.json",
     "./jest.config.cjs": "./jest.config.cjs",

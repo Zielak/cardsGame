@@ -4,6 +4,7 @@
     "declaration": false,
     "declarationDir": null,
     "module": "CommonJS",
+    "moduleResolution": "Node10",
     "outDir": "./lib/cjs/"
   }
 }
