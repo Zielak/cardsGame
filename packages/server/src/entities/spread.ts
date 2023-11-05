@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { def } from "@cardsgame/utils"
 
 import { canBeChild } from "../annotations/canBeChild.js"

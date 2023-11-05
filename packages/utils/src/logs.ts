@@ -214,7 +214,7 @@ if (logLevel < LogLevels.verbose) {
 
 export const logs = logsPreExport
 
-export interface Logs {
+export interface ILogs {
   error: (...any) => void
   warn: (...any) => void
   info: (...any) => void
@@ -239,11 +239,11 @@ type LogsOptions = {
   browserStyle?: string
   serverStyle?: Chalk.Chalk
 }
-export class Logs {
+export class Logs implements ILogs {
   constructor(
     name: string,
     private readonly enabled = false,
-    options: LogsOptions = {}
+    options: LogsOptions = {},
   ) {
     if (isBrowser) {
       this.setupBrowserLogs(name, options.browserStyle)
@@ -251,6 +251,16 @@ export class Logs {
       this.setupServerLogs(name, options.serverStyle)
     }
   }
+  error: (...any: any[]) => void
+  warn: (...any: any[]) => void
+  info: (...any: any[]) => void
+  notice: (...any: any[]) => void
+  log: (...any: any[]) => void
+  verbose: (...any: any[]) => void
+  debug: (...any: any[]) => void
+  group: (...any: any[]) => void
+  groupCollapsed: (...any: any[]) => void
+  groupEnd: (...any: any[]) => void
 
   setupServerLogs(name: string, style: Chalk.Chalk = Chalk.dim): void {
     let indentLevel = 0
@@ -258,7 +268,7 @@ export class Logs {
       return Array(indentLevel).fill("│ ").join("")
     }
 
-    const nameAndFirst = (first: string) => `${name} ${first}`
+    const nameAndFirst = (first: string): string => `${name} ${first}`
 
     this["error"] =
       this.enabled && logLevel >= LogLevels.error
@@ -266,7 +276,7 @@ export class Logs {
             console.error.apply(console, [
               style(
                 getIndent() +
-                  chalk.bgRed.white(` ${name ? nameAndFirst(first) : first} `)
+                  chalk.bgRed.white(` ${name ? nameAndFirst(first) : first} `),
               ),
               ...args.map(syntaxHighlight),
             ])
@@ -279,8 +289,8 @@ export class Logs {
               style(
                 getIndent() +
                   chalk.bgYellow.black(
-                    ` ${name ? nameAndFirst(first) : first} `
-                  )
+                    ` ${name ? nameAndFirst(first) : first} `,
+                  ),
               ),
               ...args.map(syntaxHighlight),
             ])
@@ -292,7 +302,7 @@ export class Logs {
             console.info.apply(console, [
               style(
                 getIndent() +
-                  chalk.bgBlue.black(` ${name ? nameAndFirst(first) : first} `)
+                  chalk.bgBlue.black(` ${name ? nameAndFirst(first) : first} `),
               ),
               ...args.map(syntaxHighlight),
             ])
@@ -350,7 +360,7 @@ export class Logs {
               console.error,
               console,
               `%c ${name} `,
-              style
+              style,
             )
           })()
         : noop
@@ -361,7 +371,7 @@ export class Logs {
               console.warn,
               console,
               `%c ${name} `,
-              style
+              style,
             )
           })()
         : noop
@@ -372,7 +382,7 @@ export class Logs {
               console.info,
               console,
               `%c ${name} `,
-              style
+              style,
             )
           })()
         : noop
@@ -383,7 +393,7 @@ export class Logs {
               console.log,
               console,
               `%c ${name} `,
-              style
+              style,
             )
           })()
         : noop
@@ -394,7 +404,7 @@ export class Logs {
               console.debug,
               console,
               `%c ${name} `,
-              style + BROWSER_DEBUG_STYLE
+              style + BROWSER_DEBUG_STYLE,
             )
           })()
         : noop

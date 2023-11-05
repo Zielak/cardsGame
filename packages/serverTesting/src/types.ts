@@ -1,17 +1,19 @@
-import type { QuerableProps, Room, State } from "@cardsgame/server"
 import type {
+  QuerableProps,
+  Room,
+  State,
   CommonKeysToIgnore,
   EveryEntity,
-} from "@cardsgame/server/internal/queries/internalTypes"
-import type { ChildTrait, Entity } from "@cardsgame/server/traits"
+  traits,
+} from "@cardsgame/server"
 
 export type StateGetter<S extends State> = () => S
 export type RoomGetter<S extends State, R extends Room<S>> = () => R
 
 export type EntityConstructor = new (
   state: State,
-  options?: Record<string, any>
-) => Entity<any> & ChildTrait
+  options?: Record<string, any>,
+) => traits.Entity<any> & traits.ChildTrait
 
 /**
  * More keys to ignore from preparation, as these are read-only getters or
@@ -119,5 +121,5 @@ export type StateMockingRecord<S extends State> = ChildrenMockingArray &
 
 export type StateMockingTuple = [
   QuerableProps | undefined,
-  EntityMockingDefinition
+  EntityMockingDefinition,
 ]

@@ -29,7 +29,7 @@ export class Bot extends Player {
   isBot = true
 
   currentThought: ChosenBotNeuronResult<any>
-  currentThoughtTimer: ReturnType<typeof setTimeout>
+  currentThoughtTimer: any
 
   constructor(options: BotOptions) {
     super(options)

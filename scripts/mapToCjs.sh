@@ -18,6 +18,7 @@ fi
 for f in $workspace/**/*.js; do
   #    require("./index.js")
   # -> require("./index.cjs")
+  # only local files
   # X  require("colyseus.cjs")
   sed -E "s/require\(\"\.(.*)\.js\"\)/require(\".\1.cjs\")/g" $f > "${f%.js}.cjs"
   rm $f

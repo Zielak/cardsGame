@@ -1,5 +1,4 @@
-import type { State } from "@cardsgame/server"
-import { isParent } from "@cardsgame/server/traits"
+import { type State, traits } from "@cardsgame/server"
 
 import { copyPrimitives } from "./state/copyPrimitives.js"
 import { parseChildren } from "./state/parseChildren.js"
@@ -109,7 +108,7 @@ export interface PopulateState<S extends State> {
 export function populateState<S extends State>(
   state: S,
   entitiesMap: StateMockingTuple[],
-  gameEntities?: Record<string, EntityConstructor>
+  gameEntities?: Record<string, EntityConstructor>,
 ): S {
   if (!entitiesMap) {
     return state
@@ -122,13 +121,13 @@ export function populateState<S extends State>(
 
     // Recursively add all children
     if (def.children) {
-      if (isParent(entity)) {
+      if (traits.isParent(entity)) {
         parseChildren(state, entity, def, gameEntities)
       } else {
         throw new Error(
           `entity isn't of ParentTrait and cannot accept children. query: ${JSON.stringify(
-            query
-          )}, `
+            query,
+          )}, `,
         )
       }
     }
@@ -139,7 +138,7 @@ export function populateState<S extends State>(
 
 export function populateStateSetup<S extends State>(
   getState: StateGetter<S>,
-  gameEntities?: Record<string, EntityConstructor>
+  gameEntities?: Record<string, EntityConstructor>,
 ): PopulateState<S> {
   return function populateStateInner(...args): S {
     return populateState(getState(), args, gameEntities)

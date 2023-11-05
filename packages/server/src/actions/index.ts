@@ -11,3 +11,6 @@ export {
 } from "./message/messageAction.js"
 export * from "./collection/collection.js"
 export * from "./types.js"
+
+/** keep until we move completely to ES Modules? */
+export * from "./internalIndex.js"

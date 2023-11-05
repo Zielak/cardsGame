@@ -18,3 +18,6 @@ export * from "./room/index.js"
 export * as commands from "./commands/index.js"
 export * as entities from "./entities/index.js"
 export * as traits from "./traits/index.js"
+
+/** keep until we move completely to ES Modules? */
+export { prepareActionContext } from "./commandsManager/utils.js"

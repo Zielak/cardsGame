@@ -4,7 +4,7 @@ import { PickCard } from "./actions"
 import { JustPlayGoal } from "./bot"
 import { WarState } from "./state"
 
-export default defineRoom<WarState>("WarGame", {
+export const WarGame = defineRoom<WarState>("WarGame", {
   stateConstructor: WarState,
   variantDefaults: {
     anteRatio: 0.5,
@@ -38,7 +38,7 @@ export default defineRoom<WarState>("WarGame", {
         new entities.Deck(state, {
           parent: container,
           name: `player${player.name}Deck`,
-        })
+        }),
       )
 
       // A Pile container, to hold all currently played cards

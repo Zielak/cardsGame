@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { def } from "@cardsgame/utils"
 
 import { canBeChild } from "../annotations/canBeChild.js"
@@ -43,7 +44,7 @@ import { TwoSidedTrait } from "../traits/twoSided.js"
 ])
 export class ClassicCard<
   S extends Suit = Suit,
-  R extends Rank = Rank
+  R extends Rank = Rank,
 > extends Entity<ClassicCardOptions<S, R>> {
   // @filter(faceDownOnlyOwner)
   /**

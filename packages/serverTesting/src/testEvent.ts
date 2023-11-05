@@ -1,23 +1,21 @@
+// eslint just got stupid
+/* eslint-disable import/named */
 import {
   Conditions,
   type ActionDefinition,
   type ServerPlayerMessage,
   type CollectionActionDefinition,
   State,
-} from "@cardsgame/server"
-import {
   BaseActionDefinition,
   extendsBaseActionDefinition,
   extendsCollectionActionDefinition,
-} from "@cardsgame/server/internal/actions"
-import { prepareActionContext } from "@cardsgame/server/internal/commandsManager/utils"
-import {
+  prepareActionContext,
   ClientMessageContext,
   ClientMessageConditions,
   playerMessageToInitialSubjects,
   prepareConditionsContext,
-} from "@cardsgame/server/internal/conditions/context"
-import { runConditionOnAction } from "@cardsgame/server/internal/interaction/runConditionOnAction"
+  runConditionOnAction,
+} from "@cardsgame/server"
 
 import type { StateGetter } from "./types.js"
 
@@ -31,7 +29,7 @@ export interface TestEvent {
 function testCollectionAction<S extends State>(
   action: CollectionActionDefinition<S>,
   messageContext: ClientMessageContext<S>,
-  con: ClientMessageConditions<S>
+  con: ClientMessageConditions<S>,
 ): boolean {
   const context = prepareActionContext(action)
 
@@ -49,7 +47,7 @@ function testCollectionAction<S extends State>(
 function testBasicAction<S extends State>(
   action: BaseActionDefinition<S>,
   messageContext: ClientMessageContext<S>,
-  con: ClientMessageConditions<S>
+  con: ClientMessageConditions<S>,
 ): boolean {
   // 1. Prerequisites
   if (!action.checkPrerequisites(messageContext)) {
@@ -68,7 +66,7 @@ function testBasicAction<S extends State>(
 export function testEvent<S extends State>(
   state: S,
   action: ActionDefinition<S>,
-  message: ServerPlayerMessage
+  message: ServerPlayerMessage,
 ): boolean {
   const initialSubjects = playerMessageToInitialSubjects(message)
   const messageContext = prepareConditionsContext(state, initialSubjects)
@@ -84,7 +82,7 @@ export function testEvent<S extends State>(
 
 export function testEventSetup<S extends State>(
   getState: StateGetter<S>,
-  action: ActionDefinition<S>
+  action: ActionDefinition<S>,
 ): TestEvent {
   return function testEventInner(message: ServerPlayerMessage): boolean {
     return testEvent(getState(), action, message)

@@ -19,13 +19,13 @@ describe("trim", () => {
   })
 
   test(`returns empty string given non string value`, () => {
-    // @ts-ignore
+    // @ts-expect-error testing for invalid input
     expect(trim([])).toBe("")
-    // @ts-ignore
+    // @ts-expect-error testing for invalid input
     expect(trim({})).toBe("")
-    // @ts-ignore
+    // @ts-expect-error testing for invalid input
     expect(trim(15)).toBe("")
-    // @ts-ignore
+    // @ts-expect-error testing for invalid input
     expect(trim(function () {})).toBe("")
   })
 })

@@ -11,9 +11,18 @@
   "bugs": {
     "url": "https://github.com/zielak/cardsGame/issues"
   },
+  "type": "module",
   "main": "lib/cjs/index.cjs",
   "types": "lib/types/index.d.ts",
   "module": "lib/esm/index.js",
+  "scripts": {
+    "build": "concurrently npm:build:esm npm:build:cjs",
+    "build:esm": "tsc -p tsconfig.build.json",
+    "build:cjs": "tsc -p tsconfig.build.cjs.json &&  ../../scripts/mapToCjs.sh ./lib/cjs",
+    "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
   "files": [
     "lib",
     "README.md"
@@ -25,12 +34,6 @@
       "require": "./lib/cjs/index.cjs",
       "types": "./lib/types/index.d.ts"
     }
-  },
-  "scripts": {
-    "build": "tsc -p tsconfig.build.json & tsc -p tsconfig.build.cjs.json & wait && ../../scripts/mapToCjs.sh ./lib/cjs",
-    "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
-    "test": "jest",
-    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@cardsgame/server": "^1.7.3",

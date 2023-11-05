@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { def } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
@@ -18,7 +19,7 @@ class TopDeckElement extends Schema {}
 
 const typesMap = {}
 globalEntitiesContext.allChildrensTypes.forEach(
-  (value, key) => (typesMap[key] = value)
+  (value, key) => (typesMap[key] = value),
 )
 defineTypes(TopDeckElement, typesMap)
 

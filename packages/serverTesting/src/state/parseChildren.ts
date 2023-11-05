@@ -1,9 +1,5 @@
 import type { State } from "@cardsgame/server"
-import {
-  hasSelectableChildren,
-  isParent,
-  ParentTrait,
-} from "@cardsgame/server/traits"
+import { traits } from "@cardsgame/server"
 
 import { decipherName } from "../decipherName.js"
 import { defaultEntities } from "../entities.js"
@@ -21,9 +17,9 @@ import { copyPrimitives } from "./copyPrimitives.js"
  */
 export function parseChildren(
   state: State,
-  entity: ParentTrait,
+  entity: traits.ParentTrait,
   preparation: EntityMockingDefinition,
-  gameEntities?: Record<string, EntityConstructor>
+  gameEntities?: Record<string, EntityConstructor>,
 ): void {
   // Prepare children
   const newChildren = preparation.children?.map((childDef) => {
@@ -41,7 +37,7 @@ export function parseChildren(
 
     copyPrimitives(child, childDef)
 
-    if (isParent(child)) {
+    if (traits.isParent(child)) {
       parseChildren(state, child, childDef, gameEntities)
     }
 
@@ -50,8 +46,8 @@ export function parseChildren(
   // Selection, if used
   if (
     preparation.selected &&
-    isParent(entity) &&
-    hasSelectableChildren(entity)
+    traits.isParent(entity) &&
+    traits.hasSelectableChildren(entity)
   ) {
     preparation.selected.forEach((childDefIdx) => {
       if (preparation.selected?.includes(childDefIdx)) {
