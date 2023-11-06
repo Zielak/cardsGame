@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Node 16. All packages come with `.nvmrc` file, so you can make use of it using some nvm scripts.
+Node 20. All packages come with `.nvmrc` file, so you can make use of it using some nvm scripts.
 
 ## Install
 
@@ -10,7 +10,7 @@ Node 16. All packages come with `.nvmrc` file, so you can make use of it using s
 npm i
 ```
 
-Will install everything in every package and link any dependencies (including in `./examples/`) using Lerna.
+This project is using npm workspaces. `npm i` will install everything in every package and link any dependencies (including in `./examples/`).
 
 ## Build
 
@@ -33,14 +33,7 @@ Bot user @greenly-builder is authenticated on CircleCI with read-**write** acces
 
 # Maintenance
 
-> Old notes here, ignore for now
-
-Keep generating changelog with these, until we hit 1.0
-
-```
-npx conventional-changelog --preset angular --release-count 0 --outfile ./CHANGELOG.md --verbose
-npx lerna exec --concurrency 1 --stream -- 'conventional-changelog --preset angular --release-count 0 --commit-path $PWD --pkg $PWD/package.json --outfile $PWD/CHANGELOG.md --verbose'
-```
+...
 
 # Server
 

@@ -9,7 +9,7 @@ if [[ $PARAM == "-w" ]]; then
 fi
 
 if [[ -z "$SCOPE" ]]; then
-  lerna run --stream build$WATCH;
+  turbo run build$WATCH;
 else
-  lerna run --stream --scope @cardsgame/$SCOPE build$WATCH;
+  turbo run --filter="*$SCOPE*" build$WATCH;
 fi
