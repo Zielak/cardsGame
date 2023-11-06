@@ -213,25 +213,61 @@ anchors-filters:
     filters:
       branches:
         only: development
+  - &filters-only-feature-branches
+    filters:
+      branches:
+        ignore:
+          - development
+          - main
 
 workflows:
   version: 2
 
+  # only feature branches
   ci:
     jobs:
-      - install
+      - install:
+          <<: *filters-only-feature-branches
 
       - lint:
+          <<: *filters-only-feature-branches
           requires:
             - install
       - build-core:
+          <<: *filters-only-feature-branches
           requires:
             - install
       - build-examples:
+          <<: *filters-only-feature-branches
           requires:
             - build-core
 
       - test:
+          <<: *filters-only-feature-branches
+          requires:
+            - build-core
+
+  # either main or development merges
+  merge:
+    jobs:
+      - install:
+          <<: *filters-main-and-development
+
+      - lint:
+          <<: *filters-main-and-development
+          requires:
+            - install
+      - build-core:
+          <<: *filters-main-and-development
+          requires:
+            - install
+      - build-examples:
+          <<: *filters-main-and-development
+          requires:
+            - build-core
+
+      - test:
+          <<: *filters-main-and-development
           requires:
             - build-core
 
