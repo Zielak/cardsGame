@@ -24,7 +24,7 @@ jobs:
       - name: Prepare root and packages
         run: |
           npm ci
-          npm run build:ci
+          npm run build:core
 
       - name: Install
         working-directory: docs

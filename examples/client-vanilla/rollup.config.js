@@ -8,7 +8,7 @@ const config = {
   input: "main.mjs",
   output: {
     format: "es",
-    file: "index.mjs",
+    file: "dist/index.mjs",
   },
   plugins: [
     nodeResolve({

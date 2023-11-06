@@ -46,13 +46,12 @@ jobs:
           at: ~/project
       - run:
           name: Build whole core
-          command: NODE_ENV=production npm run build:ci
+          command: NODE_ENV=production npm run build:core
 
       - persist_to_workspace:
           root: ~/project
           paths:
             - packages/*/lib
-            - examples/*/dist
 
   build-examples:
     executor: my-executor
@@ -62,7 +61,7 @@ jobs:
           at: ~/project
       - run:
           name: Build examples
-          command: NODE_ENV=production npm run build -- "example*"
+          command: NODE_ENV=production npm run build:examples
 
   test:
     executor: my-executor
@@ -89,7 +88,20 @@ jobs:
           name: Linting
           command: npm run lint
 
-  release-and-publish:
+  prepare-release:
+    executor: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Prepare release PR
+          command: |
+            release-please release-pr \
+              --token=$GITHUB_TOKEN \
+              --repo-url=Zielak/cardsGame
+
+  release:
     executor: my-executor
     steps:
       - checkout
@@ -101,7 +113,10 @@ jobs:
             git config --global user.email ${GIT_AUTHOR_EMAIL}
             git config --global user.name ${GIT_AUTHOR_NAME}
             npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-            npm run release:ci -- --yes
+
+            release-please github-release \
+              --token=$GITHUB_TOKEN \
+              --repo-url=Zielak/cardsGame
 
   documentation-deploy:
     executor: my-executor
@@ -194,33 +209,82 @@ anchors-filters:
     filters:
       branches:
         only: main
+  - &filters-only-development
+    filters:
+      branches:
+        only: development
+  - &filters-only-feature-branches
+    filters:
+      branches:
+        ignore:
+          - development
+          - main
 
 workflows:
   version: 2
 
+  # only feature branches
   ci:
     jobs:
-      - install
+      - install:
+          <<: *filters-only-feature-branches
 
       - lint:
+          <<: *filters-only-feature-branches
           requires:
             - install
       - build-core:
+          <<: *filters-only-feature-branches
           requires:
             - install
       - build-examples:
+          <<: *filters-only-feature-branches
           requires:
             - build-core
 
       - test:
+          <<: *filters-only-feature-branches
           requires:
             - build-core
 
-      - release-and-publish:
+  # either main or development merges
+  merge:
+    jobs:
+      - install:
+          <<: *filters-main-and-development
+
+      - lint:
+          <<: *filters-main-and-development
+          requires:
+            - install
+      - build-core:
+          <<: *filters-main-and-development
+          requires:
+            - install
+      - build-examples:
+          <<: *filters-main-and-development
+          requires:
+            - build-core
+
+      - test:
+          <<: *filters-main-and-development
+          requires:
+            - build-core
+
+      # prepare release PR only after merging things to development branch
+      - prepare-release:
+          <<: *filters-only-development
+          requires:
+            - build-examples
+            - test
+
+      # publish to NPM only after merging the release PR to main branch
+      - release:
           <<: *filters-only-main
           requires:
-            - lint
+            - build-examples
             - test
+
       - documentation-deploy:
           <<: *filters-main-and-development
           requires:
