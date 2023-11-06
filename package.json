@@ -44,12 +44,10 @@
     "@typescript-eslint/parser": "^6.9.1",
     "concurrently": "^8.2.2",
     "coveralls": "^3.1.1",
-    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^27.1.2",
-    "git-cz": "^4.7.6",
     "husky": "^8.0.1",
     "jest": "^29.2.0",
     "lint-staged": "^15.0.2",
@@ -62,10 +60,5 @@
     "tslib": "^2.4.0",
     "turbo": "^1.10.16",
     "typescript": "^5.0.4"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/git-cz"
-    }
   }
 }
