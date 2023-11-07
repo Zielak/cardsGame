@@ -1,5 +1,4 @@
 {
-  "plugins": ["node-workspace"],
   "packages": {
     ".": {
       "changelog-path": "CHANGELOG.md",
@@ -10,5 +9,6 @@
       "prerelease": false
     }
   },
+  "bootstrap-sha": "dc61f246355bed0b28de96b454bf5e0790efe841",
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
 }

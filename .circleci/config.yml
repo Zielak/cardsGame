@@ -101,6 +101,10 @@ jobs:
               --token=$GITHUB_TOKEN \
               --repo-url=Zielak/cardsGame
 
+            PACKAGE_VERSION=$(cat package.json | jq -r '.version')
+            jq --arg pkg "$PACKAGE_VERSION" '.version = $pkg' lerna.json > lerna.json.tmp
+            mv lerna.json.tmp lerna.json
+
   release:
     executor: my-executor
     steps:
