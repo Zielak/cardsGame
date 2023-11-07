@@ -7,7 +7,8 @@
     "docs/.docusaurus/**": true
   },
   "files.exclude": {
-    // "**/lib": true,
+    "**/.turbo": true,
+    "**/lib": true,
     "**/node_modules": true,
     "docs/docs/api/**": true,
     "docs/build/**": true,
