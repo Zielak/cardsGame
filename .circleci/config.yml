@@ -123,6 +123,9 @@ jobs:
 
               npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
 
+              jq --arg pkg "$PACKAGE_VERSION" '.version = $pkg' lerna.json > lerna.json.tmp
+              mv lerna.json.tmp lerna.json
+
               npx lerna version $PACKAGE_VERSION --sync-workspace-lock --no-git-tag-version --amend --yes
               npx lerna publish from-package --no-push --no-private --yes
 
