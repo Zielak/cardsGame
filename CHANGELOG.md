@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.4](https://github.com/Zielak/cardsGame/compare/cardsgame-v1.7.3...cardsgame-v1.7.4) (2023-11-08)
+
+
+### Bug Fixes
+
+* server testing qol ([#93](https://github.com/Zielak/cardsGame/issues/93)) ([4c58b34](https://github.com/Zielak/cardsGame/commit/4c58b3472a884fef431ec33db3ff3449d1b4f70c))
+
 ## [1.7.3](https://github.com/zielak/cardsGame/compare/v1.7.2...v1.7.3) (2023-10-14)
 
 ### Bug Fixes
