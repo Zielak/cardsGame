@@ -4,7 +4,6 @@ import type {
   ClientMessageContext,
 } from "../../conditions/context/clientMessage.js"
 import { runConditionOnAction } from "../../interaction/runConditionOnAction.js"
-import { ConditionErrorMessage } from "../../interaction/types.js"
 import type { State } from "../../state/state.js"
 import type { BaseActionDefinition } from "../base.js"
 import type {
@@ -76,7 +75,7 @@ export class DragActionDefinition<S extends State>
 
   checkPrerequisites(
     messageContext: ClientMessageContext<S>,
-    actionContext: CollectionContext<DragContext<S>>
+    actionContext: CollectionContext<DragContext<S>>,
   ): boolean {
     let result: boolean
     if (actionContext.pending) {
@@ -102,7 +101,7 @@ export class DragActionDefinition<S extends State>
   checkConditions(
     con: ClientMessageConditions<S>,
     messageContext: ClientMessageContext<S>,
-    actionContext: CollectionContext<DragContext<S>>
+    actionContext: CollectionContext<DragContext<S>>,
   ): CollectionConditionsResult<BaseActionDefinition<S>> {
     const { interaction, player } = messageContext
     const rejectedActions: CollectionConditionsResult<BaseActionDefinition<S>> =
@@ -140,7 +139,7 @@ export class DragActionDefinition<S extends State>
 
   getCommand(
     messageContext: ClientMessageContext<S>,
-    actionContext: CollectionContext<DragContext<S>>
+    actionContext: CollectionContext<DragContext<S>>,
   ): Command<State> {
     const { interaction, player } = messageContext
 
@@ -171,7 +170,7 @@ export class DragActionDefinition<S extends State>
  * @category Action definitions
  */
 export function defineDragAction<S extends State = State>(
-  template: DragActionTemplate<S>
+  template: DragActionTemplate<S>,
 ): DragActionDefinition<S> {
   return new DragActionDefinition(template)
 }

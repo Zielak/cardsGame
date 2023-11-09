@@ -11,6 +11,10 @@
     "stripInternal": true,
     "verbatimModuleSyntax": false,
     "forceConsistentCasingInFileNames": true,
-    "ignoreDeprecations": "5.0"
+    "ignoreDeprecations": "5.0",
+    /* strictness */
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true
+    // "strictNullChecks": true,
   }
 }

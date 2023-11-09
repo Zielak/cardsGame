@@ -20,8 +20,8 @@ interface WSSOptions {
  */
 export class Game {
   client: Client
-  room: Room
-  lobby: LobbyRoom
+  room?: Room
+  lobby?: LobbyRoom
 
   wss: WSSOptions
 
@@ -29,11 +29,8 @@ export class Game {
     logs.debug("GAME", "constructor")
 
     this.wss = {
-      host: def(
-        options.wss && options.wss.host,
-        window.document.location.hostname
-      ),
-      port: def(options.wss && options.wss.port, 2657),
+      host: def(options.wss?.host, window.document.location.hostname),
+      port: def(options.wss?.port, 2657),
     }
 
     const portString = this.wss.port ? `:${this.wss.port}` : ""
@@ -44,7 +41,7 @@ export class Game {
   /**
    * If connected to game room, will return its session ID
    */
-  get sessionID(): string {
+  get sessionID(): string | undefined {
     return this.room ? this.room.sessionID : undefined
   }
 
@@ -58,7 +55,7 @@ export class Game {
   }
 
   joinOrCreate(roomName: string, options?: RoomCreateOptions): Promise<Room> {
-    this.room && this.room.leave()
+    this.room?.leave()
 
     return this.client.joinOrCreate(roomName, options).then((room) => {
       this.room = new Room(room)
@@ -67,7 +64,7 @@ export class Game {
   }
 
   create(roomName: string, options?: RoomCreateOptions): Promise<Room> {
-    this.room && this.room.leave()
+    this.room?.leave()
 
     return this.client.create(roomName, options).then((room) => {
       this.room = new Room(room)
@@ -80,7 +77,7 @@ export class Game {
    * Use `joinOrCreate` instead.
    */
   join(roomName: string, options?: RoomCreateOptions): Promise<Room> {
-    this.room && this.room.leave()
+    this.room?.leave()
 
     return this.client.join(roomName, options).then((room) => {
       this.room = new Room(room)
@@ -89,7 +86,7 @@ export class Game {
   }
 
   joinById(roomId: string, options?: RoomCreateOptions): Promise<Room> {
-    this.room && this.room.leave()
+    this.room?.leave()
 
     return this.client.joinById(roomId, options).then((room) => {
       this.room = new Room(room)
@@ -106,7 +103,7 @@ export class Game {
     logs.debug("GAME", "destroy()")
     if (this.room) {
       this.room.leave()
-      this.room = null
+      this.room = undefined
     }
   }
 }
