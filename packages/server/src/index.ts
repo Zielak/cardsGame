@@ -13,6 +13,7 @@ export * from "./command.js"
 export * from "./commandsManager/utils.js"
 export * from "./integration.js"
 export * from "./playerViewPosition.js"
+
 export * from "./room/index.js"
 
 export * as commands from "./commands/index.js"
