@@ -1,4 +1,4 @@
-import { chalk } from "@cardsgame/utils"
+import chalk from "chalk"
 
 import { isEntityActionDefinition } from "../../actions/entity/utils.js"
 import { prepareConditionsContext } from "../../conditions/context/utils.js"
@@ -12,7 +12,7 @@ import { logs } from "./pickNeuron.js"
 export const getInteractionEntities = <S extends State>(
   state: S,
   bot: Bot,
-  neuron: BotNeuron<S>
+  neuron: BotNeuron<S>,
 ): ChildTrait[] => {
   const { action } = neuron
 
@@ -31,20 +31,20 @@ export const getInteractionEntities = <S extends State>(
   if (queries === "*") {
     logs.debug(
       `Action "${chalk.bold(
-        action.name
-      )}" has a "catch-all" definition, ignoring (for now?)`
+        action.name,
+      )}" has a "catch-all" definition, ignoring (for now?)`,
     )
     return []
   }
 
   if (typeof queries === "string") {
     throw new Error(
-      `Invalid use of interactions, got "${queries}" where only "*" is accepted as a string.`
+      `Invalid use of interactions, got "${queries}" where only "*" is accepted as a string.`,
     )
   }
 
   logs.debug(
-    `Action "${chalk.bold(action.name)}" has ${queries.length} QuerableProps`
+    `Action "${chalk.bold(action.name)}" has ${queries.length} QuerableProps`,
   )
 
   // results = results.reduce((all, query) => all.push(query) && all, new Array<QuerableProps>())

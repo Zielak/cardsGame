@@ -1,4 +1,5 @@
-import { chalk, def, logs } from "@cardsgame/utils"
+import { def, logs } from "@cardsgame/utils"
+import chalk from "chalk"
 
 import {
   Command,
@@ -23,7 +24,7 @@ export class ChangeParent extends Command {
   constructor(
     entities: Targets<ChildTrait>,
     target: Target<ParentTrait>,
-    options: ChangeParentOptions = {}
+    options: ChangeParentOptions = {},
   ) {
     super()
 
@@ -54,7 +55,7 @@ export class ChangeParent extends Command {
       "moving",
       this.entities.get().map((e) => `${e.idx}:${hasLabel(e) ? e.name : ""}`),
       "entities to",
-      chalk.yellow(this.target.get()["name"] || "ROOT")
+      chalk.yellow(this.target.get()["name"] || "ROOT"),
     )
 
     this.entities.get().forEach((entity, idx) => {

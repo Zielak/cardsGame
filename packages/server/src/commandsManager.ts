@@ -1,4 +1,5 @@
-import { chalk, logs } from "@cardsgame/utils"
+import { logs } from "@cardsgame/utils"
+import chalk from "chalk"
 
 import type { BaseActionDefinition } from "./actions/base.js"
 import {
@@ -67,19 +68,19 @@ export class CommandsManager<S extends State> {
   async run(
     message: ServerPlayerMessage,
     action: CollectionActionDefinition<S>,
-    context: CollectionContext
+    context: CollectionContext,
   ): Promise<boolean> {
     const initialSubjects = playerMessageToInitialSubjects(message)
     const messageContext = prepareConditionsContext(
       this.room.state,
-      initialSubjects
+      initialSubjects,
     )
 
     // 1. Prerequisites
     const prerequisitesResult = this.runPrerequisites(
       messageContext,
       action,
-      context
+      context,
     )
 
     if (!prerequisitesResult) {
@@ -92,7 +93,7 @@ export class CommandsManager<S extends State> {
       message,
       messageContext,
       action,
-      context
+      context,
     )
 
     if (!conditionsResult) {
@@ -106,7 +107,7 @@ export class CommandsManager<S extends State> {
     // 4. Run the command
     const commandResult = await this.executeCommand(
       this.room.state,
-      chosenCommand
+      chosenCommand,
     )
 
     // 5. Pending actions
@@ -122,7 +123,7 @@ export class CommandsManager<S extends State> {
   runPrerequisites(
     messageContext: ClientMessageContext<S>,
     action: CollectionActionDefinition<S>,
-    actionContext: CollectionContext
+    actionContext: CollectionContext,
   ): boolean {
     const tmpCount = action._allActionsCount?.() || "?"
 
@@ -131,13 +132,13 @@ export class CommandsManager<S extends State> {
 
     const prerequisitesResult = action.checkPrerequisites(
       messageContext,
-      actionContext
+      actionContext,
     )
 
     logs.groupEnd(
       `actions count: ${tmpCount} => ${action._successfulActionsCount?.(
-        actionContext
-      )}`
+        actionContext,
+      )}`,
     )
 
     return prerequisitesResult
@@ -147,7 +148,7 @@ export class CommandsManager<S extends State> {
     message: ServerPlayerMessage,
     messageContext: ClientMessageContext<S>,
     action: CollectionActionDefinition<S>,
-    context: CollectionContext
+    context: CollectionContext,
   ): boolean {
     const tmpCount = action._successfulActionsCount?.(context)
 
@@ -168,13 +169,13 @@ export class CommandsManager<S extends State> {
     const rejectedActions = action.checkConditions(
       conditionsChecker,
       messageContext,
-      context
+      context,
     )
 
     logs.groupEnd(
       `actions count: ${tmpCount} => ${action._successfulActionsCount?.(
-        context
-      )}`
+        context,
+      )}`,
     )
 
     // 4. if all sub-actions fail, report all the errors. Otherwise continue.
@@ -188,14 +189,14 @@ export class CommandsManager<S extends State> {
   pickCommand(
     messageContext: ClientMessageContext<S>,
     action: CollectionActionDefinition<S>,
-    context: CollectionContext
+    context: CollectionContext,
   ): Command<S> {
     const successCount = action._successfulActionsCount?.(context)
 
     if (successCount > 1) {
       logs.warn(
         "handlePlayerEvent",
-        `Whoops, even after filtering actions by conditions, I still have ${successCount} actions! Applying only the first one (ordering actions matters!).`
+        `Whoops, even after filtering actions by conditions, I still have ${successCount} actions! Applying only the first one (ordering actions matters!).`,
       )
     }
 
@@ -205,7 +206,7 @@ export class CommandsManager<S extends State> {
   handlePendingActions(
     message: ServerPlayerMessage,
     action: CollectionActionDefinition<S>,
-    context: CollectionContext
+    context: CollectionContext,
   ): void {
     if (isRootActionDefinition(action)) {
       // We were checking against all actions in Root collection
@@ -221,7 +222,7 @@ export class CommandsManager<S extends State> {
         logs.debug(
           "HandlePending",
           `setting "${subAction.name}" action for player:`,
-          message.player.clientID
+          message.player.clientID,
         )
         subContext.pending = true
         this.pendingActions.set(message.player.clientID, {
@@ -240,14 +241,14 @@ export class CommandsManager<S extends State> {
       if (this.pendingActions.get(message.player.clientID).action !== action) {
         // Sanity check error...
         throw new Error(
-          "We just run collection action, but it wasn't the one pending o.O"
+          "We just run collection action, but it wasn't the one pending o.O",
         )
       }
 
       logs.debug(
         "HandlePending",
         `deleting "${action.name}" action from player:`,
-        message.player.clientID
+        message.player.clientID,
       )
       action.teardownContext(context)
       this.pendingActions.delete(message.player.clientID)
@@ -304,7 +305,7 @@ export class CommandsManager<S extends State> {
   private runFailed(
     message: ServerPlayerMessage,
     action: CollectionActionDefinition<S>,
-    context: CollectionContext
+    context: CollectionContext,
   ): void {
     if (message.player.dragStartEntity) {
       this.sendMessage(message.player.clientID, "dragStatus", {
@@ -320,7 +321,7 @@ export class CommandsManager<S extends State> {
       this.pendingActions.delete(message.player.clientID)
       logs.debug(
         "runFailed",
-        "Action marked `aborted` in its context. Removing from pending"
+        "Action marked `aborted` in its context. Removing from pending",
       )
     }
 
@@ -330,7 +331,7 @@ export class CommandsManager<S extends State> {
     throw new Error(
       `No more actions to evaluate for "${
         message.player ? message.player.clientID : message.interaction
-      }" event, ignoring...`
+      }" event, ignoring...`,
     )
   }
 
@@ -356,7 +357,7 @@ export class CommandsManager<S extends State> {
    */
   private reportFailedActionConditions(
     message: ServerPlayerMessage,
-    rejectedActions: CollectionConditionsResult<BaseActionDefinition<S>>
+    rejectedActions: CollectionConditionsResult<BaseActionDefinition<S>>,
   ): void {
     const { clientID } = message.player
     logs.error(`${rejectedActions.size} actions didn't pass. Reasons:`)
@@ -364,7 +365,7 @@ export class CommandsManager<S extends State> {
       logs.error(
         `- ${action.name}: ${error.message}${
           error.internal ? "(internal)" : ""
-        }`
+        }`,
       )
     })
 
@@ -381,7 +382,7 @@ export class CommandsManager<S extends State> {
 
   private sendMessage(clientID: string, type: string, message: any): void {
     const client = this.room.clients.find(
-      (client) => client.sessionId === clientID
+      (client) => client.sessionId === clientID,
     )
 
     logs.info("sendMessage", clientID, type, message)

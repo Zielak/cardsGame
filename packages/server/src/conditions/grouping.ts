@@ -1,4 +1,5 @@
-import { chalk, logs } from "@cardsgame/utils"
+import { logs } from "@cardsgame/utils"
+import chalk from "chalk"
 
 import type { State } from "../state/state.js"
 
@@ -13,7 +14,7 @@ type EitherTuple<C> = [string, EitherCallback<C>]
 class ConditionGrouping<
   Context extends ConditionsContextBase<S>,
   S extends State = Context["state"],
-  C = Conditions<Context, S>
+  C = Conditions<Context, S>,
 > {
   /**
    * Loops through every item in subject's collection, executing provided function.
@@ -38,8 +39,8 @@ class ConditionGrouping<
       con: C,
       item: any,
       index: number | string,
-      collection: any
-    ) => void
+      collection: any,
+    ) => void,
   ): this {
     const subject = getFlag(this, "subject")
 
@@ -92,8 +93,8 @@ class ConditionGrouping<
       con: C,
       item: any,
       index: number | string,
-      collection: any
-    ) => void
+      collection: any,
+    ) => void,
   ): this {
     const subject = getFlag(this, "subject")
 
@@ -199,7 +200,7 @@ class ConditionGrouping<
         test(this as unknown as C)
 
         logs.log(
-          `${prefix}[${idx}] ${testName}-> ${chalk.bgGreen.white(" ✔︎ ")}`
+          `${prefix}[${idx}] ${testName}-> ${chalk.bgGreen.white(" ✔︎ ")}`,
         )
       } catch (i) {
         logs.debug(`err:`, i.message)
@@ -229,7 +230,7 @@ class ConditionGrouping<
         [
           `either${quotedGroupName} | none of the tests passed:`,
           ...results.map(({ error }) => error),
-        ].join(`\n`)
+        ].join(`\n`),
       )
     }
 

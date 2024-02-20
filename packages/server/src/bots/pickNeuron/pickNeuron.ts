@@ -1,6 +1,7 @@
 import { performance } from "perf_hooks"
 
-import { chalk, decimal, Logs } from "@cardsgame/utils"
+import { decimal, ServerLogger } from "@cardsgame/utils"
+import chalk from "chalk"
 
 import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
 import { ENTITY_INTERACTION } from "../../interaction/constants.js"
@@ -12,9 +13,7 @@ import { markDebugTime } from "../utils.js"
 import { filterNeuronConditions } from "./filterConditions.js"
 import { getPossibleEvents } from "./getPossibleEvents.js"
 
-export const logs = new Logs("pickNeuron", true, {
-  serverStyle: chalk.bgGreen.white,
-})
+export const logs = new ServerLogger("pickNeuron", true, chalk.bgGreen.white)
 
 export type ChosenBotNeuronResult<S extends State> = {
   message: ClientPlayerMessage
@@ -28,7 +27,7 @@ export type ChosenBotNeuronResult<S extends State> = {
 export const pickNeuron = <S extends State>(
   rootNeuron: BotNeuron<S>,
   state: S,
-  bot: Bot
+  bot: Bot,
 ): ChosenBotNeuronResult<S> => {
   const _start = performance.now()
 
@@ -40,7 +39,7 @@ export const pickNeuron = <S extends State>(
   }
 
   logs.group(
-    chalk.white(`pickNeuron(${bot.clientID}/${bot.name}) | ${rootNeuron.name}`)
+    chalk.white(`pickNeuron(${bot.clientID}/${bot.name}) | ${rootNeuron.name}`),
   )
 
   // 1. Filter all current level neurons by their own conditions
@@ -56,7 +55,7 @@ export const pickNeuron = <S extends State>(
   }
   const _countByConditions = neurons.length
   logs.debug(
-    `${rootNeuron.children.length} neurons => ${_countByConditions} neurons`
+    `${rootNeuron.children.length} neurons => ${_countByConditions} neurons`,
   )
 
   // 2. Sort by their values
@@ -86,7 +85,9 @@ export const pickNeuron = <S extends State>(
 
   const _actionsCount = chalk.bold(`${results.length} actions`)
   logs.groupEnd(
-    `${_countByConditions} neurons => ${_actionsCount} ${markDebugTime(_start)}`
+    `${_countByConditions} neurons => ${_actionsCount} ${markDebugTime(
+      _start,
+    )}`,
   )
 
   return results[0]

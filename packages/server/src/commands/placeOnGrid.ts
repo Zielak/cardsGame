@@ -1,4 +1,5 @@
-import { chalk, def, logs } from "@cardsgame/utils"
+import { def, logs } from "@cardsgame/utils"
+import chalk from "chalk"
 
 import { Command, Target, TargetHolder } from "../command.js"
 import { isGrid } from "../entities/index.js"
@@ -20,7 +21,7 @@ export class PlaceOnGrid extends Command {
     entity: Target<ChildTrait>,
     target: Target<ParentTrait>,
     row: number,
-    column: number
+    column: number,
   ) {
     super()
 
@@ -51,7 +52,7 @@ export class PlaceOnGrid extends Command {
       "moving",
       hasLabel(entity) ? `${entity.type}:${entity.name}` : "",
       "to",
-      chalk.yellow(target["name"] || "ROOT")
+      chalk.yellow(target["name"] || "ROOT"),
     )
 
     this.lastIndex = entity.idx

@@ -78,7 +78,8 @@
   "dependencies": {
     "@cardsgame/entity-traits": "^1.7.2",
     "@cardsgame/types": "^1.7.1",
-    "@cardsgame/utils": "^1.7.2"
+    "@cardsgame/utils": "^1.7.2",
+    "chalk": "^4.1.2"
   },
   "peerDependencies": {
     "@colyseus/core": "^0.14.36",

@@ -1,4 +1,5 @@
-import { chalk, decimal } from "@cardsgame/utils"
+import { decimal } from "@cardsgame/utils"
+import chalk from "chalk"
 
 export const markDebugTime = (last: number): string => {
   const delta = decimal(performance.now() - last, 1)

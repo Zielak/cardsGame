@@ -1,18 +1,21 @@
-import { chalk, Logs } from "@cardsgame/utils"
+import { ServerLogger } from "@cardsgame/utils"
+import chalk from "chalk"
 
 import { State } from "../../state/state.js"
 
 import { DragActionDefinition, DragActionTemplate } from "./dragAction.js"
 
-export const tapFallbackLog = new Logs("tapFallback", true, {
-  serverStyle: chalk.yellowBright,
-})
+export const tapFallbackLog = new ServerLogger(
+  "tapFallback",
+  true,
+  chalk.yellowBright,
+)
 
 /**
  * @ignore
  */
 export function isDragActionTemplate<S extends State = State>(
-  o: unknown
+  o: unknown,
 ): o is DragActionTemplate<S> {
   if (typeof o !== "object") {
     return false
@@ -44,7 +47,7 @@ export function isDragActionTemplate<S extends State = State>(
  * @ignore
  */
 export function isDragActionDefinition<S extends State>(
-  o: unknown
+  o: unknown,
 ): o is DragActionDefinition<S> {
   if (typeof o !== "object" && !(o instanceof DragActionDefinition)) {
     return false
@@ -57,7 +60,7 @@ export function isDragActionDefinition<S extends State>(
 
 export function isStartEvent(
   interaction: InteractionType,
-  isTapDragging: boolean
+  isTapDragging: boolean,
 ): boolean {
   return (
     interaction === "dragstart" || (interaction === "tap" && !isTapDragging)
@@ -66,7 +69,7 @@ export function isStartEvent(
 
 export function isEndEvent(
   interaction: InteractionType,
-  isTapDragging: boolean
+  isTapDragging: boolean,
 ): boolean {
   return interaction === "dragend" || (interaction === "tap" && isTapDragging)
 }

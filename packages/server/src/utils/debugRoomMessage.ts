@@ -1,4 +1,5 @@
-import { chalk, logs } from "@cardsgame/utils"
+import { logs } from "@cardsgame/utils"
+import chalk from "chalk"
 
 import type { Player, ServerPlayerMessage } from "../player/index.js"
 import { hasLabel, LabelTrait } from "../traits/label.js"
@@ -37,6 +38,6 @@ export function debugRoomMessage(message: ServerPlayerMessage): void {
       entity ? `entity:"${entity}", ` : "",
       entities ? `entities: [${entities}], ` : "",
       data ? `\n\tdata: ${JSON.stringify(data)}` : "",
-    ].join("")
+    ].join(""),
   )
 }

@@ -1,4 +1,5 @@
-import { chalk, logs } from "@cardsgame/utils"
+import { logs } from "@cardsgame/utils"
+import chalk from "chalk"
 
 import type { BaseActionDefinition } from "../actions/base.js"
 import {
@@ -17,11 +18,11 @@ import type { ConditionErrorMessage } from "./types.js"
  */
 export function runConditionOnAction<
   A extends BaseActionDefinition<S>,
-  S extends State
+  S extends State,
 >(
   conditionsChecker: ClientMessageConditions<S>,
   messageContext: ClientMessageContext<S>,
-  action: A
+  action: A,
 ): ConditionErrorMessage {
   logs.group(`action: ${chalk.white(action.name)}`)
   let errorMessage: ConditionErrorMessage
@@ -38,7 +39,7 @@ export function runConditionOnAction<
     }
   }
   logs.groupEnd(
-    `result: ${errorMessage ? chalk.yellow("false") : chalk.green("true")}`
+    `result: ${errorMessage ? chalk.yellow("false") : chalk.green("true")}`,
   )
 
   return errorMessage

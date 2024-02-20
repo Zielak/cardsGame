@@ -27,6 +27,7 @@ module.exports = {
     "no-extra-semi": "off",
     "no-undef": "off",
     "no-unused-vars": "off",
+    "no-fallthrough": "off",
   },
   overrides: [
     {
