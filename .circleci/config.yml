@@ -132,12 +132,14 @@ jobs:
               npx release-please github-release \
                 --token=$GITHUB_TOKEN \
                 --repo-url=Zielak/cardsGame
+                --monorepo-tags=false
             else
               echo "is merged feature, update release PR"
               
               npx release-please release-pr \
                 --token=$GITHUB_TOKEN \
                 --repo-url=Zielak/cardsGame
+                --monorepo-tags=false
             fi
 
   documentation-install:
