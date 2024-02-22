@@ -1,5 +1,4 @@
-import { logs } from "@cardsgame/utils"
-
+import { logs } from "../logs.js"
 import type { Bot } from "../player/bot.js"
 import type { Player } from "../player/player.js"
 import type { Room } from "../room/base.js"
@@ -74,9 +73,12 @@ export class BotRunner<S extends State> {
             ? bot.actionDelay
             : bot.actionDelay()
         logs.debug("Bots", `setting up thought timer: ${delay} sec`)
-        bot.currentThoughtTimer = setTimeout(() => {
-          this.executeThough(bot)
-        }, delay * 1000 * (goal.neuron.thinkScale || 1))
+        bot.currentThoughtTimer = setTimeout(
+          () => {
+            this.executeThough(bot)
+          },
+          delay * 1000 * (goal.neuron.thinkScale || 1),
+        )
       }
     } else {
       logs.log("Bots", `no goals for ${bot.clientID}`)
@@ -89,7 +91,7 @@ export class BotRunner<S extends State> {
 
     if (!neuron.action) {
       throw new Error(
-        "executeThough | given neuron doesn't have ActionTemplate!"
+        "executeThough | given neuron doesn't have ActionTemplate!",
       )
     }
 
@@ -104,8 +106,8 @@ export class BotRunner<S extends State> {
       .catch((e) =>
         logs.error(
           "Bot.act",
-          `action() failed for client: "${bot.clientID}": ${e}`
-        )
+          `action() failed for client: "${bot.clientID}": ${e}`,
+        ),
       )
   }
 }

@@ -1,7 +1,7 @@
-import { logs } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
 import { type } from "../annotations/type.js"
+import { logs } from "../logs.js"
 import type { State } from "../state/state.js"
 
 import {
@@ -79,7 +79,7 @@ export class Entity<T> extends Schema {
   create(state: State, options: Partial<T> = {}): void {
     logs.log(
       `Entity`,
-      `"${this.constructor.name}" instance doesn't have its own 'create()' method`
+      `"${this.constructor.name}" instance doesn't have its own 'create()' method`,
     )
   }
 }
@@ -116,13 +116,13 @@ export const applyTraitsMixins =
     // For each Trait
     baseCtors.forEach((baseCtor) => {
       const traitPropertyNames = Object.getOwnPropertyNames(
-        baseCtor.prototype
+        baseCtor.prototype,
       ).filter((v) => v !== "constructor")
 
       traitPropertyNames.forEach((name) => {
         internal.localPropDescriptor[name] = Object.getOwnPropertyDescriptor(
           baseCtor.prototype,
-          name
+          name,
         )
       })
 

@@ -1,5 +1,4 @@
-import { logs } from "@cardsgame/utils"
-
+import { logs } from "../../logs.js"
 import type { ClassicCard } from "../classicCard.js"
 
 /**
@@ -31,7 +30,7 @@ export const ALL_CARD_SUITS: Suit[] = ["D", "S", "H", "C"]
 export const standardDeckFactory = (
   // prettier-ignore
   ranks: Rank[] = ALL_CARD_RANKS,
-  suits: Suit[] = ALL_CARD_SUITS
+  suits: Suit[] = ALL_CARD_SUITS,
 ): Pick<ClassicCard, "rank" | "suit">[] => {
   const cards: Pick<ClassicCard, "rank" | "suit">[] = []
 

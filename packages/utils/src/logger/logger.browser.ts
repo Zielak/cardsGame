@@ -1,35 +1,19 @@
-import { noop } from "../../functions.js"
-import { Logger } from "../baseLogger.js"
-import { levelAllowed } from "../logLevel.js"
-import { LogsExport } from "../types.js"
+import { noop } from "../functions.js"
+
+import { Logger } from "./baseLogger.js"
 
 const DEBUG_STYLE = "margin-left:2em;"
 
-export class BrowserLogger extends Logger implements LogsExport {
-  nameAndFirst(first: string): string {
-    return `${this.name} ${first}`
-  }
+export class BrowserLogger extends Logger {
+  constructor(name = "", enabled = true, style?: string) {
+    super(name, enabled)
 
-  error: (...args: any[]) => void
-  warn: (...args: any[]) => void
-  info: (...args: any[]) => void
-  notice: (...args: any[]) => void
-  log: (...args: any[]) => void
-  verbose: (...args: any[]) => void
-  debug: (...args: any[]) => void
-  group: (...args: any[]) => void
-  groupCollapsed: (...args: any[]) => void
-  groupEnd: (...args: any[]) => void
-
-  constructor(
-    private readonly name: string,
-    private readonly enabled = false,
-    style?: string,
-  ) {
-    super()
+    if (window.localStorage.getItem("cardsDebug")) {
+      this.logLevel = localStorage.getItem("cardsDebug")
+    }
 
     this["error"] =
-      this.enabled && levelAllowed("error")
+      this.enabled && this.levelAllowed("error")
         ? (function (): any {
             return Function.prototype.bind.call(
               console.error,
@@ -40,7 +24,7 @@ export class BrowserLogger extends Logger implements LogsExport {
           })()
         : noop
     this["warn"] =
-      this.enabled && levelAllowed("warn")
+      this.enabled && this.levelAllowed("warn")
         ? (function (): any {
             return Function.prototype.bind.call(
               console.warn,
@@ -51,7 +35,7 @@ export class BrowserLogger extends Logger implements LogsExport {
           })()
         : noop
     this["info"] =
-      this.enabled && levelAllowed("info")
+      this.enabled && this.levelAllowed("info")
         ? (function (): any {
             return Function.prototype.bind.call(
               console.info,
@@ -62,7 +46,7 @@ export class BrowserLogger extends Logger implements LogsExport {
           })()
         : noop
     this["log"] = this["notice"] =
-      this.enabled && levelAllowed("notice")
+      this.enabled && this.levelAllowed("notice")
         ? (function (): any {
             return Function.prototype.bind.call(
               console.log,
@@ -73,7 +57,7 @@ export class BrowserLogger extends Logger implements LogsExport {
           })()
         : noop
     this["debug"] = this["verbose"] =
-      this.enabled && levelAllowed("verbose")
+      this.enabled && this.levelAllowed("verbose")
         ? (function (): any {
             return Function.prototype.bind.call(
               console.debug,

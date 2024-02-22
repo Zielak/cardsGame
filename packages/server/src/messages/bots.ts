@@ -12,7 +12,7 @@ import type { State } from "../state/state.js"
 export function botAdd(
   this: Room<State>,
   client,
-  message: ClientMessageTypes["bot_add"]
+  message: ClientMessageTypes["bot_add"],
 ): void {
   const { state } = this
 
@@ -38,7 +38,7 @@ export function botAdd(
 export function botRemove(
   this: Room<State>,
   client,
-  message: ClientMessageTypes["bot_remove"]
+  message: ClientMessageTypes["bot_remove"],
 ): void {
   const bot = message.id
     ? this.botClients.find((entry) => entry.clientID === message.id)

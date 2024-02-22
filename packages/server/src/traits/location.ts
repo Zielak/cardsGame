@@ -30,7 +30,7 @@ export class LocationTrait {
 LocationTrait["typeDef"] = LocationTraitTypeDef
 LocationTrait["trait"] = function constructLocationTrait(
   state: State,
-  options: Partial<LocationTrait>
+  options: Partial<LocationTrait>,
 ): void {
   this.x = def(options.x, this.x, 0)
   this.y = def(options.y, this.y, 0)

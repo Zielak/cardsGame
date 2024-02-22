@@ -1,4 +1,3 @@
-import { logs } from "@cardsgame/utils"
 import { type Client, type ISendOptions, Room as colRoom } from "@colyseus/core"
 import type { IBroadcastOptions } from "@colyseus/core/build/Room.js"
 
@@ -13,6 +12,7 @@ import type {
   IntegrationHookCallbackContext,
   IntegrationHookData,
 } from "../integration.js"
+import { logs } from "../logs.js"
 import { fallback } from "../messages/fallback.js"
 import { messages } from "../messages/messageHandler.js"
 import type { Player, ServerPlayerMessage, Bot } from "../player/index.js"
@@ -33,7 +33,7 @@ type ClientSendOptions = ISendOptions & {
  */
 export abstract class Room<
     S extends State,
-    MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>
+    MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>,
   >
   extends colRoom<S>
   implements Required<RoomDefinition<S>>
@@ -46,7 +46,7 @@ export abstract class Room<
    * Reference to your game's `State` class.
    */
   stateConstructor: new (
-    options: StateConstructorOptions<S["variantData"]>
+    options: StateConstructorOptions<S["variantData"]>,
   ) => S
 
   variantDefaults: Required<S["variantData"]>
@@ -100,7 +100,7 @@ export abstract class Room<
     if (this.currentIntegration) {
       this.integrationHooks[this.currentIntegration.name]?.[hookName]?.(
         this.state,
-        this.integrationContext
+        this.integrationContext,
       )
     }
   }
@@ -130,7 +130,7 @@ export abstract class Room<
         new this.stateConstructor({
           variantData: options?.variantData,
           variantDefaults: this.variantDefaults,
-        })
+        }),
       )
     } else {
       this.setState(new State() as S)
@@ -142,7 +142,7 @@ export abstract class Room<
       logs.info(
         `Room:${this.name}`,
         "preparing for integration test:",
-        options.test
+        options.test,
       )
       this.currentIntegration = {
         name: options.test,
@@ -166,7 +166,7 @@ export abstract class Room<
     if (
       !state.isGameStarted &&
       Array.from(state.clients.values()).every(
-        (clientID) => sessionId !== clientID
+        (clientID) => sessionId !== clientID,
       )
     ) {
       state.clients.push(sessionId)
@@ -189,7 +189,7 @@ export abstract class Room<
 
     logs.log(
       "onJoin",
-      `client "${newClient.sessionId}" joined${statusString} added to state.clients`
+      `client "${newClient.sessionId}" joined${statusString} added to state.clients`,
     )
   }
 
@@ -200,7 +200,7 @@ export abstract class Room<
     } else {
       logs.log(
         "onLeave",
-        `client "${client.sessionId}" disconnected, might be back`
+        `client "${client.sessionId}" disconnected, might be back`,
       )
     }
   }
@@ -212,7 +212,7 @@ export abstract class Room<
     clientID: string,
     type: string | number,
     message?: any,
-    options?: ClientSendOptions
+    options?: ClientSendOptions,
   ): void {
     const wrappedMessage: ServerMessage = {
       data: message,
@@ -230,7 +230,7 @@ export abstract class Room<
     if (!client) {
       logs.warn(
         "clientSend",
-        'trying to send message to non-existing client "${clientID}"'
+        'trying to send message to non-existing client "${clientID}"',
       )
     }
 
@@ -239,7 +239,7 @@ export abstract class Room<
       .send(
         type,
         wrappedMessage,
-        Object.keys(cleanOptions).length > 0 ? cleanOptions : undefined
+        Object.keys(cleanOptions).length > 0 ? cleanOptions : undefined,
       )
   }
 
@@ -247,12 +247,12 @@ export abstract class Room<
    * For convenience. Wraps message with additional data (like undo)
    */
   broadcast<
-    T extends keyof AllServerMessageTypes<MoreMessageTypes>
+    T extends keyof AllServerMessageTypes<MoreMessageTypes>,
     // M extends MoreMessageTypes & ServerMessageTypes
   >(
     type: T,
     message?: AllServerMessageTypes<MoreMessageTypes>[T],
-    options?: BroadcastOptions
+    options?: BroadcastOptions,
   ): void {
     const wrappedMessage: ServerMessage = {
       data: message,
@@ -362,7 +362,7 @@ export abstract class Room<
   onRoundStart(): void | Command[] {
     logs.info(
       "Room",
-      `"nextRound" action was called, but "room.onRoundStart()" is not implemented!`
+      `"nextRound" action was called, but "room.onRoundStart()" is not implemented!`,
     )
   }
 
@@ -372,7 +372,7 @@ export abstract class Room<
   onRoundEnd(): void | Command[] {
     logs.info(
       "Room",
-      `"nextRound" action was called, but "room.onRoundEnd()" is not implemented!`
+      `"nextRound" action was called, but "room.onRoundEnd()" is not implemented!`,
     )
   }
 

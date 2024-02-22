@@ -43,7 +43,7 @@ beforeEach(() => {
       new LabeledEntity(state, {
         parent: backup,
         name: "backup" + idx,
-      })
+      }),
   )
 })
 
@@ -64,7 +64,7 @@ describe("dealing without emptying the source", () => {
 
       await new DealCards(source, [playerA, playerB], { count: 1 }).execute(
         state,
-        room
+        room,
       )
 
       expect(source.countChildren()).toBe(sourceCount - 2)
@@ -75,7 +75,7 @@ describe("dealing without emptying the source", () => {
     test("2 cards each", async () => {
       await new DealCards(source, [playerA, playerB], { count: 2 }).execute(
         state,
-        room
+        room,
       )
 
       expect(source.countChildren()).toBe(sourceCount - 4)

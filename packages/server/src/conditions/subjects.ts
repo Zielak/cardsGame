@@ -25,7 +25,7 @@ import {
  */
 class ConditionSubjects<
   Context extends ConditionsContextBase<S>,
-  S extends State = Context["state"]
+  S extends State = Context["state"],
 > {
   /**
    * Sets new subject. This can be anything.
@@ -60,7 +60,7 @@ class ConditionSubjects<
     if (!isParent(parent)) {
       throwError(
         this,
-        `query(props) | current subject is not a parent: "${typeof parent}" = ${parent}`
+        `query(props) | current subject is not a parent: "${typeof parent}" = ${parent}`,
       )
     }
 
@@ -97,7 +97,7 @@ class ConditionSubjects<
 
     return Object.defineProperties(
       {} as Record<keyof Context, this>,
-      properties
+      properties,
     )
   }
 
@@ -201,7 +201,7 @@ class ConditionSubjects<
     if (typeof subject !== "object") {
       throwError(
         this,
-        `bottom | Can't get the "bottom" of something other than an object`
+        `bottom | Can't get the "bottom" of something other than an object`,
       )
     }
 
@@ -225,7 +225,7 @@ class ConditionSubjects<
     if (typeof subject !== "object") {
       throwError(
         this,
-        `top | Can't get the "top" of something other than an object`
+        `top | Can't get the "top" of something other than an object`,
       )
     }
 
@@ -266,7 +266,7 @@ class ConditionSubjects<
     if (!hasSelectableChildren(subject)) {
       throwError(
         this,
-        `selectedChildren | Subjects children are not selectable`
+        `selectedChildren | Subjects children are not selectable`,
       )
     }
 
@@ -287,7 +287,7 @@ class ConditionSubjects<
     if (!hasSelectableChildren(subject)) {
       throwError(
         this,
-        `unselectedChildren | Subjects children are not selectable`
+        `unselectedChildren | Subjects children are not selectable`,
       )
     }
 
@@ -340,13 +340,13 @@ class ConditionSubjects<
     if (!isParent(subject)) {
       throwError(
         this,
-        `unselectedChildrenCount | Expected subject to be parent`
+        `unselectedChildrenCount | Expected subject to be parent`,
       )
     }
     if (!hasSelectableChildren(subject)) {
       throwError(
         this,
-        `unselectedChildrenCount | Subjects children are not selectable`
+        `unselectedChildrenCount | Subjects children are not selectable`,
       )
     }
 
@@ -382,7 +382,7 @@ class ConditionSubjects<
     } else if (!hasSelectableChildren(subject.parent)) {
       throwError(
         this,
-        `selectionIndex | Parent without ability to select children`
+        `selectionIndex | Parent without ability to select children`,
       )
     } else {
       setFlag(this, "subject", subject.parent.getSelectionIndex(subject.idx))
@@ -424,7 +424,7 @@ class ConditionSubjects<
       setFlag(
         this,
         "subject",
-        getInitialSubject<Player>(this, "player").dragStartEntity
+        getInitialSubject<Player>(this, "player").dragStartEntity,
       )
     }
 

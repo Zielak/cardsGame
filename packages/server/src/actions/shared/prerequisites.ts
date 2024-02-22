@@ -1,7 +1,6 @@
-import { logs } from "@cardsgame/utils"
-
 import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
 import { ENTITY_INTERACTION } from "../../interaction/constants.js"
+import { logs } from "../../logs.js"
 import { queryRunner } from "../../queries/runner.js"
 import { State } from "../../state/state.js"
 import { isChild } from "../../traits/child.js"
@@ -10,7 +9,7 @@ import type { InteractionQueries } from "./types.js"
 
 export function checkInteractionQueries<S extends State>(
   messageContext: ClientMessageContext<S>,
-  interactionQueries: InteractionQueries<S>
+  interactionQueries: InteractionQueries<S>,
 ): boolean {
   const interactions = interactionQueries(messageContext)
 
@@ -23,7 +22,7 @@ export function checkInteractionQueries<S extends State>(
 
   if (typeof interactions === "string") {
     throw new Error(
-      `Invalid use of interactions, got "${interactions}" where only "*" is accepted as a string.`
+      `Invalid use of interactions, got "${interactions}" where only "*" is accepted as a string.`,
     )
   }
 
@@ -31,7 +30,7 @@ export function checkInteractionQueries<S extends State>(
     `got`,
     interactions.length,
     `interaction definition${interactions.length > 1 ? "s" : ""}`,
-    interactions.map((def) => JSON.stringify(def))
+    interactions.map((def) => JSON.stringify(def)),
   )
 
   // Expecting interaction but without entity reference?
@@ -47,7 +46,7 @@ export function checkInteractionQueries<S extends State>(
     // Check props for every interactive entity in `targets` array
     return messageContext.entities
       ?.filter((currentTarget) =>
-        isChild(currentTarget) ? currentTarget.isInteractive() : false
+        isChild(currentTarget) ? currentTarget.isInteractive() : false,
       )
       .some((entity) => {
         const result = queryRunner(definition)(entity)

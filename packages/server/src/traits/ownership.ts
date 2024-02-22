@@ -93,7 +93,7 @@ OwnershipTrait["typeDef"] = OwnershipTraitTypeDef
 OwnershipTrait["trait"] = function constructOwnershipTrait(
   this: OwnershipTrait,
   state: State,
-  options: Partial<OwnershipTrait> = {}
+  options: Partial<OwnershipTrait> = {},
 ): void {
   this.owner = def(options.owner, undefined)
   this.ownersMainFocus = def(options.ownersMainFocus, false)

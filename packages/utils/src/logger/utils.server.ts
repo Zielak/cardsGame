@@ -1,6 +1,6 @@
 import Chalk from "chalk"
 
-import { minifyEntity } from "../utils.js"
+import { minifyEntity } from "./utils.js"
 
 export const chalk = new Chalk.Instance({
   level: 1,

@@ -1,5 +1,6 @@
-import { logs } from "@cardsgame/utils"
 import type { Room as colyseusRoom } from "colyseus.js"
+
+import { logs } from "./logs.js"
 
 import type { RoomAvailable } from "./index.js"
 

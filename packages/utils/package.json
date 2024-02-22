@@ -20,9 +20,10 @@
     "readme.md"
   ],
   "scripts": {
-    "build": "concurrently npm:build:esm npm:build:cjs",
-    "build:esm": "tsc -p tsconfig.build.json",
-    "build:cjs": "tsc -p tsconfig.build.cjs.json &&  ../../scripts/mapToCjs.sh ./lib/cjs",
+    "build": "concurrently npm:build:esm npm:build:cjs npm:build:types",
+    "build:esm": "esbuild ./src/index.ts --bundle --tsconfig=tsconfig.build.json --format=esm --outdir=lib/esm",
+    "build:cjs": "esbuild ./src/index.ts --bundle --tsconfig=tsconfig.build.json --format=cjs --outdir=lib/cjs --out-extension:.js=.cjs",
+    "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
     "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -41,51 +42,6 @@
       "import": "./lib/esm/index.js",
       "require": "./lib/cjs/index.cjs",
       "types": "./lib/types/index.d.ts"
-    },
-    "./array": {
-      "import": "./lib/esm/array.js",
-      "require": "./lib/cjs/array.cjs",
-      "types": "./lib/types/array.d.ts"
-    },
-    "./entities": {
-      "import": "./lib/esm/entities.js",
-      "require": "./lib/cjs/entities.cjs",
-      "types": "./lib/types/entities.d.ts"
-    },
-    "./functions": {
-      "import": "./lib/esm/functions.js",
-      "require": "./lib/cjs/functions.cjs",
-      "types": "./lib/types/functions.d.ts"
-    },
-    "./logs": {
-      "import": "./lib/esm/logs.js",
-      "require": "./lib/cjs/logs.cjs",
-      "types": "./lib/types/logs.d.ts"
-    },
-    "./numbers": {
-      "import": "./lib/esm/numbers.js",
-      "require": "./lib/cjs/numbers.cjs",
-      "types": "./lib/types/numbers.d.ts"
-    },
-    "./objects": {
-      "import": "./lib/esm/objects.js",
-      "require": "./lib/cjs/objects.cjs",
-      "types": "./lib/types/objects.d.ts"
-    },
-    "./random": {
-      "import": "./lib/esm/random.js",
-      "require": "./lib/cjs/random.cjs",
-      "types": "./lib/types/random.d.ts"
-    },
-    "./strings": {
-      "import": "./lib/esm/strings.js",
-      "require": "./lib/cjs/strings.cjs",
-      "types": "./lib/types/strings.d.ts"
-    },
-    "./utils": {
-      "import": "./lib/esm/utils.js",
-      "require": "./lib/cjs/utils.cjs",
-      "types": "./lib/types/utils.d.ts"
     }
   }
 }

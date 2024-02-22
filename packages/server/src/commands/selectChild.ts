@@ -1,6 +1,5 @@
-import { logs } from "@cardsgame/utils"
-
 import { Command, Target, TargetHolder } from "../command.js"
+import { logs } from "../logs.js"
 import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 import type { ParentTrait } from "../traits/parent.js"
@@ -12,14 +11,14 @@ const logSelectedChildren = (parent: ParentSelecta): void => {
   logs.debug(
     "selected.$items:",
     Array.from(parent.selectedChildren["$items"].entries()).map(
-      ([key, value]) => `[${key}]=${value}`
-    )
+      ([key, value]) => `[${key}]=${value}`,
+    ),
   )
   logs.debug(
     "selected.$indexes:",
     Array.from(parent.selectedChildren["$indexes"].entries()).map(
-      ([key, value]) => `[${key}]=${value}`
-    )
+      ([key, value]) => `[${key}]=${value}`,
+    ),
   )
 }
 
@@ -56,7 +55,7 @@ export class Select extends Command {
     }
 
     logs.debug(
-      `Parent currently has ${parent.countSelectedChildren()} selected children`
+      `Parent currently has ${parent.countSelectedChildren()} selected children`,
     )
     logSelectedChildren(parent)
   }
@@ -100,7 +99,7 @@ export class Deselect extends Command {
     }
 
     logs.debug(
-      `Parent currently has ${parent.countSelectedChildren()} selected children`
+      `Parent currently has ${parent.countSelectedChildren()} selected children`,
     )
     logSelectedChildren(parent)
   }

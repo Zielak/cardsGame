@@ -1,6 +1,5 @@
-import { logs } from "@cardsgame/utils"
-
 import { Command } from "../command.js"
+import { logs } from "../logs.js"
 import type { Room } from "../room/base.js"
 import { getNextPlayerIdx, getPreviousPlayerIdx } from "../state/helpers.js"
 import type { State } from "../state/state.js"
@@ -37,7 +36,7 @@ export class NextPlayer extends Command {
       this.subExecute(
         state,
         room,
-        new Sequence("onPlayerTurnStarted", cmdsPost)
+        new Sequence("onPlayerTurnStarted", cmdsPost),
       )
     }
 
@@ -77,7 +76,7 @@ export class PreviousPlayer extends Command {
       this.subExecute(
         state,
         room,
-        new Sequence("onPlayerTurnStarted", cmdsPost)
+        new Sequence("onPlayerTurnStarted", cmdsPost),
       )
     }
 

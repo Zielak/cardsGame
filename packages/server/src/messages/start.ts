@@ -1,7 +1,8 @@
-import { logs, shuffle } from "@cardsgame/utils"
+import { shuffle } from "@cardsgame/utils"
 import type { Client } from "@colyseus/core"
 
 import { Sequence } from "../commands/index.js"
+import { logs } from "../logs.js"
 import { Player } from "../player/player.js"
 import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
@@ -16,7 +17,7 @@ import type { State } from "../state/state.js"
 export function start(
   this: Room<State>,
   client?: Client,
-  message?: ClientMessageTypes["start"]
+  message?: ClientMessageTypes["start"],
 ): void {
   const { state } = this
 
@@ -28,7 +29,7 @@ export function start(
     if (this.canGameStart && !this.canGameStart()) {
       logs.log(
         "handleGameStart",
-        `Someone requested game start, but we can't go yet...`
+        `Someone requested game start, but we can't go yet...`,
       )
       return
     }
@@ -37,7 +38,7 @@ export function start(
     shuffle(
       this.clients
         .map((entry) => new Player({ clientID: entry.sessionId }))
-        .concat(this.botClients)
+        .concat(this.botClients),
     ).forEach((player) => {
       state.players.push(player)
     })

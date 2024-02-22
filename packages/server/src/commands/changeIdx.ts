@@ -1,6 +1,5 @@
-import { logs } from "@cardsgame/utils"
-
 import { Command, Targets, TargetsHolder } from "../command.js"
+import { logs } from "../logs.js"
 import type { State } from "../state/state.js"
 import type { ChildTrait } from "../traits/child.js"
 import { hasLabel } from "../traits/label.js"
@@ -15,7 +14,10 @@ export class ChangeIdx extends Command {
    */
   private sources: number[][]
 
-  constructor(entities: Targets<ChildTrait>, private index: number) {
+  constructor(
+    entities: Targets<ChildTrait>,
+    private index: number,
+  ) {
     super()
 
     this.entities = new TargetsHolder<ChildTrait>(entities)
@@ -37,7 +39,7 @@ export class ChangeIdx extends Command {
       "moving",
       entities.map((e) => (hasLabel(e) ? e.name : "")),
       `entities to index:`,
-      this.index
+      this.index,
     )
 
     const parent = entities[0].parent

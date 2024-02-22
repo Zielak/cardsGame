@@ -1,7 +1,8 @@
-import { arrayWith, def, limit, logs, sortByIdx } from "@cardsgame/utils"
+import { arrayWith, def, limit, sortByIdx } from "@cardsgame/utils"
 import { ArraySchema } from "@colyseus/schema"
 
 import { globalEntitiesContext } from "../annotations/entitiesContext.js"
+import { logs } from "../logs.js"
 import { queryRunner } from "../queries/runner.js"
 import type { QuerableProps } from "../queries/types.js"
 import type { State } from "../state/state.js"
@@ -104,7 +105,7 @@ export class ParentTrait {
     // ------ remove
 
     const targetInternalArrayName = `children${this.childrenPointers.get(
-      child
+      child,
     )}`
     const targetInternalArray: ArraySchema = this[targetInternalArrayName]
     const childIdx = targetInternalArray.findIndex((el) => el.idx === idx)
@@ -112,7 +113,7 @@ export class ParentTrait {
 
     const removedChild = this[targetInternalArrayName].splice(
       childIdx,
-      1
+      1,
     )[0] as ChildTrait
 
     if (removedChild !== child) {
@@ -228,7 +229,7 @@ export class ParentTrait {
     this.childrenPointers.set(entity, con.name)
 
     updatesLog.forEach(({ from, to }) =>
-      executeHook.call(this, "childIndexUpdated", from, to)
+      executeHook.call(this, "childIndexUpdated", from, to),
     )
     executeHook.call(this, "childAdded", entity)
   }
@@ -297,7 +298,7 @@ export class ParentTrait {
     }
 
     updatesLog.forEach(({ from, to }) =>
-      executeHook.call(this, "childIndexUpdated", from, to)
+      executeHook.call(this, "childIndexUpdated", from, to),
     )
   }
 
@@ -407,7 +408,7 @@ export class ParentTrait {
 
     const childrenCount = this.countChildren()
     const allSpots = arrayWith(
-      this.maxChildren !== Infinity ? this.maxChildren : childrenCount
+      this.maxChildren !== Infinity ? this.maxChildren : childrenCount,
     ).map((idx) => this.getChild(idx))
 
     for (let i = 1; i < childrenCount / 2; i++) {
@@ -537,7 +538,7 @@ export class ParentTrait {
       // Check if target spot is available
       if (childrenUpdated[newIdx]) {
         throw new Error(
-          `${_log}occupied, can't move child ${oldIdx} in place of ${newIdx}`
+          `${_log}occupied, can't move child ${oldIdx} in place of ${newIdx}`,
         )
       }
     })
@@ -564,24 +565,24 @@ export class ParentTrait {
  */
 ParentTrait["trait"] = function constructParentTrait(
   state: State,
-  options: Partial<ParentTrait> = {}
+  options: Partial<ParentTrait> = {},
 ): void {
   this.childrenPointers = new Map()
 
   this.collectionBehaviour = def(
     options.collectionBehaviour,
     this.collectionBehaviour,
-    "array"
+    "array",
   )
   this.hijacksInteractionTarget = def(
     options.hijacksInteractionTarget,
     this.hijacksInteractionTarget,
-    false
+    false,
   )
   this.maxChildren = def(
     limit(options.maxChildren, 0, Infinity),
     this.maxChildren,
-    Infinity
+    Infinity,
   )
 
   globalEntitiesContext.registeredChildren.forEach((con) => {

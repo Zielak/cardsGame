@@ -1,8 +1,9 @@
-import { def, logs } from "@cardsgame/utils"
+import { def } from "@cardsgame/utils"
 import { Client } from "colyseus.js"
 import type { RoomAvailable } from "colyseus.js"
 
 import { LobbyRoom } from "./lobbyRoom.js"
+import { logs } from "./logs.js"
 import { Room } from "./room.js"
 
 interface IGameOptions {
@@ -31,7 +32,7 @@ export class Game {
     this.wss = {
       host: def(
         options.wss && options.wss.host,
-        window.document.location.hostname
+        window.document.location.hostname,
       ),
       port: def(options.wss && options.wss.port, 2657),
     }

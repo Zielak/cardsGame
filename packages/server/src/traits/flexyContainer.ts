@@ -37,7 +37,7 @@ export class FlexyTrait {
 
 FlexyTrait["trait"] = function constructFlexyTrait(
   state: State,
-  options: Partial<FlexyTrait> = {}
+  options: Partial<FlexyTrait> = {},
 ): void {
   this.alignItems = def(options.alignItems, "center")
   this.directionReverse = def(options.directionReverse, false)

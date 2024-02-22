@@ -76,7 +76,7 @@ ChildTrait["typeDef"] = ChildTraitTypeDef
 ChildTrait["hooks"] = {
   postConstructor: function addMyselfToParent(
     state: State,
-    options: ChildTrait
+    options: ChildTrait,
   ): void {
     const targetParent = def(options.parent, state)
 

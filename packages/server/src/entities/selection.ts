@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-import { def, logs } from "@cardsgame/utils"
+import { def } from "@cardsgame/utils"
 
 import { canBeChild } from "../annotations/canBeChild.js"
 import { containsChildren } from "../annotations/containsChildren.js"
+import { logs } from "../logs.js"
 import type { State } from "../state/state.js"
 import { ChildTrait } from "../traits/child.js"
 import { applyTraitsMixins, Entity } from "../traits/entity.js"

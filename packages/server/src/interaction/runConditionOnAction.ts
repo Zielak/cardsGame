@@ -1,4 +1,3 @@
-import { logs } from "@cardsgame/utils"
 import chalk from "chalk"
 
 import type { BaseActionDefinition } from "../actions/base.js"
@@ -7,6 +6,7 @@ import {
   ClientMessageContext,
 } from "../conditions/context/clientMessage.js"
 import { getCustomError } from "../conditions/errors.js"
+import { logs } from "../logs.js"
 import type { State } from "../state/state.js"
 
 import type { ConditionErrorMessage } from "./types.js"

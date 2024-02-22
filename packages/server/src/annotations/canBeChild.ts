@@ -1,4 +1,4 @@
-import { logs } from "@cardsgame/utils"
+import { logs } from "../logs.js"
 
 import { synchChildrenArray } from "./annotations.js"
 import { globalEntitiesContext } from "./entitiesContext.js"
@@ -28,7 +28,7 @@ export function canBeChild(childConstructor: AnyClass): void {
   // Add this child type to ALL other parents,
   // which wish their children to be synced to client
   context.registeredParents.forEach((parentConstructor) =>
-    synchChildrenArray(parentConstructor, childConstructor)
+    synchChildrenArray(parentConstructor, childConstructor),
   )
 
   // Throw all prop types of this child to types registry
@@ -43,7 +43,7 @@ export function canBeChild(childConstructor: AnyClass): void {
         logs.warn(
           "canBeChild",
           `prop type "${key}" is already in, but contains different value`,
-          val
+          val,
         )
       }
       if (!context.allChildrensTypes.has(key)) {

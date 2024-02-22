@@ -1,6 +1,6 @@
-import { logs } from "@cardsgame/utils"
 import chalk from "chalk"
 
+import { logs } from "../logs.js"
 import type { Player, ServerPlayerMessage } from "../player/index.js"
 import { hasLabel, LabelTrait } from "../traits/label.js"
 

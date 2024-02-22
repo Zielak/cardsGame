@@ -1,6 +1,5 @@
-import { logs } from "@cardsgame/utils"
-
 import { Command } from "../command.js"
+import { logs } from "../logs.js"
 import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 

@@ -1,11 +1,11 @@
-import { logs } from "@cardsgame/utils"
 import type { Room as colyseusRoom } from "colyseus.js"
 
+import { logs } from "./logs.js"
 import type { ClientGameState } from "./schema/types.js"
 
 export class Room<
   StateProps = Record<string, any>,
-  MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>
+  MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>,
 > {
   constructor(public room: colyseusRoom) {
     room.onMessage<ServerMessageTypes["gameInfo"]>("gameInfo", (message) => {
@@ -49,7 +49,7 @@ export class Room<
   onMessage<
     M extends RecordOfServerMessages<MoreMessageTypes & { "*": unknown }> &
       ServerMessageTypes,
-    T extends keyof M
+    T extends keyof M,
   >(type: T, callback: (message: M[T]) => void): () => void {
     return this.room.onMessage<M[T]>(type as string, callback)
   }
@@ -88,13 +88,13 @@ export class Room<
   sendInteraction(
     interaction: InteractionType,
     entityIdxPath: number[],
-    data = undefined
+    data = undefined,
   ): void {
     logs.debug(
       "Sending Interaction:",
       interaction,
       "entityIdxPath:",
-      entityIdxPath
+      entityIdxPath,
     )
     const playerEvent: RawInteractionClientPlayerMessage = {
       interaction,

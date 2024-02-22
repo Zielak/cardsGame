@@ -1,5 +1,3 @@
-import { logs } from "@cardsgame/utils"
-
 import type { Entity } from "../traits/entity.js"
 
 import { synchChildrenArray } from "./annotations.js"

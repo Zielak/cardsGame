@@ -21,7 +21,7 @@ export class BoxModelTrait {
 BoxModelTrait["typeDef"] = BoxModelTypeDef
 BoxModelTrait["trait"] = function constructBoxModelTrait(
   state: State,
-  options: Partial<BoxModelTrait>
+  options: Partial<BoxModelTrait>,
 ): void {
   this.width = def(options.width, this.width, 0)
   this.height = def(options.height, this.height, 0)

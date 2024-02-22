@@ -1,5 +1,6 @@
-import { limit, logs } from "@cardsgame/utils"
+import { limit } from "@cardsgame/utils"
 
+import { logs } from "../logs.js"
 import { Bot, isBot, type Player } from "../player/index.js"
 import type { IdentityTrait } from "../traits/identity.js"
 import { hasChildren, isParent, ParentTrait } from "../traits/parent.js"
@@ -68,19 +69,19 @@ export function getAllBots(state: State): Bot[] {
  */
 export function getEntitiesAlongPath(
   state: State,
-  path: number[]
+  path: number[],
 ): IdentityTrait[] {
   const travel = (
     parent: ParentTrait,
     remainingPath: number[],
-    result: any[] = []
+    result: any[] = [],
   ): any[] => {
     const idx = remainingPath.shift()
     const newChild = parent.getChild(idx)
     if (!newChild) {
       logs.error(
         "getEntitiesAlongPath",
-        `This entity doesn't have [${idx}] child.`
+        `This entity doesn't have [${idx}] child.`,
       )
       return result
     }
@@ -88,7 +89,7 @@ export function getEntitiesAlongPath(
     if (remainingPath.length > 0 && !hasChildren(newChild)) {
       logs.error(
         "getEntitiesAlongPath",
-        `Path inaccessible, entity doesn't have any children. Stopped at [${path}]. Remaining path: [${remainingPath}]`
+        `Path inaccessible, entity doesn't have any children. Stopped at [${path}]. Remaining path: [${remainingPath}]`,
       )
       return result
     }

@@ -14,6 +14,6 @@ export const botsValueError = (bot: Bot): number => {
 
   return decimal(
     (Math.random() * STUPIDITY_RANGE - STUPIDITY_RANGE / 2) *
-      (1 - bot.intelligence)
+      (1 - bot.intelligence),
   )
 }

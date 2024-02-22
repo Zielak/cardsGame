@@ -1,6 +1,6 @@
-import { logs } from "@cardsgame/utils"
 import chalk from "chalk"
 
+import { logs } from "../logs.js"
 import type { State } from "../state/state.js"
 
 import type { Conditions } from "./conditions.js"

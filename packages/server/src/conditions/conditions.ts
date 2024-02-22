@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-import { applyMixins, logs } from "@cardsgame/utils"
+import { applyMixins } from "@cardsgame/utils"
 
+import { logs } from "../logs.js"
 import type { State } from "../state/state.js"
 
 import { ConditionsMethods } from "./allMethods.js"

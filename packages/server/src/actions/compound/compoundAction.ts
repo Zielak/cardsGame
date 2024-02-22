@@ -1,11 +1,10 @@
-import { logs } from "@cardsgame/utils"
-
 import type { Command } from "../../command.js"
 import type {
   ClientMessageConditions,
   ClientMessageContext,
 } from "../../conditions/context/clientMessage.js"
 import { runConditionOnAction } from "../../interaction/runConditionOnAction.js"
+import { logs } from "../../logs.js"
 import type { State } from "../../state/state.js"
 import type { BaseActionDefinition } from "../base.js"
 import type {
@@ -84,7 +83,7 @@ function optionalAbortIsValid(o: object): boolean {
  * @ignore
  */
 export function isCompoundActionTemplate<S extends State = State>(
-  o: unknown
+  o: unknown,
 ): o is CompoundActionTemplate<S> {
   if (typeof o !== "object") {
     return false
@@ -123,7 +122,7 @@ export class CompoundActionDefinition<S extends State = State>
   constructor(private template: CompoundActionTemplate<S>) {
     if (!template || template.finishActions.length === 0) {
       throw new Error(
-        `CompoundAction "${template.name}" requires at least one entry in "finishActions" array`
+        `CompoundAction "${template.name}" requires at least one entry in "finishActions" array`,
       )
     }
 
@@ -157,7 +156,7 @@ export class CompoundActionDefinition<S extends State = State>
 
   checkPrerequisites(
     messageContext: ClientMessageContext<S>,
-    context: CollectionContext<CompoundContext<S>>
+    context: CollectionContext<CompoundContext<S>>,
   ): boolean {
     logs.group(this.template.name)
 
@@ -175,8 +174,8 @@ export class CompoundActionDefinition<S extends State = State>
 
     logs.groupEnd(
       `sub-actions count: ${this._allActionsCount()} => ${this._successfulActionsCount(
-        context
-      )}`
+        context,
+      )}`,
     )
 
     return this.hasSuccessfulSubActions(context)
@@ -185,7 +184,7 @@ export class CompoundActionDefinition<S extends State = State>
   checkConditions(
     con: ClientMessageConditions<S>,
     messageContext: ClientMessageContext<S>,
-    context: CollectionContext<CompoundContext<S>>
+    context: CollectionContext<CompoundContext<S>>,
   ): CollectionConditionsResult<BaseActionDefinition<S>> {
     const rejectedActions: CollectionConditionsResult<BaseActionDefinition<S>> =
       new Map()
@@ -201,7 +200,7 @@ export class CompoundActionDefinition<S extends State = State>
         context.successfulAbort.delete(action)
       } else {
         logs.debug(
-          "Abort is first to succeed, aborting action, ignoring the rest"
+          "Abort is first to succeed, aborting action, ignoring the rest",
         )
         context.aborted = true
         context.successfulActions.clear()
@@ -226,7 +225,7 @@ export class CompoundActionDefinition<S extends State = State>
         context.successfulFinish.delete(action)
       } else {
         logs.debug(
-          "Finish is first to succeed, finishing action, ignoring the rest"
+          "Finish is first to succeed, finishing action, ignoring the rest",
         )
         context.finished = true
         context.successfulActions.clear()
@@ -256,7 +255,7 @@ export class CompoundActionDefinition<S extends State = State>
 
   getCommand(
     messageContext: ClientMessageContext<S>,
-    context: CollectionContext<CompoundContext<S>>
+    context: CollectionContext<CompoundContext<S>>,
   ): Command<S> {
     const first = this.getSuccessfulAction(context)
 
@@ -272,7 +271,7 @@ export class CompoundActionDefinition<S extends State = State>
   }
 
   hasSuccessfulSubActions(
-    context: CollectionContext<CompoundContext<S>>
+    context: CollectionContext<CompoundContext<S>>,
   ): boolean {
     return (
       context.successfulAbort.size +
@@ -282,7 +281,7 @@ export class CompoundActionDefinition<S extends State = State>
     )
   }
   getSuccessfulAction(
-    context: CollectionContext<CompoundContext<S>>
+    context: CollectionContext<CompoundContext<S>>,
   ): CompoundActionChild<S> {
     return [
       ...context.successfulActions,
@@ -291,7 +290,7 @@ export class CompoundActionDefinition<S extends State = State>
     ][0]
   }
   _successfulActionsCount(
-    context: CollectionContext<CompoundContext<S>>
+    context: CollectionContext<CompoundContext<S>>,
   ): number {
     return (
       context.successfulAbort.size +
@@ -311,7 +310,7 @@ export class CompoundActionDefinition<S extends State = State>
  * game-moving-cards-test-server might be enough of use case
  */
 export function isCompoundActionDefinition<S extends State>(
-  o: unknown
+  o: unknown,
 ): o is CompoundActionDefinition<S> {
   if (typeof o !== "object" && !(o instanceof CompoundActionDefinition)) {
     return false
@@ -334,7 +333,7 @@ export function isCompoundActionDefinition<S extends State>(
  * game-moving-cards-test-server might be enough of use case
  */
 export function isCompoundActionDefinition_quick<S extends State>(
-  o: unknown
+  o: unknown,
 ): o is CompoundActionDefinition<S> {
   if (typeof o !== "object" && !(o instanceof CompoundActionDefinition)) {
     return false
@@ -350,7 +349,7 @@ export function isCompoundActionDefinition_quick<S extends State>(
  * @category Action definitions
  */
 export function defineCompoundAction<S extends State = State>(
-  template: CompoundActionTemplate<S>
+  template: CompoundActionTemplate<S>,
 ): CompoundActionDefinition<S> {
   // TODO: validate, no nesting of compound actions!
 

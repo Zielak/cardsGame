@@ -42,7 +42,7 @@ export class TwoSidedTrait {
 TwoSidedTrait["typeDef"] = TwoSidedTraitTypeDef
 TwoSidedTrait["trait"] = function constructTwoSidedTrait(
   state: State,
-  options: Partial<TwoSidedTrait>
+  options: Partial<TwoSidedTrait>,
 ): void {
   this.faceUp = def(options.faceUp, false)
 }

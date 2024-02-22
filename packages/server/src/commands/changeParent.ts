@@ -1,4 +1,4 @@
-import { def, logs } from "@cardsgame/utils"
+import { def } from "@cardsgame/utils"
 import chalk from "chalk"
 
 import {
@@ -8,6 +8,7 @@ import {
   Targets,
   TargetsHolder,
 } from "../command.js"
+import { logs } from "../logs.js"
 import type { State } from "../state/state.js"
 import type { ChildTrait } from "../traits/child.js"
 import { hasLabel } from "../traits/label.js"

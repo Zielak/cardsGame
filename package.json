@@ -1,5 +1,6 @@
 {
   "name": "cardsgame",
+  "version": "1.7.5",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -46,6 +47,7 @@
     "@typescript-eslint/parser": "^6.9.1",
     "concurrently": "^8.2.2",
     "coveralls": "^3.1.1",
+    "esbuild": "^0.20.1",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.26.0",
@@ -62,6 +64,5 @@
     "tslib": "^2.4.0",
     "turbo": "^1.10.16",
     "typescript": "^5.0.4"
-  },
-  "version": "1.7.5"
+  }
 }

@@ -1,4 +1,3 @@
-import { logs } from "@cardsgame/utils"
 import chalk from "chalk"
 
 import type { BaseActionDefinition } from "./actions/base.js"
@@ -19,6 +18,7 @@ import {
   playerMessageToInitialSubjects,
 } from "./conditions/context/clientMessage.js"
 import { prepareConditionsContext } from "./conditions/context/utils.js"
+import { logs } from "./logs.js"
 import type { Player, ServerPlayerMessage } from "./player/index.js"
 import type { Room } from "./room/base.js"
 import type { State } from "./state/state.js"

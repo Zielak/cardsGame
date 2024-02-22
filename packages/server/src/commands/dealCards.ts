@@ -1,4 +1,4 @@
-import { def, logs } from "@cardsgame/utils"
+import { def } from "@cardsgame/utils"
 
 import {
   Command,
@@ -7,6 +7,7 @@ import {
   Targets,
   TargetsHolder,
 } from "../command.js"
+import { logs } from "../logs.js"
 import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 import type { ParentTrait } from "../traits/parent.js"
@@ -35,7 +36,7 @@ export class DealCards extends Command {
   constructor(
     source: Target<ParentTrait>,
     targets: Targets<ParentTrait>,
-    options: DealCardsOptions = {}
+    options: DealCardsOptions = {},
   ) {
     super()
     this.source = new TargetHolder<ParentTrait>(source)
@@ -69,7 +70,7 @@ export class DealCards extends Command {
         await this.subExecute(
           state,
           room,
-          new ChangeParent(() => source.getTop(), currentTarget)
+          new ChangeParent(() => source.getTop(), currentTarget),
         )
 
         // Pick next target if we dealt `this.step` cards to current target
@@ -87,7 +88,7 @@ export class DealCards extends Command {
         if (!onEmptiedCommand) {
           logs.warn(
             "DealCards",
-            `Source emptied before dealing every requested card. Add onEmptied in options, for example to refill the source with new entities.`
+            `Source emptied before dealing every requested card. Add onEmptied in options, for example to refill the source with new entities.`,
           )
           break
         } else {

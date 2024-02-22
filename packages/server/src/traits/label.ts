@@ -25,7 +25,7 @@ export class LabelTrait {
 LabelTrait["typeDef"] = LabelTraitTypeDef
 LabelTrait["trait"] = function constructLabelTrait(
   state: State,
-  options: Partial<LabelTrait> = {}
+  options: Partial<LabelTrait> = {},
 ): void {
   this.name = def(options.name, this.name, "Unnamed")
   this.type = def(options.type, this.type, "entity")

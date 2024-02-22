@@ -28,7 +28,7 @@ export class DrawOutUntil extends Command {
     source: Target<ParentTrait>,
     target: Target<ParentTrait>,
     condition: DrawOutCondition,
-    options?: DrawOutOptions
+    options?: DrawOutOptions,
   ) {
     super()
 
