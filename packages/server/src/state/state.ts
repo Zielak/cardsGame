@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+import deepMerge from "@bundled-es-modules/deepmerge"
 import { ArraySchema, MapSchema } from "@colyseus/schema"
 
 import { containsChildren } from "../annotations/containsChildren.js"
 import { type } from "../annotations/type.js"
 import { Player } from "../player/player.js"
 import { PlayerViewPosition } from "../playerViewPosition.js"
+import { VariantsConfig } from "../room/gameVariants.js"
 import { applyTraitsMixins, Entity } from "../traits/entity.js"
 import { IdentityTrait } from "../traits/identity.js"
 import { LabelTrait } from "../traits/label.js"
 import { ParentTrait } from "../traits/parent.js"
 
-// @ts-expect-error no idea what it wants. Can't variantDefaults from options to state's body!
 @containsChildren
 @applyTraitsMixins([IdentityTrait, LabelTrait, ParentTrait])
 export class State<
@@ -92,12 +93,10 @@ export class State<
    */
   private readonly _allEntities = new Map<number, IdentityTrait>()
 
-  // TODO: args as game variant? preset? data?
-  constructor(options?: StateConstructorOptions<V>) {
+  constructor() {
     super(undefined)
 
-    this.variantData =
-      options?.variantData ?? options?.variantDefaults ?? ({} as V)
+    this.variantData = {} as V
 
     this.hijacksInteractionTarget = false
   }
@@ -127,13 +126,15 @@ export class State<
     })
     this._allEntities.set(newID, entity)
   }
+
+  populateVariantData(
+    variantDefaults: VariantsConfig<V>["defaults"],
+    variantData: V,
+  ): void {
+    this.variantData = deepMerge(variantDefaults, variantData)
+  }
 }
 
 interface Mixin extends IdentityTrait, LabelTrait, ParentTrait {}
 
 export interface State extends Mixin {}
-
-export type StateConstructorOptions<V> = {
-  variantData?: V
-  variantDefaults: V
-}

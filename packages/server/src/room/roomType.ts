@@ -6,6 +6,7 @@ import type { Player } from "../player/index.js"
 import type { State } from "../state/state.js"
 
 import type { Room } from "./base.js"
+import { VariantsConfig } from "./gameVariants.js"
 
 /**
  * Extracted from colyseus room, and suggesting.
@@ -28,7 +29,7 @@ export interface RoomDefinition<S extends State> extends ColyRoomDefinition {
   /**
    * The base
    */
-  variantDefaults?: S["variantData"]
+  variantsConfig?: VariantsConfig<S["variantData"]>
 
   /**
    * Set of all possible actions players can take in this game

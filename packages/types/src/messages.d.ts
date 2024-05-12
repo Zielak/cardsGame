@@ -1,8 +1,8 @@
 /**
  * Event types coming from client ot server
  */
-interface ClientMessageTypes {
-  start: void
+type ClientMessageTypes = {
+  start: { variantData: Record<string, unknown> }
   bot_add: { intelligence: number }
   bot_remove: { id: string }
   EntityInteraction: RawInteractionClientPlayerMessage

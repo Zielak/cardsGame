@@ -19,19 +19,45 @@ export function start(
   client?: Client,
   message?: ClientMessageTypes["start"],
 ): void {
-  const { state } = this
+  const { state, variantsConfig } = this
+  let variantData = message?.variantData
+  let msg = ""
 
+  /**
+   * 1. Validate if we can go with the START
+   */
   if (!this.state.isGameOver) {
     if (state.isGameStarted) {
-      logs.log("handleGameStart", `Game is already started, ignoring...`)
+      msg = `Game is already started, ignoring...`
+      logs.log("handleGameStart", msg)
+      client?.send("gameInfo", { data: msg })
+
       return
     }
     if (this.canGameStart && !this.canGameStart()) {
-      logs.log(
-        "handleGameStart",
-        `Someone requested game start, but we can't go yet...`,
-      )
+      msg = `Someone requested game start, but we can't go yet...`
+      logs.log("handleGameStart", msg)
+      client?.send("gameWarn", { data: msg })
+
       return
+    }
+    if (variantData) {
+      if (variantsConfig.parse) {
+        variantData = variantsConfig.parse(variantData)
+      }
+      const validationResults = variantsConfig.validate?.(variantData)
+
+      if (validationResults !== true) {
+        logs.log("handleGameStart", `Variants config validation failed`)
+
+        msg =
+          "Game room setup config validation failed. " +
+          (typeof validationResults === "string" ? validationResults : "")
+
+        client?.send("gameError", { data: msg })
+
+        return
+      }
     }
 
     // We can go, convert all connected clients into players
@@ -43,7 +69,7 @@ export function start(
       state.players.push(player)
     })
 
-    startTheGame.call(this)
+    startTheGame.call(this, variantData)
   } else {
     /**
      * ON HOLD
@@ -56,7 +82,10 @@ export function start(
   }
 }
 
-function startTheGame(this: Room<State>): void {
+function startTheGame(
+  this: Room<State>,
+  variantData?: ClientMessageTypes["start"]["variantData"],
+): void {
   const { state } = this
 
   state.isGameStarted = true
@@ -64,6 +93,9 @@ function startTheGame(this: Room<State>): void {
 
   this._executeIntegrationHook("startPre")
 
+  if (variantData) {
+    state.populateVariantData(this.variantsConfig.defaults, variantData)
+  }
   const postStartCommands = this.onStartGame()
 
   const postStartup = (): void => {
