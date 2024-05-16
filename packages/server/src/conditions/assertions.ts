@@ -16,7 +16,7 @@ const getMessage = (
   message: string,
   messageNot: string,
   expected?: any,
-  actual?: any
+  actual?: any,
 ): string => {
   const not = getFlag(target, "not")
 
@@ -45,7 +45,7 @@ function assert(
   errMessage: string,
   errMessageNot?: string,
   expected?: unknown,
-  actual?: unknown
+  actual?: unknown,
 ): void {
   const not = getFlag(this, "not")
   const ok = not ? !result : result
@@ -57,7 +57,7 @@ function assert(
       errMessage,
       errMessageNot,
       expected,
-      actual
+      actual,
     )
 
     resetNegation(this)
@@ -71,7 +71,7 @@ function assert(
 
 class ConditionAssertions<
   Context extends ConditionsContextBase<S>,
-  S extends State = Context["state"]
+  S extends State = Context["state"],
 > {
   /**
    * @asserts subject should be empty. Usable against JS primitives AND Entities.
@@ -86,28 +86,28 @@ class ConditionAssertions<
         this,
         subject.countChildren() === 0,
         `subject ${printPropName}(container entity) has some items.`,
-        `subject ${printPropName}(container entity) is empty, but shouldn't.`
+        `subject ${printPropName}(container entity) is empty, but shouldn't.`,
       )
     } else if (subject.length !== undefined && typeof subject !== "function") {
       assert.call(
         this,
         subject.length === 0,
         `subject ${printPropName}(iterable) has some items.`,
-        `subject ${printPropName}(iterable) is empty, but shouldn't.`
+        `subject ${printPropName}(iterable) is empty, but shouldn't.`,
       )
     } else if (`size` in subject) {
       assert.call(
         this,
         subject.size === 0,
         `subject ${printPropName}(map/set) has some items.`,
-        `subject ${printPropName}(map/set) is empty, but shouldn't.`
+        `subject ${printPropName}(map/set) is empty, but shouldn't.`,
       )
     } else if (typeof subject === "object" && subject !== null) {
       assert.call(
         this,
         Object.keys(subject).length === 0,
         `subject ${printPropName}(object) has some items.`,
-        `subject ${printPropName}(object) is empty, but shouldn't.`
+        `subject ${printPropName}(object) is empty, but shouldn't.`,
       )
     } else {
       throwError(this, `.empty | Given an invalid subject: ${subject}`)
@@ -135,7 +135,7 @@ class ConditionAssertions<
       this,
       subject.countChildren() >= subject.maxChildren,
       `subject is not full`,
-      `subject is full`
+      `subject is full`,
     )
     return this
   }
@@ -160,7 +160,7 @@ class ConditionAssertions<
         this,
         subject.getChild(arg0) === undefined,
         `spot [${arg0}] is occupied`,
-        `spot [${arg0}] is available but shouldn't`
+        `spot [${arg0}] is available but shouldn't`,
       )
     } else if (typeof arg0 === "number" && typeof arg1 === "number") {
       if (!isGrid(subject)) {
@@ -171,7 +171,7 @@ class ConditionAssertions<
         this,
         subject.getChildAt(arg0, arg1) === undefined,
         `spot [${arg0},${arg1}] is occupied`,
-        `spot [${arg0},${arg1}] is available but shouldn't`
+        `spot [${arg0},${arg1}] is available but shouldn't`,
       )
     } else {
       throwError(this, `availableSpot | incorrect arguments, expected numbers`)
@@ -195,7 +195,7 @@ class ConditionAssertions<
       `expected ${printPropName}#{act} to equal #{exp}`,
       `expected ${printPropName}#{act} to NOT equal #{exp}`,
       value,
-      subject
+      subject,
     )
 
     return this
@@ -216,7 +216,7 @@ class ConditionAssertions<
     assert.call(
       this,
       subject === true,
-      `expected ${printPropName}${subject} to equal true`
+      `expected ${printPropName}${subject} to equal true`,
     )
 
     return this
@@ -237,7 +237,7 @@ class ConditionAssertions<
     assert.call(
       this,
       subject === false,
-      `expected ${printPropName}${subject} to equal false`
+      `expected ${printPropName}${subject} to equal false`,
     )
 
     return this
@@ -293,7 +293,7 @@ class ConditionAssertions<
       `expected ${printPropName}#{act} to be above #{exp}`,
       `expected ${printPropName}#{act} to NOT be above #{exp}`,
       value,
-      subject
+      subject,
     )
 
     return this
@@ -313,7 +313,7 @@ class ConditionAssertions<
       `expected ${printPropName}#{act} to be above #{exp}`,
       `expected ${printPropName}#{act} to NOT be above #{exp}`,
       value,
-      subject
+      subject,
     )
 
     return this
@@ -339,7 +339,7 @@ class ConditionAssertions<
       `expected ${printPropName}#{act} to be below #{exp}`,
       `expected ${printPropName}#{act} to NOT be below #{exp}`,
       value,
-      subject
+      subject,
     )
 
     return this
@@ -359,7 +359,7 @@ class ConditionAssertions<
       `expected ${printPropName}#{act} to be below or equal to #{exp}`,
       `expected ${printPropName}#{act} to NOT be below or equal to #{exp}`,
       value,
-      subject
+      subject,
     )
 
     return this
@@ -379,7 +379,7 @@ class ConditionAssertions<
       `#{act} didn't match with any of the provided values: #{exp}`,
       `#{act} is in #{exp}, but it shouldn't`,
       values,
-      subject
+      subject,
     )
 
     return this
@@ -389,7 +389,7 @@ class ConditionAssertions<
    * @asserts that chosen prop value matches the same prop on subject by alias
    * @example
    * ```ts
-   * con().$.entity.its("rank").matchesPropOf("pileTop")
+   * test().$.entity.its("rank").matchesPropOf("pileTop")
    * ```
    */
   matchesPropOf(refName: string): this
@@ -397,8 +397,8 @@ class ConditionAssertions<
    * @asserts that chosen prop value matches the same prop on other subject
    * @example
    * ```ts
-   * const PILE_TOP = con().query({ type: "pile" }).top.grab()
-   * con().$.entity.its("rank").matchesPropOf(PILE_TOP)
+   * const PILE_TOP = test().query({ type: "pile" }).top.grab()
+   * test().$.entity.its("rank").matchesPropOf(PILE_TOP)
    * ```
    */
   matchesPropOf(other: unknown): this
@@ -408,7 +408,7 @@ class ConditionAssertions<
     if (!getFlag(this, "currentParent")) {
       throwError(
         this,
-        `matchesPropOf | Needs to be preceded with ".its" to pick a prop name`
+        `matchesPropOf | Needs to be preceded with ".its" to pick a prop name`,
       )
     }
 
@@ -424,7 +424,7 @@ class ConditionAssertions<
         `subject's '${propName}' (#{act}) doesn't match with the same prop at '${other}' (#{exp})`,
         `subject's '${propName}' (#{act}) is equal with prop of '${other}', but shouldn't (#{exp})`,
         expected,
-        subject
+        subject,
       )
     } else if (typeof other === "object") {
       expected = other[propName]
@@ -435,12 +435,12 @@ class ConditionAssertions<
         `subject's '${propName}' (#{act}) doesn't match with the same prop at other object (#{exp})`,
         `subject's '${propName}' (#{act}) is equal with other's prop, but shouldn't (#{exp})`,
         expected,
-        subject
+        subject,
       )
     } else {
       throwError(
         this,
-        `matchesPropOf | other needs to be an object/entity or a reference name`
+        `matchesPropOf | other needs to be an object/entity or a reference name`,
       )
     }
 
@@ -461,7 +461,7 @@ class ConditionAssertions<
       this,
       hasSelectableChildren(subject.parent),
       `selectable | subject's parent can't have children selected`,
-      `selectable | subject's parent can have children selected, but shouldn't`
+      `selectable | subject's parent can have children selected, but shouldn't`,
     )
     return this
   }
@@ -481,7 +481,7 @@ class ConditionAssertions<
       this,
       result,
       `isSelected | subject is not selected`,
-      `isSelected | subject is selected, but shouldn't`
+      `isSelected | subject is selected, but shouldn't`,
     )
 
     return this
@@ -500,7 +500,7 @@ class ConditionAssertions<
         this,
         result,
         `someEntityMatchesProps | no item matched`,
-        `someEntityMatchesProps | some item matched, but shouldn't`
+        `someEntityMatchesProps | some item matched, but shouldn't`,
       )
     } else if (isParent(subject)) {
       const result = subject.getChildren().some(queryRunner(props))
@@ -509,12 +509,12 @@ class ConditionAssertions<
         this,
         result,
         `someEntityMatchesProps | no child matched`,
-        `someEntityMatchesProps | some child matched, but shouldn't`
+        `someEntityMatchesProps | some child matched, but shouldn't`,
       )
     } else {
       throwError(
         this,
-        `someEntitiesMatchProps | subject is neither parent nor array`
+        `someEntitiesMatchProps | subject is neither parent nor array`,
       )
     }
 
@@ -534,7 +534,7 @@ class ConditionAssertions<
         this,
         result,
         `everyEntityMatchesProps | not every item matched`,
-        `everyEntityMatchesProps | every item matched, but shouldn't`
+        `everyEntityMatchesProps | every item matched, but shouldn't`,
       )
     } else if (isParent(subject)) {
       const result = subject.getChildren().every(queryRunner(props))
@@ -543,12 +543,12 @@ class ConditionAssertions<
         this,
         result,
         `everyEntityMatchesProps | not every child matched`,
-        `everyEntityMatchesProps | every child matched, but shouldn't`
+        `everyEntityMatchesProps | every child matched, but shouldn't`,
       )
     } else {
       throwError(
         this,
-        `everyEntityMatchesProps | subject is neither parent nor array`
+        `everyEntityMatchesProps | subject is neither parent nor array`,
       )
     }
 
@@ -562,7 +562,7 @@ class ConditionAssertions<
    * @example
    * ```ts
    * // Will test if target of interaction is in fact a King
-   * con().entity.test((card: ClassicCard) => {
+   * test().entity.test((card: ClassicCard) => {
    *   return card.rank === "K"
    * })
    * ```
@@ -579,7 +579,7 @@ class ConditionAssertions<
    * // ...
    *
    * // Will test if target of interaction is "attack card" type
-   * con().entity.test(isAttackCard)
+   * test().entity.test(isAttackCard)
    * ```
    */
   test(tester: (subject: unknown, context: Context) => boolean): this {
@@ -592,7 +592,7 @@ class ConditionAssertions<
       this,
       result,
       `test | ${tester.name} returned falsy`,
-      `test | ${tester.name} returned truthy`
+      `test | ${tester.name} returned truthy`,
     )
 
     return this
@@ -627,7 +627,7 @@ class ConditionAssertions<
       if (!ui.has(uiKey)) {
         throwError(
           this,
-          `revealedUI | this UI doesn't have "${uiKey}" key defined`
+          `revealedUI | this UI doesn't have "${uiKey}" key defined`,
         )
       }
 
@@ -637,7 +637,7 @@ class ConditionAssertions<
         this,
         result,
         `revealedUI | client doesn't have "${uiKey}" UI presented to him`,
-        `revealedUI | client has "${uiKey}" UI presented to him, but shouldn't`
+        `revealedUI | client has "${uiKey}" UI presented to him, but shouldn't`,
       )
     } else {
       const uiKeys = Array.from(ui.keys())
@@ -647,7 +647,7 @@ class ConditionAssertions<
         this,
         result,
         `revealedUI | client doesn't have any UI revealed`,
-        `revealedUI | client has some UI revealed, but shouldn't`
+        `revealedUI | client has some UI revealed, but shouldn't`,
       )
     }
 
@@ -670,7 +670,7 @@ class ConditionAssertions<
       this,
       player === currentPlayer,
       `It's not current players turn`,
-      `It is current players turn, but shouldn't`
+      `It is current players turn, but shouldn't`,
     )
 
     return this

@@ -25,18 +25,18 @@ class ConditionGrouping<
    *
    * @param predicate a function in style of native `array.forEach`,
    * but first argument is new Conditions instance.
-   * This `con` will have its own subject set to each item of current subject.
+   * This `test` will have its own subject set to each item of current subject.
    * @example
    * ```ts
-   * con().get("chosenCards").children.every((con, item, index, array) => {
-   *   con().its("rank").oneOf(["2", "3"])
+   * test().get("chosenCards").children.every((con, item, index, array) => {
+   *   test().its("rank").oneOf(["2", "3"])
    * })
    * ```
    * @yields back anything that was before `.every()` command so you can chain it further
    */
   every(
     predicate: (
-      con: C,
+      test: C,
       item: any,
       index: number | string,
       collection: any,
@@ -79,18 +79,18 @@ class ConditionGrouping<
    *
    * @param predicate a function in style of native `array.some`,
    * but first argument is new Conditions instance.
-   * This `con` will have its own subject set to each item of current subject.
+   * This `test` will have its own subject set to each item of current subject.
    * @example
    * ```ts
-   * con().set(chosenCards).some((con, item, index, array) => {
-   *   con().its("rank").matchesPropOf(pileTop)
+   * test().set(chosenCards).some((con, item, index, array) => {
+   *   test().its("rank").matchesPropOf(pileTop)
    * })
    * ```
    * @yields back the subject which was present before executing `.some()` command so you can chain it further.
    */
   some(
     predicate: (
-      con: C,
+      test: C,
       item: any,
       index: number | string,
       collection: any,
@@ -137,16 +137,16 @@ class ConditionGrouping<
    * @example
    * ```ts
    * // Will pass with the first statement and ignore the rest
-   * con().either(
-   *   () => con().set(1).equals(1),
-   *   () => con().set(0).equals(1),
-   *   () => con().set(0).equals(1)
+   * test().either(
+   *   () => test().set(1).equals(1),
+   *   () => test().set(0).equals(1),
+   *   () => test().set(0).equals(1)
    * )
    *
    * // Both statements fail, will throw with top message: "none passed"
-   * con("none passed").either(
-   *   () => con("zero is one").set(0).equals(1),
-   *   () => con("one is two").set(1).equals(2)
+   * test("none passed").either(
+   *   () => test("zero is one").set(0).equals(1),
+   *   () => test("one is two").set(1).equals(2)
    * )
    * ```
    */

@@ -9,7 +9,7 @@ import type { BaseActionDefinition } from "../base.js"
 import type { ActionDefinition } from "../types.js"
 
 export type CollectionContext<
-  C extends Record<string, unknown> = Record<string, unknown>
+  C extends Record<string, unknown> = Record<string, unknown>,
 > = {
   /**
    * Controlled by manager, marks if this instance of action
@@ -29,7 +29,7 @@ export type CollectionContext<
  */
 export interface CollectionActionDefinition<
   S extends State,
-  C extends Record<string, unknown> = Record<string, unknown>
+  C extends Record<string, unknown> = Record<string, unknown>,
 > {
   name: string
 
@@ -42,18 +42,18 @@ export interface CollectionActionDefinition<
   checkPrerequisites(
     // message: ServerPlayerMessage, // less is more?
     messageContext: ClientMessageContext<S>,
-    actionContext: CollectionContext<C>
+    actionContext: CollectionContext<C>,
   ): boolean
 
   checkConditions: (
-    con: ClientMessageConditions<S>,
+    test: ClientMessageConditions<S>,
     messageContext: ClientMessageContext<S>,
-    actionContext: CollectionContext<C>
+    actionContext: CollectionContext<C>,
   ) => CollectionConditionsResult<BaseActionDefinition<S>>
 
   getCommand: (
     messageContext: ClientMessageContext<S>,
-    actionContext: CollectionContext<C>
+    actionContext: CollectionContext<C>,
   ) => Command<S>
 
   hasSuccessfulSubActions: (context: CollectionContext<C>) => boolean
@@ -83,6 +83,6 @@ export interface CollectionActionDefinition<
  * @ignore
  */
 export type CollectionConditionsResult<
-  A extends BaseActionDefinition<any>
+  A extends BaseActionDefinition<any>,
   // S extends State
 > = Map<A, ConditionErrorMessage>

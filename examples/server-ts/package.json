@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "app.js",
   "scripts": {
-    "start": "NODE_ENV=development LOGS=verbose node dist/app",
+    "start": "npm run build && NODE_ENV=development LOGS=verbose node dist/app",
     "build": "tsc -b src",
     "build:watch": "tsc -b src -w",
     "test": "echo \"Error: no test specified\" && exit 1"

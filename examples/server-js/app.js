@@ -11,6 +11,7 @@ const { WarGame } = require("./game/room")
 // Prepare Express app
 const app = express()
 app.use(express.json())
+app.listen(8448)
 
 // Prepare HTTPS server
 const secureServer = createServer({ key, cert }, app)
@@ -22,7 +23,7 @@ const gameServer = new Server({
   }),
 })
 gameServer.define("war", WarGame)
-gameServer.listen(443)
+gameServer.listen(3033, "0.0.0.0")
 
 // Don't leave out any process running after closing terminal
 exitHandler(() => {

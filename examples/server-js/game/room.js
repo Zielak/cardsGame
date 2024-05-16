@@ -1,54 +1,39 @@
-const cardsGameServer = require("@cardsgame/server")
-const { commands, standardDeckFactory, entities, Room } = cardsGameServer
+const { commands, entities, defineRoom } = require("@cardsgame/server")
 
 const actions = require("./actions")
 const botActivities = require("./bot")
 const { WarState } = require("./state")
 
-const { Container, ClassicCard, Deck, Pile } = entities
+const { Container, Deck, Pile } = entities
 
-class WarGame extends Room {
-  constructor(options) {
-    super(options)
-    this.maxClients = 2
-    this.possibleActions = new Set(actions)
-    this.botActivities = new Set(botActivities)
-  }
-
-  onInitGame() {
-    this.setState(new WarState())
-
-    const { state } = this
-
-    this.deck = new Deck(state, {
-      name: "mainDeck",
-      x: 50,
-    })
-    this.pile = new Pile(state, {
-      name: "mainPile",
-    })
-    standardDeckFactory().forEach(
-      (data) =>
-        new ClassicCard(state, {
-          parent: this.deck,
-          suit: data.suit,
-          rank: data.rank,
-        })
-    )
-  }
+const WarGame = defineRoom("WarGame", {
+  stateConstructor: WarState,
+  variantsConfig: {
+    defaults: {
+      anteStart: 0,
+      anteRatio: 0.5,
+    },
+  },
+  maxClients: 2,
+  possibleActions: actions,
+  botActivities: new Set(botActivities),
 
   canGameStart() {
     return this.allClientsCount === 2
-  }
+  },
 
   onStartGame() {
     const { state } = this
+
+    state.ante = state.variantData.anteStart
+
+    const mainDeck = state.query({ name: "mainDeck" })
 
     // Prepare all (both) players
     const decks = []
 
     state.players.forEach((player, idx) => {
-      // Eeach player will has his own Container.
+      // Each player will has his own Container.
       const container = new Container(state, {
         owner: player,
         ownersMainFocus: true,
@@ -59,7 +44,7 @@ class WarGame extends Room {
         new Deck(state, {
           parent: container,
           name: `player${player.name}Deck`,
-        })
+        }),
       )
 
       // A Pile container, to hold all currently played cards
@@ -70,10 +55,10 @@ class WarGame extends Room {
 
     // Shuffle & Deal the cards
     return [
-      new commands.ShuffleChildren(this.deck),
-      new commands.DealCards(this.deck, decks),
+      new commands.ShuffleChildren(mainDeck),
+      new commands.DealCards(mainDeck, decks),
     ]
-  }
+  },
 
   onRoundStart() {
     const { state } = this
@@ -81,12 +66,14 @@ class WarGame extends Room {
     state.players.forEach((player, idx) => {
       state.playersPlayed.set(player.clientID, false)
     })
-  }
+  },
 
   onRoundEnd() {
     const { state } = this
 
-    state.ante = Math.floor(state.round / 2)
+    state.ante =
+      Math.floor(state.round * state.variantData.anteRatio) +
+      state.variantData.anteStart
 
     const playersDecks = state
       .queryAll({ type: "deck" })
@@ -102,8 +89,8 @@ class WarGame extends Room {
         winner: winner.clientID,
       })
     }
-  }
-}
+  },
+})
 
 // Just to help out your IDE with auto completion on State
 /** @type {WarState} */

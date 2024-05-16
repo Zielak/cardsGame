@@ -56,18 +56,20 @@ export function start(
         return
       }
 
-      const validationResults = variantsConfig.validate?.(variantData)
+      if (variantsConfig.validate) {
+        const validationResults = variantsConfig.validate?.(variantData)
 
-      if (validationResults !== true) {
-        logs.log("handleGameStart", `Variants config validation failed`)
+        if (validationResults !== true) {
+          logs.log("handleGameStart", `Variants config validation failed`)
 
-        msg =
-          "Game room setup config validation failed. " +
-          (typeof validationResults === "string" ? validationResults : "")
+          msg =
+            "Game room setup config validation failed. " +
+            (typeof validationResults === "string" ? validationResults : "")
 
-        client?.send("gameError", { data: msg })
+          client?.send("gameError", { data: msg })
 
-        return
+          return
+        }
       }
     }
 

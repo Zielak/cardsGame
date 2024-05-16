@@ -14,11 +14,11 @@ export interface BaseActionTemplate<S extends State> {
   /**
    * This action will be ignored when one of the assertions fail.
    *
-   * @param con conditions runner. Default subject is set to the game state.
+   * @param test conditions runner. Default subject is set to the game state.
    * @param initialSubjects Direct references to subjects brought with player's event
    */
   conditions: (
-    con: ClientMessageConditions<S>,
+    test: ClientMessageConditions<S>,
     messageContext: ClientMessageContext<S>,
   ) => void
 
@@ -45,7 +45,7 @@ export interface BaseActionDefinition<S extends State> {
   ): boolean
 
   checkConditions(
-    con: ClientMessageConditions<S>,
+    test: ClientMessageConditions<S>,
     messageContext: ClientMessageContext<S>,
   ): void
 

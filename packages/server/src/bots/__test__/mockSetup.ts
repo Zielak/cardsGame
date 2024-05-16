@@ -7,8 +7,8 @@ import type { BotNeuron } from "../botNeuron.js"
 const ScreamAction = defineMessageAction({
   name: "ScreamNO",
   messageType: "scream",
-  conditions: (con) => {
-    con("data").is.defined()
+  conditions: (test) => {
+    test("data").is.defined()
   },
   command: (event) => new commands.Broadcast(event.messageType, event.data),
 })
@@ -16,8 +16,8 @@ const ScreamAction = defineMessageAction({
 const PlayCardAction = defineEntityAction({
   name: "PlayCard",
   interaction: ({ player }) => [{ type: "classicCard", owner: player }],
-  conditions: (con) => {
-    con().itsPlayersTurn()
+  conditions: (test) => {
+    test().itsPlayersTurn()
   },
   command: () => new commands.NextPlayer(),
 })
@@ -25,8 +25,8 @@ const PlayCardAction = defineEntityAction({
 const DoNothingAction = defineEntityAction({
   name: "DoNothingAction",
   interaction: () => [{ type: "classicCard" }],
-  conditions: (con) => {
-    con().itsPlayersTurn()
+  conditions: (test) => {
+    test().itsPlayersTurn()
   },
   command: () => new commands.Noop(),
 })
@@ -40,8 +40,8 @@ export const PlayCardGoal: BotNeuron<State> = {
   - aux filter on suits S and C
   - single action
   `,
-  conditions: (con) => {
-    con().itsPlayersTurn()
+  conditions: (test) => {
+    test().itsPlayersTurn()
   },
   entitiesFilter: [{ suit: ["S", "C"] }],
   value: ({ state }) => {
@@ -78,7 +78,7 @@ export const ScreamGoal: BotNeuron<State> = {
 
 export const FailedConditions: BotNeuron<State> = {
   name: "FailedConditions",
-  conditions: (con) => con().set("test").is.undefined(),
+  conditions: (test) => test().set("test").is.undefined(),
   value: () => {
     throw new Error("Should fail at `conditions` first!")
   },
@@ -94,7 +94,7 @@ export const UnachievableGoal: BotNeuron<State> = {
     {
       name: "FailedEntitiesFilter",
       value: () => 50,
-      entitiesFilter: (con) => con().its("rank").equals("NOPE"),
+      entitiesFilter: (test) => test().its("rank").equals("NOPE"),
       action: DoNothingAction,
     } as BotNeuron<State>,
   ],

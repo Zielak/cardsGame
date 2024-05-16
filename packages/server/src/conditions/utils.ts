@@ -20,7 +20,7 @@ interface ConditionsFlags {
    */
   currentParent: unknown
   /**
-   * Error message passed when invoking con()
+   * Error message passed when invoking test()
    */
   customError: CustomConditionError
   /**
@@ -36,7 +36,7 @@ interface ConditionsFlags {
  */
 export function getFlag(
   target: Record<string, any>,
-  flagName: keyof ConditionsFlags
+  flagName: keyof ConditionsFlags,
 ): any {
   if (!target._flags) {
     throw new Error(`getFlag | Incompatible target.`)
@@ -51,7 +51,7 @@ export function getFlag(
 export function setFlag(
   target: Record<string, any>,
   flagName: keyof ConditionsFlags,
-  value: unknown
+  value: unknown,
 ): void {
   if (!target._flags) {
     throw new Error(`setFlag | Incompatible target.`)
@@ -79,7 +79,7 @@ export function getRef(target: Record<string, any>, refName: string): unknown {
 export function setRef(
   target: Record<string, any>,
   refName: string,
-  value: unknown
+  value: unknown,
 ): void {
   if (!target._refs) {
     throw new Error(`ref | Incompatible target.`)
@@ -87,7 +87,7 @@ export function setRef(
 
   if (refName in getFlag(target, "initialSubjects")) {
     throw new Error(
-      `Subject named "${refName}" already exists in "initialSubjects". Choose different name.`
+      `Subject named "${refName}" already exists in "initialSubjects". Choose different name.`,
     )
   }
   target._refs.set(refName, value)
@@ -98,7 +98,7 @@ export function setRef(
  */
 export function getInitialSubject<T>(
   target: Record<string, any>,
-  refName: string
+  refName: string,
 ): T {
   return getFlag(target, "initialSubjects")[refName]
 }

@@ -17,7 +17,7 @@ import {
 export class GameHandler {
   game = new Game({
     wss: {
-      port: 443,
+      port: 3033,
     },
   })
   room: Room<WarState, WarMessageTypes>
@@ -142,7 +142,7 @@ export class GameHandler {
             console.log(
               "Card updated post-creation:",
               change.field,
-              change.value
+              change.value,
             )
             players.update(($players) => {
               const player = $players.get(ownerID)

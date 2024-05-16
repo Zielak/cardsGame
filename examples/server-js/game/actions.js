@@ -10,25 +10,23 @@ const { WarState } = require("./state")
  */
 const PickCard = defineEntityAction({
   name: "PickCard",
-  interaction: (player) => [
+  interaction: ({ player }) => [
     {
       type: "deck",
       owner: player,
     },
   ],
-  conditions: (con) => {
-    const playerSessionID = con().$.player.grab().clientID
+  conditions: (test, { state, player, variant }) => {
+    const playerSessionID = player.clientID
     console.log("playerSessionID:", playerSessionID)
-    console.log("state.playersPlayed:", [
-      ...con().grabState().playersPlayed.entries(),
-    ])
+    console.log("state.playersPlayed:", [...state.playersPlayed.entries()])
 
     // Current player didn't pick yet
-    con().its("playersPlayed").defined()
-    con().its("playersPlayed").its(playerSessionID).equals(false)
+    test().its("playersPlayed").defined()
+    test().its("playersPlayed").its(playerSessionID).equals(false)
   },
-  command: (state, event) => {
-    const container = state.query({ owner: event.player })
+  command: ({ state, player }) => {
+    const container = state.query({ owner: player })
     /** @type {entities.Deck} */
     const deck = container.query({ type: "deck" })
     console.log("deck has", deck.childCount, "children")
@@ -37,8 +35,10 @@ const PickCard = defineEntityAction({
 
     const count = state.ante + 1
     console.log("picking up", count, "cards")
+
     const cards = deck.getChildren().splice(-count)
     console.log("actually picked up", cards.length)
+
     const topCard = cards[cards.length - 1]
     console.log(`topCard: ${topCard.idx}:${topCard.name}`)
 
@@ -57,7 +57,7 @@ const PickCard = defineEntityAction({
       : []
 
     return new commands.Sequence("PickCard", [
-      new MarkPlayerPlayed(event.player.clientID),
+      new MarkPlayerPlayed(player.clientID),
       new commands.ChangeParent(cards, pile),
       new commands.FaceUp(topCard),
       ...roundFinishingCommands,
