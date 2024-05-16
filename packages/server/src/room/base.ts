@@ -19,7 +19,6 @@ import type { Player, ServerPlayerMessage, Bot } from "../player/index.js"
 import { State } from "../state/state.js"
 import { debugRoomMessage } from "../utils/debugRoomMessage.js"
 
-import { VariantsConfig } from "./gameVariants.js"
 import type { RoomDefinition } from "./roomType.js"
 
 type BroadcastOptions = IBroadcastOptions & {

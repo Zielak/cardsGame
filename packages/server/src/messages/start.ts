@@ -6,6 +6,7 @@ import { logs } from "../logs.js"
 import { Player } from "../player/player.js"
 import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
+import { variantParser } from "../utils/variantParser.js"
 
 /**
  * @param this
@@ -42,9 +43,19 @@ export function start(
       return
     }
     if (variantData) {
-      if (variantsConfig.parse) {
-        variantData = variantsConfig.parse(variantData)
+      try {
+        if (variantsConfig.parse) {
+          variantData = variantsConfig.parse(variantData)
+        } else {
+          variantData = variantParser(variantData)
+        }
+      } catch (e) {
+        client?.send("gameError", {
+          data: "Game room setup config parsing failed. " + e.message,
+        })
+        return
       }
+
       const validationResults = variantsConfig.validate?.(variantData)
 
       if (validationResults !== true) {

@@ -1,11 +1,15 @@
-type VariantPreset<T> = {
+type VariantPreset<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
   name: string
   data: DeepPartial<T>
   /** Should this preset be merging with the defaults or not? */
   includesDefaults?: boolean
 }
 
-export type VariantsConfig<T> = {
+type VariantsConfig<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
   defaults: Required<T>
   /**
    * Decide how you want to send variant data from the client

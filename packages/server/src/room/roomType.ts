@@ -6,7 +6,6 @@ import type { Player } from "../player/index.js"
 import type { State } from "../state/state.js"
 
 import type { Room } from "./base.js"
-import { VariantsConfig } from "./gameVariants.js"
 
 /**
  * Extracted from colyseus room, and suggesting.
