@@ -95,8 +95,6 @@ export class State<
   constructor() {
     super(undefined)
 
-    this.variantData = {} as V
-
     this.hijacksInteractionTarget = false
   }
 
