@@ -54,10 +54,10 @@ export class EntityActionDefinition<S extends State>
   }
 
   checkConditions(
-    con: ClientMessageConditions<S>,
-    messageContext: ClientMessageContext<S>
+    test: ClientMessageConditions<S>,
+    messageContext: ClientMessageContext<S>,
   ): void {
-    this.template.conditions(con, messageContext)
+    this.template.conditions(test, messageContext)
   }
 
   getCommand(messageContext: ClientMessageContext<S>): Command<State> {
@@ -69,7 +69,7 @@ export class EntityActionDefinition<S extends State>
  * @category Action definitions
  */
 export function defineEntityAction<S extends State = State>(
-  template: EntityActionTemplate<S>
+  template: EntityActionTemplate<S>,
 ): EntityActionDefinition<S> {
   return new EntityActionDefinition(template)
 }

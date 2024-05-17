@@ -7,8 +7,8 @@ sidebar_position: 4
 Conditions are inspired by Chai Assertion Library. It is provided in [Action Templates](./action-templates) and [Bot's Neuron](./bots#botneuron) `conditions` methods.
 
 ```ts
-conditions: (con: Conditions) => {
-  con().itsPlayersTurn();
+conditions: (test: Conditions) => {
+  test().itsPlayersTurn();
 },
 ```
 
@@ -18,16 +18,16 @@ Given player's interaction and current state of the game, **conditions** help th
 
 With each statement you're going to check if _something_ matches your expectations/game rules. You can do that by switching **current subject** to some game element, player's status, value of some prop on game state or anything else.
 
-Default **subject** is always the root game state, and it is reset every time you begin with `con()`.
+Default **subject** is always the root game state, and it is reset every time you begin with `test()`.
 
 You can change current **subject** by using many props and functions:
 
 ```ts title="Checking player's name is 'Bob'"
-con().get("player").its("name").equals("Bob")
+test().get("player").its("name").equals("Bob")
 
 // explained:
 
-con()
+test()
   // changes subject to something by alias "player"
   .get("player")
   // changes subject to a prop "name" of previous subject, effectively: player['name']
@@ -37,11 +37,11 @@ con()
 ```
 
 ```ts title="Checking the topmost card on deck is of rank Spades or Clubs"
-con().get({ type: "deck" }).top.its("rank").is.oneOf(["S", "C"])
+test().get({ type: "deck" }).top.its("rank").is.oneOf(["S", "C"])
 
 // explained:
 
-con()
+test()
   // changes subject to entity matching the "type" by querying whole game state
   .get({ type: "deck" })
   // changes subject to the last/topmost child of previously found entity
@@ -56,9 +56,9 @@ con()
 There are quick references for couple of objects you can use to start construction your assertions. You can access them with `subject` or even shorter with `$`.
 
 ```ts
-con().subject.entity.its("name").equals("mainDeck")
+test().subject.entity.its("name").equals("mainDeck")
 // This is the same
-con().$.entity.its("name").equals("mainDeck")
+test().$.entity.its("name").equals("mainDeck")
 ```
 
 #### `entity`
@@ -76,7 +76,7 @@ Changes subject to extra data sent with an event.
 You may have a UI interaction which would send extra data:
 
 ```ts
-con().subject.data.oneOf(["5", "6", "7", "8", "9", "K", "A"])
+test().subject.data.oneOf(["5", "6", "7", "8", "9", "K", "A"])
 ```
 
 ### Changing subjects
@@ -108,9 +108,9 @@ Remembers subject found by [`QuerableProps`](/api/server/interfaces/QuerableProp
 
 ```ts
 // First call, queries state for entity named "deck"
-con().remember("aliasToDeck", { name: "deck" })
+test().remember("aliasToDeck", { name: "deck" })
 // Won't perform the lookup again, as we already remember "aliasToDeck"
-con().remember("aliasToDeck", { name: "deck" })
+test().remember("aliasToDeck", { name: "deck" })
 ```
 
 #### `get(alias: string)`
@@ -123,13 +123,13 @@ Changes subject to current subject's key/prop value.
 
 ```typescript
 // On state
-con().its("round").above(10)
+test().its("round").above(10)
 
 // On an entity
-con({ type: "deck" }).its("angle").equals(90)
+test({ type: "deck" }).its("angle").equals(90)
 
 // Or anything else
-con()
+test()
   .set({
     propA: "foo",
     propB: "bar",
@@ -255,9 +255,9 @@ You can continue your assertions using chain words, to construct neat, human-rea
 `has`, `to`, `is`, `can`, `be`, `and`.
 
 ```ts
-con().has.not.revealedUI()
+test().has.not.revealedUI()
 
-con()
+test()
   .subject.entity.its("rank")
   .equals("K")
   .and.its("suit")
@@ -279,11 +279,11 @@ import type { ClientMessageConditions } from "@cardsgame/server"
 import type { MakaoState } from "../state.js"
 
 export const matchesWithPile = (
-  con: ClientMessageConditions<MakaoState>
+  test: ClientMessageConditions<MakaoState>,
 ): void => {
-  con("Card must match with the one on the pile").either(
-    () => con().subject.entity.its("rank").matchesPropOf("pileTop"),
-    () => con().subject.entity.its("suit").matchesPropOf("pileTop")
+  test("Card must match with the one on the pile").either(
+    () => test().subject.entity.its("rank").matchesPropOf("pileTop"),
+    () => test().subject.entity.its("suit").matchesPropOf("pileTop"),
   )
 }
 ```
@@ -293,8 +293,8 @@ Remember to pass reference to `con` down to the other function.
 ```ts title="src/actions/selectCard.ts"
 // ...
   conditions: (con, { player }) => {
-    con().itsPlayersTurn()
-    con().remember("hand", {
+    test().itsPlayersTurn()
+    test().remember("hand", {
       type: "hand",
       owner: player,
     })
@@ -311,7 +311,7 @@ Sometimes you need to grab a direct reference to an object and for example decid
 You can use `grab<T>()`, which will return current subject as direct value reference. Provide `T` with the expected type to have nicer coding experience - your value will be typed as whatever you provide as `T`
 
 ```ts
-const currentlySelected = con().get({ type: "hand" }).grab<ClassicCard>()
+const currentlySelected = test().get({ type: "hand" }).grab<ClassicCard>()
 
 if (isCardAttack(currentlySelected)) {
   // Flow A, if selected card is of "attack" type
@@ -327,13 +327,13 @@ if (isCardAttack(currentlySelected)) {
 In below example we use it to navigate condition checks flow. Assume `isCardAttack`, `isCardSkip` and `matchesWithPile` are defined elsewhere.
 
 ```ts
-const state = con().grabState()
+const state = test().grabState()
 
 if (state.attackPoints > 0) {
-  con("Can only play 'attack' cards now").subject.entity.test(isCardAttack)
+  test("Can only play 'attack' cards now").subject.entity.test(isCardAttack)
   matchesWithPile(con)
 }
 if (state.skipPoints > 0) {
-  con("Can only play 'skip turn' cards now").subject.entity.test(isCardSkip)
+  test("Can only play 'skip turn' cards now").subject.entity.test(isCardSkip)
 }
 ```

@@ -182,7 +182,7 @@ export class CompoundActionDefinition<S extends State = State>
   }
 
   checkConditions(
-    con: ClientMessageConditions<S>,
+    test: ClientMessageConditions<S>,
     messageContext: ClientMessageContext<S>,
     context: CollectionContext<CompoundContext<S>>,
   ): CollectionConditionsResult<BaseActionDefinition<S>> {
@@ -194,7 +194,7 @@ export class CompoundActionDefinition<S extends State = State>
       if (context.aborted) {
         return
       }
-      const error = runConditionOnAction(con, messageContext, action)
+      const error = runConditionOnAction(test, messageContext, action)
       if (error) {
         rejectedActions.set(action, error)
         context.successfulAbort.delete(action)
@@ -219,7 +219,7 @@ export class CompoundActionDefinition<S extends State = State>
       if (context.finished) {
         return
       }
-      const error = runConditionOnAction(con, messageContext, action)
+      const error = runConditionOnAction(test, messageContext, action)
       if (error) {
         rejectedActions.set(action, error)
         context.successfulFinish.delete(action)
@@ -241,7 +241,7 @@ export class CompoundActionDefinition<S extends State = State>
 
     // The rest
     context.successfulActions.forEach((action) => {
-      const error = runConditionOnAction(con, messageContext, action)
+      const error = runConditionOnAction(test, messageContext, action)
       if (error) {
         rejectedActions.set(action, error)
         context.successfulActions.delete(action)

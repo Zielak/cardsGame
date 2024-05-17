@@ -24,8 +24,8 @@ export interface BotNeuron<S extends State> {
    * game elements to understand if this action can be played.
    */
   conditions?: (
-    con: ClientMessageConditions<S>,
-    context: ClientMessageContext<S>
+    test: ClientMessageConditions<S>,
+    context: ClientMessageContext<S>,
   ) => void
 
   /**
@@ -65,8 +65,8 @@ export interface BotNeuron<S extends State> {
    */
   entitiesFilter?:
     | ((
-        con: BotEntityAuxConditions<S>,
-        context: BotEntityAuxContext<S>
+        test: BotEntityAuxConditions<S>,
+        context: BotEntityAuxContext<S>,
       ) => void)
     | QuerableProps[]
 

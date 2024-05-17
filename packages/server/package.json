@@ -76,6 +76,7 @@
     }
   },
   "dependencies": {
+    "@bundled-es-modules/deepmerge": "^4.3.1",
     "@cardsgame/entity-traits": "^1.7.2",
     "@cardsgame/types": "^1.7.1",
     "@cardsgame/utils": "^1.7.2",

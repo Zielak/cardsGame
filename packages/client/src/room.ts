@@ -75,7 +75,10 @@ export class Room<
   /**
    * Send a custom message from client to server.
    */
-  send(type: string, message?: ClientPlayerMessage): void {
+  send<T extends keyof ClientMessageTypes>(
+    type: T,
+    message?: ClientMessageTypes[T],
+  ): void {
     logs.debug("Sending:", type, JSON.stringify(message))
     this.room.send(type, message)
   }

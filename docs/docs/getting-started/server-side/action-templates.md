@@ -30,8 +30,8 @@ export const TakeOneCard = defineEntityAction<MyGameState>({
 
   interaction: () => [{ type: "deck" }],
 
-  conditions: (con) => {
-    con("It's not your turn yet!").itsPlayersTurn()
+  conditions: (test) => {
+    test("It's not your turn yet!").itsPlayersTurn()
   },
 
   command: ({ state, player }) => {
@@ -134,12 +134,12 @@ Use [`conditions` framework](./conditions.md), passed as first argument of `cond
 ```ts
 // Example for card interaction
 // You can name it `con` for short.
-conditions: (con, { player }) => {
-  con().itsPlayersTurn()
+conditions: (test, { player }) => {
+  test().itsPlayersTurn()
 
   // Grab current player's `hand` and remember it
   // under alias "chosenCards"
-  con().remember("chosenCards", {
+  test().remember("chosenCards", {
     type: "hand",
     parent: {
       owner: player,
@@ -149,14 +149,14 @@ conditions: (con, { player }) => {
 
   // Change subject to previously remembered "chosenCards"
   // and ensure its got nothing inside.
-  con().get("chosenCards").children.is.not.empty()
+  test().get("chosenCards").children.is.not.empty()
 }
 
 // Example for custom command with expected additional data
 conditions: (con) => {
-  con().itsPlayersTurn()
+  test().itsPlayersTurn()
   // When client sent data as `{ "suits": "S" }`
-  con().subject.data.its("suit").equals("S")
+  test().subject.data.its("suit").equals("S")
 }
 ```
 

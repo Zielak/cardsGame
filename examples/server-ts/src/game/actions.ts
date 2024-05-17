@@ -11,14 +11,14 @@ export const PickCard = defineEntityAction<WarState>({
       owner: player,
     },
   ],
-  conditions: (con, { state, player, variant }) => {
+  conditions: (test, { state, player, variant }) => {
     const playerSessionID = player.clientID
     console.log("playerSessionID:", playerSessionID)
     console.log("state.playersPlayed:", [...state.playersPlayed.entries()])
 
     // Current player didn't pick yet
-    con().its("playersPlayed").defined()
-    con().its("playersPlayed").its(playerSessionID).equals(false)
+    test().its("playersPlayed").defined()
+    test().its("playersPlayed").its(playerSessionID).equals(false)
   },
   command: ({ state, player }) => {
     const container = state.query<entities.Container>({ owner: player })

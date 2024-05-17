@@ -12,7 +12,7 @@ export type BotEntityAuxConditions<S extends State> = Conditions<
 >
 
 /**
- * Helper type for `con().test(callback)` related to bot's "entitiesFilter".
+ * Helper type for `test().test(callback)` related to bot's "entitiesFilter".
  * Context will only contain state and entity for assertion.
  */
 export type BotEntityAuxAssertionTester<S extends State> = Parameters<

@@ -1,12 +1,15 @@
 <script lang="ts">
-import { game } from "../gameHandler";
-import { clientJoined, gameStarted, readyToStart } from "../stores";
+  import { game } from "../gameHandler";
+  import { clientJoined, gameStarted, readyToStart } from "../stores";
+
+  let anteStart = 0
+  let anteRatio = 0.5
 
   const handleQuickJoin = () => {
     game.quickJoin()
   }
   const handleStart = () => {
-    game.room.send("start")
+    game.room.send("start", {variantData: {anteRatio, anteStart}})
   }
   const handleAddBot = () => {
     game.room.send("bot_add")
@@ -32,6 +35,31 @@ import { clientJoined, gameStarted, readyToStart } from "../stores";
       >
         Add Bot
       </button>
+    </li>
+    <li>
+      Configure the game:
+      <label for="variant_anteStart">
+        Starting Ante:
+        <input
+          name="variant_anteStart"
+          type="range"
+          min="0"
+          max="10"
+          step="1"
+          bind:value={anteStart}
+        />
+      </label>
+      <label for="variant_anteRatio">
+        Ante Ratio:
+        <input
+          name="variant_anteRatio"
+          type="range"
+          min="0.1"
+          max="3"
+          step="0.1"
+          bind:value={anteRatio}
+        />
+      </label>
     </li>
     <li>
       <button type="button"

@@ -1,5 +1,30 @@
-const { State, defineTypes } = require("@cardsgame/server")
+const {
+  State,
+  defineTypes,
+  standardDeckFactory,
+  entities,
+} = require("@cardsgame/server")
 const { MapSchema } = require("@colyseus/schema")
+
+const { ClassicCard, Deck, Pile } = entities
+
+function setupState(state) {
+  const deck = new Deck(state, {
+    name: "mainDeck",
+    x: 50,
+  })
+  pile = new Pile(state, {
+    name: "mainPile",
+  })
+  standardDeckFactory().forEach(
+    (data) =>
+      new ClassicCard(state, {
+        parent: deck,
+        suit: data.suit,
+        rank: data.rank,
+      }),
+  )
+}
 
 class WarState extends State {
   constructor() {
@@ -18,6 +43,8 @@ class WarState extends State {
 
     /** @type {number} */
     this.ante = 0
+
+    setupState(this)
   }
 }
 

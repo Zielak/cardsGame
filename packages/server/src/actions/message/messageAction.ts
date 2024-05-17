@@ -42,10 +42,10 @@ export class MessageActionDefinition<S extends State = State>
   }
 
   checkConditions(
-    con: ClientMessageConditions<S>,
-    messageContext: ClientMessageContext<S>
+    test: ClientMessageConditions<S>,
+    messageContext: ClientMessageContext<S>,
   ): void {
-    this.template.conditions(con, messageContext)
+    this.template.conditions(test, messageContext)
   }
 
   getCommand(messageContext: ClientMessageContext<S>): Command<S> {
@@ -57,7 +57,7 @@ export class MessageActionDefinition<S extends State = State>
  * @category Action definitions
  */
 export function defineMessageAction<S extends State = State>(
-  template: MessageActionTemplate<S>
+  template: MessageActionTemplate<S>,
 ): MessageActionDefinition<S> {
   return new MessageActionDefinition(template)
 }

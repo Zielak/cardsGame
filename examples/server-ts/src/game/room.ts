@@ -6,8 +6,11 @@ import { WarState } from "./state"
 
 export const WarGame = defineRoom<WarState>("WarGame", {
   stateConstructor: WarState,
-  variantDefaults: {
-    anteRatio: 0.5,
+  variantsConfig: {
+    defaults: {
+      anteStart: 0,
+      anteRatio: 0.5,
+    },
   },
 
   maxClients: 2,
@@ -21,13 +24,15 @@ export const WarGame = defineRoom<WarState>("WarGame", {
   onStartGame() {
     const { state } = this
 
+    state.ante = state.variantData.anteStart
+
     const mainDeck = state.query<entities.Deck>({ name: "mainDeck" })
 
     // Prepare all (both) players
     const decks = []
 
     state.players.forEach((player, idx) => {
-      // Eeach player will has his own Container.
+      // Each player will has his own Container.
       const container = new entities.Container(state, {
         owner: player,
         ownersMainFocus: true,
@@ -65,7 +70,9 @@ export const WarGame = defineRoom<WarState>("WarGame", {
   onRoundEnd() {
     const { state } = this
 
-    state.ante = Math.floor(state.round * state.variantData.anteRatio)
+    state.ante =
+      Math.floor(state.round * state.variantData.anteRatio) +
+      state.variantData.anteStart
 
     const playersDecks = state
       .queryAll<entities.Deck>({ type: "deck" })

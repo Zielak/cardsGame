@@ -32,7 +32,7 @@ class ConditionSubjects<
    * @yields completely new subject, provided in the argument
    * @example
    * ```ts
-   * con().set([1, 2, 3]).as("choices")
+   * test().set([1, 2, 3]).as("choices")
    * ```
    */
   set(newSubject: unknown): this {
@@ -47,7 +47,7 @@ class ConditionSubjects<
    * @yields an entity, found by `QuerableProps` query
    * @example
    * ```ts
-   * con().query({ name: "deck" }).not.empty()
+   * test().query({ name: "deck" }).not.empty()
    * ```
    */
   query(props: QuerableProps): this {
@@ -78,7 +78,7 @@ class ConditionSubjects<
    *
    * @example
    * ```ts
-   * con().subject.entity.its("name").equals("mainDeck")
+   * test().subject.entity.its("name").equals("mainDeck")
    * ```
    */
   get subject(): Record<keyof Context, this> {
@@ -102,7 +102,7 @@ class ConditionSubjects<
   }
 
   /**
-   * Alias to `con().subject`
+   * Alias to `test().subject`
    */
   get $(): Record<keyof Context, this> {
     return this.subject
@@ -113,11 +113,11 @@ class ConditionSubjects<
    * @yields subject prop's value to be asserted. Will remember the reference to the object, so you can chain key checks
    * @example
    * ```ts
-   * con().entity
+   * test().entity
    *   .its("propA").equals("foo")
    *   .and.its("propB").above(5)
    *
-   * con().its("customMap").its("propA").equals(true)
+   * test().its("customMap").its("propA").equals(true)
    * ```
    */
   its(propName: string): this {
@@ -437,9 +437,9 @@ class ConditionSubjects<
    *
    * @example
    * ```ts
-   * con().query({ name: "deck" }).as("deck")
+   * test().query({ name: "deck" }).as("deck")
    * // ...
-   * con().get("deck").children.not.empty()
+   * test().get("deck").children.not.empty()
    * ```
    */
   get(alias: string): this {
@@ -461,7 +461,7 @@ class ConditionSubjects<
    *
    * @example
    * ```ts
-   * con().remember("deck", { name: "deck" })
+   * test().remember("deck", { name: "deck" })
    * ```
    */
   remember(alias: string, props: QuerableProps): void {
@@ -486,7 +486,7 @@ class ConditionSubjects<
    * Remembers current subject with a given alias
    * @example
    * ```ts
-   * con().as({ name: "deck" }).as("deck")
+   * test().as({ name: "deck" }).as("deck")
    * ```
    */
   as(alias: string): void {

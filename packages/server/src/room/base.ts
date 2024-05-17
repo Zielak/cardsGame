@@ -16,7 +16,7 @@ import { logs } from "../logs.js"
 import { fallback } from "../messages/fallback.js"
 import { messages } from "../messages/messageHandler.js"
 import type { Player, ServerPlayerMessage, Bot } from "../player/index.js"
-import { State, StateConstructorOptions } from "../state/state.js"
+import { State } from "../state/state.js"
 import { debugRoomMessage } from "../utils/debugRoomMessage.js"
 
 import type { RoomDefinition } from "./roomType.js"
@@ -45,11 +45,9 @@ export abstract class Room<
   /**
    * Reference to your game's `State` class.
    */
-  stateConstructor: new (
-    options: StateConstructorOptions<S["variantData"]>,
-  ) => S
+  stateConstructor: new () => S
 
-  variantDefaults: Required<S["variantData"]>
+  variantsConfig: VariantsConfig<S["variantData"]>
 
   /**
    * May be undefined if the game doesn't include any
@@ -126,12 +124,7 @@ export abstract class Room<
 
     // Let the game initialize!
     if (this.stateConstructor) {
-      this.setState(
-        new this.stateConstructor({
-          variantData: options?.variantData,
-          variantDefaults: this.variantDefaults,
-        }),
-      )
+      this.setState(new this.stateConstructor())
     } else {
       this.setState(new State() as S)
     }
@@ -331,6 +324,7 @@ export abstract class Room<
   /**
    * Will be called when clients agree to start the game.
    * `state.players` is already populated with all players.
+   * Game options (variant data) is already set.
    * After this function, the game will give turn to the first player.
    * @param state
    */

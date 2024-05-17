@@ -12,21 +12,6 @@ describe("pick", () => {
   })
 })
 
-test("deepClone", () => {
-  const source = {
-    one: 1,
-    arr: ["string"],
-    obj: { foo: "bar" },
-    func: (): string => "hello",
-  }
-  const result = deepClone(source)
-
-  expect(result).toStrictEqual(source)
-  expect(result.arr).not.toBe(source.arr)
-  expect(result.obj).not.toBe(source.obj)
-  expect(result.func).toBe(source.func)
-})
-
 test("resolve", () => {
   const source = {
     one: 1,

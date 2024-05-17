@@ -86,8 +86,8 @@ interface Conditions<
    *
    * @example
    * ```ts
-   * con("Wait for your turn!").itsPlayersTurn()
-   * con("Can't perform this action until round 5").its("round").is.aboveEq(5)
+   * test("Wait for your turn!").itsPlayersTurn()
+   * test("Can't perform this action until round 5").its("round").is.aboveEq(5)
    * ```
    */
   (errorMessage?: string): ConditionsMethods<Context, S>

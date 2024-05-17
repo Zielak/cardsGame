@@ -16,7 +16,7 @@ export type ClientMessageConditions<S extends State> = Conditions<
 >
 
 /**
- * Helper type for `con().test(callback)` related to client message.
+ * Helper type for `test().test(callback)` related to client message.
  * Brings context filled with interaction data.
  */
 export type ClientMessageAssertionTester<S extends State> = Parameters<

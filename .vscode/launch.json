@@ -17,6 +17,20 @@
       "program": "${workspaceFolder}/examples/server-js/app.js",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Example - server-ts",
+      "env": {
+        "NODE_ENV": "development",
+        "LOGS": "verbose"
+      },
+      "runtimeExecutable": "node",
+      "sourceMaps": false,
+      "program": "${workspaceFolder}/examples/server-ts/dist/app.js",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

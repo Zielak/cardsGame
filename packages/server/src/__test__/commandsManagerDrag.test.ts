@@ -80,9 +80,9 @@ describe("drag action is kept in pending", () => {
             entityPath: fromEntity.idxPath,
             interaction: "dragstart",
           },
-          player.clientID
-        )
-      )
+          player.clientID,
+        ),
+      ),
     ).resolves.toBe(true)
 
     expect(dragAnyToPile.start.getCommand).toHaveBeenCalled()
@@ -99,9 +99,9 @@ describe("drag action is kept in pending", () => {
             entityPath: toPile.idxPath,
             interaction: "dragend",
           },
-          player.clientID
-        )
-      )
+          player.clientID,
+        ),
+      ),
     ).resolves.toBe(true)
 
     expect(manager.pendingActions.get(clientID)).toBeUndefined()
@@ -120,9 +120,9 @@ describe("drag action is kept in pending", () => {
             entityPath: fromEntity.idxPath,
             interaction: "dragstart",
           },
-          player.clientID
-        )
-      )
+          player.clientID,
+        ),
+      ),
     ).resolves.toBe(true)
 
     expect(dragAnyToPile.start.getCommand).toHaveBeenCalled()
@@ -139,9 +139,9 @@ describe("drag action is kept in pending", () => {
             entityPath: toLine.idxPath,
             interaction: "dragend",
           },
-          player.clientID
-        )
-      )
+          player.clientID,
+        ),
+      ),
     ).rejects.toThrow()
 
     expect(dragAnyToPile.end[0].getCommand).not.toHaveBeenCalled()
@@ -213,7 +213,7 @@ describe("start on one action and end in another shouldn't be allowed", () => {
         entityPath: fromHand.idxPath,
         interaction: "dragstart",
       },
-      player.clientID
+      player.clientID,
     )
 
     await expect(manager.handlePlayerEvent(event)).resolves.toBe(true)
@@ -232,9 +232,9 @@ describe("start on one action and end in another shouldn't be allowed", () => {
             entityPath: toHand.idxPath,
             interaction: "dragend",
           },
-          player.clientID
-        )
-      )
+          player.clientID,
+        ),
+      ),
     ).resolves.toBe(true)
 
     expect(dragHandToHand.end[0].getCommand).toHaveBeenCalled()
@@ -253,9 +253,9 @@ describe("start on one action and end in another shouldn't be allowed", () => {
             entityPath: fromHand.idxPath,
             interaction: "dragstart",
           },
-          player.clientID
-        )
-      )
+          player.clientID,
+        ),
+      ),
     ).resolves.toBe(true)
 
     expect(dragHandToHand.start.getCommand).toHaveBeenCalled()
@@ -270,9 +270,9 @@ describe("start on one action and end in another shouldn't be allowed", () => {
             entityPath: toLine.idxPath,
             interaction: "dragend",
           },
-          player.clientID
-        )
-      )
+          player.clientID,
+        ),
+      ),
     ).rejects.toThrow()
 
     expect(dragHandToHand.end[0].getCommand).not.toHaveBeenCalled()
@@ -333,9 +333,9 @@ describe("dragging into not allowed place", () => {
               entityPath: fromHand.idxPath,
               interaction: "dragstart",
             },
-            player.clientID
-          )
-        )
+            player.clientID,
+          ),
+        ),
       ).resolves.toBe(true)
 
       expect(dragToHand.start.getCommand).toHaveBeenCalled()
@@ -350,9 +350,9 @@ describe("dragging into not allowed place", () => {
               entityPath: toLine.idxPath,
               interaction: "dragend",
             },
-            player.clientID
-          )
-        )
+            player.clientID,
+          ),
+        ),
       ).rejects.toThrow()
 
       expect(dragToHand.end[0].getCommand).not.toHaveBeenCalled()
@@ -367,8 +367,8 @@ describe("dragging into not allowed place", () => {
         start: { interaction: () => "*", conditions },
         end: {
           interaction: () => "*",
-          conditions: (con) => {
-            con("Should always fail").set(true).is.false()
+          conditions: (test) => {
+            test("Should always fail").set(true).is.false()
           },
           command,
         },
@@ -391,9 +391,9 @@ describe("dragging into not allowed place", () => {
               entityPath: fromHand.idxPath,
               interaction: "dragstart",
             },
-            player.clientID
-          )
-        )
+            player.clientID,
+          ),
+        ),
       ).resolves.toBe(true)
 
       expect(dragToHand.start.getCommand).toHaveBeenCalled()
@@ -408,9 +408,9 @@ describe("dragging into not allowed place", () => {
               entityPath: toLine.idxPath,
               interaction: "dragend",
             },
-            player.clientID
-          )
-        )
+            player.clientID,
+          ),
+        ),
       ).rejects.toThrow()
 
       expect(dragToHand.end[0].getCommand).not.toHaveBeenCalled()

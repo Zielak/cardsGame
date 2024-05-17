@@ -52,7 +52,7 @@ export class RootActionDefinition<S extends State = State>
 
   checkPrerequisites(
     messageContext: ClientMessageContext<S>,
-    rootContext: CollectionContext<RootContext<S>>
+    rootContext: CollectionContext<RootContext<S>>,
   ): boolean {
     this.actions.forEach((action) => {
       if (extendsCollectionActionDefinition(action)) {
@@ -82,9 +82,9 @@ export class RootActionDefinition<S extends State = State>
   }
 
   checkConditions(
-    con: ClientMessageConditions<S>,
+    test: ClientMessageConditions<S>,
     messageContext: ClientMessageContext<S>,
-    rootContext: CollectionContext<RootContext<S>>
+    rootContext: CollectionContext<RootContext<S>>,
   ): CollectionConditionsResult<BaseActionDefinition<S>> {
     const rejectedActions: CollectionConditionsResult<BaseActionDefinition<S>> =
       new Map()
@@ -93,9 +93,9 @@ export class RootActionDefinition<S extends State = State>
       if (extendsCollectionActionDefinition(action)) {
         const actionContext = rootContext.subContexts.get(action)
         const subRejectedActions = action.checkConditions(
-          con,
+          test,
           messageContext,
-          actionContext
+          actionContext,
         )
 
         subRejectedActions?.forEach((error, action) => {
@@ -107,7 +107,7 @@ export class RootActionDefinition<S extends State = State>
         }
       } else if (extendsBaseActionDefinition(action)) {
         // Basic actions
-        const error = runConditionOnAction(con, messageContext, action)
+        const error = runConditionOnAction(test, messageContext, action)
         if (error) {
           rejectedActions.set(action, error)
           rootContext.successfulActions.delete(action)
@@ -120,7 +120,7 @@ export class RootActionDefinition<S extends State = State>
 
   getCommand(
     messageContext: ClientMessageContext<S>,
-    rootContext: CollectionContext<RootContext<S>>
+    rootContext: CollectionContext<RootContext<S>>,
   ): Command<S> {
     const action = this.getSuccessfulAction(rootContext)
 
@@ -141,7 +141,7 @@ export class RootActionDefinition<S extends State = State>
     return context.successfulActions.size > 0
   }
   getSuccessfulAction(
-    context: CollectionContext<RootContext<S>>
+    context: CollectionContext<RootContext<S>>,
   ): ActionDefinition<S> {
     return [...context.successfulActions][0]
   }

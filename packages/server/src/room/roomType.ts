@@ -28,7 +28,7 @@ export interface RoomDefinition<S extends State> extends ColyRoomDefinition {
   /**
    * The base
    */
-  variantDefaults?: S["variantData"]
+  variantsConfig?: VariantsConfig<S["variantData"]>
 
   /**
    * Set of all possible actions players can take in this game

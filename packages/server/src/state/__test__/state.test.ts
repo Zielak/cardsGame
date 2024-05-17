@@ -1,4 +1,5 @@
 import { DumbEntity } from "../../__test__/helpers/dumbEntities.js"
+import { Deck } from "../../entities/deck.js"
 import { Player } from "../../player/player.js"
 import { State } from "../state.js"
 
@@ -26,5 +27,21 @@ describe(`State`, () => {
     state.currentPlayerIdx = 0
 
     expect(state.currentPlayer.clientID).toBe("player1")
+  })
+
+  test("adding entity in State constructor", () => {
+    class NewState extends State {
+      constructor() {
+        super()
+
+        new Deck(this, {
+          name: "mainDeck",
+        })
+      }
+    }
+
+    expect(() => {
+      new NewState()
+    }).not.toThrow()
   })
 })

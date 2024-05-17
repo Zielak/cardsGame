@@ -14,13 +14,13 @@ class ConditionBase<S> {
    * @example
    * Combine together with `query()` to grab reference to an entity:
    * ```ts
-   * const pile = con().query({ type: "pile" }).grab()
+   * const pile = test().query({ type: "pile" }).grab()
    * ```
    * @example
    * grab previously remembered entity:
    * ```ts
-   * con().remember("pile", { type: "pile" })
-   * const pile = con().grab("pile")
+   * test().remember("pile", { type: "pile" })
+   * const pile = test().grab("pile")
    * ```
    */
   grab<T>(refName?: string): T {

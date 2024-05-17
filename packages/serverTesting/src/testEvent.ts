@@ -29,7 +29,7 @@ export interface TestEvent {
 function testCollectionAction<S extends State>(
   action: CollectionActionDefinition<S>,
   messageContext: ClientMessageContext<S>,
-  con: ClientMessageConditions<S>,
+  test: ClientMessageConditions<S>,
 ): boolean {
   const context = prepareActionContext(action)
 
@@ -39,7 +39,7 @@ function testCollectionAction<S extends State>(
   }
 
   // 2. Conditions
-  action.checkConditions(con, messageContext, context)
+  action.checkConditions(test, messageContext, context)
 
   return action.hasSuccessfulSubActions(context)
 }
@@ -47,7 +47,7 @@ function testCollectionAction<S extends State>(
 function testBasicAction<S extends State>(
   action: BaseActionDefinition<S>,
   messageContext: ClientMessageContext<S>,
-  con: ClientMessageConditions<S>,
+  test: ClientMessageConditions<S>,
 ): boolean {
   // 1. Prerequisites
   if (!action.checkPrerequisites(messageContext)) {
@@ -55,7 +55,7 @@ function testBasicAction<S extends State>(
   }
 
   // 2. Conditions
-  const error = runConditionOnAction(con, messageContext, action)
+  const error = runConditionOnAction(test, messageContext, action)
 
   return !error
 }

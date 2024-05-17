@@ -27,3 +27,9 @@ type MapElement<MapType extends Map<any, unknown>> = MapType extends Map<
 >
   ? ElementType
   : never
+
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>
+    }
+  : T

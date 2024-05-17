@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "index.html",
   "scripts": {
-    "start": "sirv dist --http2 --key node_modules/@cardsgame/example-certs/localhost.key --cert node_modules/@cardsgame/example-certs/localhost.crt",
+    "start": "npm run build && sirv dist --http2 --key ../../node_modules/@cardsgame/example-certs/localhost.key --cert ../../node_modules/@cardsgame/example-certs/localhost.crt",
     "build": "rollup --config rollup.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

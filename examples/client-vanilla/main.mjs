@@ -4,6 +4,10 @@ const EL = {
   gameView: document.querySelector(".gameView"),
   start_btn: document.getElementById("start_btn"),
   addBot_btn: document.getElementById("addBot_btn"),
+  variantFields: {
+    anteStart: document.getElementsByName("variant_anteStart")[0],
+    anteRatio: document.getElementsByName("variant_anteRatio")[0],
+  },
   quickJoin_btn: document.getElementById("quickJoin_btn"),
   player: {
     container: document.getElementById("player"),
@@ -55,6 +59,9 @@ const UI = {
     console.log("isGameStarted = true")
     EL.addBot_btn.disabled = true
     EL.start_btn.disabled = true
+
+    EL.variantFields.anteStart.disabled = true
+    EL.variantFields.anteRatio.disabled = true
   },
   deckCountUpdated: (isPlayer, cardsCount) => {
     EL[isPlayer ? "player" : "opponent"].deckCount.innerHTML = cardsCount
@@ -122,7 +129,7 @@ class GameHandler {
     this.joined = false
     this.game = new Game({
       wss: {
-        port: 443,
+        port: 3033,
       },
     })
 
@@ -141,7 +148,12 @@ class GameHandler {
     const clientID = room.sessionID
 
     EL.start_btn.addEventListener("click", () => {
-      room.send("start")
+      room.send("start", {
+        variantData: {
+          anteStart: Number(EL.variantFields.anteStart.value),
+          anteRatio: Number(EL.variantFields.anteRatio.value),
+        },
+      })
     })
 
     EL.addBot_btn.addEventListener("click", () => {
