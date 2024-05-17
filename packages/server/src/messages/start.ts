@@ -42,7 +42,9 @@ export function start(
 
       return
     }
-    if (variantData) {
+
+    // If variants are setup
+    if (variantsConfig && variantData) {
       try {
         if (variantsConfig.parse) {
           variantData = variantsConfig.parse(variantData)
@@ -106,9 +108,10 @@ function startTheGame(
 
   this._executeIntegrationHook("startPre")
 
-  if (variantData) {
+  if (this.variantsConfig && variantData) {
     state.populateVariantData(this.variantsConfig.defaults, variantData)
   }
+
   const postStartCommands = this.onStartGame()
 
   const postStartup = (): void => {

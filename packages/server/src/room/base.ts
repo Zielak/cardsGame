@@ -1,3 +1,4 @@
+import deepMerge from "@bundled-es-modules/deepmerge"
 import { type Client, type ISendOptions, Room as colRoom } from "@colyseus/core"
 import type { IBroadcastOptions } from "@colyseus/core/build/Room.js"
 
@@ -36,7 +37,7 @@ export abstract class Room<
     MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>,
   >
   extends colRoom<S>
-  implements Required<RoomDefinition<S>>
+  implements RoomDefinition<S>
 {
   patchRate = 100 // ms = 10FPS
 
@@ -47,7 +48,7 @@ export abstract class Room<
    */
   stateConstructor: new () => S
 
-  variantsConfig: VariantsConfig<S["variantData"]>
+  variantsConfig?: VariantsConfig<S["variantData"]>
 
   /**
    * May be undefined if the game doesn't include any
@@ -122,11 +123,15 @@ export abstract class Room<
     })
     this.onMessage("*", fallback.bind(this))
 
-    // Let the game initialize!
+    // Let the game state initialize!
     if (this.stateConstructor) {
       this.setState(new this.stateConstructor())
     } else {
       this.setState(new State() as S)
+    }
+
+    if (this.variantsConfig) {
+      this.state.variantData = deepMerge({}, this.variantsConfig.defaults)
     }
 
     this.onInitGame(options)
