@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.0](https://github.com/Zielak/cardsGame/compare/v2.0.0...v2.1.0) (2024-05-17)
+
+
+### Features
+
+* Variants finish ([#104](https://github.com/Zielak/cardsGame/issues/104)) ([ba97781](https://github.com/Zielak/cardsGame/commit/ba97781990d6aac956eecfa286435f772525226b))
+
 ## [2.0.0](https://github.com/Zielak/cardsGame/compare/v1.7.5...v2.0.0) (2024-02-22)
 
 
