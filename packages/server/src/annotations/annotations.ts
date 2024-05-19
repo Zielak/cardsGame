@@ -12,8 +12,8 @@ export const synchChildrenArray = (
   const arr = []
   arr.push(childrenConstructor)
 
-  logs.debug(
-    `\`- adding  "children${childrenConstructor.name}" in ${parentConstructor.name}`,
-  )
+  // logs.debug(
+  //   `\`- adding  "children${childrenConstructor.name}" in ${parentConstructor.name}`,
+  // )
   type(arr)(parentConstructor.prototype, `children${childrenConstructor.name}`)
 }
