@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.0](https://github.com/Zielak/cardsGame/compare/v2.1.1...v2.2.0) (2024-06-06)
+
+
+### Features
+
+* added kick message, fixed maxClients ([99ce62d](https://github.com/Zielak/cardsGame/commit/99ce62d8edad61c1a3e341beb72ef42f63ed1a22))
+
+
+### Bug Fixes
+
+* types for RoomAvailable ([a7a77c0](https://github.com/Zielak/cardsGame/commit/a7a77c0bcd2e927383ec99be9682728b88b3c4a3))
+
 ## [2.1.1](https://github.com/Zielak/cardsGame/compare/v2.1.0...v2.1.1) (2024-05-17)
 
 
