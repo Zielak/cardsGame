@@ -16,7 +16,8 @@ import type {
 import { logs } from "../logs.js"
 import { fallback } from "../messages/fallback.js"
 import { messages } from "../messages/messageHandler.js"
-import type { Player, ServerPlayerMessage, Bot } from "../player/index.js"
+import { BotOptions } from "../player/bot.js"
+import { Player, ServerPlayerMessage, Bot } from "../player/index.js"
 import { State } from "../state/state.js"
 import { debugRoomMessage } from "../utils/debugRoomMessage.js"
 
@@ -47,6 +48,8 @@ export abstract class Room<
    * Reference to your game's `State` class.
    */
   stateConstructor: new () => S
+
+  playersCount?: PlayersCount
 
   variantsConfig?: VariantsConfig<S["variantData"]>
 
@@ -155,32 +158,120 @@ export abstract class Room<
   }
 
   /**
-   * Add human client to `state.clients`
-   * @returns `false` is client is already there or if the game is not yet started
+   * Add client to `state.clients`
+   * @returns `false` is client is already there or if the game is already started
+   *
+   * @ignore exposed only for testing, do not use
    */
-  protected addClient(sessionId: string): boolean {
-    const { state } = this
+  addClient(sessionId: string): boolean {
+    const { state, playersCount } = this
 
-    if (
-      !state.isGameStarted &&
-      Array.from(state.clients.values()).every(
-        (clientID) => sessionId !== clientID,
-      )
-    ) {
-      state.clients.push(sessionId)
+    if (state.isGameStarted) {
+      logs.info("addClient", "state.isGameStarted")
+      return false
+    }
+
+    /**
+     * this.botClients - only bots
+     * this.clients - only human players and possible spectators?
+     * state.clients - all clients considered to become players when game starts
+     */
+
+    const withinPlayerLimits = playersCount?.max
+      ? this.clients.length < playersCount.max
+      : true
+
+    if (!withinPlayerLimits) {
+      logs.info("addClient failed", "!withinPlayerLimits")
+      return false
+    }
+
+    const clientAlreadyIn = Array.from(state.clients.values()).some(
+      (clientID) => sessionId === clientID,
+    )
+    if (clientAlreadyIn) {
+      logs.info("addClient failed", "clientAlreadyIn")
+      return false
+    }
+    state.clients.push(sessionId)
+    return true
+  }
+
+  addBot(bot: BotOptions): boolean {
+    const { state, playersCount } = this
+
+    if (state.isGameStarted) {
+      logs.info("addBot failed", "state.isGameStarted")
+      return false
+    }
+
+    /**
+     * this.botClients - only bots
+     * this.clients - only human players and possible spectators?
+     * state.clients - all clients considered to become players when game starts
+     */
+
+    const withinBotLimits = playersCount?.bots?.max
+      ? this.botClients.length < playersCount?.bots.max
+      : true
+
+    if (!withinBotLimits) {
+      logs.info("addBot failed", "!withinBotLimits")
+      return false
+    }
+
+    const clientAlreadyIn = Array.from(state.clients.values()).some(
+      (clientID) => bot.clientID === clientID,
+    )
+
+    if (clientAlreadyIn) {
+      logs.info("addBot failed", "clientAlreadyIn")
+      return false
+    }
+
+    this.botClients.push(new Bot(bot))
+    state.clients.push(bot.clientID)
+    return true
+  }
+
+  /**
+   * Remove client from `state.clients`
+   *
+   * @ignore exposed only for testing, do not use
+   */
+  removeClient(sessionId: string): boolean {
+    /**
+     * this.botClients - only bots
+     * this.clients - only human players and possible spectators?
+     * state.clients - all clients considered to become players when game starts
+     */
+
+    const clientIndex = this.state.clients.indexOf(sessionId)
+
+    if (clientIndex >= 0) {
+      this.state.clients.splice(clientIndex, 1)
+      return true
+    }
+    return false
+  }
+
+  removeBot(id: string): boolean {
+    const botClient = this.botClients.find((b) => b.clientID === id)
+
+    if (botClient) {
+      const clientIdx = this.state.clients.indexOf(botClient.clientID)
+      this.state.clients.splice(clientIdx, 1)
+      this.botClients = this.botClients.filter((b) => b !== botClient)
       return true
     }
     return false
   }
 
   /**
-   * Remove human client from `state.clients`
+   * Is called when the client successfully joins the room, after onAuth has succeeded.
+   *
+   * So we have guarantee, this new client is still within `maxClients` limit.
    */
-  protected removeClient(sessionId: string): void {
-    const clientIndex = this.state.clients.indexOf(sessionId)
-    this.state.clients.splice(clientIndex, 1)
-  }
-
   onJoin(newClient: Client): void {
     const added = this.addClient(newClient.sessionId)
     const statusString = added ? " and" : `, wasn't`
@@ -203,11 +294,23 @@ export abstract class Room<
     }
   }
 
+  clientSend(
+    clientID: string,
+    type: string | number,
+    message?: any,
+    options?: ClientSendOptions,
+  ): void
+  clientSend(
+    client: Client,
+    type: string | number,
+    message?: any,
+    options?: ClientSendOptions,
+  ): void
   /**
    * For convenience. Wraps message with additional data (like undo)
    */
   clientSend(
-    clientID: string,
+    clientIdOrRef: string | Client,
     type: string | number,
     message?: any,
     options?: ClientSendOptions,
@@ -223,22 +326,23 @@ export abstract class Room<
       delete cleanOptions.undo
     }
 
-    const client = this.clients.find((client) => client.sessionId === clientID)
+    const client =
+      typeof clientIdOrRef === "string"
+        ? this.clients.find((client) => client.sessionId === clientIdOrRef)
+        : clientIdOrRef
 
     if (!client) {
       logs.warn(
         "clientSend",
-        'trying to send message to non-existing client "${clientID}"',
+        `trying to send message to non-existing client "${clientIdOrRef}"`,
       )
     }
 
-    this.clients
-      .find((client) => client.sessionId === clientID)
-      .send(
-        type,
-        wrappedMessage,
-        Object.keys(cleanOptions).length > 0 ? cleanOptions : undefined,
-      )
+    client.send(
+      type,
+      wrappedMessage,
+      Object.keys(cleanOptions).length > 0 ? cleanOptions : undefined,
+    )
   }
 
   /**

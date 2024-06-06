@@ -17,28 +17,40 @@ import { variantParser } from "../utils/variantParser.js"
  */
 export function start(
   this: Room<State>,
-  client?: Client,
+  client: Client,
   message?: ClientMessageTypes["start"],
 ): void {
-  const { state, variantsConfig } = this
+  const { state, playersCount, variantsConfig } = this
   let variantData = message?.variantData
   let msg = ""
 
   /**
    * 1. Validate if we can go with the START
    */
+
   if (!this.state.isGameOver) {
     if (state.isGameStarted) {
       msg = `Game is already started, ignoring...`
       logs.log("handleGameStart", msg)
-      client?.send("gameInfo", { data: msg })
+      this.clientSend(client, "gameInfo", msg)
 
       return
     }
+
+    // TODO: deprecate or find a use case...
     if (this.canGameStart && !this.canGameStart()) {
       msg = `Someone requested game start, but we can't go yet...`
       logs.log("handleGameStart", msg)
-      client?.send("gameWarn", { data: msg })
+      this.clientSend(client, "gameWarn", msg)
+
+      return
+    }
+
+    const remaining = (playersCount?.min ?? 0) - this.allClientsCount
+    if (remaining > 0) {
+      msg = `Not enough players. Waiting for ${remaining} more.`
+      logs.log("handleGameStart", msg)
+      this.clientSend(client, "gameInfo", msg)
 
       return
     }
@@ -52,9 +64,11 @@ export function start(
           variantData = variantParser(variantData)
         }
       } catch (e) {
-        client?.send("gameError", {
-          data: "Game room setup config parsing failed. " + e.message,
-        })
+        this.clientSend(
+          client,
+          "gameError",
+          "Game room setup config parsing failed. " + e.message,
+        )
         return
       }
 
@@ -68,7 +82,7 @@ export function start(
             "Game room setup config validation failed. " +
             (typeof validationResults === "string" ? validationResults : "")
 
-          client?.send("gameError", { data: msg })
+          this.clientSend(client, "gameError", { data: msg })
 
           return
         }
@@ -93,7 +107,11 @@ export function start(
      * Remember those options and quickly restart it or be able to re-configure the room again?
      */
 
-    this.send(client, "message", "Game's over, start it over in some other way")
+    this.clientSend(
+      client,
+      "message",
+      "Game's over, start it over in some other way",
+    )
   }
 }
 

@@ -1,6 +1,6 @@
 import { def } from "@cardsgame/utils"
+import type { Client } from "@colyseus/core"
 
-import { Bot } from "../player/bot.js"
 import type { Room } from "../room/base.js"
 import type { State } from "../state/state.js"
 
@@ -11,42 +11,28 @@ import type { State } from "../state/state.js"
  */
 export function botAdd(
   this: Room<State>,
-  client,
+  client: Client,
   message: ClientMessageTypes["bot_add"],
 ): void {
   const { state } = this
 
   if (state.isGameStarted) {
+    this.clientSend(
+      client,
+      "gameError",
+      "Game already started, not adding bots.",
+    )
     return
   }
 
-  const clientID = `botPlayer${this.botClients.length}`
-  if (this.addClient(clientID)) {
-    const bot = new Bot({
-      actionDelay: () => Math.random() + 0.5,
-      intelligence: def(message?.intelligence, 0.5),
-      clientID,
-    })
-    this.botClients.push(bot)
-  }
-}
+  const result = this.addBot({
+    actionDelay: () => Math.random() + 0.5,
+    intelligence: def(message?.intelligence, 0.5),
+    clientID: `botPlayer${this.botClients.length}`,
+  })
 
-/**
- * Remove bot client from `state.clients`
- * @ignore
- */
-export function botRemove(
-  this: Room<State>,
-  client,
-  message: ClientMessageTypes["bot_remove"],
-): void {
-  const bot = message.id
-    ? this.botClients.find((entry) => entry.clientID === message.id)
-    : this.botClients[this.botClients.length - 1]
-
-  if (bot) {
-    const clientIdx = this.state.clients.indexOf(bot.clientID)
-    this.state.clients.splice(clientIdx, 1)
-    this.botClients = this.botClients.filter((b) => b !== bot)
+  if (!result) {
+    this.clientSend(client, "gameError", "Couldn't add bot.")
+    return
   }
 }

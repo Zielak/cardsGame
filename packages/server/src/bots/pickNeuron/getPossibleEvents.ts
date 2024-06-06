@@ -17,7 +17,7 @@ import { logs } from "./pickNeuron.js"
 export const getPossibleEvents = <S extends State>(
   state: S,
   bot: Bot,
-  neuron: BotNeuron<S>
+  neuron: BotNeuron<S>,
 ): ClientPlayerMessage[] => {
   const { action } = neuron
 
@@ -30,11 +30,11 @@ export const getPossibleEvents = <S extends State>(
     const allEntities = getInteractionEntities(state, bot, neuron)
 
     const interactionTargets = allEntities.filter(
-      auxillaryEntitiesFilter(state, neuron)
+      auxillaryEntitiesFilter(state, neuron),
     )
 
     logs.debug(
-      `Entities: ${allEntities.length} => post aux: ${interactionTargets.length}`
+      `Entities: ${allEntities.length} => post aux: ${interactionTargets.length}`,
     )
 
     const testedEvents = interactionTargets
@@ -45,7 +45,7 @@ export const getPossibleEvents = <S extends State>(
             messageType: ENTITY_INTERACTION,
             interaction: "tap",
             entityPath: entity.idxPath,
-          } as ClientPlayerMessage)
+          }) as ClientPlayerMessage,
       )
       // and test if such event would pass
       .filter((event) => {
@@ -78,7 +78,7 @@ export const getPossibleEvents = <S extends State>(
             state,
             bot,
             neuron.playerEventData,
-            action.templateMessageType
+            action.templateMessageType,
           )
         : undefined,
     }
@@ -88,6 +88,7 @@ export const getPossibleEvents = <S extends State>(
     // TODO: ? drag action is 2 in one, action.start and action.end are both EntityInteraction actions.
     return []
   }
+  // TODO: Can't play Makao, because it has defineCompoundAction
   throw new Error(`Somehow got "action" in unexpected format`)
 }
 
@@ -95,7 +96,7 @@ function getDataGivenPlayerEventData<S extends State>(
   state: S,
   bot: Bot,
   playerEventData: BotNeuron<S>["playerEventData"],
-  messageType: string
+  messageType: string,
 ): ClientPlayerMessage["data"] {
   const event: ClientPlayerMessage = {
     messageType: messageType,

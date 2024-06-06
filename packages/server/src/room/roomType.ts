@@ -26,6 +26,13 @@ export interface RoomDefinition<S extends State> extends ColyRoomDefinition {
   stateConstructor?: new (...args: any[]) => S
 
   /**
+   * Allowed count of human and bot players in this game.
+   *
+   * NOTE: `maxClients` refers to max players (human and bot) AND any spectators.
+   */
+  playersCount?: PlayersCount
+
+  /**
    * The base
    */
   variantsConfig?: VariantsConfig<S["variantData"]>

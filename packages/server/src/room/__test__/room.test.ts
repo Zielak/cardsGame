@@ -2,6 +2,7 @@ import { Client, Room as ColyRoom } from "@colyseus/core"
 
 import { ENTITY_INTERACTION } from "../../interaction/constants.js"
 import { start } from "../../messages/start.js"
+import { Bot } from "../../player/bot.js"
 import { Player } from "../../player/player.js"
 import { State } from "../../state/state.js"
 import { Room } from "../base.js"
@@ -49,7 +50,7 @@ describe("handleMessage", () => {
         room.handleMessage({
           messageType: ENTITY_INTERACTION,
           timestamp: 123456,
-        })
+        }),
       ).rejects.toThrow("client is not a player")
     })
 
@@ -60,7 +61,7 @@ describe("handleMessage", () => {
           messageType: ENTITY_INTERACTION,
           timestamp: 123456,
           player: new Player({ clientID: "qwf" }),
-        })
+        }),
       ).rejects.toThrow("game's already over")
     })
   })
@@ -93,7 +94,7 @@ describe("broadcast", () => {
         data: 1,
         undo: true,
       },
-      { except: {} }
+      { except: {} },
     )
   })
 })
@@ -120,7 +121,7 @@ describe("integration tests", () => {
 
     expect(room.integrationHooks.test1.init).toHaveBeenCalledWith(
       room.state,
-      room.integrationContext
+      room.integrationContext,
     )
     expect(room.integrationHooks.test1.startPre).not.toHaveBeenCalled()
     expect(room.integrationHooks.test1.startPost).not.toHaveBeenCalled()
@@ -133,15 +134,15 @@ describe("integration tests", () => {
 
     expect(room.integrationHooks.test1.init).toHaveBeenCalledWith(
       room.state,
-      room.integrationContext
+      room.integrationContext,
     )
     expect(room.integrationHooks.test1.startPre).toHaveBeenCalledWith(
       room.state,
-      room.integrationContext
+      room.integrationContext,
     )
     expect(room.integrationHooks.test1.startPost).toHaveBeenCalledWith(
       room.state,
-      room.integrationContext
+      room.integrationContext,
     )
 
     expect(room.integrationHooks.test2.init).not.toHaveBeenCalled()
@@ -185,12 +186,68 @@ describe("integration tests", () => {
       room.onCreate({ test: "test1" })
       expect(() => room.integrationContext.addClient("FOO")).not.toThrow()
       expect(room.integrationContext.data).toBe(
-        room.integrationHooks.test1.data
+        room.integrationHooks.test1.data,
       )
     })
     it("is unavailable without integration", () => {
       room.onCreate()
       expect(room.integrationContext).toBeUndefined()
     })
+  })
+})
+
+describe("addClient", () => {
+  it("allows new human client", () => {
+    room.playersCount = undefined
+    expect(room.addClient("foo")).toBe(true)
+  })
+  it("allows new human client within limit", () => {
+    room.playersCount = {
+      min: 0,
+      max: 4,
+    }
+    expect(room.addClient("foo")).toBe(true)
+  })
+  it("rejects human client with already recorded ID", () => {
+    // @ts-expect-error this just tests
+    room.state.clients = ["foo"]
+    expect(room.addClient("foo")).toBe(false)
+  })
+  it("rejects human client over the limit", () => {
+    // @ts-expect-error this just tests
+    room.clients = [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }]
+    room.playersCount = {
+      min: 0,
+      max: 4,
+    }
+    expect(room.addClient("foo")).toBe(false)
+  })
+
+  it("allows bot client", () => {
+    room.playersCount = undefined
+    expect(room.addClient("foo", true)).toBe(true)
+  })
+  it("allows bot client within limit", () => {
+    room.playersCount = {
+      min: 0,
+      max: 4,
+      bots: {
+        min: 0,
+        max: 1,
+      },
+    }
+    expect(room.addClient("foo", true)).toBe(true)
+  })
+  it("rejects bot client", () => {
+    room.botClients = [new Bot({ clientID: "foo" })]
+    room.playersCount = {
+      min: 0,
+      max: 4,
+      bots: {
+        min: 0,
+        max: 1,
+      },
+    }
+    expect(room.addClient("foo", true)).toBe(false)
   })
 })

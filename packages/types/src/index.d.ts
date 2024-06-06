@@ -1,5 +1,6 @@
 /// <reference path="cards.d.ts" />
 /// <reference path="messages.d.ts" />
+/// <reference path="room.d.ts" />
 /// <reference path="utils.d.ts" />
 /// <reference path="variants.d.ts" />
 

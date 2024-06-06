@@ -27,6 +27,8 @@ export class State<
    * A "client" is someone who just stopped by in this room
    * and not necessarily someone who is playing the game.
    *
+   * Will also contain ID of bot clients.
+   *
    * Read-only. Writing to it doesn't do anything meaningful.
    */
   @type(["string"]) clients = new ArraySchema<string>()

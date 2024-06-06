@@ -3,6 +3,7 @@
  */
 type ClientMessageTypes = {
   start: { variantData: Record<string, unknown> }
+  kick: { id: string }
   bot_add: { intelligence: number }
   bot_remove: { id: string }
   EntityInteraction: RawInteractionClientPlayerMessage

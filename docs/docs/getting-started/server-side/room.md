@@ -58,12 +58,6 @@ onInitGame(options) {
 
 State your own conditions of whether the game can be started or not.
 
-```ts title="Example: Wait for at least 2 players before starting the game"
-canGameStart() {
-  return this.allClientsCount === 2
-}
-```
-
 ### `onStartGame(state): void | Command[]`
 
 Will be called when clients agree to start the game. At this stage [`state.players`](/api/server/classes/State#players) is already populated with all joined players (including [bots](bots)).

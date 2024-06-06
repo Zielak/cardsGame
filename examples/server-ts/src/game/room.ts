@@ -14,12 +14,12 @@ export const WarGame = defineRoom<WarState>("WarGame", {
   },
 
   maxClients: 2,
+  playersCount: {
+    min: 2,
+    max: 2,
+  },
   possibleActions: [PickCard],
   botActivities: new Set([JustPlayGoal]),
-
-  canGameStart() {
-    return this.allClientsCount === 2
-  },
 
   onStartGame() {
     const { state } = this

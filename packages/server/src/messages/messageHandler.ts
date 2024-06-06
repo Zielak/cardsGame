@@ -2,8 +2,9 @@ import type { Room } from "@colyseus/core"
 
 import { ENTITY_INTERACTION } from "../interaction/constants.js"
 
-import { botAdd, botRemove } from "./bots.js"
+import { botAdd } from "./bots.js"
 import { entityInteraction } from "./entityInteraction.js"
+import { kick } from "./kick.js"
 import { start } from "./start.js"
 
 /**
@@ -11,7 +12,7 @@ import { start } from "./start.js"
  */
 export const messages = new Map<string, Parameters<Room["onMessage"]>[1]>([
   ["start", start],
+  ["kick", kick],
   ["bot_add", botAdd],
-  ["bot_remove", botRemove],
   [ENTITY_INTERACTION, entityInteraction],
 ])
