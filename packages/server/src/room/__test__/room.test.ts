@@ -225,7 +225,7 @@ describe("addClient", () => {
 
   it("allows bot client", () => {
     room.playersCount = undefined
-    expect(room.addClient("foo", true)).toBe(true)
+    expect(room.addBot({ clientID: "foo" })).toBe(true)
   })
   it("allows bot client within limit", () => {
     room.playersCount = {
@@ -236,7 +236,7 @@ describe("addClient", () => {
         max: 1,
       },
     }
-    expect(room.addClient("foo", true)).toBe(true)
+    expect(room.addBot({ clientID: "foo" })).toBe(true)
   })
   it("rejects bot client", () => {
     room.botClients = [new Bot({ clientID: "foo" })]
@@ -248,6 +248,6 @@ describe("addClient", () => {
         max: 1,
       },
     }
-    expect(room.addClient("foo", true)).toBe(false)
+    expect(room.addBot({ clientID: "foo" })).toBe(false)
   })
 })
