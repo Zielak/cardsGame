@@ -2,8 +2,6 @@ import type { Room as colyseusRoom } from "colyseus.js"
 
 import { logs } from "./logs.js"
 
-import type { RoomAvailable } from "./index.js"
-
 export class LobbyRoom {
   onInit: (rooms: RoomAvailable[]) => void
   onAdd: (room: RoomAvailable) => void

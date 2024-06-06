@@ -1,6 +1,5 @@
 import { def } from "@cardsgame/utils"
 import { Client } from "colyseus.js"
-import type { RoomAvailable } from "colyseus.js"
 
 import { LobbyRoom } from "./lobbyRoom.js"
 import { logs } from "./logs.js"
@@ -98,7 +97,7 @@ export class Game {
     })
   }
 
-  getAvailableRooms(gameName?: string): Promise<RoomAvailable[]> {
+  getAvailableRooms(gameName?: string): Promise<colRoomAvailable[]> {
     return this.client.getAvailableRooms(gameName)
   }
 
