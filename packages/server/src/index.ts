@@ -7,7 +7,6 @@ export * from "./interaction/index.js"
 export * from "./player/index.js"
 export * from "./queries/index.js"
 export * from "./state/index.js"
-export * from "./utils/index.js"
 
 export * from "./command.js"
 export * from "./commandsManager/utils.js"
@@ -21,3 +20,4 @@ export * as traits from "./traits/index.js"
 
 /** keep until we move completely to ES Modules? */
 export { prepareActionContext } from "./commandsManager/utils.js"
+export { populatePlayerEvent } from "./utils/populatePlayerEvent.js"

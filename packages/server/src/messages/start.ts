@@ -1,12 +1,14 @@
 import { shuffle } from "@cardsgame/utils"
 import type { Client } from "@colyseus/core"
 
-import { Sequence } from "../commands/index.js"
+import { Sequence } from "@/commands/index.js"
+import { Player } from "@/player/player.js"
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+
 import { logs } from "../logs.js"
-import { Player } from "../player/player.js"
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
-import { variantParser } from "../utils/variantParser.js"
+
+import { variantParser } from "./utils/variantParser.js"
 
 /**
  * @param this

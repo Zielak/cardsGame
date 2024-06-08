@@ -3,10 +3,11 @@ import { performance } from "perf_hooks"
 import { decimal, ServerLogger } from "@cardsgame/utils"
 import chalk from "chalk"
 
-import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
-import { ENTITY_INTERACTION } from "../../interaction/constants.js"
-import type { Bot } from "../../player/bot.js"
-import type { State } from "../../state/state.js"
+import { ClientMessageContext } from "@/conditions/context/clientMessage.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import type { Bot } from "@/player/bot.js"
+import type { State } from "@/state/state.js"
+
 import type { BotNeuron } from "../botNeuron.js"
 import { markDebugTime } from "../utils.js"
 

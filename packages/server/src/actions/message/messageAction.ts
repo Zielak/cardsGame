@@ -1,9 +1,10 @@
-import type { Command } from "../../command.js"
 import type {
   ClientMessageConditions,
   ClientMessageContext,
-} from "../../conditions/context/clientMessage.js"
-import type { State } from "../../state/state.js"
+} from "@/conditions/context/clientMessage.js"
+import type { State } from "@/state/state.js"
+
+import type { Command } from "../../command.js"
 import type { BaseActionDefinition, BaseActionTemplate } from "../base.js"
 
 /**

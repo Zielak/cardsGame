@@ -1,4 +1,4 @@
-import type { Entity } from "../traits/entity.js"
+import type { Entity } from "@/traits/entity.js"
 
 import { synchChildrenArray } from "./annotations.js"
 import { globalEntitiesContext } from "./entitiesContext.js"

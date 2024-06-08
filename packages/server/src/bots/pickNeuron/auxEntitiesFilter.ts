@@ -1,9 +1,10 @@
-import { isEntityActionDefinition } from "../../actions/entity/utils.js"
-import { Conditions } from "../../conditions/conditions.js"
-import { BotEntityAuxContext } from "../../conditions/context/botEntityAux.js"
-import { queryRunner } from "../../queries/runner.js"
-import type { State } from "../../state/state.js"
-import type { ChildTrait } from "../../traits/child.js"
+import { isEntityActionDefinition } from "@/actions/entity/utils.js"
+import { Conditions } from "@/conditions/conditions.js"
+import { BotEntityAuxContext } from "@/conditions/context/botEntityAux.js"
+import { queryRunner } from "@/queries/runner.js"
+import type { State } from "@/state/state.js"
+import type { ChildTrait } from "@/traits/child.js"
+
 import type { BotNeuron } from "../botNeuron.js"
 
 /**

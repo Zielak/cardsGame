@@ -1,10 +1,11 @@
 import chalk from "chalk"
 
-import { isEntityActionDefinition } from "../../actions/entity/utils.js"
-import { prepareConditionsContext } from "../../conditions/context/utils.js"
-import type { Bot } from "../../player/bot.js"
-import type { State } from "../../state/state.js"
-import type { ChildTrait } from "../../traits/child.js"
+import { isEntityActionDefinition } from "@/actions/entity/utils.js"
+import { prepareConditionsContext } from "@/conditions/context/utils.js"
+import type { Bot } from "@/player/bot.js"
+import type { State } from "@/state/state.js"
+import type { ChildTrait } from "@/traits/child.js"
+
 import type { BotNeuron } from "../botNeuron.js"
 
 import { logs } from "./pickNeuron.js"

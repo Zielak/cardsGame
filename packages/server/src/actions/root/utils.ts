@@ -1,4 +1,4 @@
-import { State } from "../../state/state.js"
+import { State } from "@/state/state.js"
 
 import { RootActionDefinition } from "./rootAction.js"
 
@@ -6,7 +6,7 @@ import { RootActionDefinition } from "./rootAction.js"
  * @ignore
  */
 export function isRootActionDefinition<S extends State>(
-  o: unknown
+  o: unknown,
 ): o is RootActionDefinition<S> {
   if (typeof o !== "object" && !(o instanceof RootActionDefinition)) {
     return false

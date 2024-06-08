@@ -1,7 +1,7 @@
-import type { Player } from "../../player/player.js"
+import type { Player } from "@/player/player.js"
 
 export class State<
-  V extends Record<string, unknown> = Record<string, unknown>
+  V extends Record<string, unknown> = Record<string, unknown>,
 > {
   name = "Unnamed"
   type = "state"

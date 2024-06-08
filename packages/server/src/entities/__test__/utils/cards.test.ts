@@ -1,4 +1,4 @@
-import { standardDeckFactory } from "../../utils/cards.js"
+import { standardDeckFactory } from "@/entities/utils/cards.js"
 
 describe("standardDeckFactory", () => {
   it("gives data for 52 cards", () => {

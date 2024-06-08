@@ -1,6 +1,7 @@
-import { ClassicCard, Hand } from "../../../entities/index.js"
-import { Bot } from "../../../player/index.js"
-import { State } from "../../../state/state.js"
+import { ClassicCard, Hand } from "@/entities/index.js"
+import { Bot } from "@/player/index.js"
+import { State } from "@/state/state.js"
+
 import {
   PlayCardGoal,
   rootNeuron,

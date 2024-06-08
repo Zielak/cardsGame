@@ -1,13 +1,14 @@
-import type { Command } from "../../command.js"
-import { Message } from "../../commands/message.js"
-import { Noop } from "../../commands/noop.js"
-import { Sequence } from "../../commands/sequence.js"
+import { Message } from "@/commands/message.js"
+import { Noop } from "@/commands/noop.js"
+import { Sequence } from "@/commands/sequence.js"
 import type {
   ClientMessageConditions,
   ClientMessageContext,
-} from "../../conditions/context/clientMessage.js"
-import type { State } from "../../state/state.js"
-import type { ChildTrait } from "../../traits/child.js"
+} from "@/conditions/context/clientMessage.js"
+import type { State } from "@/state/state.js"
+import type { ChildTrait } from "@/traits/child.js"
+
+import type { Command } from "../../command.js"
 import type { BaseActionDefinition, BaseActionTemplate } from "../base.js"
 import { checkInteractionQueries } from "../shared/prerequisites.js"
 import type { InteractionQueries } from "../shared/types.js"

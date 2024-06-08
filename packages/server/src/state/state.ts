@@ -2,14 +2,15 @@
 import deepMerge from "@bundled-es-modules/deepmerge"
 import { ArraySchema, MapSchema } from "@colyseus/schema"
 
-import { containsChildren } from "../annotations/containsChildren.js"
-import { type } from "../annotations/type.js"
-import { Player } from "../player/player.js"
+import { containsChildren } from "@/annotations/containsChildren.js"
+import { type } from "@/annotations/type.js"
+import { Player } from "@/player/player.js"
+import { applyTraitsMixins, Entity } from "@/traits/entity.js"
+import { IdentityTrait } from "@/traits/identity.js"
+import { LabelTrait } from "@/traits/label.js"
+import { ParentTrait } from "@/traits/parent.js"
+
 import { PlayerViewPosition } from "../playerViewPosition.js"
-import { applyTraitsMixins, Entity } from "../traits/entity.js"
-import { IdentityTrait } from "../traits/identity.js"
-import { LabelTrait } from "../traits/label.js"
-import { ParentTrait } from "../traits/parent.js"
 
 @containsChildren
 @applyTraitsMixins([IdentityTrait, LabelTrait, ParentTrait])

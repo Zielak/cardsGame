@@ -1,8 +1,9 @@
+import { ClassicCard } from "@/entities/classicCard.js"
+import { Hand } from "@/entities/hand.js"
+import type { Room } from "@/room/base.js"
+import { State } from "@/state/state.js"
+
 import { TestRoom } from "../../__helpers__/room.js"
-import { ClassicCard } from "../../entities/classicCard.js"
-import { Hand } from "../../entities/hand.js"
-import type { Room } from "../../room/base.js"
-import { State } from "../../state/state.js"
 import { Deselect, Select, ToggleSelection } from "../selectChild.js"
 
 let state: State

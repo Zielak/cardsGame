@@ -1,8 +1,9 @@
+import { State } from "@/state/state.js"
+
 import {
   SmartEntity,
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
-import { State } from "../../state/state.js"
 import { Conditions } from "../conditions.js"
 import { prepareConditionsContext } from "../context/utils.js"
 import { getCustomError } from "../errors.js"
@@ -64,7 +65,7 @@ describe("every", () => {
           .set([5, 10, 15])
           .every((con) => {
             con().is.above(3)
-          })
+          }),
       ).not.toThrow()
 
       expect(() =>
@@ -72,7 +73,7 @@ describe("every", () => {
           .set([15, 10, 5])
           .every((con) => {
             con().is.above(3)
-          })
+          }),
       ).not.toThrow()
     })
   })
@@ -84,7 +85,7 @@ describe("every", () => {
           .set([5, 10, 15])
           .every((con) => {
             con().is.above(6)
-          })
+          }),
       ).toThrow()
 
       expect(() =>
@@ -92,7 +93,7 @@ describe("every", () => {
           .set([15, 10, 5])
           .every((con) => {
             con().is.above(6)
-          })
+          }),
       ).toThrow()
     })
 
@@ -100,7 +101,7 @@ describe("every", () => {
       expect(() =>
         con()
           .set("whoops")
-          .every((con) => con().empty())
+          .every((con) => con().empty()),
       ).toThrow(/to be an array/)
     })
   })
@@ -146,13 +147,13 @@ describe("some", () => {
       expect(() =>
         con()
           .set([5, 10, 15])
-          .some((con) => con().equals(10))
+          .some((con) => con().equals(10)),
       ).not.toThrow()
 
       expect(() =>
         con()
           .set([15, 10, 5])
-          .some((con) => con().equals(10))
+          .some((con) => con().equals(10)),
       ).not.toThrow()
     })
   })
@@ -162,13 +163,13 @@ describe("some", () => {
       expect(() =>
         con()
           .set([5, 10, 15])
-          .some((con) => con().is.below(5))
+          .some((con) => con().is.below(5)),
       ).toThrow()
 
       expect(() =>
         con()
           .set([15, 10, 5])
-          .some((con) => con().is.below(5))
+          .some((con) => con().is.below(5)),
       ).toThrow()
     })
 
@@ -176,7 +177,7 @@ describe("some", () => {
       expect(() =>
         con()
           .set("whoops")
-          .some((con) => con().empty())
+          .some((con) => con().empty()),
       ).toThrow(/to be an array/)
     })
   })
@@ -189,7 +190,7 @@ describe("either", () => {
         con().either(
           () => con().set(1).equals(1),
           () => con().set(0).equals(1),
-          () => con().set(0).equals(1)
+          () => con().set(0).equals(1),
         )
       }).not.toThrow()
     })
@@ -199,7 +200,7 @@ describe("either", () => {
         con().either(
           () => con().set(0).equals(1),
           () => con().set(0).equals(1),
-          () => con().set(1).equals(1)
+          () => con().set(1).equals(1),
         )
       }).not.toThrow()
     })
@@ -208,7 +209,7 @@ describe("either", () => {
       try {
         con().either(
           () => con("fail 1").set(true).is.false(),
-          () => con("fail 2").set(false).is.true()
+          () => con("fail 2").set(false).is.true(),
         )
       } catch (e) {}
 
@@ -219,7 +220,7 @@ describe("either", () => {
       try {
         con("none passed").either(
           () => con("zero is one").set(0).equals(1),
-          () => con("one is two").set(1).equals(2)
+          () => con("one is two").set(1).equals(2),
         )
       } catch (e) {}
 

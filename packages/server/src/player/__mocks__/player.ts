@@ -1,6 +1,7 @@
 import { def } from "@cardsgame/utils"
 
-import type { ChildTrait } from "../../traits/child.js"
+import type { ChildTrait } from "@/traits/child.js"
+
 import type { PlayerOptions } from "../player.js"
 
 export class Player {

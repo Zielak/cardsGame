@@ -1,8 +1,9 @@
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import { Player } from "@/player/player.js"
+import type { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
+import { State } from "@/state/state.js"
+
 import { DumbEntity } from "../../__test__/helpers/dumbEntities.js"
-import { ENTITY_INTERACTION } from "../../interaction/constants.js"
-import { Player } from "../../player/player.js"
-import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
-import { State } from "../../state/state.js"
 import { entityInteraction } from "../entityInteraction.js"
 
 let state: State
@@ -37,14 +38,14 @@ describe("drag events", () => {
           new Promise((resolve) => {
             result = newMessage
             resolve(true)
-          })
+          }),
       ),
     }
 
     await entityInteraction.call(
       roomMock,
       { sessionId: CLIENT_ID },
-      inputMessage
+      inputMessage,
     )
 
     expect(roomMock.handleMessage).toHaveBeenCalledTimes(1)
@@ -70,14 +71,14 @@ describe("drag events", () => {
           new Promise((resolve) => {
             result = newMessage
             resolve(true)
-          })
+          }),
       ),
     }
 
     await entityInteraction.call(
       roomMock,
       { sessionId: CLIENT_ID },
-      inputMessage
+      inputMessage,
     )
 
     expect(roomMock.handleMessage).toHaveBeenCalledTimes(1)

@@ -1,12 +1,13 @@
 import { isMapLike } from "@cardsgame/utils"
 
+import type { QuerableProps } from "@/queries/types.js"
+import type { State } from "@/state/state.js"
+import { isChild } from "@/traits/child.js"
+import { hasOwnership } from "@/traits/ownership.js"
+import { isParent } from "@/traits/parent.js"
+import { hasSelectableChildren } from "@/traits/selectableChildren.js"
+
 import type { Player } from "../index.js"
-import type { QuerableProps } from "../queries/types.js"
-import type { State } from "../state/state.js"
-import { isChild } from "../traits/child.js"
-import { hasOwnership } from "../traits/ownership.js"
-import { isParent } from "../traits/parent.js"
-import { hasSelectableChildren } from "../traits/selectableChildren.js"
 
 import { throwError } from "./errors.js"
 import { ConditionsContextBase } from "./types.js"

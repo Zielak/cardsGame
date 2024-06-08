@@ -2,9 +2,15 @@ import deepMerge from "@bundled-es-modules/deepmerge"
 import { type Client, type ISendOptions, Room as colRoom } from "@colyseus/core"
 import type { IBroadcastOptions } from "@colyseus/core/build/Room.js"
 
-import type { ActionDefinition } from "../actions/types.js"
-import type { BotActionsSet } from "../bots/botNeuron.js"
-import { BotRunner } from "../bots/runner.js"
+import type { ActionDefinition } from "@/actions/types.js"
+import type { BotActionsSet } from "@/bots/botNeuron.js"
+import { BotRunner } from "@/bots/runner.js"
+import { fallback } from "@/messages/fallback.js"
+import { messages } from "@/messages/messageHandler.js"
+import { BotOptions } from "@/player/bot.js"
+import { Player, ServerPlayerMessage, Bot } from "@/player/index.js"
+import { State } from "@/state/state.js"
+
 import type { Command } from "../command.js"
 import { CommandsManager } from "../commandsManager.js"
 import type {
@@ -14,14 +20,9 @@ import type {
   IntegrationHookData,
 } from "../integration.js"
 import { logs } from "../logs.js"
-import { fallback } from "../messages/fallback.js"
-import { messages } from "../messages/messageHandler.js"
-import { BotOptions } from "../player/bot.js"
-import { Player, ServerPlayerMessage, Bot } from "../player/index.js"
-import { State } from "../state/state.js"
-import { debugRoomMessage } from "../utils/debugRoomMessage.js"
 
 import type { RoomDefinition } from "./roomType.js"
+import { debugRoomMessage } from "./utils/debugRoomMessage.js"
 
 type BroadcastOptions = IBroadcastOptions & {
   undo: boolean

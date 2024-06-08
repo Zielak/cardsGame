@@ -57,6 +57,7 @@
     "lint-staged": "^15.0.2",
     "prettier": "^3.0.3",
     "release-please": "^16.1.0",
+    "resolve-tspaths": "^0.8.19",
     "rollup": "^2.67.2",
     "rollup-plugin-terser": "^7.0.2",
     "ts-jest": "^29.0.3",

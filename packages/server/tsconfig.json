@@ -1,9 +1,25 @@
-// config for both working with IDE and test runs
 {
   "extends": "@cardsgame/base-configs/tsconfig.json",
   "compilerOptions": {
     "experimentalDecorators": true,
     "noEmit": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/actions/*": ["actions/*"],
+      "@/annotations/*": ["annotations/*"],
+      "@/bots/*": ["bots/*"],
+      "@/commands/*": ["commands/*"],
+      "@/conditions/*": ["conditions/*"],
+      "@/entities/*": ["entities/*"],
+      "@/interaction/*": ["interaction/*"],
+      "@/messages/*": ["messages/*"],
+      "@/player/*": ["player/*"],
+      "@/queries/*": ["queries/*"],
+      "@/room/*": ["room/*"],
+      "@/state/*": ["state/*"],
+      "@/traits/*": ["traits/*"],
+      "@/utils/*": ["utils/*"]
+    },
     "types": [
       "@cardsgame/types",
       "@colyseus/core",

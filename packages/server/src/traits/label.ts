@@ -1,7 +1,7 @@
 import { LabelTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import type { State } from "../state/state.js"
+import type { State } from "@/state/state.js"
 
 /**
  * Adds `name` and `type` properties, useful for querying on server-side and for choosing client-side component.

@@ -1,8 +1,8 @@
 import { OwnershipTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import type { Player } from "../player/player.js"
-import type { State } from "../state/state.js"
+import type { Player } from "@/player/player.js"
+import type { State } from "@/state/state.js"
 
 import { isChild } from "./child.js"
 import { isParent } from "./parent.js"

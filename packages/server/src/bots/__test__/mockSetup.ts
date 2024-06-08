@@ -1,7 +1,8 @@
-import { defineEntityAction } from "../../actions/entity/entityAction.js"
-import { defineMessageAction } from "../../actions/message/messageAction.js"
+import { defineEntityAction } from "@/actions/entity/entityAction.js"
+import { defineMessageAction } from "@/actions/message/messageAction.js"
+import type { State } from "@/state/state.js"
+
 import { commands } from "../../index.js"
-import type { State } from "../../state/state.js"
 import type { BotNeuron } from "../botNeuron.js"
 
 const ScreamAction = defineMessageAction({

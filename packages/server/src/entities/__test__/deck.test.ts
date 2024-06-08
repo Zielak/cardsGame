@@ -1,5 +1,6 @@
+import { State } from "@/state/state.js"
+
 import { LabeledEntity } from "../../__test__/helpers/labeledEntities.js"
-import { State } from "../../state/state.js"
 import { Deck } from "../deck.js"
 
 let state: State

@@ -1,7 +1,8 @@
+import { State } from "@/state/state.js"
+
 import { DumbEntity, DumbParent } from "../../__test__/helpers/dumbEntities.js"
 import { SelectableParent } from "../../__test__/helpers/selectableParent.js"
 import { SmartEntity } from "../../__test__/helpers/smartEntities.js"
-import { State } from "../../state/state.js"
 import { Conditions } from "../conditions.js"
 import { prepareConditionsContext } from "../context/utils.js"
 
@@ -52,7 +53,7 @@ describe("selectionIndex", () => {
       const reason = "Parent without ability to select children"
 
       expect(() => con().set(invalidChildA).selectionIndex.equals(0)).toThrow(
-        reason
+        reason,
       )
     })
 
@@ -62,7 +63,7 @@ describe("selectionIndex", () => {
       expect(() => con().set(123).selectionIndex.equals(0)).toThrow(reason)
       expect(() => con().set("childB").selectionIndex.equals(0)).toThrow(reason)
       expect(() => con().set([1, 2, 3, 4]).selectionIndex.equals(0)).toThrow(
-        reason
+        reason,
       )
       expect(() => con().selectionIndex.equals(0)).toThrow(reason)
     })

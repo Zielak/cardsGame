@@ -1,8 +1,8 @@
 import type {
   CollectionActionDefinition,
   CollectionContext,
-} from "../actions/collection/collection.js"
-import type { State } from "../state/state.js"
+} from "@/actions/collection/collection.js"
+import type { State } from "@/state/state.js"
 
 /**
  * For internal usage only, used also by server-testing lib

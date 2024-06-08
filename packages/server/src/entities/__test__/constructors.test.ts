@@ -1,4 +1,5 @@
-import { State } from "../../state/state.js"
+import { State } from "@/state/state.js"
+
 import { Deck, Container, Grid, Hand, Line, Pile, Spread } from "../index.js"
 
 let state: State

@@ -1,9 +1,10 @@
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+import type { ParentTrait } from "@/traits/parent.js"
+import type { SelectableChildrenTrait } from "@/traits/selectableChildren.js"
+
 import { Command, Target, TargetHolder } from "../command.js"
 import { logs } from "../logs.js"
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
-import type { ParentTrait } from "../traits/parent.js"
-import type { SelectableChildrenTrait } from "../traits/selectableChildren.js"
 
 type ParentSelecta = SelectableChildrenTrait & ParentTrait
 

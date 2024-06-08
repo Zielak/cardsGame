@@ -1,6 +1,7 @@
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+
 import { Command } from "../command.js"
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
 
 export class GameOver<Data = any> extends Command {
   data: Data

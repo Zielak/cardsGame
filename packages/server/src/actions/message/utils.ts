@@ -1,4 +1,4 @@
-import { State } from "../../state/state.js"
+import { State } from "@/state/state.js"
 
 import {
   MessageActionDefinition,
@@ -9,7 +9,7 @@ import {
  * @ignore
  */
 export function isMessageActionTemplate<S extends State>(
-  o: unknown
+  o: unknown,
 ): o is MessageActionTemplate<S> {
   if (typeof o !== "object") {
     return false
@@ -22,7 +22,7 @@ export function isMessageActionTemplate<S extends State>(
  * @ignore
  */
 export function isMessageActionDefinition<S extends State>(
-  o: unknown
+  o: unknown,
 ): o is MessageActionDefinition<S> {
   if (typeof o !== "object" && !(o instanceof MessageActionDefinition)) {
     return false

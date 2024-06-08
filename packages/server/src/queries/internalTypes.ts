@@ -7,7 +7,7 @@ import type {
   Line,
   Pile,
   Spread,
-} from "../entities/index.js"
+} from "@/entities/index.js"
 
 import { QuerableProps } from "./types.js"
 
@@ -67,7 +67,7 @@ const helperQuerablePropKeys: (keyof HelperQuerableProps)[] = [
   "selectionIndex",
 ]
 export const isHelperQuerableProp = (
-  s: unknown
+  s: unknown,
 ): s is keyof HelperQuerableProps => {
   return helperQuerablePropKeys.includes(s as any)
 }

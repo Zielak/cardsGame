@@ -1,5 +1,6 @@
+import { State } from "@/state/state.js"
+
 import { DumbEntity } from "../../__test__/helpers/dumbEntities.js"
-import { State } from "../../state/state.js"
 import { Grid } from "../grid.js"
 
 let state: State

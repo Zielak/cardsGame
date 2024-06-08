@@ -1,6 +1,7 @@
+import type { Room } from "@/room/base.js"
+import { State } from "@/state/state.js"
+
 import { TestRoom } from "../../__helpers__/room.js"
-import type { Room } from "../../room/base.js"
-import { State } from "../../state/state.js"
 import { Broadcast } from "../index.js"
 
 type TestMessageTypes = {

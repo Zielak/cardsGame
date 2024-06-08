@@ -1,7 +1,8 @@
 import chalk from "chalk"
 
+import type { State } from "@/state/state.js"
+
 import { logs } from "../logs.js"
-import type { State } from "../state/state.js"
 
 import type { Conditions } from "./conditions.js"
 import { throwError } from "./errors.js"

@@ -1,14 +1,14 @@
-import type { ActionDefinition } from "../actions/types.js"
+import type { ActionDefinition } from "@/actions/types.js"
 import {
   BotEntityAuxConditions,
   BotEntityAuxContext,
-} from "../conditions/context/botEntityAux.js"
+} from "@/conditions/context/botEntityAux.js"
 import {
   ClientMessageConditions,
   ClientMessageContext,
-} from "../conditions/context/clientMessage.js"
-import type { QuerableProps } from "../queries/types.js"
-import type { State } from "../state/state.js"
+} from "@/conditions/context/clientMessage.js"
+import type { QuerableProps } from "@/queries/types.js"
+import type { State } from "@/state/state.js"
 
 export interface BotNeuron<S extends State> {
   name: string

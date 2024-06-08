@@ -1,5 +1,6 @@
+import { State } from "@/state/state.js"
+
 import { DumbEntity, DumbParent } from "../../__test__/helpers/dumbEntities.js"
-import { State } from "../../state/state.js"
 import type { ChildTrait } from "../child.js"
 import type { IdentityTrait } from "../identity.js"
 
@@ -73,7 +74,7 @@ describe("#removeChild", () => {
 
     parent.removeChild(entity)
     expect(
-      parent.getChildren().map((e: ChildTrait & IdentityTrait) => e.id)
+      parent.getChildren().map((e: ChildTrait & IdentityTrait) => e.id),
     ).toMatchSnapshot()
   })
 })

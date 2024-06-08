@@ -28,10 +28,6 @@ import type { State } from "./state/state.js"
  */
 export class CommandsManager<S extends State> {
   history: Command[] = []
-  /**
-   * @deprecated the fuck is this?
-   */
-  incoming: Map<Player, ServerPlayerMessage> = new Map()
 
   /**
    * Map of clientID to a tuple of:

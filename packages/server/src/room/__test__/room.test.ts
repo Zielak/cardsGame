@@ -1,14 +1,15 @@
 import { Client, Room as ColyRoom } from "@colyseus/core"
 
-import { ENTITY_INTERACTION } from "../../interaction/constants.js"
-import { start } from "../../messages/start.js"
-import { Bot } from "../../player/bot.js"
-import { Player } from "../../player/player.js"
-import { State } from "../../state/state.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import { start } from "@/messages/start.js"
+import { Bot } from "@/player/bot.js"
+import { Player } from "@/player/player.js"
+import { State } from "@/state/state.js"
+
 import { Room } from "../base.js"
 
-jest.mock("../../state/state.js")
-jest.mock("../../player/player.js")
+jest.mock("@/state/state.js")
+jest.mock("@/player/player.js")
 jest.mock("@colyseus/core")
 
 let room: Room<State>

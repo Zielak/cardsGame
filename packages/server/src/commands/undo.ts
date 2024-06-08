@@ -1,6 +1,7 @@
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+
 import { Command } from "../command.js"
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
 
 export class Undo extends Command {
   constructor() {
@@ -13,7 +14,7 @@ export class Undo extends Command {
 
   async undo(): Promise<void> {
     throw new Error(
-      "Undo.undo() should not be executed, and shouldn't even be stored in history. 'Redo' is just not implemented."
+      "Undo.undo() should not be executed, and shouldn't even be stored in history. 'Redo' is just not implemented.",
     )
   }
 }

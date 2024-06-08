@@ -1,4 +1,5 @@
-import { State } from "../../state/state.js"
+import { State } from "@/state/state.js"
+
 import { Line } from "../line.js"
 
 let state: State

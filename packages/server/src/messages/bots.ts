@@ -1,8 +1,8 @@
 import { def } from "@cardsgame/utils"
 import type { Client } from "@colyseus/core"
 
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
 
 /**
  * Create and add new Bot player to clients list.

@@ -1,9 +1,9 @@
-import { canBeChild } from "../../annotations/canBeChild.js"
-import { containsChildren } from "../../annotations/containsChildren.js"
-import { ChildTrait } from "../../traits/child.js"
-import { applyTraitsMixins, Entity } from "../../traits/entity.js"
-import { IdentityTrait } from "../../traits/identity.js"
-import { ParentTrait } from "../../traits/parent.js"
+import { canBeChild } from "@/annotations/canBeChild.js"
+import { containsChildren } from "@/annotations/containsChildren.js"
+import { ChildTrait } from "@/traits/child.js"
+import { applyTraitsMixins, Entity } from "@/traits/entity.js"
+import { IdentityTrait } from "@/traits/identity.js"
+import { ParentTrait } from "@/traits/parent.js"
 
 @canBeChild
 @containsChildren

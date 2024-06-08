@@ -1,16 +1,17 @@
-import { TestRoom } from "../__helpers__/room.js"
-import { defineEntityAction } from "../actions/entity/entityAction.js"
-import { GameOver } from "../commands/gameOver.js"
-import { Noop } from "../commands/noop.js"
-import { Undo } from "../commands/undo.js"
-import { CommandsManager } from "../commandsManager.js"
-import { ENTITY_INTERACTION } from "../interaction/constants.js"
-import { Player } from "../player/player.js"
-import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
-import type { Room } from "../room/base.js"
-import { State } from "../state/state.js"
+import { defineEntityAction } from "@/actions/entity/entityAction.js"
+import { GameOver } from "@/commands/gameOver.js"
+import { Noop } from "@/commands/noop.js"
+import { Undo } from "@/commands/undo.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import { Player } from "@/player/player.js"
+import type { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
+import type { Room } from "@/room/base.js"
+import { State } from "@/state/state.js"
 
-jest.mock("../player/player.js")
+import { TestRoom } from "../__helpers__/room.js"
+import { CommandsManager } from "../commandsManager.js"
+
+jest.mock("@/player/player.js")
 
 let state: State
 let event: ServerPlayerMessage
@@ -60,7 +61,7 @@ describe("commandsManager", () => {
           ...baseMessage,
           interaction: "tap",
           player: new Player({ clientID: "foo" }),
-        })
+        }),
       ).rejects.toThrow()
     })
   })

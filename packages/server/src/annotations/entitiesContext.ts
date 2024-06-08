@@ -1,6 +1,6 @@
 import type { DefinitionType } from "@colyseus/schema"
 
-import type { Entity } from "../traits/entity.js"
+import type { Entity } from "@/traits/entity.js"
 
 type RegisteredParent = typeof Entity
 

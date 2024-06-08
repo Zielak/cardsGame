@@ -1,5 +1,6 @@
+import { State } from "@/state/state.js"
+
 import { DumbParent, DumbEntity } from "../../__test__/helpers/dumbEntities.js"
-import { State } from "../../state/state.js"
 
 let state: State
 

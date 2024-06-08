@@ -1,6 +1,6 @@
 import type { Room } from "@colyseus/core"
 
-import { ENTITY_INTERACTION } from "../interaction/constants.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
 
 import { botAdd } from "./bots.js"
 import { entityInteraction } from "./entityInteraction.js"

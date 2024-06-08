@@ -1,10 +1,12 @@
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+
 import { Command } from "../command.js"
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
 
 export class Broadcast<
   MoreMessageTypes extends Record<string, unknown> = Record<string, unknown>,
-  T extends keyof AllServerMessageTypes<MoreMessageTypes> = keyof AllServerMessageTypes<MoreMessageTypes>
+  T extends
+    keyof AllServerMessageTypes<MoreMessageTypes> = keyof AllServerMessageTypes<MoreMessageTypes>,
 > extends Command {
   public type: T
   public message: AllServerMessageTypes<MoreMessageTypes>[T]
@@ -18,7 +20,7 @@ export class Broadcast<
 
   async execute(
     state: State,
-    room: Room<any, MoreMessageTypes>
+    room: Room<any, MoreMessageTypes>,
   ): Promise<void> {
     room.broadcast(this.type, this.message)
   }

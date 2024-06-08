@@ -1,6 +1,7 @@
+import type { Room } from "@/room/base.js"
+import { State } from "@/state/state.js"
+
 import { TestRoom } from "../../__helpers__/room.js"
-import type { Room } from "../../room/base.js"
-import { State } from "../../state/state.js"
 import { BotRunner } from "../runner.js"
 
 let runner: BotRunner<State>

@@ -1,9 +1,10 @@
+import { Line } from "@/entities/line.js"
+import { State } from "@/state/state.js"
+
 import {
   SmartEntity,
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
-import { Line } from "../../entities/line.js"
-import { State } from "../../state/state.js"
 import { Conditions } from "../conditions.js"
 import { prepareConditionsContext } from "../context/utils.js"
 
@@ -50,7 +51,7 @@ describe("its", () => {
   })
   it("is possible to chain assertions", () => {
     expect(
-      () => con().its("type").equals("state").and.its("turnBased").true
+      () => con().its("type").equals("state").and.its("turnBased").true,
     ).not.toThrow()
   })
   it("is possible to go deep", () => {

@@ -1,9 +1,10 @@
+import { ClientMessageContext } from "@/conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "@/conditions/context/utils.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import { Player } from "@/player/player.js"
+import { State } from "@/state/state.js"
+
 import { LabeledEntity } from "../../../__test__/helpers/labeledEntities.js"
-import { ClientMessageContext } from "../../../conditions/context/clientMessage.js"
-import { prepareConditionsContext } from "../../../conditions/context/utils.js"
-import { ENTITY_INTERACTION } from "../../../interaction/constants.js"
-import { Player } from "../../../player/player.js"
-import { State } from "../../../state/state.js"
 import { checkInteractionQueries } from "../prerequisites.js"
 import type { InteractionQueries } from "../types.js"
 
@@ -51,8 +52,8 @@ describe("query expects no entities", () => {
           entity: undefined,
           entities: undefined,
         },
-        query
-      )
+        query,
+      ),
     ).toBe(true)
   })
   it("returns false on message with entities", () => {

@@ -1,4 +1,5 @@
-import type { State } from "../../state/state.js"
+import type { State } from "@/state/state.js"
+
 import { EntityActionDefinition } from "../entity/entityAction.js"
 import { isEntityActionDefinition } from "../entity/utils.js"
 import { MessageActionDefinition } from "../message/messageAction.js"
@@ -12,7 +13,7 @@ export type CompoundActionChild<S extends State> =
  * @ignore
  */
 export function canActionBeInCompound<S extends State>(
-  o: unknown
+  o: unknown,
 ): o is CompoundActionChild<S> {
   return isEntityActionDefinition(o) || isMessageActionDefinition(o)
 }

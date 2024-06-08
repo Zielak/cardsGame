@@ -1,11 +1,12 @@
-import type { Command } from "../../command.js"
 import type {
   ClientMessageConditions,
   ClientMessageContext,
-} from "../../conditions/context/clientMessage.js"
-import { runConditionOnAction } from "../../interaction/runConditionOnAction.js"
+} from "@/conditions/context/clientMessage.js"
+import { runConditionOnAction } from "@/interaction/runConditionOnAction.js"
+import type { State } from "@/state/state.js"
+
+import type { Command } from "../../command.js"
 import { logs } from "../../logs.js"
-import type { State } from "../../state/state.js"
 import type { BaseActionDefinition } from "../base.js"
 import type {
   CollectionActionDefinition,

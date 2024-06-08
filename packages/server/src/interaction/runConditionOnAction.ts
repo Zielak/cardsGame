@@ -1,13 +1,14 @@
 import chalk from "chalk"
 
-import type { BaseActionDefinition } from "../actions/base.js"
+import type { BaseActionDefinition } from "@/actions/base.js"
 import {
   ClientMessageConditions,
   ClientMessageContext,
-} from "../conditions/context/clientMessage.js"
-import { getCustomError } from "../conditions/errors.js"
+} from "@/conditions/context/clientMessage.js"
+import { getCustomError } from "@/conditions/errors.js"
+import type { State } from "@/state/state.js"
+
 import { logs } from "../logs.js"
-import type { State } from "../state/state.js"
 
 import type { ConditionErrorMessage } from "./types.js"
 

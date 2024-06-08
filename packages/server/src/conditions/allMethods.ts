@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-import { State } from "../state/state.js"
+import { State } from "@/state/state.js"
 
 import { ConditionAssertions } from "./assertions.js"
 import { ConditionBase } from "./base.js"

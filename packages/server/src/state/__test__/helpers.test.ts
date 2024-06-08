@@ -1,4 +1,5 @@
-import { Bot, Player } from "../../player/index.js"
+import { Bot, Player } from "@/player/index.js"
+
 import {
   getAllBots,
   getNextPlayerIdx,

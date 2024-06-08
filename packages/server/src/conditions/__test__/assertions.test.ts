@@ -1,12 +1,13 @@
+import { Grid } from "@/entities/grid.js"
+import { Player } from "@/player/player.js"
+import type { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
+import { State } from "@/state/state.js"
+
 import { SelectableParent } from "../../__test__/helpers/selectableParent.js"
 import {
   SmartEntity,
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
-import { Grid } from "../../entities/grid.js"
-import { Player } from "../../player/player.js"
-import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
-import { State } from "../../state/state.js"
 import { Conditions } from "../conditions.js"
 import { prepareConditionsContext } from "../context/utils.js"
 
@@ -169,18 +170,18 @@ describe("oneOf", () => {
   })
   it("passes", () => {
     expect(() =>
-      con().set({ name: "foo" }).its("name").oneOf(["foo", "bar", "baz"])
+      con().set({ name: "foo" }).its("name").oneOf(["foo", "bar", "baz"]),
     ).not.toThrow()
 
     expect(() =>
       con()
         .set({ name: "foo" })
         .its("name")
-        .oneOf(["nope", "foo", "bar", "baz"])
+        .oneOf(["nope", "foo", "bar", "baz"]),
     ).not.toThrow()
 
     expect(() =>
-      con().set({ name: "foo" }).its("name").not.oneOf(["bar", "baz"])
+      con().set({ name: "foo" }).its("name").not.oneOf(["bar", "baz"]),
     ).not.toThrow()
   })
 
@@ -221,17 +222,17 @@ describe("empty", () => {
     expect(() =>
       con()
         .set(new Map([["foo", "bar"]]))
-        .empty()
+        .empty(),
     ).toThrow()
     expect(() =>
       con()
         .set(new Set(["foo"]))
-        .empty()
+        .empty(),
     ).toThrow()
     expect(() =>
       con()
         .set(function foo() {})
-        .empty()
+        .empty(),
     ).toThrow()
     expect(() => con().set(null).empty()).toThrow()
   })
@@ -281,17 +282,17 @@ describe("full", () => {
     expect(() =>
       con()
         .set(new Map([["foo", "bar"]]))
-        .full()
+        .full(),
     ).toThrow()
     expect(() =>
       con()
         .set(new Set(["foo"]))
-        .full()
+        .full(),
     ).toThrow()
     expect(() =>
       con()
         .set(function foo() {})
-        .full()
+        .full(),
     ).toThrow()
     expect(() => con().set(null).full()).toThrow()
   })
@@ -300,7 +301,7 @@ describe("full", () => {
 describe("selectable", () => {
   it("passes", () => {
     expect(() =>
-      con().set(selectableParent).bottom.is.selectable()
+      con().set(selectableParent).bottom.is.selectable(),
     ).not.toThrow()
     expect(() => con().set(selectableParent).top.is.selectable()).not.toThrow()
 
@@ -325,7 +326,7 @@ describe("selected", () => {
     selectableParent.selectChildAt(0)
     expect(() => con().set(selectableParent).bottom.is.selected()).not.toThrow()
     expect(() =>
-      con().set(selectableParent).top.is.not.selected()
+      con().set(selectableParent).top.is.not.selected(),
     ).not.toThrow()
 
     expect(() => con().set(parent).bottom.is.not.selected()).not.toThrow()
@@ -356,13 +357,13 @@ describe("test", () => {
     expect(() =>
       con()
         .set(true)
-        .test((subject) => subject === true)
+        .test((subject) => subject === true),
     ).not.toThrow()
 
     expect(() =>
       con()
         .set(true)
-        .not.test((subject) => subject === false)
+        .not.test((subject) => subject === false),
     ).not.toThrow()
   })
 
@@ -370,13 +371,13 @@ describe("test", () => {
     expect(() =>
       con()
         .set(false)
-        .test((subject) => subject === true)
+        .test((subject) => subject === true),
     ).toThrow("returned falsy")
 
     expect(() =>
       con()
         .set(true)
-        .not.test((subject) => subject === true)
+        .not.test((subject) => subject === true),
     ).toThrow("returned truthy")
   })
 
@@ -399,7 +400,7 @@ describe("revealedUI", () => {
 
     // player2
     con = new Conditions(
-      prepareConditionsContext(state, { example: "foo", player: player2 })
+      prepareConditionsContext(state, { example: "foo", player: player2 }),
     )
 
     expect(() => con().has.not.revealedUI()).not.toThrow()

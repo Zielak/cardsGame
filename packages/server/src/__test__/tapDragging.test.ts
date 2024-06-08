@@ -1,14 +1,15 @@
+import { defineDragAction } from "@/actions/drag/dragAction.js"
+import { Noop } from "@/commands/noop.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import { entityInteraction } from "@/messages/entityInteraction.js"
+import { Player } from "@/player/player.js"
+import type { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
+import type { Room } from "@/room/base.js"
+import { State } from "@/state/state.js"
+import { populatePlayerEvent } from "@/utils/populatePlayerEvent.js"
+
 import { TestRoom } from "../__helpers__/room.js"
-import { defineDragAction } from "../actions/drag/dragAction.js"
-import { Noop } from "../commands/noop.js"
 import { CommandsManager } from "../commandsManager.js"
-import { ENTITY_INTERACTION } from "../interaction/constants.js"
-import { entityInteraction } from "../messages/entityInteraction.js"
-import { Player } from "../player/player.js"
-import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
-import type { Room } from "../room/base.js"
-import { State } from "../state/state.js"
-import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
 import { DumbEntity } from "./helpers/dumbEntities.js"
 
@@ -62,7 +63,7 @@ describe("populatePlayerEvent", () => {
         interaction: "dragstart",
         entityPath: [0],
       },
-      clientID
+      clientID,
     )
 
     expect(player.dragStartEntity).toBeUndefined()

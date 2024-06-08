@@ -1,8 +1,9 @@
 import chalk from "chalk"
 
-import { logs } from "../logs.js"
-import type { Player, ServerPlayerMessage } from "../player/index.js"
-import { hasLabel, LabelTrait } from "../traits/label.js"
+import type { Player, ServerPlayerMessage } from "@/player/index.js"
+import { hasLabel, LabelTrait } from "@/traits/label.js"
+
+import { logs } from "../../logs.js"
 
 export function debugRoomMessage(message: ServerPlayerMessage): void {
   const minifyTarget = (e: LabelTrait): string => {

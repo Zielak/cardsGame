@@ -1,4 +1,4 @@
-import { State } from "../../state/state.js"
+import { State } from "@/state/state.js"
 
 export const ENTITY_INTERNAL_KEY = "$cg$internal"
 export interface ClassWithIED {

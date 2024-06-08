@@ -1,13 +1,14 @@
-import type { Command } from "../../../command.js"
-import { prepareActionContext } from "../../../commandsManager/utils.js"
 import type {
   ClientMessageConditions,
   ClientMessageContext,
-} from "../../../conditions/context/clientMessage.js"
-import { prepareConditionsContext } from "../../../conditions/context/utils.js"
-import { ENTITY_INTERACTION } from "../../../interaction/constants.js"
-import type { ServerPlayerMessage } from "../../../player/serverPlayerMessage.js"
-import { State } from "../../../state/state.js"
+} from "@/conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "@/conditions/context/utils.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import type { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
+import { State } from "@/state/state.js"
+
+import type { Command } from "../../../command.js"
+import { prepareActionContext } from "../../../commandsManager/utils.js"
 import type { BaseActionTemplate } from "../../base.js"
 import type { CollectionContext } from "../../collection/collection.js"
 import {
@@ -17,8 +18,8 @@ import {
 import { defineEntityAction } from "../../entity/entityAction.js"
 import { defineMessageAction } from "../../message/messageAction.js"
 
-jest.mock("../../../state/state.js")
-jest.mock("../../../player/player.js")
+jest.mock("@/state/state.js")
+jest.mock("@/player/player.js")
 
 const state = new State()
 const conditions = () => {}
@@ -114,13 +115,13 @@ describe("CompoundActionDefinition", () => {
       compound.checkPrerequisites(messageContext, context)
 
       expect(actionEntity.checkPrerequisites).toHaveBeenCalledWith(
-        messageContext
+        messageContext,
       )
       expect(actionAbort.checkPrerequisites).toHaveBeenCalledWith(
-        messageContext
+        messageContext,
       )
       expect(actionFinish.checkPrerequisites).toHaveBeenCalledWith(
-        messageContext
+        messageContext,
       )
     })
 
@@ -177,7 +178,7 @@ describe("CompoundActionDefinition", () => {
         compound.checkConditions(con, messageContext, context)
         expect(actionAbort.checkConditions).toHaveBeenCalledWith(
           con,
-          messageContext
+          messageContext,
         )
         expect(actionFinish.checkConditions).not.toHaveBeenCalled()
         expect(actionEntity.checkConditions).not.toHaveBeenCalled()
@@ -191,7 +192,7 @@ describe("CompoundActionDefinition", () => {
         expect(actionAbort.checkConditions).not.toHaveBeenCalled()
         expect(actionFinish.checkConditions).toHaveBeenCalledWith(
           con,
-          messageContext
+          messageContext,
         )
         expect(actionEntity.checkConditions).not.toHaveBeenCalled()
       })
@@ -205,7 +206,7 @@ describe("CompoundActionDefinition", () => {
         expect(actionFinish.checkConditions).not.toHaveBeenCalled()
         expect(actionEntity.checkConditions).toHaveBeenCalledWith(
           con,
-          messageContext
+          messageContext,
         )
       })
 

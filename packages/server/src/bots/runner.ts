@@ -1,9 +1,10 @@
+import type { Bot } from "@/player/bot.js"
+import type { Player } from "@/player/player.js"
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+import { populatePlayerEvent } from "@/utils/populatePlayerEvent.js"
+
 import { logs } from "../logs.js"
-import type { Bot } from "../player/bot.js"
-import type { Player } from "../player/player.js"
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
-import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
 import type { BotNeuron } from "./botNeuron.js"
 import { pickNeuron } from "./pickNeuron/pickNeuron.js"
