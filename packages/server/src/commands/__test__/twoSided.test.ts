@@ -2,7 +2,7 @@ import { ClassicCard } from "@/entities/classicCard.js"
 import type { Room } from "@/room/base.js"
 import { State } from "@/state/state.js"
 
-import { TestRoom } from "../../__helpers__/room.js"
+import { TestRoom } from "../../__test__/helpers/room.js"
 import { FaceDown, FaceUp, Flip } from "../twoSided.js"
 
 let state: State

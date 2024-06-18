@@ -12,6 +12,8 @@ import { ParentTrait } from "@/traits/parent.js"
 
 import { PlayerViewPosition } from "../playerViewPosition.js"
 
+import { GameClient } from "./client.js"
+
 @containsChildren
 @applyTraitsMixins([IdentityTrait, LabelTrait, ParentTrait])
 export class State<
@@ -24,15 +26,15 @@ export class State<
   @type("number") tableHeight = 60 // 60 cm
 
   /**
-   * IDs of clients who are connected to the room.
+   * Data of clients who are connected to the room.
    * A "client" is someone who just stopped by in this room
    * and not necessarily someone who is playing the game.
    *
-   * Will also contain ID of bot clients.
+   * Bots will also be reflected here, but not as direct references to them.
    *
-   * Read-only. Writing to it doesn't do anything meaningful.
+   * Read-only. Writing to it may break things.
    */
-  @type(["string"]) clients = new ArraySchema<string>()
+  @type([GameClient]) clients = new ArraySchema<GameClient>()
 
   /**
    * Games are turn-based by default. Each player takes their turns one by one.

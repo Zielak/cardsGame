@@ -2,7 +2,7 @@ import { Player } from "@/player/player.js"
 import type { Room } from "@/room/base.js"
 import { State } from "@/state/state.js"
 
-import { TestRoom } from "../../__helpers__/room.js"
+import { TestRoom } from "../../__test__/helpers/room.js"
 import { NextPlayer, PreviousPlayer } from "../playerTurns.js"
 
 let state: State

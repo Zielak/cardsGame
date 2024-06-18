@@ -116,9 +116,9 @@ export class CompoundActionDefinition<S extends State = State>
 {
   name: string
 
-  private actions: readonly CompoundActionChild<S>[]
-  private finishActions: CompoundActionChild<S>[]
-  private abortActions: CompoundActionChild<S>[]
+  actions: readonly CompoundActionChild<S>[]
+  finishActions: readonly CompoundActionChild<S>[]
+  abortActions: readonly CompoundActionChild<S>[]
 
   constructor(private template: CompoundActionTemplate<S>) {
     if (!template || template.finishActions.length === 0) {

@@ -44,6 +44,9 @@ export class EntityActionDefinition<S extends State>
   constructor(private template: EntityActionTemplate<S>) {
     this.name = template.name
   }
+  /**
+   * @deprecated is this used?
+   */
   abort: () => boolean
 
   checkPrerequisites(messageContext: ClientMessageContext<S>): boolean {

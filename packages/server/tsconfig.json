@@ -9,6 +9,7 @@
       "@/annotations/*": ["annotations/*"],
       "@/bots/*": ["bots/*"],
       "@/commands/*": ["commands/*"],
+      "@/commandsManager/*": ["commandsManager/*"],
       "@/conditions/*": ["conditions/*"],
       "@/entities/*": ["entities/*"],
       "@/interaction/*": ["interaction/*"],
@@ -18,7 +19,8 @@
       "@/room/*": ["room/*"],
       "@/state/*": ["state/*"],
       "@/traits/*": ["traits/*"],
-      "@/utils/*": ["utils/*"]
+      "@/utils/*": ["utils/*"],
+      "__test__/*": ["__test__/*"]
     },
     "types": [
       "@cardsgame/types",

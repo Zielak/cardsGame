@@ -47,6 +47,7 @@ class ConditionGrouping<
 
     if (!Array.isArray(subject)) {
       throwError(this, `each | Expected subject to be an array`)
+      return
     }
 
     const lastDefaultSubject = getFlag(this, "defaultSubject")
@@ -101,6 +102,7 @@ class ConditionGrouping<
 
     if (!Array.isArray(subject)) {
       throwError(this, `some | Expected subject to be an array`)
+      return
     }
 
     const lastDefaultSubject = getFlag(this, "defaultSubject")

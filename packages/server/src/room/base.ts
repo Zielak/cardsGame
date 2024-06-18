@@ -9,10 +9,11 @@ import { fallback } from "@/messages/fallback.js"
 import { messages } from "@/messages/messageHandler.js"
 import { BotOptions } from "@/player/bot.js"
 import { Player, ServerPlayerMessage, Bot } from "@/player/index.js"
+import { GameClient } from "@/state/client.js"
 import { State } from "@/state/state.js"
 
 import type { Command } from "../command.js"
-import { CommandsManager } from "../commandsManager.js"
+import { CommandsManager } from "../commandsManager/commandsManager.js"
 import type {
   IntegrationHookNames,
   IntegrationHooks,
@@ -65,6 +66,10 @@ export abstract class Room<
    */
   possibleActions: ActionDefinition<S>[]
   botActivities: BotActionsSet<S>
+
+  /**
+   * Direct reference to Bot "players".
+   */
   botClients: Bot[] = []
 
   /**
@@ -152,6 +157,7 @@ export abstract class Room<
       }
       this.integrationContext = {
         addClient: this.addClient.bind(this),
+        addBot: this.addBot.bind(this),
         data: Object.freeze(this.currentIntegration.data),
       }
     }
@@ -167,34 +173,35 @@ export abstract class Room<
   addClient(sessionId: string): boolean {
     const { state, playersCount } = this
 
-    if (state.isGameStarted) {
-      logs.info("addClient", "state.isGameStarted")
-      return false
-    }
+    // DONE: I Want spectators
+    // if (state.isGameStarted) {
+    //   logs.info("addClient", "state.isGameStarted")
+    //   return false
+    // }
 
     /**
      * this.botClients - only bots
      * this.clients - only human players and possible spectators?
-     * state.clients - all clients considered to become players when game starts
+     * state.clients - all clients considered to become players when game starts, including bots
      */
 
-    const withinPlayerLimits = playersCount?.max
-      ? this.clients.length < playersCount.max
-      : true
-
-    if (!withinPlayerLimits) {
-      logs.info("addClient failed", "!withinPlayerLimits")
-      return false
-    }
+    // TODO: move that logic to the ready message
+    // const withinPlayerLimits = playersCount?.max
+    //   ? this.clients.length < playersCount.max
+    //   : true
+    // if (!withinPlayerLimits) {
+    //   logs.info("addClient failed", "!withinPlayerLimits")
+    //   return false
+    // }
 
     const clientAlreadyIn = Array.from(state.clients.values()).some(
-      (clientID) => sessionId === clientID,
+      (client) => sessionId === client.id,
     )
     if (clientAlreadyIn) {
       logs.info("addClient failed", "clientAlreadyIn")
       return false
     }
-    state.clients.push(sessionId)
+    state.clients.push(new GameClient({ id: sessionId }))
     return true
   }
 
@@ -209,7 +216,7 @@ export abstract class Room<
     /**
      * this.botClients - only bots
      * this.clients - only human players and possible spectators?
-     * state.clients - all clients considered to become players when game starts
+     * state.clients - all clients considered to become players when game starts, including bots
      */
 
     const withinBotLimits = playersCount?.bots?.max
@@ -222,7 +229,7 @@ export abstract class Room<
     }
 
     const clientAlreadyIn = Array.from(state.clients.values()).some(
-      (clientID) => bot.clientID === clientID,
+      (client) => bot.clientID === client.id,
     )
 
     if (clientAlreadyIn) {
@@ -231,7 +238,9 @@ export abstract class Room<
     }
 
     this.botClients.push(new Bot(bot))
-    state.clients.push(bot.clientID)
+    state.clients.push(
+      new GameClient({ id: bot.clientID, isBot: true, ready: true }),
+    )
     return true
   }
 
@@ -247,22 +256,10 @@ export abstract class Room<
      * state.clients - all clients considered to become players when game starts
      */
 
-    const clientIndex = this.state.clients.indexOf(sessionId)
+    const clientIdx = this.state.clients.findIndex((c) => c.id === sessionId)
 
-    if (clientIndex >= 0) {
-      this.state.clients.splice(clientIndex, 1)
-      return true
-    }
-    return false
-  }
-
-  removeBot(id: string): boolean {
-    const botClient = this.botClients.find((b) => b.clientID === id)
-
-    if (botClient) {
-      const clientIdx = this.state.clients.indexOf(botClient.clientID)
+    if (clientIdx >= 0) {
       this.state.clients.splice(clientIdx, 1)
-      this.botClients = this.botClients.filter((b) => b !== botClient)
       return true
     }
     return false

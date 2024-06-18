@@ -34,10 +34,10 @@ class Conditions<
       if (getFlag(core, "eitherLevel") === 0) {
         // It might be empty, good, reset it to undefined
         if (customError) {
-          logs.debug("#Conditions, setting customError:", customError)
+          // logs.debug("#Conditions, setting customError:", customError)
         }
         if (getFlag(core, "customError")) {
-          logs.debug("#Conditions, overwriting previous error")
+          // logs.debug("#Conditions, overwriting previous error")
         }
         setFlag(core, "customError", customError)
       }

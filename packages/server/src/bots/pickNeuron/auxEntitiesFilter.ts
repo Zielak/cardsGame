@@ -8,7 +8,7 @@ import type { ChildTrait } from "@/traits/child.js"
 import type { BotNeuron } from "../botNeuron.js"
 
 /**
- * Grabs entities, which could become given neuron's interaction target
+ * Grabs entities, which could become neuron's interaction target
  */
 export const auxillaryEntitiesFilter =
   <S extends State>(state: S, { action, entitiesFilter }: BotNeuron<S>) =>

@@ -8,7 +8,7 @@ import type { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
 import type { Room } from "@/room/base.js"
 import { State } from "@/state/state.js"
 
-import { TestRoom } from "../__helpers__/room.js"
+import { TestRoom } from "../../__test__/helpers/room.js"
 import { CommandsManager } from "../commandsManager.js"
 
 jest.mock("@/player/player.js")

@@ -2,6 +2,7 @@
  * Event types coming from client ot server
  */
 type ClientMessageTypes = {
+  ready: { ready: boolean }
   start: { variantData: Record<string, unknown> }
   kick: { id: string }
   bot_add: { intelligence: number }

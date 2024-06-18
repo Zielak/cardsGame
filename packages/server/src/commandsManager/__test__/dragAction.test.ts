@@ -1,4 +1,10 @@
 import {
+  LabeledEntity,
+  LabeledParent,
+} from "__test__/helpers/labeledEntities.js"
+import { TestRoom } from "__test__/helpers/room.js"
+
+import {
   DragActionDefinition,
   defineDragAction,
 } from "@/actions/drag/dragAction.js"
@@ -10,10 +16,7 @@ import type { Room } from "@/room/base.js"
 import { State } from "@/state/state.js"
 import { populatePlayerEvent } from "@/utils/populatePlayerEvent.js"
 
-import { TestRoom } from "../__helpers__/room.js"
 import { CommandsManager } from "../commandsManager.js"
-
-import { LabeledEntity, LabeledParent } from "./helpers/labeledEntities.js"
 
 jest.mock("@/player/player.js")
 jest.mock("@/commands/message.js")

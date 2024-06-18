@@ -14,7 +14,7 @@ export class BotRunner<S extends State> {
   private readonly room: Room<S>
 
   get canRun(): boolean {
-    return !this.room.state.isGameOver
+    return !this.room.state.isGameOver && this.room.botClients.length > 0
   }
 
   constructor(room: Room<S>) {
@@ -50,18 +50,28 @@ export class BotRunner<S extends State> {
   }
 
   runAllBots(): void {
-    if (this.room.botClients.length === 0) {
-      logs.debug("Bots", "nobody is listening...")
-      return
-    }
-
     this.room.botClients.forEach((bot) => {
       this.pickGoal(bot)
     })
   }
 
   private pickGoal(bot: Bot): void {
-    const goal = pickNeuron(this.neuronTree, this.room.state, bot)
+    const pendingAction = this.room.commandsManager.pendingActions.get(
+      bot.clientID,
+    )?.action
+    const rootNeuron = pendingAction
+      ? this.neuronTree.children.find((neuron) => {
+          return neuron.action === pendingAction
+        })
+      : this.neuronTree
+
+    logs.log("Bots", `root neuron: ${rootNeuron.name}`)
+
+    const goal = pickNeuron({
+      rootNeuron,
+      state: this.room.state,
+      bot,
+    })
 
     if (goal) {
       logs.log("Bots", `${bot.clientID} chose goal: ${goal.neuron.name}`)
@@ -92,7 +102,7 @@ export class BotRunner<S extends State> {
 
     if (!neuron.action) {
       throw new Error(
-        "executeThough | given neuron doesn't have ActionTemplate!",
+        "SHOULD NEVER HAPPEN, executeThough | given neuron doesn't have ActionTemplate!",
       )
     }
 
@@ -104,10 +114,11 @@ export class BotRunner<S extends State> {
 
     this.room
       .handleMessage(newMessage)
-      .catch((e) =>
+      .catch((e: Error) =>
         logs.error(
           "Bot.act",
           `action() failed for client: "${bot.clientID}": ${e}`,
+          e.stack,
         ),
       )
   }

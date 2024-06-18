@@ -8,10 +8,9 @@ import type { Room } from "@/room/base.js"
 import { State } from "@/state/state.js"
 import { populatePlayerEvent } from "@/utils/populatePlayerEvent.js"
 
-import { TestRoom } from "../__helpers__/room.js"
+import { DumbEntity } from "../../__test__/helpers/dumbEntities.js"
+import { TestRoom } from "../../__test__/helpers/room.js"
 import { CommandsManager } from "../commandsManager.js"
-
-import { DumbEntity } from "./helpers/dumbEntities.js"
 
 let state: State
 let player: Player

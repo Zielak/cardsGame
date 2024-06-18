@@ -1,3 +1,5 @@
+import { randomBytes } from "crypto"
+
 import { def } from "@cardsgame/utils"
 import type { Client } from "@colyseus/core"
 
@@ -28,7 +30,7 @@ export function botAdd(
   const result = this.addBot({
     actionDelay: () => Math.random() + 0.5,
     intelligence: def(message?.intelligence, 0.5),
-    clientID: `botPlayer${this.botClients.length}`,
+    clientID: `bot_${randomBytes(3).toString("hex")}`,
   })
 
   if (!result) {

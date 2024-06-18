@@ -2,11 +2,11 @@ import { times } from "@cardsgame/utils"
 
 import { State } from "@/state/state.js"
 
-import { TestRoom } from "../../__helpers__/room.js"
 import {
   LabeledEntity,
   LabeledParent,
 } from "../../__test__/helpers/labeledEntities.js"
+import { TestRoom } from "../../__test__/helpers/room.js"
 import type { Command } from "../../command.js"
 import { Noop, ChangeParent, DealCards } from "../index.js"
 

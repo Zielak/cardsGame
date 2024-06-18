@@ -11,6 +11,7 @@
       "@/annotations/*": ["annotations/*"],
       "@/bots/*": ["bots/*"],
       "@/commands/*": ["commands/*"],
+      "@/commandsManager/*": ["commandsManager/*"],
       "@/conditions/*": ["conditions/*"],
       "@/entities/*": ["entities/*"],
       "@/interaction/*": ["interaction/*"],

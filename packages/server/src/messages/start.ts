@@ -23,7 +23,7 @@ export function start(
   message?: ClientMessageTypes["start"],
 ): void {
   const { state, playersCount, variantsConfig } = this
-  let variantData = message?.variantData
+  const variantData = message?.variantData
   let msg = ""
 
   /**
@@ -60,11 +60,11 @@ export function start(
     // If variants are setup
     if (variantsConfig && variantData) {
       try {
-        if (variantsConfig.parse) {
-          variantData = variantsConfig.parse(variantData)
-        } else {
-          variantData = variantParser(variantData)
-        }
+        // if (variantsConfig.parse) {
+        //   variantData = variantsConfig.parse(variantData)
+        // } else {
+        //   variantData = variantParser(variantData)
+        // }
       } catch (e) {
         this.clientSend(
           client,
