@@ -1,3 +1,4 @@
+import { Bot } from "@/player/bot.js"
 import type { Room } from "@/room/base.js"
 import { State } from "@/state/state.js"
 
@@ -12,6 +13,7 @@ beforeEach(() => {
   state = new State()
   room = new TestRoom()
   room.state = state
+  room.botClients.push(new Bot({ clientID: "bot" }))
   runner = new BotRunner<State>(room)
 })
 

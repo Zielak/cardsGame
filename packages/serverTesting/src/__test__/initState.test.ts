@@ -51,7 +51,7 @@ describe("State", () => {
 
     // expect(state.clients instanceof ArraySchema).toBe(true)
     expect(state.clients.length).toBe(1)
-    expect(state.clients[0]).toBe("testClient")
+    expect(state.clients[0].id).toBe("testClient")
   })
 
   it("sets players on state", () => {

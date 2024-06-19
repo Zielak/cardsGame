@@ -4,6 +4,7 @@ import { ENTITY_INTERACTION } from "@/interaction/constants.js"
 import { start } from "@/messages/start.js"
 import { Bot } from "@/player/bot.js"
 import { Player } from "@/player/player.js"
+import { GameClient } from "@/state/client.js"
 import { State } from "@/state/state.js"
 
 import { Room } from "../base.js"
@@ -211,17 +212,17 @@ describe("addClient", () => {
   })
   it("rejects human client with already recorded ID", () => {
     // @ts-expect-error this just tests
-    room.state.clients = ["foo"]
+    room.state.clients = [new GameClient("foo")]
     expect(room.addClient("foo")).toBe(false)
   })
-  it("rejects human client over the limit", () => {
+  it("allows human client over the playersCount limit", () => {
     // @ts-expect-error this just tests
     room.clients = [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }]
     room.playersCount = {
       min: 0,
       max: 4,
     }
-    expect(room.addClient("foo")).toBe(false)
+    expect(room.addClient("foo")).toBe(true)
   })
 
   it("allows bot client", () => {
