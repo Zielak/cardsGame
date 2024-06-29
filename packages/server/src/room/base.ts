@@ -96,6 +96,13 @@ export abstract class Room<
     return this.clients.length + this.botClients.length
   }
 
+  /**
+   * Count all clients who declared ready for the game.
+   */
+  get readyClientsCount(): number {
+    return this.state.clients.filter((c) => c.ready)
+  }
+
   get name(): string {
     return this.constructor.name
   }

@@ -48,7 +48,7 @@ export function start(
       return
     }
 
-    const remaining = (playersCount?.min ?? 0) - this.allClientsCount
+    const remaining = (playersCount?.min ?? 0) - this.readyClientsCount
     if (remaining > 0) {
       msg = `Not enough players. Waiting for ${remaining} more.`
       logs.log("handleGameStart", msg)
@@ -91,9 +91,15 @@ export function start(
       }
     }
 
-    // We can go, convert all connected clients into players
+    // We can go, convert all ready clients into players
     shuffle(
       this.clients
+        .filter((client) => {
+          const inState = this.state.clients.find(
+            (c) => c.id === client.sessionId,
+          )
+          return inState?.ready
+        })
         .map((entry) => new Player({ clientID: entry.sessionId }))
         .concat(this.botClients),
     ).forEach((player) => {
