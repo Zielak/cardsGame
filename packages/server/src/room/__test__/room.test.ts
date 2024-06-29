@@ -199,6 +199,13 @@ describe("integration tests", () => {
 })
 
 describe("addClient", () => {
+  it("first client is ready by default", () => {
+    room.playersCount = undefined
+    expect(room.addClient("foo")).toBe(true)
+    expect(room.state.clients[0].ready).toBeTruthy()
+    expect(room.addClient("bar")).toBe(true)
+    expect(room.state.clients[1].ready).toBeFalsy()
+  })
   it("allows new human client", () => {
     room.playersCount = undefined
     expect(room.addClient("foo")).toBe(true)

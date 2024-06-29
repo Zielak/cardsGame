@@ -208,7 +208,12 @@ export abstract class Room<
       logs.info("addClient failed", "clientAlreadyIn")
       return false
     }
-    state.clients.push(new GameClient({ id: sessionId }))
+    const newClient = new GameClient({ id: sessionId })
+    if (this.state.clients.length === 0) {
+      newClient.ready = true
+    }
+
+    state.clients.push(newClient)
     return true
   }
 
