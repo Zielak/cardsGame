@@ -46,7 +46,7 @@ export interface BotNeuron<S extends State> {
   /**
    * `ActionDefinition` associated with this Neuron.
    */
-  action?: ActionDefinition<S>
+  action: ActionDefinition<S>
 
   /**
    * Child neurons of this one.

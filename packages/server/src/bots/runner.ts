@@ -1,3 +1,6 @@
+import { noop } from "@cardsgame/utils"
+
+import { Noop } from "@/commands/noop.js"
 import type { Bot } from "@/player/bot.js"
 import type { Player } from "@/player/player.js"
 import type { Room } from "@/room/base.js"
@@ -22,6 +25,12 @@ export class BotRunner<S extends State> {
       name: "Root",
       value: (): number => 0,
       children: room.botActivities ? [...room.botActivities] : [],
+      action: {
+        name: "Root",
+        checkPrerequisites: () => true,
+        checkConditions: noop,
+        getCommand: () => new Noop(),
+      },
     }
 
     this.room = room

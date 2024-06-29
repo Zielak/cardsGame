@@ -1,3 +1,5 @@
+import { noop } from "@cardsgame/utils"
+
 import { defineEntityAction } from "@/actions/entity/entityAction.js"
 import { defineMessageAction } from "@/actions/message/messageAction.js"
 import type { State } from "@/state/state.js"
@@ -29,6 +31,13 @@ const DoNothingAction = defineEntityAction({
   conditions: (test) => {
     test().itsPlayersTurn()
   },
+  command: () => new commands.Noop(),
+})
+
+const NoopAction = defineEntityAction({
+  name: "NoopAction",
+  interaction: () => [],
+  conditions: noop,
   command: () => new commands.Noop(),
 })
 
@@ -75,6 +84,7 @@ export const ScreamGoal: BotNeuron<State> = {
     return 5
   },
   children: [ScreamNOGoal, ScreamYESGoal],
+  action: ScreamAction,
 }
 
 export const FailedConditions: BotNeuron<State> = {
@@ -99,6 +109,7 @@ export const UnachievableGoal: BotNeuron<State> = {
       action: DoNothingAction,
     } as BotNeuron<State>,
   ],
+  action: NoopAction,
 }
 
 export const AllConditionsFailGoal: BotNeuron<State> = {
@@ -106,10 +117,12 @@ export const AllConditionsFailGoal: BotNeuron<State> = {
   description: "All of its children has failing conditions",
   value: () => 50,
   children: [FailedConditions, FailedConditions],
+  action: NoopAction,
 }
 
 export const rootNeuron: BotNeuron<State> = {
   name: "Root",
   value: () => Infinity,
   children: [PlayCardGoal, ScreamGoal, UnachievableGoal, AllConditionsFailGoal],
+  action: NoopAction,
 }
