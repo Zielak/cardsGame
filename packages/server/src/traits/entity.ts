@@ -1,8 +1,9 @@
 import { Schema } from "@colyseus/schema"
 
-import { type } from "../annotations/type.js"
+import { type } from "@/annotations/type.js"
+import type { State } from "@/state/state.js"
+
 import { logs } from "../logs.js"
-import type { State } from "../state/state.js"
 
 import {
   ClassWithIED,

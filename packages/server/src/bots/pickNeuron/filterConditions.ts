@@ -1,6 +1,7 @@
-import { Conditions } from "../../conditions/conditions.js"
-import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
-import type { State } from "../../state/state.js"
+import { Conditions } from "@/conditions/conditions.js"
+import { ClientMessageContext } from "@/conditions/context/clientMessage.js"
+import type { State } from "@/state/state.js"
+
 import type { BotNeuron } from "../botNeuron.js"
 
 /**

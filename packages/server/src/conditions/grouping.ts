@@ -1,7 +1,8 @@
 import chalk from "chalk"
 
+import type { State } from "@/state/state.js"
+
 import { logs } from "../logs.js"
-import type { State } from "../state/state.js"
 
 import type { Conditions } from "./conditions.js"
 import { throwError } from "./errors.js"
@@ -46,6 +47,7 @@ class ConditionGrouping<
 
     if (!Array.isArray(subject)) {
       throwError(this, `each | Expected subject to be an array`)
+      return
     }
 
     const lastDefaultSubject = getFlag(this, "defaultSubject")
@@ -100,6 +102,7 @@ class ConditionGrouping<
 
     if (!Array.isArray(subject)) {
       throwError(this, `some | Expected subject to be an array`)
+      return
     }
 
     const lastDefaultSubject = getFlag(this, "defaultSubject")

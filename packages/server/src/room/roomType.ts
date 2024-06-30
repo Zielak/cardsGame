@@ -1,9 +1,10 @@
-import type { ActionDefinition } from "../actions/types.js"
-import type { BotActionsSet } from "../bots/botNeuron.js"
+import type { ActionDefinition } from "@/actions/types.js"
+import type { BotActionsSet } from "@/bots/botNeuron.js"
+import type { Player } from "@/player/index.js"
+import type { State } from "@/state/state.js"
+
 import type { Command } from "../command.js"
 import type { IntegrationHooks } from "../integration.js"
-import type { Player } from "../player/index.js"
-import type { State } from "../state/state.js"
 
 import type { Room } from "./base.js"
 

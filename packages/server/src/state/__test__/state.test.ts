@@ -1,6 +1,7 @@
+import { Deck } from "@/entities/deck.js"
+import { Player } from "@/player/player.js"
+
 import { DumbEntity } from "../../__test__/helpers/dumbEntities.js"
-import { Deck } from "../../entities/deck.js"
-import { Player } from "../../player/player.js"
 import { State } from "../state.js"
 
 let state: State

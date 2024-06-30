@@ -8,8 +8,8 @@
   },
   "files.exclude": {
     "**/.turbo": true,
-    "**/lib": true,
-    "**/node_modules": true,
+    // "**/lib": true,
+    // "**/node_modules": true,
     "docs/docs/api/**": true,
     "docs/build/**": true,
     "docs/.docusaurus/**": true

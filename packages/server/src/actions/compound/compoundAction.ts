@@ -1,11 +1,12 @@
-import type { Command } from "../../command.js"
 import type {
   ClientMessageConditions,
   ClientMessageContext,
-} from "../../conditions/context/clientMessage.js"
-import { runConditionOnAction } from "../../interaction/runConditionOnAction.js"
+} from "@/conditions/context/clientMessage.js"
+import { runConditionOnAction } from "@/interaction/runConditionOnAction.js"
+import type { State } from "@/state/state.js"
+
+import type { Command } from "../../command.js"
 import { logs } from "../../logs.js"
-import type { State } from "../../state/state.js"
 import type { BaseActionDefinition } from "../base.js"
 import type {
   CollectionActionDefinition,
@@ -115,9 +116,9 @@ export class CompoundActionDefinition<S extends State = State>
 {
   name: string
 
-  private actions: readonly CompoundActionChild<S>[]
-  private finishActions: CompoundActionChild<S>[]
-  private abortActions: CompoundActionChild<S>[]
+  actions: readonly CompoundActionChild<S>[]
+  finishActions: readonly CompoundActionChild<S>[]
+  abortActions: readonly CompoundActionChild<S>[]
 
   constructor(private template: CompoundActionTemplate<S>) {
     if (!template || template.finishActions.length === 0) {

@@ -1,4 +1,5 @@
-import { State } from "../../state/state.js"
+import { State } from "@/state/state.js"
+
 import { applyTraitsMixins, Entity } from "../entity.js"
 
 let state: State
@@ -20,10 +21,10 @@ describe("hooks", () => {
     new HookTestEntity(state)
 
     expect((HookTestTrait as any).hooks.postConstructor).toHaveBeenCalledTimes(
-      1
+      1,
     )
     expect((HookTestTrait as any).hooks.postConstructor.mock.calls[0][0]).toBe(
-      state
+      state,
     )
   })
 })

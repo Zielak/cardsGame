@@ -1,4 +1,4 @@
-import type { State } from "../../state/state.js"
+import type { State } from "@/state/state.js"
 
 import type { CollectionActionDefinition } from "./collection.js"
 

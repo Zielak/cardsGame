@@ -1,14 +1,14 @@
-import type { ActionDefinition } from "../actions/types.js"
+import type { ActionDefinition } from "@/actions/types.js"
 import {
   BotEntityAuxConditions,
   BotEntityAuxContext,
-} from "../conditions/context/botEntityAux.js"
+} from "@/conditions/context/botEntityAux.js"
 import {
   ClientMessageConditions,
   ClientMessageContext,
-} from "../conditions/context/clientMessage.js"
-import type { QuerableProps } from "../queries/types.js"
-import type { State } from "../state/state.js"
+} from "@/conditions/context/clientMessage.js"
+import type { QuerableProps } from "@/queries/types.js"
+import type { State } from "@/state/state.js"
 
 export interface BotNeuron<S extends State> {
   name: string
@@ -46,7 +46,7 @@ export interface BotNeuron<S extends State> {
   /**
    * `ActionDefinition` associated with this Neuron.
    */
-  action?: ActionDefinition<S>
+  action: ActionDefinition<S>
 
   /**
    * Child neurons of this one.

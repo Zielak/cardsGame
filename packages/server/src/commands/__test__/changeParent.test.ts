@@ -1,5 +1,6 @@
+import { State } from "@/state/state.js"
+
 import { DumbParent, DumbEntity } from "../../__test__/helpers/dumbEntities.js"
-import { State } from "../../state/state.js"
 import { ChangeParent } from "../changeParent.js"
 
 let state: State
@@ -96,12 +97,12 @@ describe("moves multiple entities into parent", () => {
 
 it("throws at empty target", async () => {
   await expect(
-    new ChangeParent(undefined, undefined).execute(state)
+    new ChangeParent(undefined, undefined).execute(state),
   ).rejects.toThrow(/Target is required/)
 })
 
 it("handles empty sources", async () => {
   await expect(
-    new ChangeParent([], parent).execute(state)
+    new ChangeParent([], parent).execute(state),
   ).resolves.toBeUndefined()
 })

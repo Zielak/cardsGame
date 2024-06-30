@@ -1,5 +1,6 @@
-import { State } from "../../state/state.js"
-import { ChildTrait } from "../../traits/child.js"
+import { State } from "@/state/state.js"
+import { ChildTrait } from "@/traits/child.js"
+
 import { Conditions } from "../conditions.js"
 import { ConditionsContextBase } from "../types.js"
 

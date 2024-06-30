@@ -1,7 +1,7 @@
 import { ServerLogger } from "@cardsgame/utils"
 import chalk from "chalk"
 
-import { State } from "../../state/state.js"
+import { State } from "@/state/state.js"
 
 import { DragActionDefinition, DragActionTemplate } from "./dragAction.js"
 

@@ -1,6 +1,6 @@
 import { ArraySchema, Schema } from "@colyseus/schema"
 
-import { type } from "../annotations/type.js"
+import { type } from "@/annotations/type.js"
 
 import type { ChildTrait } from "./child.js"
 import { isParent, ParentTrait } from "./parent.js"
@@ -27,7 +27,7 @@ class SelectedChildData extends Schema {
  * @category SelectableChildren
  */
 export function hasSelectableChildren(
-  entity: unknown
+  entity: unknown,
 ): entity is SelectableChildrenTrait {
   return (
     typeof entity == "object" &&
@@ -51,17 +51,17 @@ export class SelectableChildrenTrait {
    */
   selectChildAt(
     this: ParentTrait & SelectableChildrenTrait,
-    childIndex: number
+    childIndex: number,
   ): void {
     this._selectableEnsureIndex(childIndex)
 
     // Also ensure we won't push duplicates here
     const alreadyThere = this.selectedChildren.find(
-      (data) => data?.childIndex === childIndex
+      (data) => data?.childIndex === childIndex,
     )
     if (!alreadyThere) {
       this.selectedChildren.push(
-        new SelectedChildData(childIndex, this.countSelectedChildren())
+        new SelectedChildData(childIndex, this.countSelectedChildren()),
       )
     }
   }
@@ -71,12 +71,12 @@ export class SelectableChildrenTrait {
    */
   deselectChildAt(
     this: ParentTrait & SelectableChildrenTrait,
-    childIndex: number
+    childIndex: number,
   ): void {
     this._selectableEnsureIndex(childIndex)
 
     const dataIdx = this.selectedChildren.findIndex(
-      (data) => data?.childIndex === childIndex
+      (data) => data?.childIndex === childIndex,
     )
     if (dataIdx >= 0) {
       this.selectedChildren.splice(dataIdx, 1)
@@ -118,7 +118,7 @@ export class SelectableChildrenTrait {
   }
 
   getSelectedChildren<T extends ChildTrait>(
-    this: ParentTrait & SelectableChildrenTrait
+    this: ParentTrait & SelectableChildrenTrait,
   ): T[] {
     if (!isParent(this)) {
       return []
@@ -131,20 +131,20 @@ export class SelectableChildrenTrait {
   }
 
   getUnselectedChildren<T extends ChildTrait>(
-    this: ParentTrait & SelectableChildrenTrait
+    this: ParentTrait & SelectableChildrenTrait,
   ): T[] {
     if (!isParent(this)) {
       return []
     }
 
     return this.getChildren<T>().filter(
-      (child) => !this.isChildSelected(child.idx)
+      (child) => !this.isChildSelected(child.idx),
     )
   }
 
   _selectableEnsureIndex(
     this: ParentTrait & SelectableChildrenTrait,
-    index: number
+    index: number,
   ): void {
     if (!isParent(this)) {
       throw new Error(`ensureIndex | I'm not a parent!`)
@@ -160,7 +160,7 @@ export class SelectableChildrenTrait {
 
     if (this.countChildren() - 1 < index) {
       throw new Error(
-        `ensureIndex | this parent doesn't have child at index ${index}`
+        `ensureIndex | this parent doesn't have child at index ${index}`,
       )
     }
   }
@@ -176,10 +176,10 @@ SelectableChildrenTrait["typeDef"] = {
 SelectableChildrenTrait["hooks"] = {
   childRemoved: function (
     this: SelectableChildrenTrait,
-    childIndex: number
+    childIndex: number,
   ): void {
     const selectionRefIndex = this.selectedChildren.findIndex(
-      (data) => data?.childIndex === childIndex
+      (data) => data?.childIndex === childIndex,
     )
 
     if (selectionRefIndex >= 0) {
@@ -193,10 +193,10 @@ SelectableChildrenTrait["hooks"] = {
   childIndexUpdated: function (
     this: SelectableChildrenTrait,
     oldIdx: number,
-    newIdx: number
+    newIdx: number,
   ): void {
     const selectionData = this.selectedChildren.find(
-      (data) => data?.childIndex === oldIdx
+      (data) => data?.childIndex === oldIdx,
     )
     if (selectionData) {
       selectionData.childIndex = newIdx

@@ -1,5 +1,6 @@
+import type { State } from "@/state/state.js"
+
 import type { Command } from "../../../command.js"
-import type { State } from "../../../state/state.js"
 import type { BaseActionTemplate } from "../../base.js"
 import {
   defineEntityAction,
@@ -60,7 +61,7 @@ describe("isCompoundActionTemplate", () => {
         ...baseCompTemplate,
         actions: [actionA, actionB],
         finishActions: [actionC],
-      })
+      }),
     ).toBe(true)
 
     expect(
@@ -68,27 +69,27 @@ describe("isCompoundActionTemplate", () => {
         ...baseCompTemplate,
         actions: [{}, actionB],
         finishActions: [actionC],
-      })
+      }),
     ).toBe(false)
     expect(
       isCompoundActionTemplate({
         ...baseCompTemplate,
         actions: [actionB, ""],
         finishActions: [actionC],
-      })
+      }),
     ).toBe(false)
     expect(
       isCompoundActionTemplate({
         ...baseCompTemplate,
         actions: {},
         finishActions: [actionC],
-      })
+      }),
     ).toBe(false)
     expect(
       isCompoundActionTemplate({
         ...baseCompTemplate,
         finishActions: [actionC],
-      })
+      }),
     ).toBe(false)
   })
 
@@ -99,13 +100,13 @@ describe("isCompoundActionTemplate", () => {
       isCompoundActionTemplate({
         ...template,
         finishActions: [actionA],
-      })
+      }),
     ).toBe(true)
     expect(
       isCompoundActionTemplate({
         ...template,
         finishActions: [actionC],
-      })
+      }),
     ).toBe(true)
 
     //
@@ -113,31 +114,31 @@ describe("isCompoundActionTemplate", () => {
     expect(
       isCompoundActionTemplate({
         ...template,
-      })
+      }),
     ).toBe(false)
     expect(
       isCompoundActionTemplate({
         ...template,
         finishActions: {},
-      })
+      }),
     ).toBe(false)
     expect(
       isCompoundActionTemplate({
         ...template,
         finishActions: [],
-      })
+      }),
     ).toBe(false)
     expect(
       isCompoundActionTemplate({
         ...template,
         finishActions: "foo",
-      })
+      }),
     ).toBe(false)
     expect(
       isCompoundActionTemplate({
         ...template,
         finishActions: true,
-      })
+      }),
     ).toBe(false)
   })
 
@@ -152,24 +153,24 @@ describe("isCompoundActionTemplate", () => {
       isCompoundActionTemplate({
         ...template,
         abortActions: [actionA],
-      })
+      }),
     ).toBe(true)
     expect(
       isCompoundActionTemplate({
         ...template,
         abortActions: [actionC],
-      })
+      }),
     ).toBe(true)
     expect(
       isCompoundActionTemplate({
         ...template,
         abortActions: [],
-      })
+      }),
     ).toBe(true)
     expect(
       isCompoundActionTemplate({
         ...template,
-      })
+      }),
     ).toBe(true)
 
     //
@@ -178,19 +179,19 @@ describe("isCompoundActionTemplate", () => {
       isCompoundActionTemplate({
         ...template,
         abortActions: {},
-      })
+      }),
     ).toBe(false)
     expect(
       isCompoundActionTemplate({
         ...template,
         abortActions: "foo",
-      })
+      }),
     ).toBe(false)
     expect(
       isCompoundActionTemplate({
         ...template,
         abortActions: true,
-      })
+      }),
     ).toBe(false)
   })
 })
@@ -202,8 +203,8 @@ test("isCompoundActionDefinition", () => {
         ...baseCompTemplate,
         actions: [actionA],
         finishActions: [actionC],
-      })
-    )
+      }),
+    ),
   ).toBe(true)
 
   expect(
@@ -211,16 +212,16 @@ test("isCompoundActionDefinition", () => {
       new EntityActionDefinition({
         ...baseTemplate,
         interaction: () => [],
-      })
-    )
+      }),
+    ),
   ).toBe(false)
   expect(
     isCompoundActionDefinition(
       new MessageActionDefinition({
         ...baseTemplate,
         messageType: "foo",
-      })
-    )
+      }),
+    ),
   ).toBe(false)
   expect(isCompoundActionDefinition({})).toBe(false)
   expect(isCompoundActionDefinition([])).toBe(false)

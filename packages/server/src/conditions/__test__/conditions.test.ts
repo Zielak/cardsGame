@@ -1,11 +1,12 @@
+import { ClassicCard } from "@/entities/classicCard.js"
+import { Hand } from "@/entities/hand.js"
+import { State } from "@/state/state.js"
+import type { ChildTrait } from "@/traits/child.js"
+
 import {
   SmartEntity,
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
-import { ClassicCard } from "../../entities/classicCard.js"
-import { Hand } from "../../entities/hand.js"
-import { State } from "../../state/state.js"
-import type { ChildTrait } from "../../traits/child.js"
 import { Conditions } from "../conditions.js"
 import { setFlag, getFlag } from "../utils.js"
 
@@ -212,7 +213,7 @@ test("length", () => {
   expect(() =>
     con()
       .set(function () {})
-      .itsLength.equals(0)
+      .itsLength.equals(0),
   ).not.toThrow()
   expect(() => con().set(500).itsLength).toThrow()
 })
@@ -229,19 +230,19 @@ describe("selection", () => {
   describe("selectedChildren", () => {
     it("works with proper setup", () => {
       expect(() =>
-        con().query({ type: "hand" }).selectedChildren.itsLength.equals(2)
+        con().query({ type: "hand" }).selectedChildren.itsLength.equals(2),
       ).not.toThrow()
       expect(() =>
-        con().query({ type: "hand" }).selectedChildren.itsLength.equals(0)
+        con().query({ type: "hand" }).selectedChildren.itsLength.equals(0),
       ).toThrow()
     })
 
     it("throws with incorrect setup", () => {
       expect(() => con().set([1, 2, 3]).selectedChildren).toThrow(
-        /to be parent/
+        /to be parent/,
       )
       expect(() => con().set(parent).selectedChildren).toThrow(
-        /are not selectable/
+        /are not selectable/,
       )
     })
   })
@@ -249,19 +250,19 @@ describe("selection", () => {
   describe("unselectedChildren", () => {
     it("works with proper setup", () => {
       expect(() =>
-        con().query({ type: "hand" }).unselectedChildren.itsLength.equals(1)
+        con().query({ type: "hand" }).unselectedChildren.itsLength.equals(1),
       ).not.toThrow()
       expect(() =>
-        con().query({ type: "hand" }).unselectedChildren.itsLength.equals(0)
+        con().query({ type: "hand" }).unselectedChildren.itsLength.equals(0),
       ).toThrow()
     })
 
     it("throws with incorrect setup", () => {
       expect(() => con().set([1, 2, 3]).unselectedChildren).toThrow(
-        /to be parent/
+        /to be parent/,
       )
       expect(() => con().set(parent).unselectedChildren).toThrow(
-        /are not selectable/
+        /are not selectable/,
       )
     })
   })
@@ -269,19 +270,19 @@ describe("selection", () => {
   describe("selectedChildrenCount", () => {
     it("works with proper setup", () => {
       expect(() =>
-        con().query({ type: "hand" }).selectedChildrenCount.equals(2)
+        con().query({ type: "hand" }).selectedChildrenCount.equals(2),
       ).not.toThrow()
       expect(() =>
-        con().query({ type: "hand" }).selectedChildrenCount.equals(0)
+        con().query({ type: "hand" }).selectedChildrenCount.equals(0),
       ).toThrow()
     })
 
     it("throws with incorrect setup", () => {
       expect(() => con().set([1, 2, 3]).selectedChildrenCount).toThrow(
-        /to be parent/
+        /to be parent/,
       )
       expect(() => con().set(parent).selectedChildrenCount).toThrow(
-        /are not selectable/
+        /are not selectable/,
       )
     })
   })
@@ -289,19 +290,19 @@ describe("selection", () => {
   describe("unselectedChildrenCount", () => {
     it("works with proper setup", () => {
       expect(() =>
-        con().query({ type: "hand" }).unselectedChildrenCount.equals(1)
+        con().query({ type: "hand" }).unselectedChildrenCount.equals(1),
       ).not.toThrow()
       expect(() =>
-        con().query({ type: "hand" }).unselectedChildrenCount.equals(0)
+        con().query({ type: "hand" }).unselectedChildrenCount.equals(0),
       ).toThrow()
     })
 
     it("throws with incorrect setup", () => {
       expect(() => con().set([1, 2, 3]).unselectedChildrenCount).toThrow(
-        /to be parent/
+        /to be parent/,
       )
       expect(() => con().set(parent).unselectedChildrenCount).toThrow(
-        /are not selectable/
+        /are not selectable/,
       )
     })
   })

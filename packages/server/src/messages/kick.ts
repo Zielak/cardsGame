@@ -1,7 +1,7 @@
 import type { Client } from "@colyseus/core"
 
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
 
 /**
  * @ignore
@@ -27,10 +27,11 @@ export function kick(
     return
   }
 
-  const bot = this.botClients.find((c) => c.clientID === message.id)
+  const bot = this.botClients.find((bot) => bot.clientID === message.id)
 
   if (bot) {
-    this.removeBot(bot.clientID)
+    this.removeClient(bot.clientID)
+    this.botClients.splice(this.botClients.indexOf(bot), 1)
   } else {
     this.clients.find((c) => c.sessionId === message.id)?.leave()
   }

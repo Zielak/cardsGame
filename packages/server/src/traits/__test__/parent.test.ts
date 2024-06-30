@@ -1,5 +1,6 @@
+import { State } from "@/state/state.js"
+
 import { DumbEntity, DumbParent } from "../../__test__/helpers/dumbEntities.js"
-import { State } from "../../state/state.js"
 import { ENTITY_INTERNAL_KEY } from "../entity/types.js"
 import type { ParentTrait } from "../parent.js"
 

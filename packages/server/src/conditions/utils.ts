@@ -1,4 +1,4 @@
-import type { State } from "../state/state.js"
+import type { State } from "@/state/state.js"
 
 import type { CustomConditionError } from "./errors.js"
 
@@ -34,10 +34,10 @@ interface ConditionsFlags {
 /**
  * @ignore
  */
-export function getFlag(
+export function getFlag<T extends keyof ConditionsFlags>(
   target: Record<string, any>,
-  flagName: keyof ConditionsFlags,
-): any {
+  flagName: T,
+): ConditionsFlags[T] {
   if (!target._flags) {
     throw new Error(`getFlag | Incompatible target.`)
   }

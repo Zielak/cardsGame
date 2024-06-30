@@ -1,4 +1,4 @@
-import { State } from "../state/state.js"
+import { State } from "@/state/state.js"
 
 import { BotNeuron } from "./botNeuron.js"
 

@@ -1,7 +1,8 @@
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+import { populatePlayerEvent } from "@/utils/populatePlayerEvent.js"
+
 import { logs } from "../logs.js"
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
-import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
 /**
  *

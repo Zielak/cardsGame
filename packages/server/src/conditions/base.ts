@@ -24,7 +24,7 @@ class ConditionBase<S> {
    * ```
    */
   grab<T>(refName?: string): T {
-    return refName ? getRef(this, refName) : getFlag(this, "subject")
+    return (refName ? getRef(this, refName) : getFlag(this, "subject")) as T
   }
 
   /**
@@ -32,7 +32,7 @@ class ConditionBase<S> {
    * @returns State related with this Conditions instance.
    */
   grabState(): S {
-    return getFlag(this, "state")
+    return getFlag(this, "state") as S
   }
 }
 

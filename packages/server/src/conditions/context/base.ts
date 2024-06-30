@@ -1,4 +1,5 @@
-import { State } from "../../state/state.js"
+import { State } from "@/state/state.js"
+
 import { Conditions } from "../conditions.js"
 import { ConditionsContextBase } from "../types.js"
 

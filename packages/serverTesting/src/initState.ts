@@ -1,4 +1,4 @@
-import { Player, State } from "@cardsgame/server"
+import { Player, State, GameClient } from "@cardsgame/server"
 
 import {
   copyEntityPrimitives,
@@ -52,7 +52,7 @@ export interface InitState<S extends State> {
  */
 export function initState<S extends State>(
   state: S,
-  statePreparation: InitialStateDescription<S>
+  statePreparation: InitialStateDescription<S>,
 ): S {
   if (!statePreparation) {
     throw new Error("initState | statePreparation is required")
@@ -62,14 +62,14 @@ export function initState<S extends State>(
 
   // State's ArraySchema and MapSchemas, careful
   statePreparation.clients?.forEach((clientID) => {
-    state.clients.push(clientID)
+    state.clients.push(new GameClient({ id: clientID, ready: true }))
   })
   statePreparation.players?.forEach((playerDef) => {
     state.players.push(
       new Player({
         clientID: playerDef.clientID || "" + Math.random(),
         ...playerDef,
-      })
+      }),
     )
   })
 
@@ -77,7 +77,7 @@ export function initState<S extends State>(
 }
 
 export function initStateSetup<S extends State>(
-  getState: StateGetter<S>
+  getState: StateGetter<S>,
 ): InitState<S> {
   return function initStateInner(statePreparation: InitialStateDescription<S>) {
     return initState<S>(getState(), statePreparation)

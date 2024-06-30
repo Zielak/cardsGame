@@ -1,8 +1,9 @@
+import { State } from "@/state/state.js"
+
 import {
   SmartEntity,
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
-import { State } from "../../state/state.js"
 import { Conditions } from "../conditions.js"
 
 import { ConditionsTest } from "./conditions.js"

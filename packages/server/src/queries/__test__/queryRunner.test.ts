@@ -1,10 +1,11 @@
+import { Player } from "@/player/player.js"
+import { State } from "@/state/state.js"
+
 import { LabeledEntity } from "../../__test__/helpers/labeledEntities.js"
 import {
   SmartEntity,
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
-import { Player } from "../../player/player.js"
-import { State } from "../../state/state.js"
 import { queryRunner } from "../runner.js"
 
 let state: State,
@@ -97,7 +98,7 @@ describe("multi tests", () => {
 
         // On entity without ownership trait
         expect(
-          state.query({ name: "topLevelTargetD", owner: playerA })
+          state.query({ name: "topLevelTargetD", owner: playerA }),
         ).toBeUndefined()
       })
     })
@@ -108,7 +109,7 @@ describe("multi tests", () => {
         expect(state.query({ name: ["whatever", "targetC"] })).toBe(targetC)
 
         expect(
-          state.query({ name: ["whatever", "nonexistent"] })
+          state.query({ name: ["whatever", "nonexistent"] }),
         ).toBeUndefined()
       })
     })
@@ -116,10 +117,10 @@ describe("multi tests", () => {
     describe("functions", () => {
       test("finds first matching name", () => {
         expect(
-          state.query<SmartEntity>({ name: (v) => v.startsWith("target") }).id
+          state.query<SmartEntity>({ name: (v) => v.startsWith("target") }).id,
         ).toBe(targetA.id)
         expect(state.query({ name: (v) => v.startsWith("parent") })).toBe(
-          parentA
+          parentA,
         )
         expect(state.query({ type: (v) => v.includes("zz") })).toBe(parentC)
 
@@ -130,10 +131,10 @@ describe("multi tests", () => {
     describe("with parent definition", () => {
       test("starting from state, finds deeply anywhere", () => {
         expect(
-          state.query({ type: "bazzer", parent: { name: "parentB" } })
+          state.query({ type: "bazzer", parent: { name: "parentB" } }),
         ).toBe(parentC)
         expect(state.query({ type: "bar", parent: { type: "bazzer" } })).toBe(
-          targetC
+          targetC,
         )
       })
 
@@ -172,12 +173,12 @@ describe("multi tests", () => {
         expect(
           state.queryAll({
             type: (v) => v.startsWith("f"),
-          }).length
+          }).length,
         ).toBe(8)
         expect(
           parentB.queryAll({
             type: (v) => v.startsWith("f"),
-          }).length
+          }).length,
         ).toBe(6)
       })
     })
@@ -188,13 +189,13 @@ describe("multi tests", () => {
           state.queryAll({
             type: "bazzer",
             parent: { name: "parentB" },
-          })[0]
+          })[0],
         ).toBe(parentC)
         expect(
           state.queryAll({
             type: "bar",
             parent: { type: "bazzer" },
-          })[0]
+          })[0],
         ).toBe(targetC)
       })
     })

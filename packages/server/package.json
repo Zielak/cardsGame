@@ -21,8 +21,8 @@
   ],
   "scripts": {
     "build": "concurrently npm:build:esm npm:build:cjs",
-    "build:esm": "tsc -p tsconfig.build.json",
-    "build:cjs": "tsc -p tsconfig.build.cjs.json && ../../scripts/mapToCjs.sh ./lib/cjs",
+    "build:esm": "tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json -o ./lib/types/",
+    "build:cjs": "tsc -p tsconfig.build.cjs.json && resolve-tspaths -p tsconfig.build.cjs.json && ../../scripts/mapToCjs.sh ./lib/cjs",
     "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
     "test": "jest",
     "test:watch": "jest --watch"

@@ -4,11 +4,12 @@ import type { State } from "./state/state.js"
 export type IntegrationHookCallbackContext<S extends State> = {
   data: Readonly<Record<string, any>>
   addClient: Room<S>["addClient"]
+  addBot: Room<S>["addBot"]
 }
 
 export type IntegrationHookCallback<S extends State> = (
   state: S,
-  context: IntegrationHookCallbackContext<S>
+  context: IntegrationHookCallbackContext<S>,
 ) => void
 
 /**

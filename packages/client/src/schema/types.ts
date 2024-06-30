@@ -44,7 +44,7 @@ type ObjectSchemaColyBase<T> = {
   onChange: SchemaChangeCallback
   listen<K extends keyof T>(
     propName: K,
-    callback: (value: T[K], previousValue: T[K]) => void
+    callback: (value: T[K], previousValue: T[K]) => void,
   ): () => void
 }
 type _ArrayCollection<T extends Array<any>> =
@@ -115,7 +115,7 @@ interface EntityParentNode {
  * Root game state
  */
 export type ClientGameStateProps = {
-  clients: string[]
+  clients: GameClientDefinition[]
 
   currentPlayerIdx?: number
   isGameStarted: boolean
@@ -169,13 +169,13 @@ export function isDefinitionOfMapSchema(o: unknown): o is MapSchemaDefinition {
 }
 
 export function isDefinitionOfArraySchema(
-  o: unknown
+  o: unknown,
 ): o is ArraySchemaDefinition {
   return typeof o === "object" && o !== null && "array" in o
 }
 
 export function isDefinitionOfPrimitivesCollection(
-  o: unknown
+  o: unknown,
 ): o is CollectionOfPrimitivesDefinition {
   if (isDefinitionOfMapSchema(o)) {
     return typeof o.map === "string"
@@ -186,7 +186,7 @@ export function isDefinitionOfPrimitivesCollection(
 }
 
 export function isDefinitionOfObjectsCollection(
-  o: unknown
+  o: unknown,
 ): o is CollectionOfObjectsDefinition {
   if (isDefinitionOfMapSchema(o)) {
     return isDefinitionOfSchema(o.map)

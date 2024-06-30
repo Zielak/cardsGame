@@ -1,4 +1,5 @@
-import type { ChildTrait } from "../../traits/child.js"
+import type { ChildTrait } from "@/traits/child.js"
+
 import type { ClassicCard } from "../classicCard.js"
 
 export type SortingFunction = (childA: ChildTrait, childB: ChildTrait) => number
@@ -46,7 +47,7 @@ const rankScores = {
  */
 export const defaultHandOfCardsSorting = (
   childA: ClassicCard,
-  childB: ClassicCard
+  childB: ClassicCard,
 ): number => {
   const childAScore =
     suitScores[childA.suit] + (rankScores[childA.rank] || Number(childA.rank))

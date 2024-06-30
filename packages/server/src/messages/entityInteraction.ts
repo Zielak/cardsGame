@@ -1,9 +1,10 @@
-import { ENTITY_INTERACTION } from "../interaction/constants.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+import type { ChildTrait } from "@/traits/index.js"
+import { populatePlayerEvent } from "@/utils/populatePlayerEvent.js"
+
 import { logs } from "../logs.js"
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
-import type { ChildTrait } from "../traits/index.js"
-import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
 /**
  * This function will only be called when `messageType === ENTITY_INTERACTION`

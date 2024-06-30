@@ -1,3 +1,6 @@
+import { Player } from "@/player/player.js"
+import { State } from "@/state/state.js"
+
 import { DumbParent, DumbEntity } from "../../__test__/helpers/dumbEntities.js"
 import {
   LabeledEntity,
@@ -11,8 +14,6 @@ import {
   SmartEntity,
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
-import { Player } from "../../player/player.js"
-import { State } from "../../state/state.js"
 import { hasOwnership } from "../ownership.js"
 
 let player: Player

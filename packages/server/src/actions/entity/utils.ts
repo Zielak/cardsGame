@@ -1,4 +1,4 @@
-import { State } from "../../state/state.js"
+import { State } from "@/state/state.js"
 
 import { EntityActionDefinition, EntityActionTemplate } from "./entityAction.js"
 
@@ -6,7 +6,7 @@ import { EntityActionDefinition, EntityActionTemplate } from "./entityAction.js"
  * @ignore
  */
 export function isEntityActionDefinition<S extends State>(
-  o: unknown
+  o: unknown,
 ): o is EntityActionDefinition<S> {
   if (typeof o !== "object" && !(o instanceof EntityActionDefinition)) {
     return false
@@ -26,7 +26,7 @@ function validInteractionType(v: unknown): v is InteractionType {
  * @ignore
  */
 export function isEntityActionTemplate<S extends State = State>(
-  o: unknown
+  o: unknown,
 ): o is EntityActionTemplate<S> {
   if (typeof o !== "object") {
     return false

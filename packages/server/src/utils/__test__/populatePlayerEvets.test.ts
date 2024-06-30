@@ -1,8 +1,9 @@
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import { Player } from "@/player/player.js"
+import type { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
+import { State } from "@/state/state.js"
+
 import { DumbEntity } from "../../__test__/helpers/dumbEntities.js"
-import { ENTITY_INTERACTION } from "../../interaction/constants.js"
-import { Player } from "../../player/player.js"
-import type { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
-import { State } from "../../state/state.js"
 import { populatePlayerEvent } from "../populatePlayerEvent.js"
 
 let state: State
@@ -28,7 +29,7 @@ describe("idxPath", () => {
         interaction: "tap",
         entityPath: [1, 2, 3],
       },
-      CLIENT_ID
+      CLIENT_ID,
     )
 
     expect(result.entityPath).toEqual([1, 2, 3])
@@ -43,7 +44,7 @@ describe("idxPath", () => {
         interaction: "tap",
         entityPath: ["1", "2", "3"],
       } as ClientPlayerMessage,
-      CLIENT_ID
+      CLIENT_ID,
     )
 
     expect(result.entityPath).toEqual([1, 2, 3])
@@ -59,8 +60,8 @@ describe("idxPath", () => {
           // @ts-expect-error for testing
           entityPath: ["nope"],
         },
-        CLIENT_ID
-      )
+        CLIENT_ID,
+      ),
     ).toThrow(`received "nope", parsed to "NaN".`)
 
     expect(() =>
@@ -71,8 +72,8 @@ describe("idxPath", () => {
           interaction: "tap",
           entityPath: [0, NaN],
         },
-        CLIENT_ID
-      )
+        CLIENT_ID,
+      ),
     ).toThrow("received NaN")
 
     expect(() =>
@@ -84,8 +85,8 @@ describe("idxPath", () => {
           // @ts-expect-error for testing
           entityPath: [{}],
         },
-        CLIENT_ID
-      )
+        CLIENT_ID,
+      ),
     ).toThrow("couldn't parse value")
   })
 })
@@ -99,7 +100,7 @@ describe("player", () => {
         interaction: "tap",
         entityPath: [0],
       },
-      player
+      player,
     )
 
     expect(result.player).toBe(player)
@@ -114,7 +115,7 @@ describe("player", () => {
         interaction: "tap",
         entityPath: [0],
       },
-      player.clientID
+      player.clientID,
     )
 
     expect(result.player).toBe(player)
@@ -131,7 +132,7 @@ describe("entity", () => {
         interaction: "tap",
         entityPath: [0],
       },
-      player
+      player,
     )
 
     expect(Array.isArray(result.entities)).toBe(true)
@@ -151,7 +152,7 @@ describe("entity", () => {
         interaction: "tap",
         entityPath: [100],
       },
-      player.clientID
+      player.clientID,
     )
 
     expect(Array.isArray(result.entities)).toBe(true)

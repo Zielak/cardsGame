@@ -1,10 +1,10 @@
-import { isGrid } from "../entities/index.js"
-import { queryRunner } from "../queries/runner.js"
-import type { QuerableProps } from "../queries/types.js"
-import type { State } from "../state/state.js"
-import { isChild } from "../traits/child.js"
-import { isParent } from "../traits/parent.js"
-import { hasSelectableChildren } from "../traits/selectableChildren.js"
+import { isGrid } from "@/entities/index.js"
+import { queryRunner } from "@/queries/runner.js"
+import type { QuerableProps } from "@/queries/types.js"
+import type { State } from "@/state/state.js"
+import { isChild } from "@/traits/child.js"
+import { ParentTrait, isParent } from "@/traits/parent.js"
+import { hasSelectableChildren } from "@/traits/selectableChildren.js"
 
 import { throwError } from "./errors.js"
 import { ConditionsContextBase } from "./types.js"
@@ -77,7 +77,7 @@ class ConditionAssertions<
    * @asserts subject should be empty. Usable against JS primitives AND Entities.
    */
   empty(): this {
-    const subject = getFlag(this, "subject")
+    const subject = getFlag(this, "subject") as any
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
@@ -125,7 +125,7 @@ class ConditionAssertions<
    * ```
    */
   full(): this {
-    const subject = getFlag(this, "subject")
+    const subject = getFlag(this, "subject") as ParentTrait
 
     if (!isParent(subject)) {
       throwError(this, `full | applies only to ParentTrait`)
@@ -155,14 +155,18 @@ class ConditionAssertions<
       throwError(this, `availableSpot | applies only on parents`)
     }
 
-    if (typeof arg0 === "number" && arg1 === undefined) {
+    if (typeof arg0 === "number" && arg1 === undefined && isParent(subject)) {
       assert.call(
         this,
         subject.getChild(arg0) === undefined,
         `spot [${arg0}] is occupied`,
         `spot [${arg0}] is available but shouldn't`,
       )
-    } else if (typeof arg0 === "number" && typeof arg1 === "number") {
+    } else if (
+      typeof arg0 === "number" &&
+      typeof arg1 === "number" &&
+      isGrid(subject)
+    ) {
       if (!isGrid(subject)) {
         throwError(this, `availableSpot | column/row, expected Grid container`)
       }
@@ -283,7 +287,7 @@ class ConditionAssertions<
    * @asserts that subject is numerically above the provided value.
    */
   above(value: number): this {
-    const subject = getFlag(this, "subject")
+    const subject = getFlag(this, "subject") as number
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
@@ -303,7 +307,7 @@ class ConditionAssertions<
    * @asserts that subject is numerically above OR equal to the provided value.
    */
   aboveEq(value: number): this {
-    const subject = getFlag(this, "subject")
+    const subject = getFlag(this, "subject") as number
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
@@ -329,7 +333,7 @@ class ConditionAssertions<
    * @asserts that subject is numerically below the provided value.
    */
   below(value: number): this {
-    const subject = getFlag(this, "subject")
+    const subject = getFlag(this, "subject") as number
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
@@ -349,7 +353,7 @@ class ConditionAssertions<
    * @asserts that subject is numerically below or equal to the provided value.
    */
   belowEq(value: number): this {
-    const subject = getFlag(this, "subject")
+    const subject = getFlag(this, "subject") as number
     const propName = getFlag(this, "propName")
     const printPropName = propName ? `'${propName}' = ` : ""
 
@@ -455,6 +459,7 @@ class ConditionAssertions<
 
     if (!isChild(subject)) {
       throwError(this, `selectable | applies only on child entities`)
+      return
     }
 
     assert.call(
@@ -471,6 +476,7 @@ class ConditionAssertions<
 
     if (!isChild(subject)) {
       throwError(this, `isSelected | is not a child`)
+      return
     }
 
     const result = hasSelectableChildren(subject.parent)

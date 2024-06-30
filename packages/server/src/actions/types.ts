@@ -1,17 +1,7 @@
-import type { State } from "../state/state.js"
+import type { State } from "@/state/state.js"
 
 import type { BaseActionDefinition, BaseActionTemplate } from "./base.js"
 import type { CollectionActionDefinition } from "./collection/collection.js"
-import type { EntityActionDefinition } from "./entity/entityAction.js"
-import type { MessageActionDefinition } from "./message/messageAction.js"
-
-/**
- * @ignore
- * @deprecated use
- */
-export type BasicActionDefinition<S extends State> =
-  | EntityActionDefinition<S>
-  | MessageActionDefinition<S>
 
 /**
  * @ignore

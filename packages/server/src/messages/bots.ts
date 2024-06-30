@@ -1,8 +1,10 @@
+import { randomBytes } from "crypto"
+
 import { def } from "@cardsgame/utils"
 import type { Client } from "@colyseus/core"
 
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
 
 /**
  * Create and add new Bot player to clients list.
@@ -28,7 +30,7 @@ export function botAdd(
   const result = this.addBot({
     actionDelay: () => Math.random() + 0.5,
     intelligence: def(message?.intelligence, 0.5),
-    clientID: `botPlayer${this.botClients.length}`,
+    clientID: `bot_${randomBytes(3).toString("hex")}`,
   })
 
   if (!result) {

@@ -1,12 +1,16 @@
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+
 import { Command } from "../command.js"
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
 
 export class RevealUI extends Command {
   lastUiName: string
   lastUiValue: string
 
-  constructor(private uiName: string, private clientID?: string) {
+  constructor(
+    private uiName: string,
+    private clientID?: string,
+  ) {
     super()
   }
 

@@ -1,7 +1,7 @@
-import type { Player, ServerPlayerMessage } from "../player/index.js"
-import { getEntitiesAlongPath } from "../state/helpers.js"
-import type { State } from "../state/state.js"
-import { isChild } from "../traits/child.js"
+import type { Player, ServerPlayerMessage } from "@/player/index.js"
+import { getEntitiesAlongPath } from "@/state/helpers.js"
+import type { State } from "@/state/state.js"
+import { isChild } from "@/traits/child.js"
 
 const sanitizeIdxPath = (value: unknown): number => {
   if (value !== value) {
@@ -14,13 +14,13 @@ const sanitizeIdxPath = (value: unknown): number => {
     const num = parseInt(value)
     if (num !== num) {
       throw new Error(
-        `sanitizeIdxPath | received "${value}", parsed to "${num}".`
+        `sanitizeIdxPath | received "${value}", parsed to "${num}".`,
       )
     }
     return num
   }
   throw new Error(
-    `sanitizeIdxPath | couldn't parse value of type "${typeof value}"`
+    `sanitizeIdxPath | couldn't parse value of type "${typeof value}"`,
   )
 }
 
@@ -32,7 +32,7 @@ const sanitizeIdxPath = (value: unknown): number => {
 export function populatePlayerEvent(
   state: State,
   message: ClientPlayerMessage,
-  clientID: string
+  clientID: string,
 ): ServerPlayerMessage
 /**
  * Converts players message from the Client into `ServerPlayerMessage`.
@@ -42,7 +42,7 @@ export function populatePlayerEvent(
 export function populatePlayerEvent(
   state: State,
   message: ClientPlayerMessage,
-  player: Player
+  player: Player,
 ): ServerPlayerMessage
 /**
  * Converts players message from the Client into `ServerPlayerMessage`.
@@ -52,7 +52,7 @@ export function populatePlayerEvent(
 export function populatePlayerEvent(
   state: State,
   message: ClientPlayerMessage,
-  clientOrPlayer: string | Player
+  clientOrPlayer: string | Player,
 ): ServerPlayerMessage {
   const newEvent: ServerPlayerMessage = {
     messageType: message.messageType,

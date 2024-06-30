@@ -1,7 +1,8 @@
+import { ClientMessageContext } from "@/conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "@/conditions/context/utils.js"
+import { State } from "@/state/state.js"
+
 import type { Command } from "../../command.js"
-import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
-import { prepareConditionsContext } from "../../conditions/context/utils.js"
-import { State } from "../../state/state.js"
 import type { BaseActionTemplate } from "../base.js"
 import { EntityActionDefinition } from "../entity/entityAction.js"
 import {
@@ -33,12 +34,12 @@ describe("isMessageActionTemplate", () => {
       isMessageActionTemplate({
         ...baseTemplate,
         messageType: "test",
-      })
+      }),
     ).toBe(true)
     expect(
       isMessageActionTemplate({
         ...baseTemplate,
-      })
+      }),
     ).toBe(false)
   })
 })
@@ -49,8 +50,8 @@ test("isMessageActionDefinition", () => {
       new MessageActionDefinition({
         ...baseTemplate,
         messageType: "foo",
-      })
-    )
+      }),
+    ),
   ).toBe(true)
 
   expect(
@@ -58,8 +59,8 @@ test("isMessageActionDefinition", () => {
       new EntityActionDefinition({
         ...baseTemplate,
         interaction: () => [],
-      })
-    )
+      }),
+    ),
   ).toBe(false)
 })
 
@@ -89,7 +90,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
       new MessageActionDefinition({
         ...baseTemplate,
         messageType: "bar",
-      }).checkPrerequisites(messageContext)
+      }).checkPrerequisites(messageContext),
     ).toBe(false)
   })
 
@@ -98,7 +99,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
       new MessageActionDefinition({
         ...baseTemplate,
         messageType: "foo",
-      }).checkPrerequisites(messageContext)
+      }).checkPrerequisites(messageContext),
     ).toBe(true)
   })
 })

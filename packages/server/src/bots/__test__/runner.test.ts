@@ -1,6 +1,8 @@
-import { TestRoom } from "../../__helpers__/room.js"
-import type { Room } from "../../room/base.js"
-import { State } from "../../state/state.js"
+import { Bot } from "@/player/bot.js"
+import type { Room } from "@/room/base.js"
+import { State } from "@/state/state.js"
+
+import { TestRoom } from "../../__test__/helpers/room.js"
 import { BotRunner } from "../runner.js"
 
 let runner: BotRunner<State>
@@ -11,6 +13,7 @@ beforeEach(() => {
   state = new State()
   room = new TestRoom()
   room.state = state
+  room.botClients.push(new Bot({ clientID: "bot" }))
   runner = new BotRunner<State>(room)
 })
 

@@ -1,6 +1,7 @@
-import { ClassicCard, Hand } from "../../../entities/index.js"
-import { Bot } from "../../../player/index.js"
-import { State } from "../../../state/state.js"
+import { ClassicCard, Hand } from "@/entities/index.js"
+import { Bot } from "@/player/index.js"
+import { State } from "@/state/state.js"
+
 import {
   PlayCardGoal,
   rootNeuron,
@@ -26,14 +27,15 @@ beforeEach(() => {
 
   state.currentPlayerIdx = 0
 })
+
 test.skip("Bot1, their turn, can pick only S and C", () => {
-  const goal = pickNeuron(rootNeuron, state, bot1)
+  const goal = pickNeuron({ rootNeuron, state, bot: bot1 })
   expect(goal.neuron.name).toBe(PlayCardGoal.name)
   expect(goal.message.entityPath).toBeDefined()
 })
 
 test.skip("Bot2, not their turn, can only scream", () => {
-  const goal = pickNeuron(rootNeuron, state, bot2)
+  const goal = pickNeuron({ rootNeuron, state, bot: bot2 })
   expect(goal.neuron.name).toBe(ScreamYESGoal.name)
   expect(goal.message.messageType).toBe("scream")
   expect(goal.message.data).toBe("yes")

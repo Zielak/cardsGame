@@ -1,37 +1,38 @@
 import chalk from "chalk"
 
-import type { BaseActionDefinition } from "./actions/base.js"
+import type { BaseActionDefinition } from "@/actions/base.js"
 import {
   CollectionActionDefinition,
   CollectionConditionsResult,
   CollectionContext,
-} from "./actions/collection/collection.js"
-import { extendsCollectionActionDefinition } from "./actions/collection/utils.js"
-import { RootActionDefinition, RootContext } from "./actions/root/rootAction.js"
-import { isRootActionDefinition } from "./actions/root/utils.js"
-import type { Command } from "./command.js"
-import { Undo } from "./commands/undo.js"
-import { prepareActionContext } from "./commandsManager/utils.js"
-import { Conditions } from "./conditions/conditions.js"
+} from "@/actions/collection/collection.js"
+import { extendsCollectionActionDefinition } from "@/actions/collection/utils.js"
+import { Undo } from "@/commands/undo.js"
+import { Conditions } from "@/conditions/conditions.js"
 import {
   ClientMessageContext,
   playerMessageToInitialSubjects,
-} from "./conditions/context/clientMessage.js"
-import { prepareConditionsContext } from "./conditions/context/utils.js"
-import { logs } from "./logs.js"
-import type { Player, ServerPlayerMessage } from "./player/index.js"
-import type { Room } from "./room/base.js"
-import type { State } from "./state/state.js"
+} from "@/conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "@/conditions/context/utils.js"
+import type { Player, ServerPlayerMessage } from "@/player/index.js"
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+
+import {
+  RootActionDefinition,
+  RootContext,
+} from "../actions/root/rootAction.js"
+import { isRootActionDefinition } from "../actions/root/utils.js"
+import type { Command } from "../command.js"
+import { logs } from "../logs.js"
+
+import { prepareActionContext } from "./utils.js"
 
 /**
  * @ignore
  */
 export class CommandsManager<S extends State> {
   history: Command[] = []
-  /**
-   * @deprecated the fuck is this?
-   */
-  incoming: Map<Player, ServerPlayerMessage> = new Map()
 
   /**
    * Map of clientID to a tuple of:

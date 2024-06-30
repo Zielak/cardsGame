@@ -1,7 +1,8 @@
-import { TestRoom } from "../../__helpers__/room.js"
-import { Player } from "../../player/player.js"
-import type { Room } from "../../room/base.js"
-import { State } from "../../state/state.js"
+import { Player } from "@/player/player.js"
+import type { Room } from "@/room/base.js"
+import { State } from "@/state/state.js"
+
+import { TestRoom } from "../../__test__/helpers/room.js"
 import { RevealUI, HideUI } from "../ui.js"
 
 let state: State
@@ -14,7 +15,7 @@ beforeEach(() => {
   state = new State()
   state.players.push(
     new Player({ clientID: "current" }),
-    new Player({ clientID: "other" })
+    new Player({ clientID: "other" }),
   )
   state.ui.set(UI_KEY1, "")
   state.ui.set(UI_KEY2, "")

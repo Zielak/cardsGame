@@ -1,6 +1,11 @@
 import { def } from "@cardsgame/utils"
 import chalk from "chalk"
 
+import type { State } from "@/state/state.js"
+import type { ChildTrait } from "@/traits/child.js"
+import { hasLabel } from "@/traits/label.js"
+import type { ParentTrait } from "@/traits/parent.js"
+
 import {
   Command,
   Target,
@@ -9,10 +14,6 @@ import {
   TargetsHolder,
 } from "../command.js"
 import { logs } from "../logs.js"
-import type { State } from "../state/state.js"
-import type { ChildTrait } from "../traits/child.js"
-import { hasLabel } from "../traits/label.js"
-import type { ParentTrait } from "../traits/parent.js"
 
 export class ChangeParent extends Command {
   private entities: TargetsHolder<ChildTrait>

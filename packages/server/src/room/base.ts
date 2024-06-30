@@ -2,11 +2,18 @@ import deepMerge from "@bundled-es-modules/deepmerge"
 import { type Client, type ISendOptions, Room as colRoom } from "@colyseus/core"
 import type { IBroadcastOptions } from "@colyseus/core/build/Room.js"
 
-import type { ActionDefinition } from "../actions/types.js"
-import type { BotActionsSet } from "../bots/botNeuron.js"
-import { BotRunner } from "../bots/runner.js"
+import type { ActionDefinition } from "@/actions/types.js"
+import type { BotActionsSet } from "@/bots/botNeuron.js"
+import { BotRunner } from "@/bots/runner.js"
+import { fallback } from "@/messages/fallback.js"
+import { messages } from "@/messages/messageHandler.js"
+import { BotOptions } from "@/player/bot.js"
+import { Player, ServerPlayerMessage, Bot } from "@/player/index.js"
+import { GameClient } from "@/state/client.js"
+import { State } from "@/state/state.js"
+
 import type { Command } from "../command.js"
-import { CommandsManager } from "../commandsManager.js"
+import { CommandsManager } from "../commandsManager/commandsManager.js"
 import type {
   IntegrationHookNames,
   IntegrationHooks,
@@ -14,14 +21,9 @@ import type {
   IntegrationHookData,
 } from "../integration.js"
 import { logs } from "../logs.js"
-import { fallback } from "../messages/fallback.js"
-import { messages } from "../messages/messageHandler.js"
-import { BotOptions } from "../player/bot.js"
-import { Player, ServerPlayerMessage, Bot } from "../player/index.js"
-import { State } from "../state/state.js"
-import { debugRoomMessage } from "../utils/debugRoomMessage.js"
 
 import type { RoomDefinition } from "./roomType.js"
+import { debugRoomMessage } from "./utils/debugRoomMessage.js"
 
 type BroadcastOptions = IBroadcastOptions & {
   undo: boolean
@@ -64,6 +66,10 @@ export abstract class Room<
    */
   possibleActions: ActionDefinition<S>[]
   botActivities: BotActionsSet<S>
+
+  /**
+   * Direct reference to Bot "players".
+   */
   botClients: Bot[] = []
 
   /**
@@ -88,6 +94,13 @@ export abstract class Room<
    */
   get allClientsCount(): number {
     return this.clients.length + this.botClients.length
+  }
+
+  /**
+   * Count all clients who declared ready for the game.
+   */
+  get readyClientsCount(): number {
+    return this.state.clients.filter((c) => c.ready)
   }
 
   get name(): string {
@@ -122,7 +135,21 @@ export abstract class Room<
 
     // Register all known messages
     messages.forEach((callback, type) => {
-      this.onMessage(type, callback.bind(this))
+      this.onMessage(type, (client, message) => {
+        try {
+          callback.call(this, client, message)
+        } catch (e) {
+          const err = e as Error
+          logs.error(
+            `Room:${this.name}`,
+            "Failed to execute message handler:",
+            err.name,
+            err.message,
+            "\n",
+            err.stack,
+          )
+        }
+      })
     })
     this.onMessage("*", fallback.bind(this))
 
@@ -151,6 +178,7 @@ export abstract class Room<
       }
       this.integrationContext = {
         addClient: this.addClient.bind(this),
+        addBot: this.addBot.bind(this),
         data: Object.freeze(this.currentIntegration.data),
       }
     }
@@ -159,42 +187,48 @@ export abstract class Room<
 
   /**
    * Add client to `state.clients`
-   * @returns `false` is client is already there or if the game is already started
+   * @returns `undefined` is client is already there or if the game is already started
    *
    * @ignore exposed only for testing, do not use
    */
-  addClient(sessionId: string): boolean {
-    const { state, playersCount } = this
+  addClient(sessionId: string): GameClient {
+    const { state } = this
 
-    if (state.isGameStarted) {
-      logs.info("addClient", "state.isGameStarted")
-      return false
-    }
+    // DONE: I Want spectators
+    // if (state.isGameStarted) {
+    //   logs.info("addClient", "state.isGameStarted")
+    //   return false
+    // }
 
     /**
      * this.botClients - only bots
      * this.clients - only human players and possible spectators?
-     * state.clients - all clients considered to become players when game starts
+     * state.clients - all clients considered to become players when game starts, including bots
      */
 
-    const withinPlayerLimits = playersCount?.max
-      ? this.clients.length < playersCount.max
-      : true
-
-    if (!withinPlayerLimits) {
-      logs.info("addClient failed", "!withinPlayerLimits")
-      return false
-    }
+    // TODO: move that logic to the ready message
+    // const withinPlayerLimits = playersCount?.max
+    //   ? this.clients.length < playersCount.max
+    //   : true
+    // if (!withinPlayerLimits) {
+    //   logs.info("addClient failed", "!withinPlayerLimits")
+    //   return false
+    // }
 
     const clientAlreadyIn = Array.from(state.clients.values()).some(
-      (clientID) => sessionId === clientID,
+      (client) => sessionId === client.id,
     )
     if (clientAlreadyIn) {
       logs.info("addClient failed", "clientAlreadyIn")
-      return false
+      return
     }
-    state.clients.push(sessionId)
-    return true
+    const newClient = new GameClient({ id: sessionId })
+    if (state.clients.length === 0) {
+      newClient.ready = true
+    }
+
+    state.clients.push(newClient)
+    return newClient
   }
 
   addBot(bot: BotOptions): boolean {
@@ -208,7 +242,7 @@ export abstract class Room<
     /**
      * this.botClients - only bots
      * this.clients - only human players and possible spectators?
-     * state.clients - all clients considered to become players when game starts
+     * state.clients - all clients considered to become players when game starts, including bots
      */
 
     const withinBotLimits = playersCount?.bots?.max
@@ -221,7 +255,7 @@ export abstract class Room<
     }
 
     const clientAlreadyIn = Array.from(state.clients.values()).some(
-      (clientID) => bot.clientID === clientID,
+      (client) => bot.clientID === client.id,
     )
 
     if (clientAlreadyIn) {
@@ -230,7 +264,9 @@ export abstract class Room<
     }
 
     this.botClients.push(new Bot(bot))
-    state.clients.push(bot.clientID)
+    state.clients.push(
+      new GameClient({ id: bot.clientID, isBot: true, ready: true }),
+    )
     return true
   }
 
@@ -246,22 +282,10 @@ export abstract class Room<
      * state.clients - all clients considered to become players when game starts
      */
 
-    const clientIndex = this.state.clients.indexOf(sessionId)
+    const clientIdx = this.state.clients.findIndex((c) => c.id === sessionId)
 
-    if (clientIndex >= 0) {
-      this.state.clients.splice(clientIndex, 1)
-      return true
-    }
-    return false
-  }
-
-  removeBot(id: string): boolean {
-    const botClient = this.botClients.find((b) => b.clientID === id)
-
-    if (botClient) {
-      const clientIdx = this.state.clients.indexOf(botClient.clientID)
+    if (clientIdx >= 0) {
       this.state.clients.splice(clientIdx, 1)
-      this.botClients = this.botClients.filter((b) => b !== botClient)
       return true
     }
     return false

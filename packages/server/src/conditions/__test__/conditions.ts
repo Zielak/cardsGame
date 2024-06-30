@@ -1,5 +1,6 @@
-import type { Player } from "../../player/player.js"
-import type { State } from "../../state/state.js"
+import type { Player } from "@/player/player.js"
+import type { State } from "@/state/state.js"
+
 import { Conditions } from "../conditions.js"
 import { ConditionsContextBase } from "../types.js"
 

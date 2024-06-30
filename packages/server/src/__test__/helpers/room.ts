@@ -1,6 +1,6 @@
 import { noop } from "@cardsgame/utils"
 
-import { defineRoom } from "../room/defineRoom.js"
+import { defineRoom } from "@/room/defineRoom.js"
 
 const TestRoom = defineRoom("TestRoom", {
   onPlayerTurnEnded: jest.fn(),

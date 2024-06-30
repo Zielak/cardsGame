@@ -29,7 +29,7 @@ export const compose = <T>(
       return arg
     } else {
       throw new Error(
-        `utils/compose, I expected a function here, got "${typeof fn}" instead...`
+        `utils/compose, I expected a function here, got "${typeof fn}" instead...`,
       )
     }
   }, value as T)
@@ -60,7 +60,7 @@ export const isMap = (thing: unknown): thing is Map<any, any> => {
  * Has somewhat same interface to native Map
  * @category Util
  */
-export const isMapLike = (thing: unknown): boolean => {
+export const isMapLike = (thing: unknown): thing is Map<any, any> => {
   if (isMap(thing)) {
     return true
   } else {
@@ -98,7 +98,7 @@ export function applyMixins(derivedCtor: AnyClass, baseCtors: any[]): void {
       Object.defineProperty(
         derivedCtor.prototype,
         name,
-        Object.getOwnPropertyDescriptor(baseCtor.prototype, name)
+        Object.getOwnPropertyDescriptor(baseCtor.prototype, name),
       )
     })
   })

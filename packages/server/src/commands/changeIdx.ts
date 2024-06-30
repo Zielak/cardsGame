@@ -1,8 +1,9 @@
+import type { State } from "@/state/state.js"
+import type { ChildTrait } from "@/traits/child.js"
+import { hasLabel } from "@/traits/label.js"
+
 import { Command, Targets, TargetsHolder } from "../command.js"
 import { logs } from "../logs.js"
-import type { State } from "../state/state.js"
-import type { ChildTrait } from "../traits/child.js"
-import { hasLabel } from "../traits/label.js"
 
 export class ChangeIdx extends Command {
   // FIXME: I keep holding references to objects! Maybe I should remember just to indexes?

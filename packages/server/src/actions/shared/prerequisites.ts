@@ -1,9 +1,10 @@
-import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
-import { ENTITY_INTERACTION } from "../../interaction/constants.js"
+import { ClientMessageContext } from "@/conditions/context/clientMessage.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import { queryRunner } from "@/queries/runner.js"
+import { State } from "@/state/state.js"
+import { isChild } from "@/traits/child.js"
+
 import { logs } from "../../logs.js"
-import { queryRunner } from "../../queries/runner.js"
-import { State } from "../../state/state.js"
-import { isChild } from "../../traits/child.js"
 
 import type { InteractionQueries } from "./types.js"
 

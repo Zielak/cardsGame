@@ -1,7 +1,7 @@
 import { ChildTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import type { State } from "../state/state.js"
+import type { State } from "@/state/state.js"
 
 import type { ParentTrait } from "./parent.js"
 

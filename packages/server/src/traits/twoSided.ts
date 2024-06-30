@@ -1,7 +1,7 @@
 import { TwoSidedTraitTypeDef } from "@cardsgame/entity-traits"
 import { def } from "@cardsgame/utils"
 
-import type { State } from "../state/state.js"
+import type { State } from "@/state/state.js"
 
 /**
  * Adds `faceUp` property and `flip*()` methods.

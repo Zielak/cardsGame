@@ -1,7 +1,8 @@
-import { TestRoom } from "../../__helpers__/room.js"
-import { Player } from "../../player/player.js"
-import type { Room } from "../../room/base.js"
-import { State } from "../../state/state.js"
+import { Player } from "@/player/player.js"
+import type { Room } from "@/room/base.js"
+import { State } from "@/state/state.js"
+
+import { TestRoom } from "../../__test__/helpers/room.js"
 import { NextPlayer, PreviousPlayer } from "../playerTurns.js"
 
 let state: State
@@ -13,7 +14,7 @@ beforeEach(() => {
     new Player({ clientID: "a" }),
     new Player({ clientID: "b" }),
     new Player({ clientID: "c" }),
-    new Player({ clientID: "d" })
+    new Player({ clientID: "d" }),
   )
 
   room = new TestRoom()

@@ -1,5 +1,9 @@
 import { def } from "@cardsgame/utils"
 
+import type { Room } from "@/room/base.js"
+import type { State } from "@/state/state.js"
+import type { ParentTrait } from "@/traits/parent.js"
+
 import {
   Command,
   Target,
@@ -8,9 +12,6 @@ import {
   TargetsHolder,
 } from "../command.js"
 import { logs } from "../logs.js"
-import type { Room } from "../room/base.js"
-import type { State } from "../state/state.js"
-import type { ParentTrait } from "../traits/parent.js"
 
 import { ChangeParent } from "./changeParent.js"
 

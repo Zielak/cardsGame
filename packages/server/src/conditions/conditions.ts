@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { applyMixins } from "@cardsgame/utils"
 
+import type { State } from "@/state/state.js"
+
 import { logs } from "../logs.js"
-import type { State } from "../state/state.js"
 
 import { ConditionsMethods } from "./allMethods.js"
 import { ConditionAssertions } from "./assertions.js"
@@ -33,10 +34,10 @@ class Conditions<
       if (getFlag(core, "eitherLevel") === 0) {
         // It might be empty, good, reset it to undefined
         if (customError) {
-          logs.debug("#Conditions, setting customError:", customError)
+          // logs.debug("#Conditions, setting customError:", customError)
         }
         if (getFlag(core, "customError")) {
-          logs.debug("#Conditions, overwriting previous error")
+          // logs.debug("#Conditions, overwriting previous error")
         }
         setFlag(core, "customError", customError)
       }

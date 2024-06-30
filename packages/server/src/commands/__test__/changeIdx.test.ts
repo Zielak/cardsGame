@@ -1,6 +1,7 @@
+import { State } from "@/state/state.js"
+
 import { DumbParent } from "../../__test__/helpers/dumbEntities.js"
 import { LabeledEntity } from "../../__test__/helpers/labeledEntities.js"
-import { State } from "../../state/state.js"
 import { ChangeIdx } from "../index.js"
 
 let state: State
@@ -29,13 +30,13 @@ describe("single item use", () => {
     cmd.execute(state)
 
     expect(
-      parent.getChildren<LabeledEntity>().map((e) => e.name)
+      parent.getChildren<LabeledEntity>().map((e) => e.name),
     ).toStrictEqual(["c", "a", "b", "d", "e"])
 
     cmd.undo(state)
 
     expect(
-      parent.getChildren<LabeledEntity>().map((e) => e.name)
+      parent.getChildren<LabeledEntity>().map((e) => e.name),
     ).toStrictEqual(INITIAL)
 
     // ----
@@ -44,13 +45,13 @@ describe("single item use", () => {
     cmd.execute(state)
 
     expect(
-      parent.getChildren<LabeledEntity>().map((e) => e.name)
+      parent.getChildren<LabeledEntity>().map((e) => e.name),
     ).toStrictEqual(["a", "b", "e", "c", "d"])
 
     cmd.undo(state)
 
     expect(
-      parent.getChildren<LabeledEntity>().map((e) => e.name)
+      parent.getChildren<LabeledEntity>().map((e) => e.name),
     ).toStrictEqual(INITIAL)
   })
 
@@ -60,13 +61,13 @@ describe("single item use", () => {
     cmd.execute(state)
 
     expect(
-      parent.getChildren<LabeledEntity>().map((e) => e.name)
+      parent.getChildren<LabeledEntity>().map((e) => e.name),
     ).toStrictEqual(["a", "b", "d", "c", "e"])
 
     cmd.undo(state)
 
     expect(
-      parent.getChildren<LabeledEntity>().map((e) => e.name)
+      parent.getChildren<LabeledEntity>().map((e) => e.name),
     ).toStrictEqual(INITIAL)
 
     // ----
@@ -75,13 +76,13 @@ describe("single item use", () => {
     cmd.execute(state)
 
     expect(
-      parent.getChildren<LabeledEntity>().map((e) => e.name)
+      parent.getChildren<LabeledEntity>().map((e) => e.name),
     ).toStrictEqual(["b", "c", "d", "e", "a"])
 
     cmd.undo(state)
 
     expect(
-      parent.getChildren<LabeledEntity>().map((e) => e.name)
+      parent.getChildren<LabeledEntity>().map((e) => e.name),
     ).toStrictEqual(INITIAL)
   })
 })

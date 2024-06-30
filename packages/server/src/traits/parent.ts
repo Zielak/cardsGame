@@ -1,11 +1,12 @@
 import { arrayWith, def, limit, sortByIdx } from "@cardsgame/utils"
 import { ArraySchema } from "@colyseus/schema"
 
-import { globalEntitiesContext } from "../annotations/entitiesContext.js"
+import { globalEntitiesContext } from "@/annotations/entitiesContext.js"
+import { queryRunner } from "@/queries/runner.js"
+import type { QuerableProps } from "@/queries/types.js"
+import type { State } from "@/state/state.js"
+
 import { logs } from "../logs.js"
-import { queryRunner } from "../queries/runner.js"
-import type { QuerableProps } from "../queries/types.js"
-import type { State } from "../state/state.js"
 
 import type { ChildTrait } from "./child.js"
 import { executeHook } from "./entity.js"

@@ -1,6 +1,7 @@
+import { State } from "@/state/state.js"
+
 import { DumbEntity, DumbParent } from "../../__test__/helpers/dumbEntities.js"
 import { LabeledEntity } from "../../__test__/helpers/labeledEntities.js"
-import { State } from "../../state/state.js"
 import type { ChildTrait } from "../child.js"
 import type { IdentityTrait } from "../identity.js"
 import { errors } from "../parent/errors.js"
@@ -75,7 +76,7 @@ describe("#removeChild", () => {
 
     parent.removeChild(entity)
     expect(
-      parent.getChildren().map((e: ChildTrait & IdentityTrait) => e.id)
+      parent.getChildren().map((e: ChildTrait & IdentityTrait) => e.id),
     ).toMatchSnapshot()
   })
 
@@ -162,7 +163,7 @@ describe("#addChild", () => {
     new DumbEntity(state, { parent })
 
     expect(() => parent.addChild(new DumbEntity(state))).toThrow(
-      errors.ADDCHILD_NO_EMPTY_SPOTS()
+      errors.ADDCHILD_NO_EMPTY_SPOTS(),
     )
   })
 })

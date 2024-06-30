@@ -4,6 +4,24 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "declarationDir": "./lib/types/",
-    "outDir": "./lib/esm/"
+    "outDir": "./lib/esm/",
+    "baseUrl": "./src",
+    "paths": {
+      "@/actions/*": ["actions/*"],
+      "@/annotations/*": ["annotations/*"],
+      "@/bots/*": ["bots/*"],
+      "@/commands/*": ["commands/*"],
+      "@/commandsManager/*": ["commandsManager/*"],
+      "@/conditions/*": ["conditions/*"],
+      "@/entities/*": ["entities/*"],
+      "@/interaction/*": ["interaction/*"],
+      "@/messages/*": ["messages/*"],
+      "@/player/*": ["player/*"],
+      "@/queries/*": ["queries/*"],
+      "@/room/*": ["room/*"],
+      "@/state/*": ["state/*"],
+      "@/traits/*": ["traits/*"],
+      "@/utils/*": ["utils/*"]
+    }
   }
 }

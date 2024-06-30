@@ -1,9 +1,11 @@
+import { Line } from "@/entities/line.js"
+import { GameClient } from "@/state/client.js"
+import { State } from "@/state/state.js"
+
 import {
   SmartEntity,
   SmartParent,
 } from "../../__test__/helpers/smartEntities.js"
-import { Line } from "../../entities/line.js"
-import { State } from "../../state/state.js"
 import { Conditions } from "../conditions.js"
 import { prepareConditionsContext } from "../context/utils.js"
 
@@ -50,7 +52,7 @@ describe("its", () => {
   })
   it("is possible to chain assertions", () => {
     expect(
-      () => con().its("type").equals("state").and.its("turnBased").true
+      () => con().its("type").equals("state").and.its("turnBased").true,
     ).not.toThrow()
   })
   it("is possible to go deep", () => {
@@ -89,7 +91,7 @@ describe("parent", () => {
   })
   describe("fail", () => {
     it("throws on root child entity", () => {
-      expect(() => con().parent).toThrow("Subject is the root state")
+      expect(() => con().parent).toThrow("Subject is not a child")
     })
   })
 })
@@ -135,13 +137,13 @@ describe("nthChild", () => {
       expect(con().set(array).nthChild(2).grab()).toBe(array[2])
     })
     it("grabs child of ArraySchema", () => {
-      state.clients.push("clientA")
-      state.clients.push("clientB")
+      state.clients.push(new GameClient("clientA"))
+      state.clients.push(new GameClient("clientB"))
 
       expect(() => con().its("clients").nthChild(0)).not.toThrow()
 
-      expect(con().its("clients").nthChild(0).grab()).toBe("clientA")
-      expect(con().its("clients").nthChild(1).grab()).toBe("clientB")
+      expect(con().its("clients").nthChild(0).its("id").grab()).toBe("clientA")
+      expect(con().its("clients").nthChild(1).its("id").grab()).toBe("clientB")
     })
   })
 
@@ -169,11 +171,11 @@ describe("top", () => {
       expect(con().set(array).top.grab()).toBe(array[2])
     })
     it("grabs child of ArraySchema", () => {
-      state.clients.push("clientA")
-      state.clients.push("clientB")
+      state.clients.push(new GameClient("clientA"))
+      state.clients.push(new GameClient("clientB"))
 
       expect(() => con().its("clients").top).not.toThrow()
-      expect(con().its("clients").top.grab()).toBe("clientB")
+      expect(con().its("clients").top.its("id").grab()).toBe("clientB")
     })
     it("test on Line, as it has 'length' property", () => {
       const line = new Line(state)
@@ -202,11 +204,11 @@ describe("bottom", () => {
       expect(con().set(array).bottom.grab()).toBe(array[0])
     })
     it("grabs child of ArraySchema", () => {
-      state.clients.push("clientA")
-      state.clients.push("clientB")
+      state.clients.push(new GameClient("clientA"))
+      state.clients.push(new GameClient("clientB"))
 
       expect(() => con().its("clients").bottom).not.toThrow()
-      expect(con().its("clients").bottom.grab()).toBe("clientA")
+      expect(con().its("clients").bottom.its("id").grab()).toBe("clientA")
     })
     it("test on Line, as it has 'length' property", () => {
       const line = new Line(state)

@@ -1,5 +1,6 @@
-import { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
-import { State } from "../../state/state.js"
+import { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
+import { State } from "@/state/state.js"
+
 import { Conditions } from "../conditions.js"
 import { ConditionsContextBase } from "../types.js"
 

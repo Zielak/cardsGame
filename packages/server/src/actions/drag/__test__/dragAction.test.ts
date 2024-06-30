@@ -1,11 +1,12 @@
+import { ClientMessageContext } from "@/conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "@/conditions/context/utils.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import { Player } from "@/player/player.js"
+import type { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
+import { State } from "@/state/state.js"
+
 import type { Command } from "../../../command.js"
 import { prepareActionContext } from "../../../commandsManager/utils.js"
-import { ClientMessageContext } from "../../../conditions/context/clientMessage.js"
-import { prepareConditionsContext } from "../../../conditions/context/utils.js"
-import { ENTITY_INTERACTION } from "../../../interaction/constants.js"
-import { Player } from "../../../player/player.js"
-import type { ServerPlayerMessage } from "../../../player/serverPlayerMessage.js"
-import { State } from "../../../state/state.js"
 import type { CollectionContext } from "../../collection/collection.js"
 import { EntityActionDefinition } from "../../entity/entityAction.js"
 import { MessageActionDefinition } from "../../message/messageAction.js"
@@ -13,8 +14,8 @@ import { DragContext } from "../context.js"
 import { DragActionDefinition, defineDragAction } from "../dragAction.js"
 import { isDragActionDefinition, isDragActionTemplate } from "../utils.js"
 
-jest.mock("../../../player/player.js")
-jest.mock("../../../state/state.js")
+jest.mock("@/player/player.js")
+jest.mock("@/state/state.js")
 
 const state = new State()
 const interaction = () => "*"
@@ -36,20 +37,20 @@ describe("isDragActionTemplate", () => {
           name,
           start: { interaction, conditions, command },
           end: { interaction, conditions, command },
-        })
+        }),
       ).toBe(true)
 
       expect(
         isDragActionTemplate({
           start: command,
           end: { interaction, conditions, command },
-        })
+        }),
       ).toBe(false)
       expect(
         isDragActionTemplate({
           start: { interaction, conditions, command },
           end: command,
-        })
+        }),
       ).toBe(false)
     })
 
@@ -58,7 +59,7 @@ describe("isDragActionTemplate", () => {
         isDragActionTemplate({
           start: { interaction, conditions },
           end: { interaction, conditions, command },
-        })
+        }),
       ).toBe(true)
     })
 
@@ -67,13 +68,13 @@ describe("isDragActionTemplate", () => {
         isDragActionTemplate({
           start: { conditions, command },
           end: { interaction, conditions, command },
-        })
+        }),
       ).toBe(false)
       expect(
         isDragActionTemplate({
           start: { interaction, conditions, command },
           end: { conditions, command },
-        })
+        }),
       ).toBe(false)
     })
 
@@ -82,13 +83,13 @@ describe("isDragActionTemplate", () => {
         isDragActionTemplate({
           start: { interaction, command },
           end: { interaction, conditions, command },
-        })
+        }),
       ).toBe(false)
       expect(
         isDragActionTemplate({
           start: { interaction, conditions, command },
           end: { interaction, command },
-        })
+        }),
       ).toBe(false)
     })
 
@@ -97,7 +98,7 @@ describe("isDragActionTemplate", () => {
         isDragActionTemplate({
           start: { interaction, conditions },
           end: { interaction, conditions },
-        })
+        }),
       ).toBe(false)
     })
   })
@@ -110,8 +111,8 @@ test("isDragActionDefinition", () => {
         name,
         start: { interaction, conditions },
         end: { interaction, conditions, command },
-      })
-    )
+      }),
+    ),
   ).toBe(true)
 
   expect(
@@ -121,8 +122,8 @@ test("isDragActionDefinition", () => {
         conditions,
         command,
         messageType: "foo",
-      })
-    )
+      }),
+    ),
   ).toBe(false)
   expect(
     isDragActionDefinition(
@@ -131,8 +132,8 @@ test("isDragActionDefinition", () => {
         interaction,
         conditions,
         command,
-      })
-    )
+      }),
+    ),
   ).toBe(false)
 })
 
@@ -300,7 +301,7 @@ describe("DragActionDefinition", () => {
 
       expect(def.start.checkConditions).toHaveBeenCalledWith(
         con,
-        messageContext
+        messageContext,
       )
       expect(def.end[0].checkConditions).not.toHaveBeenCalled()
 
@@ -322,7 +323,7 @@ describe("DragActionDefinition", () => {
 
       expect(def.start.checkConditions).toHaveBeenCalledWith(
         con,
-        messageContext
+        messageContext,
       )
       expect(def.end[0].checkConditions).not.toHaveBeenCalled()
 
@@ -344,7 +345,7 @@ describe("DragActionDefinition", () => {
 
       expect(def.end[0].checkConditions).toHaveBeenCalledWith(
         con,
-        messageContext
+        messageContext,
       )
       expect(def.start.checkConditions).not.toHaveBeenCalled()
     })
@@ -365,7 +366,7 @@ describe("DragActionDefinition", () => {
 
       expect(def.end[0].checkConditions).toHaveBeenCalledWith(
         con,
-        messageContext
+        messageContext,
       )
       expect(def.start.checkConditions).not.toHaveBeenCalled()
     })

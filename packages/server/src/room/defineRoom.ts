@@ -1,6 +1,6 @@
 import type { Presence } from "@colyseus/core"
 
-import type { State } from "../state/state.js"
+import type { State } from "@/state/state.js"
 
 import { Room } from "./base.js"
 import type { RoomDefinition } from "./roomType.js"

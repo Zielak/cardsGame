@@ -4,7 +4,7 @@ import {
   hasIdentity,
   hasOwnership,
   hasSelectableChildren,
-} from "../traits/index.js"
+} from "@/traits/index.js"
 
 import type { QuerableProps } from "./types.js"
 

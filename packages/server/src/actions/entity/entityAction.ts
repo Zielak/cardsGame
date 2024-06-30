@@ -1,9 +1,10 @@
-import type { Command } from "../../command.js"
 import type {
   ClientMessageConditions,
   ClientMessageContext,
-} from "../../conditions/context/clientMessage.js"
-import type { State } from "../../state/state.js"
+} from "@/conditions/context/clientMessage.js"
+import type { State } from "@/state/state.js"
+
+import type { Command } from "../../command.js"
 import type { BaseActionDefinition, BaseActionTemplate } from "../base.js"
 import { checkInteractionQueries } from "../shared/prerequisites.js"
 import type { InteractionQueries } from "../shared/types.js"
@@ -43,6 +44,9 @@ export class EntityActionDefinition<S extends State>
   constructor(private template: EntityActionTemplate<S>) {
     this.name = template.name
   }
+  /**
+   * @deprecated is this used?
+   */
   abort: () => boolean
 
   checkPrerequisites(messageContext: ClientMessageContext<S>): boolean {

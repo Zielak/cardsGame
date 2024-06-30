@@ -1,21 +1,25 @@
-import { TestRoom } from "../__helpers__/room.js"
+import {
+  LabeledEntity,
+  LabeledParent,
+} from "__test__/helpers/labeledEntities.js"
+import { TestRoom } from "__test__/helpers/room.js"
+
 import {
   DragActionDefinition,
   defineDragAction,
-} from "../actions/drag/dragAction.js"
-import { Noop } from "../commands/noop.js"
+} from "@/actions/drag/dragAction.js"
+import { Noop } from "@/commands/noop.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import { Player } from "@/player/player.js"
+import type { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
+import type { Room } from "@/room/base.js"
+import { State } from "@/state/state.js"
+import { populatePlayerEvent } from "@/utils/populatePlayerEvent.js"
+
 import { CommandsManager } from "../commandsManager.js"
-import { ENTITY_INTERACTION } from "../interaction/constants.js"
-import { Player } from "../player/player.js"
-import type { ServerPlayerMessage } from "../player/serverPlayerMessage.js"
-import type { Room } from "../room/base.js"
-import { State } from "../state/state.js"
-import { populatePlayerEvent } from "../utils/populatePlayerEvent.js"
 
-import { LabeledEntity, LabeledParent } from "./helpers/labeledEntities.js"
-
-jest.mock("../player/player.js")
-jest.mock("../commands/message.js")
+jest.mock("@/player/player.js")
+jest.mock("@/commands/message.js")
 
 let state: State
 let event: ServerPlayerMessage

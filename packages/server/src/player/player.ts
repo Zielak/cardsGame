@@ -1,9 +1,10 @@
 import { def } from "@cardsgame/utils"
 import { Schema } from "@colyseus/schema"
 
-import { type } from "../annotations/type.js"
+import { type } from "@/annotations/type.js"
+import type { ChildTrait } from "@/traits/child.js"
+
 import { logs } from "../logs.js"
-import type { ChildTrait } from "../traits/child.js"
 
 import { getRandomName } from "./names.js"
 

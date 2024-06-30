@@ -2,6 +2,7 @@
 /// <reference path="messages.d.ts" />
 /// <reference path="room.d.ts" />
 /// <reference path="utils.d.ts" />
+/// <reference path="state.d.ts" />
 /// <reference path="variants.d.ts" />
 
 interface RoomCreateOptions {

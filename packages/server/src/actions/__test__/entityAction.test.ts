@@ -1,10 +1,11 @@
+import { Noop } from "@/commands/noop.js"
+import { ClientMessageContext } from "@/conditions/context/clientMessage.js"
+import { prepareConditionsContext } from "@/conditions/context/utils.js"
+import { ENTITY_INTERACTION } from "@/interaction/constants.js"
+import { ServerPlayerMessage } from "@/player/serverPlayerMessage.js"
+import { State } from "@/state/state.js"
+
 import type { Command } from "../../command.js"
-import { Noop } from "../../commands/noop.js"
-import { ClientMessageContext } from "../../conditions/context/clientMessage.js"
-import { prepareConditionsContext } from "../../conditions/context/utils.js"
-import { ENTITY_INTERACTION } from "../../interaction/constants.js"
-import { ServerPlayerMessage } from "../../player/serverPlayerMessage.js"
-import { State } from "../../state/state.js"
 import type { BaseActionTemplate } from "../base.js"
 import { DragActionDefinition } from "../drag/dragAction.js"
 import {
@@ -17,8 +18,8 @@ import {
 } from "../entity/utils.js"
 import { MessageActionDefinition } from "../message/messageAction.js"
 
-jest.mock("../../state/state.js")
-jest.mock("../../player/player.js")
+jest.mock("@/state/state.js")
+jest.mock("@/player/player.js")
 
 const state = new State()
 const conditions = () => {}
@@ -41,31 +42,31 @@ describe("isEntityActionTemplate", () => {
       isEntityActionTemplate({
         ...baseTemplate,
         interaction: () => {},
-      })
+      }),
     ).toBe(true)
     expect(
       isEntityActionTemplate({
         ...baseTemplate,
         interaction: "arst",
-      })
+      }),
     ).toBe(false)
     expect(
       isEntityActionTemplate({
         ...baseTemplate,
         interaction: 1,
-      })
+      }),
     ).toBe(false)
     expect(
       isEntityActionTemplate({
         ...baseTemplate,
         interaction: {},
-      })
+      }),
     ).toBe(false)
     expect(
       isEntityActionTemplate({
         ...baseTemplate,
         interaction: [],
-      })
+      }),
     ).toBe(false)
   })
 
@@ -76,21 +77,21 @@ describe("isEntityActionTemplate", () => {
         ...baseTemplate,
         interaction,
         interactionType: "tap",
-      })
+      }),
     ).toBe(true)
     expect(
       isEntityActionTemplate({
         ...baseTemplate,
         interaction,
         interactionType: "dragstart",
-      })
+      }),
     ).toBe(false)
     expect(
       isEntityActionTemplate({
         ...baseTemplate,
         interaction,
         interactionType: "dragend",
-      })
+      }),
     ).toBe(true)
 
     //
@@ -100,28 +101,28 @@ describe("isEntityActionTemplate", () => {
         ...baseTemplate,
         interaction,
         interactionType: "foo",
-      })
+      }),
     ).toBe(false)
     expect(
       isEntityActionTemplate({
         ...baseTemplate,
         interaction,
         interactionType: 1,
-      })
+      }),
     ).toBe(false)
     expect(
       isEntityActionTemplate({
         ...baseTemplate,
         interaction,
         interactionType: {},
-      })
+      }),
     ).toBe(false)
     expect(
       isEntityActionTemplate({
         ...baseTemplate,
         interaction,
         interactionType: [],
-      })
+      }),
     ).toBe(false)
   })
 })
@@ -132,8 +133,8 @@ test("isEntityActionDefinition", () => {
       new EntityActionDefinition({
         ...baseTemplate,
         interaction: () => [],
-      })
-    )
+      }),
+    ),
   ).toBe(true)
 
   expect(
@@ -141,8 +142,8 @@ test("isEntityActionDefinition", () => {
       new MessageActionDefinition({
         ...baseTemplate,
         messageType: "foo",
-      })
-    )
+      }),
+    ),
   ).toBe(false)
 
   expect(
@@ -158,8 +159,8 @@ test("isEntityActionDefinition", () => {
           conditions: () => {},
           command: () => new Noop(),
         },
-      })
-    )
+      }),
+    ),
   ).toBe(false)
 })
 
@@ -206,13 +207,13 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [{ type: targetEntity.type }],
-        }).checkPrerequisites(messageContext)
+        }).checkPrerequisites(messageContext),
       ).toBe(true)
       expect(
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => "*",
-        }).checkPrerequisites(messageContext)
+        }).checkPrerequisites(messageContext),
       ).toBe(true)
     })
     it("rejects unexpected entity interaction", () => {
@@ -220,13 +221,13 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [{ type: "deck" }],
-        }).checkPrerequisites(messageContext)
+        }).checkPrerequisites(messageContext),
       ).toBe(false)
       expect(
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [],
-        }).checkPrerequisites(messageContext)
+        }).checkPrerequisites(messageContext),
       ).toBe(false)
     })
   })
@@ -245,7 +246,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [],
-        }).checkPrerequisites(messageContext)
+        }).checkPrerequisites(messageContext),
       ).toBe(true)
     })
     it("rejects, if action expects entities", () => {
@@ -253,7 +254,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => [{ type: targetEntity.type }],
-        }).checkPrerequisites(messageContext)
+        }).checkPrerequisites(messageContext),
       ).toBe(false)
     })
     it("accepts with catch-all", () => {
@@ -261,7 +262,7 @@ describe("EntityActionDefinition.checkPrerequisites", () => {
         new EntityActionDefinition({
           ...baseTemplate,
           interaction: () => "*",
-        }).checkPrerequisites(messageContext)
+        }).checkPrerequisites(messageContext),
       ).toBe(true)
     })
   })

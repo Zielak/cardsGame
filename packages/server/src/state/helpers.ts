@@ -1,9 +1,10 @@
 import { limit } from "@cardsgame/utils"
 
+import { Bot, isBot, type Player } from "@/player/index.js"
+import type { IdentityTrait } from "@/traits/identity.js"
+import { hasChildren, isParent, ParentTrait } from "@/traits/parent.js"
+
 import { logs } from "../logs.js"
-import { Bot, isBot, type Player } from "../player/index.js"
-import type { IdentityTrait } from "../traits/identity.js"
-import { hasChildren, isParent, ParentTrait } from "../traits/parent.js"
 
 import type { State } from "./state.js"
 
