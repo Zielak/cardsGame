@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/Zielak/cardsGame/compare/v2.2.0...v2.2.1) (2024-06-30)
+
+
+### Bug Fixes
+
+* Bot compound actions ([#109](https://github.com/Zielak/cardsGame/issues/109)) ([fef1b7e](https://github.com/Zielak/cardsGame/commit/fef1b7e8e92a648d9eef426e8ea57f3571251079))
+
 ## [2.2.0](https://github.com/Zielak/cardsGame/compare/v2.1.1...v2.2.0) (2024-06-06)
 
 
