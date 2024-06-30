@@ -201,26 +201,26 @@ describe("integration tests", () => {
 describe("addClient", () => {
   it("first client is ready by default", () => {
     room.playersCount = undefined
-    expect(room.addClient("foo")).toBe(true)
+    expect(room.addClient("foo")).toBeTruthy()
     expect(room.state.clients[0].ready).toBeTruthy()
-    expect(room.addClient("bar")).toBe(true)
+    expect(room.addClient("bar")).toBeTruthy()
     expect(room.state.clients[1].ready).toBeFalsy()
   })
   it("allows new human client", () => {
     room.playersCount = undefined
-    expect(room.addClient("foo")).toBe(true)
+    expect(room.addClient("foo")).toBeTruthy()
   })
   it("allows new human client within limit", () => {
     room.playersCount = {
       min: 0,
       max: 4,
     }
-    expect(room.addClient("foo")).toBe(true)
+    expect(room.addClient("foo")).toBeTruthy()
   })
   it("rejects human client with already recorded ID", () => {
     // @ts-expect-error this just tests
     room.state.clients = [new GameClient("foo")]
-    expect(room.addClient("foo")).toBe(false)
+    expect(room.addClient("foo")).toBeFalsy()
   })
   it("allows human client over the playersCount limit", () => {
     // @ts-expect-error this just tests
@@ -229,12 +229,12 @@ describe("addClient", () => {
       min: 0,
       max: 4,
     }
-    expect(room.addClient("foo")).toBe(true)
+    expect(room.addClient("foo")).toBeTruthy()
   })
 
   it("allows bot client", () => {
     room.playersCount = undefined
-    expect(room.addBot({ clientID: "foo" })).toBe(true)
+    expect(room.addBot({ clientID: "foo" })).toBeTruthy()
   })
   it("allows bot client within limit", () => {
     room.playersCount = {
@@ -245,7 +245,7 @@ describe("addClient", () => {
         max: 1,
       },
     }
-    expect(room.addBot({ clientID: "foo" })).toBe(true)
+    expect(room.addBot({ clientID: "foo" })).toBeTruthy()
   })
   it("rejects bot client", () => {
     room.botClients = [new Bot({ clientID: "foo" })]
@@ -257,6 +257,6 @@ describe("addClient", () => {
         max: 1,
       },
     }
-    expect(room.addBot({ clientID: "foo" })).toBe(false)
+    expect(room.addBot({ clientID: "foo" })).toBeFalsy()
   })
 })

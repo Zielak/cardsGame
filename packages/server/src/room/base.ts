@@ -135,7 +135,21 @@ export abstract class Room<
 
     // Register all known messages
     messages.forEach((callback, type) => {
-      this.onMessage(type, callback.bind(this))
+      this.onMessage(type, (client, message) => {
+        try {
+          callback.call(this, client, message)
+        } catch (e) {
+          const err = e as Error
+          logs.error(
+            `Room:${this.name}`,
+            "Failed to execute message handler:",
+            err.name,
+            err.message,
+            "\n",
+            err.stack,
+          )
+        }
+      })
     })
     this.onMessage("*", fallback.bind(this))
 
@@ -173,12 +187,12 @@ export abstract class Room<
 
   /**
    * Add client to `state.clients`
-   * @returns `false` is client is already there or if the game is already started
+   * @returns `undefined` is client is already there or if the game is already started
    *
    * @ignore exposed only for testing, do not use
    */
-  addClient(sessionId: string): boolean {
-    const { state, playersCount } = this
+  addClient(sessionId: string): GameClient {
+    const { state } = this
 
     // DONE: I Want spectators
     // if (state.isGameStarted) {
@@ -206,15 +220,15 @@ export abstract class Room<
     )
     if (clientAlreadyIn) {
       logs.info("addClient failed", "clientAlreadyIn")
-      return false
+      return
     }
     const newClient = new GameClient({ id: sessionId })
-    if (this.state.clients.length === 0) {
+    if (state.clients.length === 0) {
       newClient.ready = true
     }
 
     state.clients.push(newClient)
-    return true
+    return newClient
   }
 
   addBot(bot: BotOptions): boolean {

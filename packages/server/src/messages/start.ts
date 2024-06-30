@@ -93,14 +93,9 @@ export function start(
 
     // We can go, convert all ready clients into players
     shuffle(
-      this.clients
-        .filter((client) => {
-          const inState = this.state.clients.find(
-            (c) => c.id === client.sessionId,
-          )
-          return inState?.ready
-        })
-        .map((entry) => new Player({ clientID: entry.sessionId }))
+      this.state.clients
+        .filter((client) => client.ready)
+        .map((entry) => new Player({ clientID: entry.id }))
         .concat(this.botClients),
     ).forEach((player) => {
       state.players.push(player)
