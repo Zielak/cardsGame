@@ -6,12 +6,13 @@ import { logs } from "./logs.js"
 import { Room } from "./room.js"
 
 interface IGameOptions {
-  wss?: WSSOptions
+  ws?: WSOptions
 }
 
-interface WSSOptions {
+interface WSOptions {
   host?: string
   port?: number
+  secure?: boolean
 }
 
 /**
@@ -23,22 +24,28 @@ export class Game {
   room: Room
   lobby: LobbyRoom
 
-  wss: WSSOptions
+  ws: WSOptions
 
   constructor(options: IGameOptions = {}) {
     logs.debug("GAME", "constructor")
 
-    this.wss = {
+    this.ws = {
       host: def(
-        options.wss && options.wss.host,
+        options.ws && options.ws.host,
         window.document.location.hostname,
       ),
-      port: def(options.wss && options.wss.port, 2657),
+      port: def(options.ws && options.ws.port, 2657),
+      secure: def(
+        options.ws.secure,
+        window.document.location.protocol.includes("s"),
+      ),
     }
 
-    const portString = this.wss.port ? `:${this.wss.port}` : ""
+    const portString = this.ws.port ? `:${this.ws.port}` : ""
 
-    this.client = new Client(`wss://${this.wss.host}${portString}`)
+    this.client = new Client(
+      `${this.ws.secure ? "wss" : "ws"}://${this.ws.host}${portString}`,
+    )
   }
 
   /**
