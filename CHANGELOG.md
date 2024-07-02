@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.2](https://github.com/Zielak/cardsGame/compare/v2.2.1...v2.2.2) (2024-07-02)
+
+
+### Bug Fixes
+
+* allow insecure websocket ([#111](https://github.com/Zielak/cardsGame/issues/111)) ([556ca8c](https://github.com/Zielak/cardsGame/commit/556ca8c39deff31171eb740fd93ab03ccae660fd))
+
 ## [2.2.1](https://github.com/Zielak/cardsGame/compare/v2.2.0...v2.2.1) (2024-06-30)
 
 
