@@ -68,7 +68,7 @@ it("halts when canGameStart() returns false", () => {
   expect(roomMock.clientSend).toHaveBeenCalled()
 })
 
-it("halts when not enhough players are ready", () => {
+it("halts when not enough players are ready", () => {
   roomMock.playersCount = {
     min: 3,
     max: 10,

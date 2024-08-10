@@ -4,6 +4,7 @@ import type { Client } from "@colyseus/core"
 import { Sequence } from "@/commands/index.js"
 import { Player } from "@/player/player.js"
 import type { Room } from "@/room/base.js"
+import { GameClient } from "@/state/client.js"
 import type { State } from "@/state/state.js"
 
 import { logs } from "../logs.js"
@@ -94,8 +95,8 @@ export function start(
     // We can go, convert all ready clients into players
     shuffle(
       this.state.clients
-        .filter((client) => client.ready)
-        .map((entry) => new Player({ clientID: entry.id }))
+        .filter((client) => client.ready && !client.isBot)
+        .map((entry: GameClient) => new Player({ clientID: entry.id }))
         .concat(this.botClients),
     ).forEach((player) => {
       state.players.push(player)
