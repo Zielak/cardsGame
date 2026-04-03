@@ -1,7 +1,7 @@
 // export * from "./botEntityAux.js"
 export {
   playerMessageToInitialSubjects,
-  ClientMessageContext,
+  type ClientMessageContext,
   ClientMessageConditions,
 } from "./clientMessage.js"
 export { prepareConditionsContext } from "./utils.js"

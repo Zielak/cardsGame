@@ -2,7 +2,7 @@ export * from "./compound/compoundAction.js"
 export { defineDragAction, DragActionDefinition } from "./drag/dragAction.js"
 export {
   defineEntityAction,
-  EntityActionTemplateInteraction,
+  type EntityActionTemplateInteraction,
   EntityActionDefinition,
 } from "./entity/entityAction.js"
 export {

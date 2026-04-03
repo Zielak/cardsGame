@@ -1,5 +1,9 @@
 {
   "$schema": "https://v2-9-3.turborepo.dev/schema.json",
+  "globalDependencies": [
+    "packages/baseConfigs/tsconfig.json",
+    "packages/baseConfigs/tsdown.config.ts"
+  ],
   "tasks": {
     "build": {
       "inputs": ["src/**", "tsconfig.json"],

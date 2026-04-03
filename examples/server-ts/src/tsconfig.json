@@ -2,10 +2,9 @@
   "compilerOptions": {
     "outDir": "../dist",
     "allowSyntheticDefaultImports": true,
-    "downlevelIteration": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "lib": ["ES2021"],
     "module": "CommonJS",
     "resolveJsonModule": true,

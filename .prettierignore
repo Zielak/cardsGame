@@ -1,4 +1,4 @@
-packages/**/lib
+packages/**/dist
 packages/**/.cache
 coverage/
 

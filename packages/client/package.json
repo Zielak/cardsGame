@@ -28,7 +28,7 @@
     "@cardsgame/utils": "^1.7.2"
   },
   "devDependencies": {
-    "@cardsgame/base-configs": "^1.7.2",
+    "@cardsgame/base-configs": "file:../baseConfigs",
     "@colyseus/schema": "^1.0.46",
     "colyseus.js": "^0.14.0"
   },

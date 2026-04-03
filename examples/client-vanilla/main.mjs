@@ -128,7 +128,7 @@ class GameHandler {
   constructor() {
     this.joined = false
     this.game = new Game({
-      wss: {
+      ws: {
         port: 3033,
       },
     })

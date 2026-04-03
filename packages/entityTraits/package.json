@@ -32,6 +32,6 @@
     "./package.json": "./package.json"
   },
   "devDependencies": {
-    "@cardsgame/base-configs": "^1.7.2"
+    "@cardsgame/base-configs": "file:../baseConfigs"
   }
 }

@@ -1,4 +1,4 @@
+/** keep until we move completely to ES Modules? */
 export * from "./types.js"
 
-/** keep until we move completely to ES Modules? */
-export { CommonKeysToIgnore, EveryEntity } from "./internalTypes.js"
+export { CommonKeysToIgnore, type EveryEntity } from "./internalTypes.js"

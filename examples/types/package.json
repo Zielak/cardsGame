@@ -1,20 +1,13 @@
 {
-  "name": "@cardsgame/example-types",
-  "version": "1.7.1",
+  "name": "example-types",
+  "version": "2.0.0",
   "private": true,
   "description": "Shared types for examples of @cardsgame",
   "author": "Darek Greenly (https://darekgreenly.com)",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/zielak/cardsGame.git"
-  },
-  "bugs": {
-    "url": "https://github.com/zielak/cardsGame/issues"
-  },
   "main": "",
   "types": "index",
   "dependencies": {
-    "@cardsgame/types": "^1.7.1"
+    "@cardsgame/types": "file:../../packages/types"
   }
 }
