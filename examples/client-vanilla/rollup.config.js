@@ -16,6 +16,7 @@ const config = {
     }),
     commonjs(),
   ],
+  strictDeprecations: true,
 }
 
 export default config

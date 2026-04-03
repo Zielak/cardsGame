@@ -58,6 +58,7 @@ const config = {
   watch: {
     clearScreen: false,
   },
+  strictDeprecations: true,
 }
 
 export default config
