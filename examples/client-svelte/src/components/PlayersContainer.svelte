@@ -24,23 +24,24 @@
   <Pile cards={playersCards} />
 </div>
 
-<style lang="scss">
+<style lang="css">
   .PlayerContainer {
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
     justify-content: center;
     
-    &.reversed {
-      flex-direction: column;
-    }
+    
+  }
+  .PlayerContainer.reversed {
+    flex-direction: column;
+  }
 
-    &.disconnected {
-      opacity: 0.5;
-    }
+  .PlayerContainer.disconnected {
+    opacity: 0.5;
+  }
 
-    &.looser {
-      background-color: #f44336;
-    }
+  .PlayerContainer.looser {
+    background-color: #f44336;
   }
 </style>

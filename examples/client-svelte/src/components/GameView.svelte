@@ -32,14 +32,13 @@
   {/if}
 </main>
 
-<style lang="scss">
+<style lang="css">
   .GameView {
     text-align: center;
     position: relative;
-    
-    &.tie {
-      background-color: #36aef4;
-    }
+  }
+  .GameView.tie {
+    background-color: #36aef4;
   }
 
 </style>

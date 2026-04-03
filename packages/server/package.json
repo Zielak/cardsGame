@@ -12,68 +12,24 @@
     "url": "https://github.com/zielak/cardsGame/issues"
   },
   "type": "module",
-  "main": "lib/cjs/index.cjs",
-  "types": "lib/types/index.d.ts",
-  "module": "lib/esm/index.js",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.cts",
+  "module": "./dist/index.mjs",
   "files": [
     "lib",
     "readme.md"
   ],
   "scripts": {
-    "build": "concurrently npm:build:esm npm:build:cjs",
-    "build:esm": "tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json -o ./lib/types/",
-    "build:cjs": "tsc -p tsconfig.build.cjs.json && resolve-tspaths -p tsconfig.build.cjs.json && ../../scripts/mapToCjs.sh ./lib/cjs",
-    "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
+    "build": "tsdown",
     "test": "jest",
     "test:watch": "jest --watch"
   },
   "exports": {
-    "./package.json": "./package.json",
     ".": {
-      "import": "./lib/esm/index.js",
-      "require": "./lib/cjs/index.cjs",
-      "types": "./lib/types/index.d.ts"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     },
-    "./commands": {
-      "import": "./lib/esm/commands/index.js",
-      "require": "./lib/cjs/commands/index.cjs",
-      "types": "./lib/types/commands/index.d.ts"
-    },
-    "./entities": {
-      "import": "./lib/esm/entities/index.js",
-      "require": "./lib/cjs/entities/index.cjs",
-      "types": "./lib/types/entities/index.d.ts"
-    },
-    "./traits": {
-      "import": "./lib/esm/traits/index.js",
-      "require": "./lib/cjs/traits/index.cjs",
-      "types": "./lib/types/traits/index.d.ts"
-    },
-    "./internal/actions": {
-      "import": "./lib/esm/actions/internalIndex.js",
-      "require": "./lib/cjs/actions/internalIndex.cjs",
-      "types": "./lib/types/actions/internalIndex.d.ts"
-    },
-    "./internal/commandsManager/utils": {
-      "import": "./lib/esm/commandsManager/utils.js",
-      "require": "./lib/cjs/commandsManager/utils.cjs",
-      "types": "./lib/types/commandsManager/utils.d.ts"
-    },
-    "./internal/interaction/runConditionOnAction": {
-      "import": "./lib/esm/interaction/runConditionOnAction.js",
-      "require": "./lib/cjs/interaction/runConditionOnAction.cjs",
-      "types": "./lib/types/interaction/runConditionOnAction.d.ts"
-    },
-    "./internal/conditions/context": {
-      "import": "./lib/esm/conditions/context/internalIndex.js",
-      "require": "./lib/cjs/conditions/context/internalIndex.cjs",
-      "types": "./lib/types/conditions/context/internalIndex.d.ts"
-    },
-    "./internal/queries/internalTypes": {
-      "import": "./lib/esm/queries/internalTypes.js",
-      "require": "./lib/cjs/queries/internalTypes.cjs",
-      "types": "./lib/types/queries/internalTypes.d.ts"
-    }
+    "./package.json": "./package.json"
   },
   "dependencies": {
     "@bundled-es-modules/deepmerge": "^4.3.1",

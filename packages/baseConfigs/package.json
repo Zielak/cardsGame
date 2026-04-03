@@ -17,6 +17,7 @@
     "./package.json": "./package.json",
     "./jest.config.cjs": "./jest.config.cjs",
     "./tsconfig.json": "./tsconfig.json",
-    "./tsconfig.test.json": "./tsconfig.test.json"
+    "./tsconfig.test.json": "./tsconfig.test.json",
+    "./tsdown.config.ts": "./tsdown.config.ts"
   }
 }

@@ -71,7 +71,7 @@
   </ol>
 </nav>
 
-<style lang="scss">
+<style lang="css">
   .StartButton:not(:disabled) {
     background: linear-gradient(
       250deg,

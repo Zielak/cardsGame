@@ -32,13 +32,12 @@
   </Card>
 </div>
 
-<style lang="scss">
+<style lang="css">
   .deck {
     height: 6em;
     margin-bottom: 0.5em;
-    
-    .cardsCount {
-      font-size: 2em;
-    }
+  }
+  .deck .cardsCount {
+    font-size: 2em;
   }
 </style>

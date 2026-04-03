@@ -7,7 +7,7 @@
   <p>Player {$winner} is the winner!</p>
 </div>
 
-<style lang="scss">
+<style lang="css">
   .EndScreen {
     display: flex;
     position: absolute;

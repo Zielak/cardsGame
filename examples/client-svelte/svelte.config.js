@@ -1,5 +1,7 @@
-const sveltePreprocess = require("svelte-preprocess")
+// import sveltePreprocess from "svelte-preprocess"
 
-module.exports = {
-  preprocess: sveltePreprocess(),
-}
+// export default {
+//   preprocess: sveltePreprocess(),
+// }
+/** @type {import("@sveltejs/vite-plugin-svelte").SvelteConfig} */
+export default {}

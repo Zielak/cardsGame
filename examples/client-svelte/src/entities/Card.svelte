@@ -22,7 +22,7 @@
   <slot></slot>
 </div>
 
-<style lang="scss">
+<style lang="css">
   .Card {
     box-sizing: border-box;
     width: 4.5em;
@@ -38,17 +38,16 @@
     cursor: pointer;
 
     user-select: none;
+  }
+  .Card.faceDown {
+    margin-right: -3.5em;
+    background-color: #834224;
+    border: 0.5em solid white;
+  }
 
-    &.faceDown {
-      margin-right: -3.5em;
-      background-color: #834224;
-      border: 0.5em solid white;
-    }
-
-    .suit,
-    .rank {
-      font-size: 2em;
-    }
+  .Card .suit,
+  .Card .rank {
+    font-size: 2em;
   }
 
 </style>

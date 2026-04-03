@@ -10,6 +10,3 @@
 <Menu/>
 <GameView/>
 
-<style lang="scss">
-
-</style>

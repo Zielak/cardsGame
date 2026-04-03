@@ -3,6 +3,7 @@ node_modules
 examples/**/dist
 examples/certs/index.d.ts
 lib
+dist
 packages/**/node_modules
 packages/**/lib
 docs/build

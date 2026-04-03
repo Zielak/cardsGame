@@ -1,27 +1,26 @@
 {
   "extends": "@cardsgame/base-configs/tsconfig.json",
-  "exclude": ["lib", "testSetup.ts", "**/*.test.*", "**/__*__/**/*"],
+  "exclude": ["testSetup.ts", "**/*.test.*", "**/__*__/**/*"],
   "compilerOptions": {
     "experimentalDecorators": true,
-    "declarationDir": "./lib/types/",
-    "outDir": "./lib/esm/",
-    "baseUrl": "./src",
+    "outDir": "./dist",
     "paths": {
-      "@/actions/*": ["actions/*"],
-      "@/annotations/*": ["annotations/*"],
-      "@/bots/*": ["bots/*"],
-      "@/commands/*": ["commands/*"],
-      "@/commandsManager/*": ["commandsManager/*"],
-      "@/conditions/*": ["conditions/*"],
-      "@/entities/*": ["entities/*"],
-      "@/interaction/*": ["interaction/*"],
-      "@/messages/*": ["messages/*"],
-      "@/player/*": ["player/*"],
-      "@/queries/*": ["queries/*"],
-      "@/room/*": ["room/*"],
-      "@/state/*": ["state/*"],
-      "@/traits/*": ["traits/*"],
-      "@/utils/*": ["utils/*"]
+      "@/actions/*": ["./src/actions/*"],
+      "@/annotations/*": ["./src/annotations/*"],
+      "@/bots/*": ["./src/bots/*"],
+      "@/commands/*": ["./src/commands/*"],
+      "@/commandsManager/*": ["./src/commandsManager/*"],
+      "@/conditions/*": ["./src/conditions/*"],
+      "@/entities/*": ["./src/entities/*"],
+      "@/interaction/*": ["./src/interaction/*"],
+      "@/messages/*": ["./src/messages/*"],
+      "@/player/*": ["./src/player/*"],
+      "@/queries/*": ["./src/queries/*"],
+      "@/room/*": ["./src/room/*"],
+      "@/state/*": ["./src/state/*"],
+      "@/traits/*": ["./src/traits/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "__test__/*": ["./src/__test__/*"]
     }
   }
 }

@@ -12,28 +12,24 @@
     "url": "https://github.com/zielak/cardsGame/issues"
   },
   "type": "module",
-  "main": "lib/cjs/index.cjs",
-  "types": "lib/types/index.d.ts",
-  "module": "lib/esm/index.js",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.cts",
+  "module": "./dist/index.mjs",
   "files": [
     "lib",
     "readme.md"
   ],
   "scripts": {
-    "build": "concurrently npm:build:esm npm:build:cjs",
-    "build:esm": "tsc -p tsconfig.build.json",
-    "build:cjs": "tsc -p tsconfig.build.cjs.json &&  ../../scripts/mapToCjs.sh ./lib/cjs",
-    "build:watch": "echo \"only for ESM!\" && tsc -p tsconfig.build.json --watch",
+    "build": "tsdown",
     "test": "echo \"¯\\_(ツ)_/¯\"",
     "test:watch": "echo \"¯\\_(ツ)_/¯\""
   },
   "exports": {
-    "./package.json": "./package.json",
     ".": {
-      "import": "./lib/esm/index.js",
-      "require": "./lib/cjs/index.cjs",
-      "types": "./lib/types/index.d.ts"
-    }
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
   },
   "devDependencies": {
     "@cardsgame/base-configs": "^1.7.2"

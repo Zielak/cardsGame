@@ -12,7 +12,7 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "arch": "./scripts/structurizr.sh",
+    "arch": "cross-env ./scripts/structurizr.sh",
     "typecheck": "tsc",
     "typedoc": "concurrently -k 'npm:typedoc:*'",
     "typedoc:server": "typedoc --options ./typedoc/server.typedoc.js --watch --plugin typedoc-plugin-markdown",

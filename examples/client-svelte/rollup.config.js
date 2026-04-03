@@ -1,11 +1,11 @@
-const commonjs = require("@rollup/plugin-commonjs")
-const { nodeResolve } = require("@rollup/plugin-node-resolve")
-const typescript = require("@rollup/plugin-typescript")
-const copy = require("rollup-plugin-copy")
-const postcss = require("rollup-plugin-postcss")
-const svelte = require("rollup-plugin-svelte")
-const { terser } = require("rollup-plugin-terser")
-const sveltePreprocess = require("svelte-preprocess")
+import commonjs from "@rollup/plugin-commonjs"
+import { nodeResolve } from "@rollup/plugin-node-resolve"
+import terser from "@rollup/plugin-terser"
+import typescript from "@rollup/plugin-typescript"
+import copy from "rollup-plugin-copy"
+// import postcss from "rollup-plugin-postcss"
+import svelte from "rollup-plugin-svelte"
+import sveltePreprocess from "svelte-preprocess"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
 
@@ -36,8 +36,6 @@ const config = {
     }),
 
     commonjs(),
-
-    postcss(),
 
     PRODUCTION && terser(),
 
